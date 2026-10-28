@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoDevelopment Observatory of Bolivia | GDO-Bolivia</title>
+    <meta name="description" content="GDO-Bolivia is a public-access platform of open municipal indicators, notebooks, web apps, and research insights for monitoring sustainable regional development in Bolivia's 339 municipalities with satellite data and AI.">
+    <meta name="theme-color" content="#060d1f">
+    <link rel="canonical" href="https://quarcs-lab.github.io/geo4bolivia/">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/logo/emblem-32.png">
+    <link rel="apple-touch-icon" href="images/logo/emblem-180.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="GDO-Bolivia">
+    <meta property="og:title" content="GeoDevelopment Observatory of Bolivia">
+    <meta property="og:description" content="Open municipal indicators, tools, and insights for monitoring sustainable regional development in Bolivia.">
+    <meta property="og:url" content="https://quarcs-lab.github.io/geo4bolivia/">
+    <meta property="og:image" content="https://quarcs-lab.github.io/geo4bolivia/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="GeoDevelopment Observatory of Bolivia">
+    <meta name="twitter:description" content="Open municipal indicators, tools, and insights for monitoring sustainable regional development in Bolivia.">
+    <meta name="twitter:image" content="https://quarcs-lab.github.io/geo4bolivia/images/og-image.jpg">
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://quarcs-lab.github.io/geo4bolivia/#website",
+          "url": "https://quarcs-lab.github.io/geo4bolivia/",
+          "name": "GeoDevelopment Observatory of Bolivia",
+          "alternateName": "GDO-Bolivia",
+          "inLanguage": "en",
+          "publisher": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" }
+        },
+        {
+          "@type": "ResearchProject",
+          "@id": "https://quarcs-lab.github.io/geo4bolivia/#org",
+          "name": "GeoDevelopment Observatory of Bolivia",
+          "alternateName": "GDO-Bolivia",
+          "url": "https://quarcs-lab.github.io/geo4bolivia/",
+          "logo": "https://quarcs-lab.github.io/geo4bolivia/images/logo/emblem-512.png",
+          "sameAs": ["https://github.com/quarcs-lab/geo4bolivia"],
+          "member": [
+            { "@type": "Person", "name": "Carlos Mendez", "affiliation": "Nagoya University" }
+          ]
+        },
+        {
+          "@type": "Dataset",
+          "name": "SDG indicators of the Municipal Atlas of the SDGs in Bolivia 2020 (339 municipalities)",
+          "description": "Sixty-four municipal indicators of poverty, health, education, gender, water, energy, work, infrastructure, inequality, environment and institutions for Bolivia's 339 municipalities, each at its reference year (2010–2020).",
+          "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-sdg",
+          "license": "https://opensource.org/licenses/MIT",
+          "temporalCoverage": "2010/2020",
+          "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
+          "keywords": ["SDGs", "multidimensional poverty", "municipalities", "Bolivia"],
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
+          "distribution": [
+            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/sdg.csv" },
+            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
+          ]
+        },
+        {
+          "@type": "Dataset",
+          "name": "Night-time lights per capita in Bolivia (339 municipalities, 2012–2020)",
+          "description": "Annual log VIIRS night-time lights per capita and its Hodrick–Prescott trend for Bolivia's 339 municipalities, 2012–2020.",
+          "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-ntl",
+          "license": "https://opensource.org/licenses/MIT",
+          "temporalCoverage": "2012/2020",
+          "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
+          "keywords": ["night-time lights", "VIIRS", "Bolivia", "remote sensing"],
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
+          "distribution": [
+            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/ntl.csv" },
+            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
+          ]
+        },
+        {
+          "@type": "Dataset",
+          "name": "Population of Bolivia's municipalities (339 municipalities, 2001–2020)",
+          "description": "Annual gridded population estimates (WorldPop) summed over Bolivia's 339 municipalities, 2001–2020.",
+          "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-pop",
+          "license": "https://opensource.org/licenses/MIT",
+          "temporalCoverage": "2001/2020",
+          "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
+          "keywords": ["population", "WorldPop", "Bolivia"],
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
+          "distribution": [
+            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/pop.csv" },
+            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
+          ]
+        },
+        {
+          "@type": "Dataset",
+          "name": "Satellite embeddings of Bolivia's municipalities, area-weighted (339 municipalities, 2017)",
+          "description": "Sixty-four Google Satellite Embedding dimensions (AlphaEarth Foundations) averaged over each of Bolivia's 339 municipalities in 2017.",
+          "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-emb",
+          "license": "https://opensource.org/licenses/MIT",
+          "temporalCoverage": "2017",
+          "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
+          "keywords": ["satellite embeddings", "machine learning", "Bolivia"],
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
+          "distribution": [
+            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/emb.csv" },
+            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
+          ]
+        },
+        {
+          "@type": "Dataset",
+          "name": "Satellite embeddings of Bolivia's municipalities, population-weighted (339 municipalities, 2017)",
+          "description": "Sixty-four Google Satellite Embedding dimensions (AlphaEarth Foundations) averaged over each of Bolivia's 339 municipalities in 2017, weighted by WorldPop population.",
+          "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-emb",
+          "license": "https://opensource.org/licenses/MIT",
+          "temporalCoverage": "2017",
+          "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
+          "keywords": ["satellite embeddings", "machine learning", "Bolivia"],
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
+          "distribution": [
+            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/embpw.csv" },
+            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
+          ]
+        },
+        {
+          "@type": "SoftwareSourceCode",
+          "name": "geo4bolivia",
+          "description": "Python package to load, link, aggregate and build subnational development data for Bolivia across spatial scales.",
+          "url": "https://quarcs-lab.github.io/geo4bolivia/#/tools/geo4bolivia-package",
+          "codeRepository": "https://github.com/quarcs-lab/geo4bolivia",
+          "programmingLanguage": "Python",
+          "license": "https://opensource.org/licenses/MIT",
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" }
+        }
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="images/hero-day.webp">
+
+    <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'] },
+            colors: {
+              navy: { 950: '#060d1f', 900: '#0b1733', 800: '#13224a', 700: '#1c2f5e', 600: '#204387', 500: '#2f56c4' },
+              brand: { red: '#d23c3c', redHover: '#b93232', sky: '#7cc4ff', cream: '#faf5f1' },
+            },
+            animation: {
+              'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+              'fade-in': 'fadeIn 0.6s ease-out forwards',
+            },
+            keyframes: {
+              fadeInUp: { '0%': { opacity: '0', transform: 'translate3d(0, 30px, 0)' }, '100%': { opacity: '1', transform: 'translate3d(0, 0, 0)' } },
+              fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+      body { -webkit-font-smoothing: antialiased; background: #060d1f; color: #e2e8f0; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+      .gradient-text {
+        background: linear-gradient(135deg, #7cc4ff 0%, #e8eefc 55%, #ff7a7a 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      }
+      .nav-link-underline { position: relative; }
+      .nav-link-underline::after {
+        content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+        background: linear-gradient(90deg, #7cc4ff, #d23c3c); transition: width .3s ease;
+      }
+      .nav-link-underline:hover::after, .nav-link-underline.active::after { width: 100%; }
+      .contributor-avatar { transition: transform .3s ease, box-shadow .3s ease; }
+      .contributor-avatar:hover { transform: scale(1.05); box-shadow: 0 10px 25px -5px rgba(0,0,0,.5); }
+      @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+      .marquee-track { width: max-content; animation: marquee 60s linear infinite; }
+      .marquee:hover .marquee-track, .marquee:focus-within .marquee-track, .marquee.paused .marquee-track { animation-play-state: paused; }
+      @keyframes cue { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+      .cue-bounce { animation: cue 2.2s ease-in-out infinite; }
+      .hero-globe canvas { outline: none; }
+      :focus-visible { outline: 2px solid #7cc4ff; outline-offset: 2px; border-radius: 4px; }
+      .prose-gdo p { margin-bottom: 1rem; line-height: 1.75; }
+      details > summary { list-style: none; cursor: pointer; }
+      details > summary::-webkit-details-marker { display: none; }
+      details[open] .chev { transform: rotate(90deg); }
+      .static-fallback a { color: #7cc4ff; }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        .marquee-track, .cue-bounce { animation: none !important; }
+      }
+    </style>
+</head>
+<body class="bg-navy-950 text-slate-200">
+    <a href="#main" onclick="event.preventDefault(); var m = document.getElementById('main'); if (m) { m.focus(); m.scrollIntoView(); }" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-brand-red focus:text-white">Skip to content</a>
+
+    <div id="root">
+      <!-- Static, crawlable fallback. React replaces this on load. -->
+      <main class="static-fallback" style="max-width:56rem;margin:0 auto;padding:6rem 1.5rem;font-family:Inter,system-ui,sans-serif;color:#e2e8f0;background:#060d1f">
+        <img src="images/logo/emblem-192.png" alt="GDO-Bolivia emblem" width="72" height="72">
+        <h1 style="font-size:2.25rem;font-weight:800;margin:1rem 0">GeoDevelopment Observatory of Bolivia</h1>
+        <p>A public-access platform for analyzing, monitoring, and evaluating sustainable regional development in Bolivia's 339 municipalities. It brings together social, economic, and environmental indicators from satellite imagery, censuses, and administrative records; makes them explorable through notebooks and web apps; and turns the results into accessible insights.</p>
+        <h2>GeoDevelopment Indicators</h2>
+        <ul>
+          <li><a href="docs/datasets/sdg.md">SDG indicators of the Municipal Atlas of the SDGs 2020 (339 municipalities, 2010–2020)</a></li>
+          <li><a href="docs/datasets/ntl.md">Night-time lights per capita (339 municipalities, 2012–2020)</a></li>
+          <li><a href="docs/datasets/pop.md">Population (339 municipalities, 2001–2020)</a></li>
+          <li><a href="docs/datasets/emb.md">Satellite embeddings (339 municipalities, 2017)</a></li>
+        </ul>
+        <h2>GeoDevelopment Tools and Insights</h2>
+        <p>Python packages, notebooks, an Earth Engine app and research papers. See the <a href="https://github.com/quarcs-lab/geo4bolivia">GitHub repository</a>.</p>
+        <noscript><p><strong>This site works best with JavaScript enabled.</strong> All data and documentation are also available in the <a href="https://github.com/quarcs-lab/geo4bolivia">GitHub repository</a>.</p></noscript>
+      </main>
+    </div>
+
+    <script type="text/babel" data-presets="react">
+        const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+        // ====================================================================
+        // Site constants
+        // ====================================================================
+        const SITE_URL = 'https://quarcs-lab.github.io/geo4bolivia/';
+        const REPO_URL = 'https://github.com/quarcs-lab/geo4bolivia';
+        const RAW_URL = 'https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/';
+        const COLAB_URL = 'https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/';
+        const COLAB_EMPTY = 'https://colab.research.google.com/notebooks/empty.ipynb';
+        const DEFAULT_TITLE = 'GeoDevelopment Observatory of Bolivia | GDO-Bolivia';
+        const GLOBE_JS_URL = 'https://unpkg.com/globe.gl@2.46.2/dist/globe.gl.min.js';
+
+        // ====================================================================
+        // Icons (inline SVG, Lucide style)
+        // ====================================================================
+        const IconWrapper = ({ size = 24, className = '', children, ...rest }) => (
+          <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+               className={className} aria-hidden="true" focusable="false" {...rest}>
+            {children}
+          </svg>
+        );
+        const PackageIcon = (p) => (<IconWrapper {...p}><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /><path d="m3.3 7 8.7 5 8.7-5" /><path d="M12 22V12" /></IconWrapper>);
+        const MapIcon = (p) => (<IconWrapper {...p}><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" /><line x1="8" y1="2" x2="8" y2="18" /><line x1="16" y1="6" x2="16" y2="22" /></IconWrapper>);
+        const Database = (p) => (<IconWrapper {...p}><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" /><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" /></IconWrapper>);
+        const Terminal = (p) => (<IconWrapper {...p}><polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" /></IconWrapper>);
+        const BarChart2 = (p) => (<IconWrapper {...p}><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></IconWrapper>);
+        const Globe = (p) => (<IconWrapper {...p}><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></IconWrapper>);
+        const BookOpen = (p) => (<IconWrapper {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></IconWrapper>);
+        const Github = (p) => (<IconWrapper {...p}><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></IconWrapper>);
+        const ExternalLink = (p) => (<IconWrapper {...p}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></IconWrapper>);
+        const Copy = (p) => (<IconWrapper {...p}><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></IconWrapper>);
+        const Check = (p) => (<IconWrapper {...p}><polyline points="20 6 9 17 4 12" /></IconWrapper>);
+        const Menu = (p) => (<IconWrapper {...p}><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></IconWrapper>);
+        const X = (p) => (<IconWrapper {...p}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></IconWrapper>);
+        const ChevronRight = (p) => (<IconWrapper {...p}><polyline points="9 18 15 12 9 6" /></IconWrapper>);
+        const ArrowLeft = (p) => (<IconWrapper {...p}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></IconWrapper>);
+        const ArrowRight = (p) => (<IconWrapper {...p}><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></IconWrapper>);
+        const Layers = (p) => (<IconWrapper {...p}><polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></IconWrapper>);
+        const FileText = (p) => (<IconWrapper {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></IconWrapper>);
+        const Download = (p) => (<IconWrapper {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></IconWrapper>);
+        const Lightbulb = (p) => (<IconWrapper {...p}><path d="M9 18h6" /><path d="M10 22h4" /><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" /></IconWrapper>);
+        const Calendar = (p) => (<IconWrapper {...p}><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></IconWrapper>);
+        const MapPin = (p) => (<IconWrapper {...p}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></IconWrapper>);
+        const Clock = (p) => (<IconWrapper {...p}><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></IconWrapper>);
+        const Play = (p) => (<IconWrapper {...p}><polygon points="6 3 20 12 6 21 6 3" fill="currentColor" stroke="none" /></IconWrapper>);
+        const Mail = (p) => (<IconWrapper {...p}><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 5L2 7" /></IconWrapper>);
+        const Users = (p) => (<IconWrapper {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></IconWrapper>);
+        const MessageCircle = (p) => (<IconWrapper {...p}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></IconWrapper>);
+        const Pause = (p) => (<IconWrapper {...p}><rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" /></IconWrapper>);
+        const Plus = (p) => (<IconWrapper {...p}><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></IconWrapper>);
+        const Minus = (p) => (<IconWrapper {...p}><line x1="5" y1="12" x2="19" y2="12" /></IconWrapper>);
+        const ChevronLeft = (p) => (<IconWrapper {...p}><polyline points="15 18 9 12 15 6" /></IconWrapper>);
+        const ArrowDown = (p) => (<IconWrapper {...p}><line x1="12" y1="5" x2="12" y2="19" /><polyline points="19 12 12 19 5 12" /></IconWrapper>);
+        const Satellite = (p) => (<IconWrapper {...p}><path d="M13 7 9 3 5 7l4 4" /><path d="m17 11 4 4-4 4-4-4" /><path d="m8 12 4 4 6-6-4-4Z" /><path d="m16 8 3-3" /><path d="M9 21a6 6 0 0 0-6-6" /></IconWrapper>);
+        const Headphones = (p) => (<IconWrapper {...p}><path d="M3 18v-6a9 9 0 0 1 18 0v6" /><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" /></IconWrapper>);
+        const Presentation = (p) => (<IconWrapper {...p}><path d="M2 3h20" /><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3" /><path d="m7 21 5-5 5 5" /></IconWrapper>);
+        const Sparkles = (p) => (<IconWrapper {...p}><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" /></IconWrapper>);
+        const Bot = (p) => (<IconWrapper {...p}><rect x="3" y="11" width="18" height="10" rx="2" /><circle cx="12" cy="5" r="2" /><path d="M12 7v4" /><line x1="8" y1="16" x2="8" y2="16" /><line x1="16" y1="16" x2="16" y2="16" /></IconWrapper>);
+        const Code = (p) => (<IconWrapper {...p}><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></IconWrapper>);
+        const AlertTriangle = (p) => (<IconWrapper {...p}><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></IconWrapper>);
+
+        // ====================================================================
+        // Hooks
+        // ====================================================================
+        const usePrefersReducedMotion = () => {
+          const query = '(prefers-reduced-motion: reduce)';
+          const [reduced, setReduced] = useState(() => window.matchMedia && window.matchMedia(query).matches);
+          useEffect(() => {
+            if (!window.matchMedia) return;
+            const mq = window.matchMedia(query);
+            const onChange = () => setReduced(mq.matches);
+            mq.addEventListener ? mq.addEventListener('change', onChange) : mq.addListener(onChange);
+            return () => (mq.removeEventListener ? mq.removeEventListener('change', onChange) : mq.removeListener(onChange));
+          }, []);
+          return reduced;
+        };
+
+        const useInView = (options = {}) => {
+          const { threshold = 0.1, once = true } = options;
+          const ref = useRef(null);
+          const [isInView, setIsInView] = useState(false);
+          useEffect(() => {
+            const element = ref.current;
+            if (!element) return;
+            const observer = new IntersectionObserver(([entry]) => {
+              if (entry.isIntersecting) {
+                setIsInView(true);
+                if (once) observer.unobserve(element);
+              } else if (!once) {
+                setIsInView(false);
+              }
+            }, { threshold });
+            observer.observe(element);
+            return () => observer.disconnect();
+          }, [threshold, once]);
+          return [ref, isInView];
+        };
+
+        const useActiveSection = (sectionIds, enabled) => {
+          const [activeId, setActiveId] = useState('');
+          useEffect(() => {
+            if (!enabled) { setActiveId(''); return; }
+            const observers = [];
+            sectionIds.forEach((id) => {
+              const el = document.getElementById(id);
+              if (!el) return;
+              const observer = new IntersectionObserver(([entry]) => {
+                if (entry.isIntersecting) setActiveId(id);
+              }, { threshold: 0.15, rootMargin: '-80px 0px -50% 0px' });
+              observer.observe(el);
+              observers.push(observer);
+            });
+            return () => observers.forEach((o) => o.disconnect());
+          }, [enabled]);
+          return activeId;
+        };
+
+        const useCopy = () => {
+          const [copied, setCopied] = useState(false);
+          const copy = (text) => {
+            const done = () => { setCopied(true); setTimeout(() => setCopied(false), 2000); };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done).catch(() => {});
+            }
+          };
+          return [copied, copy];
+        };
+
+        // Hash router: "#/<section>/<id>" renders a detail view; anything else is the landing page.
+        const parseHash = () => {
+          const h = window.location.hash || '';
+          if (h.startsWith('#/')) {
+            const [section, id] = h.slice(2).split('/');
+            if (section && id) return { view: 'detail', section, id: decodeURIComponent(id) };
+            return { view: 'home', anchor: '' };
+          }
+          return { view: 'home', anchor: h.replace(/^#/, '') };
+        };
+        const useHashRoute = () => {
+          const [route, setRoute] = useState(parseHash);
+          useEffect(() => {
+            const onChange = () => setRoute(parseHash());
+            window.addEventListener('hashchange', onChange);
+            return () => window.removeEventListener('hashchange', onChange);
+          }, []);
+          return route;
+        };
+
+        // ====================================================================
+        // Animation wrapper
+        // ====================================================================
+        const ReducedMotionContext = React.createContext(false);
+
+        // Drift a background image slower than the page; static under reduced motion
+        const useParallax = (factor = 0.08, scale = 1.25) => {
+          const reduced = React.useContext(ReducedMotionContext);
+          const ref = useRef(null);
+          useEffect(() => {
+            const el = ref.current;
+            if (reduced || !el) return undefined;
+            let frame = 0;
+            const update = () => {
+              frame = 0;
+              const box = el.parentElement.getBoundingClientRect();
+              if (box.bottom < 0 || box.top > window.innerHeight) return;
+              const offset = (box.top + box.height / 2 - window.innerHeight / 2) * -factor;
+              el.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0) scale(${scale})`;
+            };
+            const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+            update();
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            return () => {
+              cancelAnimationFrame(frame);
+              window.removeEventListener('scroll', onScroll);
+              window.removeEventListener('resize', onScroll);
+            };
+          }, [reduced, factor, scale]);
+          return ref;
+        };
+
+        const AnimateIn = ({ children, delay = 0, className = '' }) => {
+          const reduced = React.useContext(ReducedMotionContext);
+          const [ref, isInView] = useInView({ threshold: 0.1 });
+          if (reduced) return <div className={className}>{children}</div>;
+          return (
+            <div ref={ref} className={className} style={{
+              opacity: isInView ? 1 : 0,
+              transform: isInView ? 'translateY(0)' : 'translateY(30px)',
+              transition: `opacity 0.6s ease-out ${delay}ms, transform 0.6s ease-out ${delay}ms`,
+            }}>
+              {children}
+            </div>
+          );
+        };
+
+        // ====================================================================
+        // Content registry: every indicator, tool, insight and event
+        // ====================================================================
+        // Every code box runs as-is in Google Colab: the first line installs what Colab lacks.
+        const PYTHON_SETUP = `!pip install -q geo4bolivia
+import geo4bolivia as geo`;
+
+        const CONTENT_REGISTRY = [
+          // ---------------------------------------------------------------- Indicators
+          {
+            id: 'municipalities339-sdg', type: 'indicator', section: 'indicators',
+            title: 'SDG indicators: the Municipal Atlas of the SDGs',
+            scope: '339 municipalities · 64 indicators · 2010–2020',
+            summary: 'Sixty-four municipal indicators of poverty, health, education, gender, water, energy, work, infrastructure and institutions, each stored at the year it was measured.',
+            description: 'The indicators behind the Municipal Atlas of the Sustainable Development Goals in Bolivia 2020 (SDSN Bolivia) for all 339 municipalities: multidimensional poverty and unsatisfied basic needs, child malnutrition and mortality, school dropout and literacy, gender parity, water, sanitation and electricity coverage, CO₂ emissions, labour participation, connectivity, inequality, deforestation, protected areas, homicides and municipal finance. The Atlas gathers them from different sources and years (poverty from the 2012 census, health from 2016, education from 2017...), so each indicator is stored at its own reference year and the panel is sparse: load an indicator with its year. Indicators averaged over a period are stored at its midpoint, rounded down. The Atlas’s composite indices are not included.',
+            geography: 'Municipality', units: 339, period: '2010–2020', frequency: 'One reference year per indicator', key: 'geo_id', idExample: 'BO-04-17-04',
+            categories: ['Social', 'Economy', 'Environment', 'Institutions'], tags: ['SDGs', 'poverty', 'municipalities', 'census'],
+            image: 'images/indicators/sdg.webp',
+            imageAlt: 'Quantile map of the Multidimensional Poverty Index across 339 Bolivian municipalities in 2012, highest in Pando and the Chuquisaca and Potosí valleys, lowest around Santa Cruz, Cochabamba, La Paz and Tarija',
+            date: '2026-10-28', pinned: true, dataset: 'sdg', folder: 'data/municipality', docs: 'docs/datasets/sdg.md',
+            variables: [
+              ['geo_id', 'Municipality geo ID (e.g. BO-04-17-04); names, parents and INE codes in geo/units.csv', 'GDO'],
+              ['year', 'Reference year of the indicators in the row (2010–2020)', '—'],
+              ['mun_id', 'INE municipality code (e.g. 20101 for La Paz)', 'INE'],
+              ['sdg1_2_mpi', 'Multidimensional Poverty Index, 2012', 'Atlas 2020'],
+              ['sdg1_1_ubn', 'Unsatisfied basic needs, 2012 (% of population)', 'Atlas 2020'],
+              ['sdg2_2_cmc', 'Chronic malnutrition in children under 5, 2016 (%)', 'Atlas 2020'],
+              ['sdg3_2_imr', 'Infant mortality rate, 2016 (per 1,000 live births)', 'Atlas 2020'],
+              ['sdg4_6_lr', 'Literacy rate (15 years and over), 2012 (%)', 'Atlas 2020'],
+              ['sdg6_1_dwc', 'Drinking water coverage, 2017 (% of population)', 'Atlas 2020'],
+              ['sdg7_1_ec', 'Electricity coverage, 2012 (% of population)', 'Atlas 2020'],
+              ['sdg13_2_dra', 'Deforestation rate, average 2016–2018 (stored at 2017)', 'Atlas 2020'],
+              ['… 54 more', 'All 64 indicators, units and years: docs/datasets/sdg.md', 'Atlas 2020'],
+            ],
+            notice: 'Each indicator has values only in its reference year: load one with its year, e.g. geo.load("sdg", variables="sdg1_2_mpi", years=2012). In DS4Bolivia the rows of three pairs of homonym municipalities (San Javier, El Puente, Santa Rosa) were attached to the wrong polygon of each pair; here every row is linked by INE code to its own municipality.',
+            files: [
+              { format: 'CSV', form: 'Panel · 3,036 rows (municipality × reference year)', path: 'data/municipality/sdg.csv' },
+              { format: 'Parquet', form: 'Panel · typed, compact', path: 'data/municipality/sdg.parquet' },
+              { format: 'GeoJSON', form: 'Municipality boundaries', path: 'geo/boundaries/municipality.geojson' },
+              { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/sdg.datapackage.json' },
+            ],
+            code: {
+              python: `!pip install -q geo4bolivia mapclassify
+import geo4bolivia as geo
+
+# Multidimensional poverty in its census year, with municipal boundaries
+gdf = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
+gdf.plot(column="sdg1_2_mpi", cmap="YlOrRd", scheme="quantiles", k=5,
+         legend=True, edgecolor="white", linewidth=0.1)
+
+# Population-weighted poverty by department
+geo.aggregate(gdf, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"},
+              weights=geo.load("pop"))`,
+              pandas: `!pip install -q mapclassify
+import pandas as pd
+import geopandas as gpd
+
+# No geo4bolivia needed: every file is a plain URL
+BASE = "${RAW_URL}"
+df = pd.read_csv(BASE + "data/municipality/sdg.csv")    # geo_id, year, mun_id, 64 indicators
+municipalities = gpd.read_file(BASE + "geo/boundaries/municipality.geojson")
+
+mpi = df.loc[df["year"] == 2012, ["geo_id", "sdg1_2_mpi"]]
+gdf = municipalities.merge(mpi, on="geo_id")
+gdf.plot(column="sdg1_2_mpi", cmap="YlOrRd", scheme="quantiles", k=5, legend=True)`,
+            },
+            references: [
+              { text: 'Andersen, L. E., Canelas, S., Gonzales, A., & Peñaranda, L. (2020). Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia.', url: 'https://unsdsn.org/resources/municipal-atlas-of-the-sdgs-in-bolivia-2020' },
+              { text: 'Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.', url: 'https://github.com/quarcs-lab/ds4bolivia' },
+            ],
+            citation: 'GeoDevelopment Observatory of Bolivia (2026). SDG indicators of the Municipal Atlas of the SDGs 2020 (339 municipalities). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/sdg.md',
+            related: ['mpi-esda', 'mpi-eda', 'embeddings-mpi-ml', 'human-capital-paper'],
+          },
+          {
+            id: 'municipalities339-ntl', type: 'indicator', section: 'indicators',
+            title: 'Night-time lights per capita',
+            scope: '339 municipalities · 2012–2020',
+            summary: 'Nine years of VIIRS night-time lights per person for every municipality, with a long-run trend: a satellite proxy for local economic activity.',
+            description: 'Annual night-time lights per capita for Bolivia’s 339 municipalities from 2012 to 2020: the total VIIRS Day/Night Band radiance of each municipality divided by its population, in natural logs. A Hodrick–Prescott trend (λ = 400) of the same series separates the long-run path from year-to-year noise; it is complete for every municipality, while the raw log is missing where a municipality had no measurable light. Night-time lights track electrification and economic activity where official local statistics are scarce.',
+            geography: 'Municipality', units: 339, period: '2012–2020', frequency: 'Annual', key: 'geo_id', idExample: 'BO-04-17-04',
+            categories: ['Economy'], tags: ['night-time lights', 'VIIRS', 'remote sensing', 'panel data'],
+            image: 'images/indicators/ntl.webp',
+            imageAlt: 'Quantile map of log night-time lights per capita across 339 Bolivian municipalities in 2020, brightest along the La Paz–Cochabamba–Santa Cruz axis',
+            date: '2026-10-28', pinned: false, dataset: 'ntl', folder: 'data/municipality', docs: 'docs/datasets/ntl.md',
+            variables: [
+              ['geo_id', 'Municipality geo ID (e.g. BO-04-17-04)', 'GDO'],
+              ['year', 'Year (2012–2020)', '—'],
+              ['asdf_id', 'DS4Bolivia polygon ID of the source data', 'DS4Bolivia'],
+              ['ln_NTLpc', 'Natural log of night-time lights per capita', 'VIIRS DNB via DS4Bolivia'],
+              ['ln_t400NTLpc', 'Hodrick–Prescott trend (λ = 400) of the log of lights per capita', 'Derived'],
+            ],
+            files: [
+              { format: 'CSV', form: 'Panel · 3,051 rows', path: 'data/municipality/ntl.csv' },
+              { format: 'Parquet', form: 'Panel · typed, compact', path: 'data/municipality/ntl.parquet' },
+              { format: 'GeoJSON', form: 'Municipality boundaries', path: 'geo/boundaries/municipality.geojson' },
+              { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/ntl.datapackage.json' },
+            ],
+            code: {
+              python: `${PYTHON_SETUP}
+
+df = geo.load("ntl")
+df = df.merge(geo.units("municipality")[["geo_id", "name", "department_id"]], on="geo_id")
+
+# Long-run trend of lights per capita: mean by department
+deps = geo.units("department").set_index("geo_id")["name"]
+trend = df.groupby(["year", "department_id"])["ln_t400NTLpc"].mean().unstack()
+trend.rename(columns=deps).plot()`,
+              pandas: `import pandas as pd
+
+BASE = "${RAW_URL}"
+df = pd.read_csv(BASE + "data/municipality/ntl.csv")
+units = pd.read_csv(BASE + "geo/units.csv")[["geo_id", "name", "department_id"]]
+df = df.merge(units, on="geo_id")
+
+# Long-run trend of lights per capita: mean by department
+df.groupby(["year", "department_id"])["ln_t400NTLpc"].mean().unstack().plot()`,
+            },
+            references: [
+              { text: 'Elvidge, C. D., Zhizhin, M., Ghosh, T., Hsu, F.-C., & Taneja, J. (2021). Annual time series of global VIIRS nighttime lights derived from monthly averages: 2012 to 2019. Remote Sensing, 13(5), 922.', url: 'https://doi.org/10.3390/rs13050922' },
+              { text: 'Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.', url: 'https://github.com/quarcs-lab/ds4bolivia' },
+            ],
+            citation: 'GeoDevelopment Observatory of Bolivia (2026). Night-time lights per capita (339 municipalities, 2012–2020). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/ntl.md',
+            related: ['geoexplorer', 'mpi-esda-heterogeneity', 'geometrics-package'],
+          },
+          {
+            id: 'municipalities339-pop', type: 'indicator', section: 'indicators',
+            title: 'Population',
+            scope: '339 municipalities · 2001–2020',
+            summary: 'Two decades of gridded population estimates for every municipality: the denominator for per-capita indicators and population-weighted averages.',
+            description: 'Annual population estimates for Bolivia’s 339 municipalities from 2001 to 2020, computed by summing a gridded population product (WorldPop, 100 m) over each municipality. Population sums up the hierarchy, so it gives provincial, departmental and national totals directly, and it is the weight for population-weighted averages of rates such as poverty. These are gridded estimates, not INE’s official projections.',
+            geography: 'Municipality', units: 339, period: '2001–2020', frequency: 'Annual', key: 'geo_id', idExample: 'BO-04-17-04',
+            categories: ['Social'], tags: ['population', 'WorldPop', 'demography', 'panel data'],
+            image: 'images/indicators/pop.webp',
+            imageAlt: 'Two maps of Bolivian municipalities: population density in 2020 and annual population growth from 2001 to 2020',
+            date: '2026-10-28', pinned: false, dataset: 'pop', folder: 'data/municipality', docs: 'docs/datasets/pop.md',
+            variables: [
+              ['geo_id', 'Municipality geo ID (e.g. BO-04-17-04)', 'GDO'],
+              ['year', 'Year (2001–2020)', '—'],
+              ['asdf_id', 'DS4Bolivia polygon ID of the source data', 'DS4Bolivia'],
+              ['pop', 'Estimated population (people)', 'WorldPop via DS4Bolivia'],
+            ],
+            files: [
+              { format: 'CSV', form: 'Panel · 6,780 rows', path: 'data/municipality/pop.csv' },
+              { format: 'Parquet', form: 'Panel · typed, compact', path: 'data/municipality/pop.parquet' },
+              { format: 'GeoJSON', form: 'Municipality boundaries', path: 'geo/boundaries/municipality.geojson' },
+              { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/pop.datapackage.json' },
+            ],
+            code: {
+              python: `${PYTHON_SETUP}
+
+pop = geo.load("pop")
+
+# Totals by department, 2001-2020 (population sums up the hierarchy)
+dep = geo.aggregate(pop, to="department", dataset="pop")
+names = geo.units("department").set_index("geo_id")["name"]
+dep.pivot(index="year", columns="geo_id", values="pop").rename(columns=names).plot()`,
+              pandas: `import pandas as pd
+
+BASE = "${RAW_URL}"
+pop = pd.read_csv(BASE + "data/municipality/pop.csv")
+units = pd.read_csv(BASE + "geo/units.csv")[["geo_id", "department_id"]]
+
+# Totals by department, 2001-2020
+pop.merge(units, on="geo_id").groupby(["year", "department_id"])["pop"].sum().unstack().plot()`,
+            },
+            references: [
+              { text: 'WorldPop (2018). Global High Resolution Population Denominators Project (100 m, 2000–2020). University of Southampton.', url: 'https://doi.org/10.5258/SOTON/WP00645' },
+              { text: 'Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.', url: 'https://github.com/quarcs-lab/ds4bolivia' },
+            ],
+            citation: 'GeoDevelopment Observatory of Bolivia (2026). Population (339 municipalities, 2001–2020). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/pop.md',
+            related: ['geoexplorer', 'mpi-eda', 'expdpy-package'],
+          },
+          {
+            id: 'municipalities339-emb', type: 'indicator', section: 'indicators',
+            title: 'Satellite embeddings',
+            scope: '339 municipalities · 64 dimensions · 2017',
+            summary: 'What every municipality looks like from space, compressed by a deep-learning model into 64 numbers: features for machine learning.',
+            description: 'Sixty-four satellite embedding dimensions (A00–A63) for each of Bolivia’s 339 municipalities in 2017, averaged from the annual 10 m Google Satellite Embedding dataset (AlphaEarth Foundations). The model summarises Sentinel-2, Landsat and other imagery into abstract features that capture land cover, texture, roads and buildings. Two versions are published: `emb`, the area-weighted mean over each municipality, and `embpw`, weighted by population so that it describes where people live. The dimensions are not interpretable one by one; they are inputs to models, for example to predict poverty.',
+            geography: 'Municipality', units: 339, period: '2017', frequency: 'One year', key: 'geo_id', idExample: 'BO-04-17-04',
+            categories: ['Environment', 'Economy'], tags: ['satellite embeddings', 'AlphaEarth', 'machine learning', 'remote sensing'],
+            image: 'images/indicators/emb.webp',
+            imageAlt: 'Map of Bolivian municipalities coloured by the first three principal components of their satellite embeddings',
+            date: '2026-10-28', pinned: false, dataset: 'emb', datasets: ['emb', 'embpw'], folder: 'data/municipality', docs: 'docs/datasets/emb.md',
+            variables: [
+              ['geo_id', 'Municipality geo ID (e.g. BO-04-17-04)', 'GDO'],
+              ['year', 'Year (2017)', '—'],
+              ['asdf_id', 'DS4Bolivia polygon ID of the source data', 'DS4Bolivia'],
+              ['A00 … A63', 'Embedding dimensions 0–63: area-weighted in emb, population-weighted in embpw', 'Google Satellite Embedding V1 via DS4Bolivia'],
+            ],
+            files: [
+              { format: 'CSV', form: 'Area-weighted · 339 rows', path: 'data/municipality/emb.csv' },
+              { format: 'CSV', form: 'Population-weighted · 339 rows', path: 'data/municipality/embpw.csv' },
+              { format: 'Parquet', form: 'Area-weighted · typed, compact', path: 'data/municipality/emb.parquet' },
+              { format: 'Parquet', form: 'Population-weighted · typed, compact', path: 'data/municipality/embpw.parquet' },
+              { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/emb.datapackage.json' },
+            ],
+            code: {
+              python: `${PYTHON_SETUP}
+from sklearn.decomposition import PCA
+
+emb = geo.load("embpw")                           # or "emb", area-weighted
+X = emb.filter(regex=r"^A\\d{2}$")                # 64 dimensions
+emb["pc1"] = PCA(1).fit_transform(X)[:, 0]
+
+# How the first component relates to multidimensional poverty (2012)
+mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
+emb[["geo_id", "pc1"]].merge(mpi, on="geo_id").plot.scatter(x="pc1", y="sdg1_2_mpi")`,
+              pandas: `import pandas as pd
+
+BASE = "${RAW_URL}"
+emb = pd.read_csv(BASE + "data/municipality/embpw.csv")   # geo_id, year, asdf_id, A00-A63
+emb.filter(regex=r"^A\\d{2}$").describe()`,
+            },
+            references: [
+              { text: 'Brown, C. F., et al. (2025). AlphaEarth Foundations: An embedding field model for accurate and efficient global mapping from sparse label data. Google DeepMind. Earth Engine collection GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL.', url: 'https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL' },
+              { text: 'Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.', url: 'https://github.com/quarcs-lab/ds4bolivia' },
+            ],
+            citation: 'GeoDevelopment Observatory of Bolivia (2026). Satellite embeddings 2017, area- and population-weighted (339 municipalities). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/emb.md',
+            related: ['embeddings-mpi-ml', 'municipalities339-sdg'],
+          },
+
+          // ---------------------------------------------------------------- Tools: packages
+          {
+            id: 'geo4bolivia-package', type: 'package', section: 'tools',
+            title: 'geo4bolivia: load, link and build subnational data',
+            scope: '!pip install -q geo4bolivia',
+            summary: 'The observatory’s Python package. Load every indicator as a tidy panel with boundaries, link your own data to the same units, and build new indicators across municipalities, provinces and departments.',
+            description: 'geo4bolivia is the data engine of the observatory. One line loads any dataset as a panel (one row per unit and year) with names and boundaries. Every spatial unit has one geo ID that nests by prefix (municipality BO-04-17-04 lies in province BO-04-17, in department BO-04, in Bolivia BO), so the package can move data up the hierarchy with each variable’s own aggregation rule, interpolate it onto grids or newer municipality maps, and combine datasets. To build your own indicators, it links tables that identify units by name in any spelling or by INE and DS4Bolivia codes (and refuses to guess between municipalities that share a name), summarizes rasters such as Earth Engine exports over units, and saves the result with the same documented format as the published data. It is small, works out of the box in Google Colab, and hands its data in one line to two companion packages: expdpy for panel exploration and econometrics, and geometrics for spatial analysis.',
+            tags: ['Python', 'data loading', 'multi-scale', 'Colab', 'open data'],
+            image: 'images/tools/geo4bolivia-package.webp',
+            imageAlt: 'Three stacked map layers of Bolivia, 9 departments, 112 provinces and 339 municipalities, linked by geo IDs, beside a code snippet that loads the data',
+            date: '2026-10-28', pinned: true,
+            installNote: 'Colab already has its other dependencies, so installing takes seconds.',
+            install: `!pip install -q geo4bolivia
+!pip install -q "geo4bolivia[raster]"      # + rasterio, for zonal statistics from rasters (geo.zonal)`,
+            quickstart: {
+              python: `!pip install -q geo4bolivia mapclassify
+import geo4bolivia as geo
+
+geo.datasets()                                        # datasets x scales x years
+geo.dictionary("sdg")                                 # variables, units, reference years
+gdf = geo.load("ntl", years=2020, geometry=True)      # 339 municipalities with boundaries
+gdf.plot(column="ln_t400NTLpc", scheme="quantiles", k=5, legend=True)
+
+# Across scales: municipalities -> provinces -> departments -> Bolivia
+geo.aggregate(geo.load("pop"), to="department", dataset="pop")
+panel = geo.combine(["ntl", "pop"], scale="municipality")   # two datasets, one panel`,
+              pandas: `import pandas as pd
+
+# The same files without the package: plain URLs
+BASE = "${RAW_URL}"
+df = pd.read_csv(BASE + "data/municipality/ntl.csv")
+units = pd.read_csv(BASE + "geo/units.csv")           # names, parents, INE and DS4Bolivia codes
+df = df.merge(units[["geo_id", "name", "department_id"]], on="geo_id")`,
+            },
+            build: `!pip install -q "geo4bolivia[raster]"
+import geo4bolivia as geo
+
+# 1. Your table, with INE municipality codes (or names) -> geo IDs
+mine = geo.link(my_table, scale="municipality", on="mun_id", key="mun_id")   # 20101 -> BO-04-17-04
+geo.check(mine, scale="municipality")                                      # [] = valid panel
+
+# 2. A raster (e.g. an Earth Engine export) -> municipal indicator
+ntl = geo.zonal("viirs_2020.tif", scale="municipality", stats=["sum", "mean"], name="ntl", year=2020)
+
+# 3. Combine with published data, derive, and save in the same format
+panel = geo.combine(["pop"], scale="municipality", extra=[mine])
+panel["clinics_per_10k"] = panel["clinics"] / panel["pop"] * 1e4
+geo.save(panel, "clinics", scale="municipality", directory="my_data")
+
+# 4. Hand it to expdpy (panel econometrics) or geometrics (spatial analysis)
+df, df_def = geo.for_expdpy(panel)
+gdf, df, df_dict = geo.for_geometrics(panel)`,
+            features: [
+              { title: 'Load', fns: ['datasets', 'dictionary', 'load', 'units', 'boundaries', 'crosswalk'], text: 'Panels with filters, wide reshaping and boundaries; names, parents and INE, GADM and DS4Bolivia codes of every unit.' },
+              { title: 'Link', fns: ['link', 'check'], text: 'Attach geo IDs to any table by names or codes, ignoring accents, case and spacing, with spelling suggestions; shared names are reported, never guessed.' },
+              { title: 'Extract', fns: ['zonal'], text: 'Summarize rasters (sum, mean, max, count, ...) over municipalities or any scale, for one year or a series.' },
+              { title: 'Move across scales', fns: ['aggregate', 'overlay', 'overlay_weights'], text: 'Up the hierarchy with metadata rules, or onto grids and newer municipality maps by area weights.' },
+              { title: 'Combine & save', fns: ['combine', 'save'], text: 'Several datasets as one panel at one scale; your result as CSV, Parquet and a documented datapackage.' },
+              { title: 'Analyze', fns: ['for_expdpy', 'for_geometrics'], text: 'Labeled inputs for expdpy (panel econometrics) and geometrics (spatial analysis), built from the metadata.' },
+            ],
+            links: [
+              { label: 'Quickstart in Colab', url: COLAB_URL + 'geo4bolivia_quickstart.ipynb', kind: 'colab' },
+              { label: 'How the database works', url: REPO_URL + '/blob/main/docs/data-infrastructure.md', kind: 'docs' },
+              { label: 'Package guide', url: REPO_URL + '/blob/main/docs/python-package.md', kind: 'docs' },
+              { label: 'PyPI', url: 'https://pypi.org/project/geo4bolivia/', kind: 'pypi' },
+              { label: 'Source code', url: REPO_URL + '/tree/main/src/geo4bolivia', kind: 'github' },
+            ],
+            related: ['expdpy-package', 'geometrics-package', 'geo4bolivia-quickstart', 'municipalities339-sdg', 'municipalities339-ntl'],
+          },
+          {
+            id: 'geometrics-package', type: 'package', section: 'tools',
+            title: 'geometrics: regional growth, convergence and inequality',
+            scope: '!pip install -q geo4bolivia geometrics',
+            summary: 'A companion package for spatial analysis: maps, spatial dependence, β-, σ- and club convergence, spatial regressions, distribution dynamics and inequality, each with a plain-language reading.',
+            description: 'geometrics turns the standard analyses of regional growth into single functions built on the PySAL stack. Explore functions map variables, build spatial weights and test spatial dependence (Moran’s I, LISA clusters). Analyze functions estimate β-convergence (OLS and spatial models with LeSage–Pace impacts), σ-convergence, Phillips–Sul convergence clubs, Markov and spatial Markov transitions, Gini and Theil decompositions, and geographically weighted regressions. Learn functions simulate each concept from a known truth. Every result carries an interactive figure, a table and an interpret() method that explains it in words. geo4bolivia prepares Bolivian data for it in one line: geo.for_geometrics().',
+            tags: ['Python', 'spatial econometrics', 'convergence', 'inequality', 'PySAL'],
+            image: 'images/tools/geometrics-package.webp',
+            imageAlt: 'A LISA cluster map of night-time lights per capita across Bolivian municipalities in 2012 and its Moran scatterplot',
+            date: '2026-10-28', pinned: true,
+            install: `!pip install -q geo4bolivia geometrics`,
+            quickstart: {
+              python: `!pip install -q geo4bolivia geometrics
+import numpy as np
+import geo4bolivia as geo
+import geometrics as gm
+
+ntl = geo.load("ntl")                                   # 339 municipalities, 2012-2020
+ntl["NTLpc"] = np.exp(ntl["ln_NTLpc"])                  # levels, for convergence
+gdf, df, df_dict = geo.for_geometrics(ntl, labels={"NTLpc": "Night-time lights per capita"})
+df = gm.set_labels(df, df_dict, set_panel=True)
+w = gm.make_weights(gdf, method="queen")
+
+gm.explore_lisa_cluster_map(df, "ln_t400NTLpc", gdf=gdf, w=w, period=2020).fig
+res = gm.analyze_beta_convergence(df, "NTLpc", gdf=gdf, w=w)   # levels: logged internally
+print(res.interpret())`,
+            },
+            features: [
+              { title: 'Explore', fns: ['explore_choropleth_map', 'explore_moran_plot', 'explore_lisa_cluster_map'], text: 'Maps, spatial weights, Moran’s I and local clusters, over time.' },
+              { title: 'Converge', fns: ['analyze_beta_convergence', 'analyze_sigma_convergence', 'analyze_convergence_clubs'], text: 'β-, σ- and club convergence, including spatial models.' },
+              { title: 'Model', fns: ['analyze_spatial_model', 'analyze_gwr', 'analyze_mgwr'], text: 'SAR, SEM, SLX and SDM with impacts; local regressions.' },
+              { title: 'Inequality & dynamics', fns: ['analyze_inequality_over_time', 'analyze_theil_decomposition', 'analyze_markov_transitions'], text: 'Gini and Theil (between and within groups), Markov and spatial Markov chains.' },
+              { title: 'Learn', fns: ['learn_beta_convergence', 'explain'], text: 'Simulations from a known truth and plain-language explainers for 30 topics.' },
+            ],
+            links: [
+              { label: 'Documentation', url: 'https://quarcs-lab.github.io/geometrics/', kind: 'docs' },
+              { label: 'PyPI', url: 'https://pypi.org/project/geometrics/', kind: 'pypi' },
+              { label: 'Source code', url: 'https://github.com/quarcs-lab/geometrics', kind: 'github' },
+            ],
+            related: ['geo4bolivia-package', 'expdpy-package', 'mpi-esda', 'mpi-esda-heterogeneity'],
+          },
+          {
+            id: 'expdpy-package', type: 'package', section: 'tools',
+            title: 'expdpy: explore and model panel data',
+            scope: '!pip install -q geo4bolivia expdpy',
+            summary: 'A companion package for panel data: within/between variation, trajectories and transitions, then pooled, fixed and random effects, Hausman tests and clustered standard errors, each with a plain-language reading.',
+            description: 'expdpy (a Python port of ExPanDaR) turns the everyday steps of panel-data research into single functions. Explore functions describe a panel’s structure, decompose variation into between and within components (xtsum), and chart trajectories, distributions, transitions, missing values and correlations. Analyze functions estimate pooled, between, fixed-effects, random-effects and correlated-random-effects models, run Hausman and joint tests, fit fixest-style regressions with fixed effects and clustered or Driscoll–Kraay standard errors, and cover IV, event studies and β-, σ- and club convergence. Learn functions simulate each concept from a known truth. Every result has an interactive figure or table and an interpret() method. The observatory’s datasets are exactly the long panels expdpy expects: geo.for_expdpy() hands them over, labeled, in one line.',
+            tags: ['Python', 'panel data', 'econometrics', 'fixed effects', 'ExPanDaR'],
+            image: 'images/tools/expdpy-package.webp',
+            imageAlt: 'Night-time lights per capita trajectories of 339 Bolivian municipalities, 2012–2020, with department means and the between/within split of their variation',
+            date: '2026-10-28', pinned: true,
+            install: `!pip install -q geo4bolivia expdpy`,
+            quickstart: {
+              python: `!pip install -q geo4bolivia expdpy
+import numpy as np
+import geo4bolivia as geo
+import expdpy as ex
+
+df, df_def = geo.for_expdpy("ntl", groups=["department"])   # 339 municipalities, 2012-2020
+df = ex.set_labels(df, df_def, set_panel=True)              # geo_id x year panel
+ex.explore_xtsum_table(df, var=["ln_t400NTLpc"]).gt         # within vs between variation
+ex.explore_trend_plot_by_group(df, group_var="department", var="ln_t400NTLpc").fig
+
+# Lights and population: pooled, between, fixed and random effects
+panel = geo.combine(["ntl", "pop"], scale="municipality")
+panel["ln_pop"] = np.log(panel["pop"])
+panel, panel_def = geo.for_expdpy(panel, labels={"ln_pop": "Log of population"})
+panel = ex.set_labels(panel, panel_def, set_panel=True)
+ex.analyze_panel_table(panel, "ln_NTLpc", ["ln_pop"]).etable
+print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
+            },
+            features: [
+              { title: 'Explore', fns: ['explore_panel_structure', 'explore_xtsum_table', 'explore_spaghetti_plot', 'explore_transition_matrix'], text: 'Panel structure, within/between variation, trajectories, distributions and transitions.' },
+              { title: 'Panel models', fns: ['analyze_panel_table', 'analyze_hausman_test', 'analyze_cre_table'], text: 'Pooled, between, fixed, random and correlated random effects, side by side.' },
+              { title: 'Regressions & inference', fns: ['analyze_regression_table', 'analyze_coefficient_plot', 'analyze_robust_inference'], text: 'Fixed effects, clustered and Driscoll–Kraay errors, wild bootstrap, IV and event studies.' },
+              { title: 'Convergence & Kuznets', fns: ['analyze_beta_convergence', 'analyze_sigma_convergence', 'analyze_kuznets_waves'], text: 'Non-spatial β-, σ- and club convergence; inequality–development waves.' },
+              { title: 'Learn', fns: ['learn_pooled_vs_fixed_effects', 'explain'], text: 'Sandboxes that simulate from a known truth, and plain-language explainers.' },
+            ],
+            links: [
+              { label: 'Documentation', url: 'https://cmg777.github.io/expdpy/', kind: 'docs' },
+              { label: 'PyPI', url: 'https://pypi.org/project/expdpy/', kind: 'pypi' },
+              { label: 'Source code', url: 'https://github.com/cmg777/expdpy', kind: 'github' },
+              { label: 'No-code Analyze app', url: 'https://expdpy-analyze.streamlit.app', kind: 'launch' },
+            ],
+            related: ['geo4bolivia-package', 'geometrics-package', 'municipalities339-ntl', 'municipalities339-pop'],
+          },
+
+          // ---------------------------------------------------------------- Tools: notebooks
+          {
+            id: 'geo4bolivia-quickstart', type: 'notebook', section: 'tools',
+            title: 'Load, link and build Bolivian indicators with geo4bolivia',
+            summary: 'A hands-on tour of the observatory’s data: load it with and without the package, move it across scales, link your own table by name or INE code, and build an indicator from a raster.',
+            description: 'This Colab notebook walks through the observatory’s data for Bolivia’s 339 municipalities. It loads files as plain URLs and then with geo4bolivia; maps multidimensional poverty in its census year; sums population to departments and computes population-weighted poverty; combines lights, population and poverty in one panel; links a table by department names in any spelling and by INE municipality codes, and shows how shared municipality names and typos are reported; builds a market-access indicator (distance to La Paz, Cochabamba and Santa Cruz) from a raster with zonal statistics; interpolates population onto a 25 km grid; and saves the result in the observatory’s format.',
+            tags: ['geo4bolivia', 'quickstart', 'Python', 'Colab'],
+            image: 'images/tools/geo4bolivia-quickstart.webp',
+            imageAlt: 'Map of population-weighted multidimensional poverty by Bolivian department in 2012',
+            date: '2026-10-28', pinned: true,
+            links: [
+              { label: 'Open in Colab', url: COLAB_URL + 'geo4bolivia_quickstart.ipynb', kind: 'colab' },
+              { label: 'View on GitHub', url: REPO_URL + '/blob/main/notebooks/geo4bolivia_quickstart.ipynb', kind: 'github' },
+            ],
+            related: ['geo4bolivia-package', 'municipalities339-sdg', 'municipalities339-pop'],
+          },
+          {
+            id: 'mpi-eda', type: 'notebook', section: 'tools',
+            title: 'Exploratory data analysis of multidimensional poverty',
+            summary: 'How poverty varies across 339 municipalities and 9 departments, and how it relates to population and night-time lights.',
+            description: 'This Colab notebook explores the Multidimensional Poverty Index of 2012 across Bolivia’s municipalities: summary statistics, the poorest and least poor municipalities, distributions and box plots by department, a treemap of population and poverty, and the links with population and night-time lights. Poverty averages 0.18 and runs from 0.007 to 0.52; Pando and Chuquisaca are the poorest departments and Tarija and Santa Cruz the least poor, but poverty varies more within departments than between them. Brighter municipalities are less poor (correlation −0.54), and the slope is negative in all nine departments.',
+            tags: ['EDA', 'poverty', 'night-time lights', 'Python'],
+            image: 'images/tools/eda.webp',
+            imageAlt: 'Scatter plot of multidimensional poverty against log night-time lights per capita for Bolivian municipalities in 2012, with a negative fitted line',
+            date: '2026-10-28', pinned: false,
+            links: [
+              { label: 'Open in Colab', url: COLAB_URL + 'eda.ipynb', kind: 'colab' },
+              { label: 'View on GitHub', url: REPO_URL + '/blob/main/notebooks/eda.ipynb', kind: 'github' },
+            ],
+            related: ['municipalities339-sdg', 'municipalities339-ntl', 'mpi-esda'],
+          },
+          {
+            id: 'mpi-esda', type: 'notebook', section: 'tools',
+            title: 'Exploratory spatial data analysis of poverty',
+            summary: 'Is a municipality as poor as its neighbours? Spatial weights, Moran’s I and LISA clusters of multidimensional poverty.',
+            description: 'This Colab notebook asks whether poverty in one municipality resembles poverty in its neighbours. It maps the Multidimensional Poverty Index of 2012, builds six-nearest-neighbour weights and spatial lags, and tests global and local spatial dependence. Poverty is strongly clustered (Moran’s I = 0.46, p = 0.001). The LISA map finds poverty hot spots in Pando and the Chuquisaca and Potosí valleys, low-poverty clusters around Santa Cruz, the Cochabamba valley, La Paz–El Alto and Tarija, and less poor capitals such as Sucre and Cobija surrounded by poorer municipalities.',
+            tags: ['ESDA', 'spatial autocorrelation', 'LISA', 'PySAL'],
+            image: 'images/tools/esda.webp',
+            imageAlt: 'Moran scatterplot of multidimensional poverty next to a LISA cluster map of Bolivian municipalities',
+            date: '2026-10-28', pinned: true,
+            links: [
+              { label: 'Open in Colab', url: COLAB_URL + 'esda.ipynb', kind: 'colab' },
+              { label: 'View on GitHub', url: REPO_URL + '/blob/main/notebooks/esda.ipynb', kind: 'github' },
+            ],
+            related: ['municipalities339-sdg', 'mpi-esda-dependence', 'geometrics-package'],
+          },
+          {
+            id: 'mpi-esda-dependence', type: 'notebook', section: 'tools',
+            title: 'Spatial distribution and dependence of poverty',
+            summary: 'Two ways to classify a poverty map, then spatial weights, the spatial lag, Moran’s I and local clusters.',
+            description: 'This Colab notebook first maps the Multidimensional Poverty Index of 2012 with box-plot breaks, which flag three high outliers (El Sena, San Pedro and Poroma), and with three Fisher–Jenks natural breaks. It then builds six-nearest-neighbour weights, shows that Moran’s I (0.46) is the slope of the spatial-lag regression, and maps local clusters and outliers, comparing the 10% and 5% significance levels and how many clusters would be expected by chance.',
+            tags: ['ESDA', 'map classification', 'Moran’s I', 'PySAL'],
+            image: 'images/tools/esda-dependence.webp',
+            imageAlt: 'Map of multidimensional poverty in Bolivian municipalities classified with box-plot breaks',
+            date: '2026-10-28', pinned: false,
+            links: [
+              { label: 'Open in Colab', url: COLAB_URL + 'esda_dependence.ipynb', kind: 'colab' },
+              { label: 'View on GitHub', url: REPO_URL + '/blob/main/notebooks/esda_dependence.ipynb', kind: 'github' },
+            ],
+            related: ['mpi-esda', 'municipalities339-sdg'],
+          },
+          {
+            id: 'mpi-esda-inequality', type: 'notebook', section: 'tools',
+            title: 'Spatial inequality of poverty and night-time lights',
+            summary: 'Gini, Theil between and within departments, and the spatial Gini: how much of Bolivia’s inequality is regional?',
+            description: 'This Colab notebook measures inequality across the 339 municipalities in multidimensional poverty and in night-time lights per capita (2012). Poverty has a Gini of 0.31; the Theil index shows that only about a quarter of it lies between the nine departments, and the rest within them. The spatial Gini confirms that neighbouring municipalities are more alike than distant ones. A department table compares simple and population-weighted poverty.',
+            tags: ['inequality', 'Theil', 'Gini', 'spatial Gini'],
+            image: 'images/tools/esda-inequality.webp',
+            imageAlt: 'Map of multidimensional poverty in 2012 next to the nine departments used to decompose inequality',
+            date: '2026-10-28', pinned: false,
+            links: [
+              { label: 'Open in Colab', url: COLAB_URL + 'esda_inequality.ipynb', kind: 'colab' },
+              { label: 'View on GitHub', url: REPO_URL + '/blob/main/notebooks/esda_inequality.ipynb', kind: 'github' },
+            ],
+            related: ['municipalities339-sdg', 'municipalities339-ntl', 'geometrics-package'],
+          },
+          {
+            id: 'mpi-esda-heterogeneity', type: 'notebook', section: 'tools',
+            title: 'Where do lights predict poverty? GWR and MGWR',
+            summary: 'Geographically weighted regressions let the link between night-time lights and poverty vary across Bolivia.',
+            description: 'This Colab notebook regresses multidimensional poverty on night-time lights per capita (2012) across the 339 municipalities. A single national regression explains 29% of the variation. A geographically weighted regression, with a bandwidth of 46 neighbours, raises that to 62%: every local slope is negative, but it is steepest in Cochabamba, Chuquisaca and Potosí and weakest in La Paz, Beni and Pando. A multiscale GWR lets the intercept and the slope vary at different scales and fits best of the three.',
+            tags: ['GWR', 'MGWR', 'spatial heterogeneity', 'night-time lights'],
+            image: 'images/tools/esda-heterogeneity.webp',
+            imageAlt: 'Three maps of local GWR slopes of poverty on night-time lights across Bolivian municipalities',
+            date: '2026-10-28', pinned: false,
+            links: [
+              { label: 'Open in Colab', url: COLAB_URL + 'esda_heterogeneity.ipynb', kind: 'colab' },
+              { label: 'View on GitHub', url: REPO_URL + '/blob/main/notebooks/esda_heterogeneity.ipynb', kind: 'github' },
+            ],
+            related: ['municipalities339-ntl', 'municipalities339-sdg', 'geometrics-package'],
+          },
+          {
+            id: 'mpi-eda-esda', type: 'notebook', section: 'tools',
+            title: 'Poverty in Bolivia: an extended EDA and ESDA',
+            summary: 'One workflow from descriptive statistics to infrastructure correlates, spatial clusters, bivariate LISA, inequality and GWR.',
+            description: 'This Colab notebook combines exploratory and spatial data analysis of multidimensional poverty (2012). Electricity and network coverage are its strongest correlates (Spearman −0.91 and −0.89), ahead of clean cooking energy, child malnutrition and night-time lights. Poverty clusters strongly in space (Moran’s I = 0.46), and a bivariate LISA relates each municipality’s poverty to its neighbours’ lights: less poor places in bright neighbourhoods around Santa Cruz, Cochabamba and Tarija, and poor places in dark ones in La Paz, Potosí, Pando and Beni. It closes with inequality measures and a geographically weighted regression.',
+            tags: ['EDA', 'ESDA', 'bivariate LISA', 'infrastructure'],
+            image: 'images/tools/eda-esda.webp',
+            imageAlt: 'Bivariate Moran scatterplot of poverty against neighbours’ night-time lights and the matching bivariate LISA map',
+            date: '2026-10-28', pinned: false,
+            links: [
+              { label: 'Open in Colab', url: COLAB_URL + 'eda_esda.ipynb', kind: 'colab' },
+              { label: 'View on GitHub', url: REPO_URL + '/blob/main/notebooks/eda_esda.ipynb', kind: 'github' },
+            ],
+            related: ['municipalities339-sdg', 'mpi-esda', 'mpi-esda-heterogeneity'],
+          },
+          {
+            id: 'embeddings-mpi-ml', type: 'notebook', section: 'tools',
+            title: 'Predicting poverty from satellite embeddings',
+            summary: 'Random forest and XGBoost predict multidimensional poverty from 64 satellite embedding dimensions, with random and spatial cross-validation.',
+            description: 'This Colab notebook trains random forests and XGBoost to predict the Multidimensional Poverty Index of 2012 from the 64 satellite embedding dimensions of 2017, and compares them with a baseline of night-time lights and population. Population-weighted embeddings beat area-weighted ones, and adding lights helps: the best models reach an out-of-fold R² of about 0.55–0.58 with random 5-fold cross-validation. When whole departments are held out, R² falls to about 0.2, a reminder that models struggle to extrapolate to new regions. A map of residuals shows where they fail: Pando is under-predicted. The text discusses the 2017/2012 timing mismatch.',
+            tags: ['machine learning', 'satellite embeddings', 'random forest', 'XGBoost'],
+            image: 'images/tools/embeddings-mpi-ml.webp',
+            imageAlt: 'Out-of-fold predicted against observed multidimensional poverty, for random and spatial cross-validation',
+            date: '2026-10-28', pinned: true,
+            links: [
+              { label: 'Open in Colab', url: COLAB_URL + 'embeddings_mpi_ml.ipynb', kind: 'colab' },
+              { label: 'View on GitHub', url: REPO_URL + '/blob/main/notebooks/embeddings_mpi_ml.ipynb', kind: 'github' },
+            ],
+            related: ['municipalities339-emb', 'municipalities339-sdg', 'mpi-eda'],
+          },
+
+          // ---------------------------------------------------------------- Tools: apps
+          {
+            id: 'geoexplorer', type: 'app', section: 'tools',
+            title: 'GeoExplorer v1.0: Bolivia from outer space',
+            summary: 'Swipe between 2013 and 2019 to see how population, night-time lights, land cover and GDP changed across Bolivia’s municipalities.',
+            description: 'An Earth Engine app, “Exploring regional development in Bolivia: a view from outer space”. Choose a layer (population density from WorldPop, VIIRS night-time lights, land cover, or gridded GDP), then drag the slider to compare 2013 with 2019 side by side. Click any municipality to chart its change. Cities such as Santa Cruz de la Sierra show how fast urban lights have spread. Built for DS4Bolivia by Carlos Mendez (Nagoya University).',
+            tags: ['Earth Engine', 'night-time lights', 'population', 'interactive map'],
+            image: 'images/tools/geoexplorer.webp',
+            imageAlt: 'Earth Engine app comparing night-time lights over Santa Cruz de la Sierra in 2013 and 2019 with a swipe slider',
+            date: '2026-01-15', pinned: true,
+            links: [
+              { label: 'Launch app', url: 'https://carlos-mendez.projects.earthengine.app/view/geoexplorer1v100bolivia', kind: 'launch' },
+              { label: 'Source code', url: REPO_URL + '/blob/main/apps/geoexplorer1v100bolivia.js', kind: 'github' },
+            ],
+            related: ['municipalities339-ntl', 'municipalities339-pop'],
+          },
+
+          // ---------------------------------------------------------------- Insights
+          {
+            id: 'human-capital-paper', type: 'insight', subtype: 'Paper', section: 'insights',
+            title: 'Human capital constraints and the regions of Bolivia',
+            summary: 'Where malnutrition, language barriers, school dropout and unequal education cluster across 339 municipalities, and how they divide Bolivia into seven or eight regions.',
+            description: 'This study maps five constraints on human capital across Bolivia’s 339 municipalities: chronic malnutrition in children, the share of the population that does not speak Spanish, the secondary-school dropout rates of boys and girls, and inequality in years of education. It summarises them with principal components, finds where high and low values cluster in space (hot spots and cold spots), and groups municipalities that are both similar and contiguous into regions. All five indicators are in the observatory’s sdg dataset.',
+            citation: 'Mendez, C., & Gonzales, E. (2021). Human capital constraints, spatial dependence, and regionalization in Bolivia: A spatial clustering approach. Economía, 44(87), 115–145.',
+            doi: 'https://doi.org/10.18800/economia.202101.007',
+            tags: ['human capital', 'education', 'spatial clustering', 'regionalization'],
+            image: 'images/insights/human-capital-paper.webp',
+            imageAlt: 'Five maps of Bolivian municipalities: chronic child malnutrition, non-Spanish speakers, male and female secondary dropout, and inequality in years of education',
+            date: '2021-05-06', pinned: true,
+            media: [],
+            links: [
+              { label: 'Read the paper', url: 'https://doi.org/10.18800/economia.202101.007', kind: 'paper' },
+            ],
+            summarySections: [
+              { h: 'Data', p: 'Five indicators of the Municipal Atlas of the SDGs for 339 municipalities: chronic malnutrition in children, non-Spanish-speaking population, secondary dropout of males and of females, and the inequality of years of education.' },
+              { h: 'Method', p: 'Principal components summarise the five constraints; measures of spatial dependence find hot spots and cold spots; a regionalization analysis groups municipalities that are similar in their constraints and close in space.' },
+              { h: 'Findings', p: 'Human capital constraints are spatially clustered, and Bolivia can be divided into seven or eight geographic regions that share similar constraints.' },
+              { h: 'Reproduce it', p: 'The five indicators are sdg2_2_cmc, sdg10_2_nssp, sdg4_1_ssdrm, sdg4_1_ssdrf and sdg10_2_gcye in the sdg dataset, each at its own reference year.' },
+            ],
+            related: ['municipalities339-sdg', 'mpi-esda'],
+          },
+        ];
+
+        const REGISTRY_BY_ID = Object.fromEntries(CONTENT_REGISTRY.map((i) => [i.id, i]));
+        const byType = (types) => CONTENT_REGISTRY.filter((i) => types.includes(i.type))
+          .sort((a, b) => (a.pinned !== b.pinned ? b.pinned - a.pinned : new Date(b.date) - new Date(a.date)));
+        const itemHref = (item) => `#/${item.section}/${item.id}`;
+
+        // Insights and Events appear (in the menu too) once they have an item
+        const HAS_SECTION = { insights: byType(['insight']).length > 0, events: byType(['event']).length > 0 };
+        const SECTION_ORDER = ['about', 'indicators', 'tools', 'insights', 'events', 'team', 'community', 'cite', 'contact']
+          .filter((id) => HAS_SECTION[id] !== false);
+        const sectionIndex = (id) => String(SECTION_ORDER.indexOf(id) + 1).padStart(2, '0');
+
+        const TYPE_STYLE = {
+          indicator: { label: 'Indicator', text: 'text-sky-300', bg: 'bg-sky-400/10', ring: 'border-sky-400/30', glow: 'hover:border-sky-400/40', icon: Database },
+          package: { label: 'Python package', text: 'text-teal-300', bg: 'bg-teal-400/10', ring: 'border-teal-400/30', glow: 'hover:border-teal-400/40', icon: PackageIcon },
+          notebook: { label: 'Notebook', text: 'text-violet-300', bg: 'bg-violet-400/10', ring: 'border-violet-400/30', glow: 'hover:border-violet-400/40', icon: BookOpen },
+          app: { label: 'Web app', text: 'text-amber-300', bg: 'bg-amber-400/10', ring: 'border-amber-400/30', glow: 'hover:border-amber-400/40', icon: Globe },
+          insight: { label: 'Insight', text: 'text-rose-300', bg: 'bg-rose-400/10', ring: 'border-rose-400/30', glow: 'hover:border-rose-400/40', icon: Lightbulb },
+          event: { label: 'Event', text: 'text-emerald-300', bg: 'bg-emerald-400/10', ring: 'border-emerald-400/30', glow: 'hover:border-emerald-400/40', icon: Calendar },
+        };
+
+        const LINK_ICON = {
+          colab: BookOpen, github: Github, pypi: PackageIcon, docs: FileText, launch: Globe, 'gee-code': Code, external: ExternalLink, paper: FileText,
+          slides: Presentation, notebooklm: Sparkles, story: BookOpen, chatbot: Bot,
+        };
+
+        const PEOPLE = {
+          core: [
+            { name: 'Carlos Mendez', affiliation: 'Nagoya University, Japan', avatar: 'images/people/carlos-mendez.webp', website: 'https://carlos-mendez.org' },
+          ],
+          associates: [],
+        };
+
+        const CONTACTS = [
+          { name: 'Carlos Mendez', email: 'carlos.mendez.n9 [at] f.mail.nagoya-u.ac.jp' },
+        ];
+
+        const CITATION_APA = 'Mendez, C. (2026). GeoDevelopment Observatory of Bolivia. https://quarcs-lab.github.io/geo4bolivia/';
+        const CITATION_BIB = `@misc{gdobolivia2026,
+  author       = {Mendez, Carlos},
+  title        = {{GeoDevelopment Observatory of Bolivia}},
+  year         = {2026},
+  howpublished = {\\url{https://quarcs-lab.github.io/geo4bolivia/}},
+  note         = {Data and code: https://github.com/quarcs-lab/geo4bolivia}
+}`;
+
+        // ====================================================================
+        // Code highlighting (Python)
+        // ====================================================================
+        const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const LANGS = {
+          python: {
+            comment: (src, i) => src[i] === '#',
+            keywords: ['import', 'from', 'as', 'def', 'class', 'return', 'if', 'elif', 'else', 'for', 'while', 'in', 'not', 'and', 'or', 'is', 'with', 'try', 'except', 'lambda', 'True', 'False', 'None'],
+            builtins: ['print', 'display', 'len', 'int', 'str', 'float', 'list', 'dict', 'range', 'sum', 'min', 'max', 'round', 'sorted'],
+          },
+        };
+        const highlightCode = (src, lang) => {
+          const L = LANGS[lang];
+          if (!L) return esc(src);
+          const out = [];
+          let i = 0;
+          while (i < src.length) {
+            if (L.comment(src, i)) {
+              let end = src.indexOf('\n', i); if (end === -1) end = src.length;
+              out.push('<span style="color:#8fa0c2;font-style:italic">' + esc(src.slice(i, end)) + '</span>'); i = end; continue;
+            }
+            if (src[i] === '"' || src[i] === "'") {
+              const q = src[i]; const start = i; i++;
+              while (i < src.length && src[i] !== q) { if (src[i] === '\\') i++; i++; }
+              i++; out.push('<span style="color:#86efac">' + esc(src.slice(start, i)) + '</span>'); continue;
+            }
+            if (/[0-9]/.test(src[i]) && (i === 0 || /[\s(,=\[{+\-*/:<]/.test(src[i - 1]))) {
+              const start = i; while (i < src.length && /[0-9._eE]/.test(src[i])) i++;
+              out.push('<span style="color:#fcd34d">' + esc(src.slice(start, i)) + '</span>'); continue;
+            }
+            if (/[a-zA-Z_]/.test(src[i])) {
+              const start = i; while (i < src.length && /[a-zA-Z0-9_]/.test(src[i])) i++;
+              const w = src.slice(start, i);
+              if (L.keywords.includes(w)) out.push('<span style="color:#ff8a8a;font-weight:600">' + esc(w) + '</span>');
+              else if (L.builtins.includes(w)) out.push('<span style="color:#7cc4ff">' + esc(w) + '</span>');
+              else out.push('<span style="color:#dbe4f5">' + esc(w) + '</span>');
+              continue;
+            }
+            out.push(esc(src[i])); i++;
+          }
+          return out.join('');
+        };
+
+        // ====================================================================
+        // Shared UI pieces
+        // ====================================================================
+        // Monospace label with a leading hairline, as in the hero
+        const Eyebrow = ({ index, children, tone = 'text-brand-sky', as = 'p', className = '' }) => {
+          const T = as;
+          return (
+            <T className={`flex items-center gap-3 font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] ${tone} ${className}`}>
+              <span className="h-px w-8 bg-current opacity-60" aria-hidden="true"></span>
+              {index && <span>{index} ·</span>}
+              <span>{children}</span>
+            </T>
+          );
+        };
+
+        // Editorial section heading: label, white title with an italic gradient phrase, intro
+        const SectionHeading = ({ index, eyebrow, title, emphasis, id, children, as = 'h2' }) => {
+          const H = as;
+          return (
+            <div className="max-w-3xl relative z-10">
+              {eyebrow && <Eyebrow index={index} className="mb-5">{eyebrow}</Eyebrow>}
+              <H id={id} className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter leading-[1.05] text-white">
+                {title}{emphasis && <> <em className="gradient-text pr-2">{emphasis}</em></>}
+              </H>
+              {children && <p className="mt-5 text-lg text-slate-300 leading-relaxed">{children}</p>}
+            </div>
+          );
+        };
+
+        // Sentinel-2 cloudless 2016 crops of Bolivia (EOX, CC BY 4.0) behind the main section headers and the footer
+        const SECTION_BANDS = {
+          about: { image: 'images/bands/salar-de-uyuni.webp', place: 'Salar de Uyuni', lat: -20.13, lng: -67.49 },
+          indicators: { image: 'images/bands/lake-titicaca.webp', place: 'Lake Titicaca', lat: -16.05, lng: -69.05 },
+          tools: { image: 'images/bands/la-paz-el-alto.webp', place: 'La Paz · El Alto', lat: -16.51, lng: -68.15 },
+          insights: { image: 'images/bands/santa-cruz-de-la-sierra.webp', place: 'Santa Cruz de la Sierra', lat: -17.78, lng: -63.18 },
+          events: { image: 'images/bands/cochabamba-valley.webp', place: 'Cochabamba valley', lat: -17.42, lng: -66.15 },
+          footer: { image: 'images/bands/rio-mamore-trinidad.webp', place: 'Río Mamoré near Trinidad', lat: -14.83, lng: -64.92 },
+        };
+
+        const BandCaption = ({ band, className = '' }) => (
+          <p className={`font-mono text-[11px] uppercase tracking-[0.2em] text-slate-300 ${className}`}>
+            <span className="block text-xs sm:text-sm tracking-[0.15em] text-white whitespace-pre">{formatCoord(band.lat, band.lng)}</span>
+            <span className="block mt-1 text-brand-sky">{band.place}</span>
+            <span className="block mt-1 text-slate-400">Sentinel-2 cloudless 2016</span>
+          </p>
+        );
+
+        const SatelliteHeader = ({ band, children }) => {
+          const imgRef = useParallax();
+          return (
+            <div className="relative overflow-hidden min-h-[440px] md:min-h-[540px] flex items-end">
+              <div className="absolute inset-0" aria-hidden="true">
+                <img ref={imgRef} src={band.image} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover scale-125 saturate-[1.2] brightness-110 will-change-transform" />
+                <div className="absolute inset-0 bg-navy-950/50 md:bg-navy-950/10"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-navy-950/95 via-navy-950/55 via-35% to-transparent to-65%"></div>
+                <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-navy-950/90 to-transparent"></div>
+                <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-navy-950 via-navy-950/60 to-transparent"></div>
+              </div>
+              <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-14 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+                <AnimateIn className="min-w-0">{children}</AnimateIn>
+                <BandCaption band={band} className="md:text-right flex-shrink-0" />
+              </div>
+            </div>
+          );
+        };
+
+        const CopyButton = ({ text, label = 'Copy' }) => {
+          const [copied, copy] = useCopy();
+          return (
+            <button type="button" onClick={() => copy(text)}
+                    className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 text-xs uppercase font-bold tracking-wider"
+                    aria-label={copied ? 'Copied to clipboard' : `${label} to clipboard`}>
+              {copied ? <Check size={14} className="text-brand-sky" /> : <Copy size={14} />}
+              <span aria-live="polite">{copied ? 'Copied' : label}</span>
+            </button>
+          );
+        };
+
+        // Opens a blank Colab notebook to paste the snippet into; styled like CopyButton
+        const ColabButton = () => (
+          <a href={COLAB_EMPTY} target="_blank" rel="noopener noreferrer"
+             className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 text-xs uppercase font-bold tracking-wider"
+             aria-label="Open a blank Google Colab notebook (new tab)">
+            <img src="https://colab.research.google.com/img/colab_favicon_256px.png" alt="" width="14" height="14" />
+            <span>Open in Colab</span>
+          </a>
+        );
+
+        const CodeBlock = ({ code, language = 'python', title, colab = false }) => {
+          const highlighted = useMemo(() => highlightCode(code, language), [code, language]);
+          return (
+            <div className="rounded-xl overflow-hidden bg-white/[0.03] backdrop-blur-md shadow-2xl border border-white/10">
+              <div className="flex justify-between items-center px-4 py-2 bg-white/5 border-b border-white/10">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex gap-1.5" aria-hidden="true">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                  </div>
+                  <span className="ml-3 text-xs text-slate-400 font-mono truncate">{title}</span>
+                </div>
+                <CopyButton text={code} />
+              </div>
+              <div className="p-4 overflow-x-auto">
+                <pre className="text-xs sm:text-sm font-mono text-slate-300 leading-relaxed"><code dangerouslySetInnerHTML={{ __html: highlighted }} /></pre>
+              </div>
+              {colab && (
+                <div className="flex justify-end px-4 py-2 bg-white/5 border-t border-white/10">
+                  <ColabButton />
+                </div>
+              )}
+            </div>
+          );
+        };
+
+        // Every dataset can be loaded with the package or straight from its URL; both run in Google Colab
+        const CODE_TABS = [['python', 'Python · package'], ['pandas', 'Python · URL']];
+        const CODE_LANG = { pandas: 'python' };
+        const CODE_TITLE = { python: 'Colab · with geo4bolivia', pandas: 'Colab · without the package' };
+
+        const CodeTabs = ({ code, idPrefix }) => {
+          const tabs = CODE_TABS.filter(([k]) => code[k]);
+          const [active, setActive] = useState(tabs[0][0]);
+          // ARIA tabs pattern: arrow keys (and Home/End) move between tabs; only the active tab is in the tab order
+          const onKeyDown = (e) => {
+            const i = tabs.findIndex(([k]) => k === active);
+            const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+            if (next === undefined) return;
+            e.preventDefault();
+            const k = tabs[(next + tabs.length) % tabs.length][0];
+            setActive(k);
+            document.getElementById(`${idPrefix}-tab-${k}`)?.focus();
+          };
+          return (
+            <div>
+              <div role="tablist" aria-label="Code language" className="flex gap-2 mb-3" onKeyDown={onKeyDown}>
+                {tabs.map(([k, label]) => (
+                  <button key={k} role="tab" id={`${idPrefix}-tab-${k}`} aria-selected={active === k} aria-controls={`${idPrefix}-panel-${k}`}
+                          tabIndex={active === k ? 0 : -1} onClick={() => setActive(k)}
+                          className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${active === k ? 'bg-brand-red text-white' : 'bg-transparent text-slate-300 border border-white/15 hover:text-white hover:border-white/30'}`}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {tabs.map(([k]) => (
+                <div key={k} role="tabpanel" id={`${idPrefix}-panel-${k}`} aria-labelledby={`${idPrefix}-tab-${k}`} hidden={active !== k}>
+                  <CodeBlock code={code[k]} language={CODE_LANG[k] || k} title={CODE_TITLE[k] || 'example'} colab />
+                </div>
+              ))}
+            </div>
+          );
+        };
+
+        const TypeBadge = ({ item, solid = false }) => {
+          const s = TYPE_STYLE[item.type];
+          const Icon = s.icon;
+          return (
+            <span className={`inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full ${solid ? 'bg-navy-950/85 backdrop-blur-sm border border-white/10' : s.bg} ${s.text}`}>
+              <Icon size={12} /> {item.subtype || s.label}
+            </span>
+          );
+        };
+
+        const Tag = ({ children, type }) => {
+          const s = TYPE_STYLE[type] || TYPE_STYLE.indicator;
+          return <span className={`text-xs px-2 py-0.5 rounded-full border ${s.ring} ${s.text} bg-transparent`}>{children}</span>;
+        };
+
+        const LinkButton = ({ link, primary = false }) => {
+          const Icon = LINK_ICON[link.kind] || ExternalLink;
+          return (
+            <a href={link.url} target="_blank" rel="noopener noreferrer"
+               className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5 ${primary
+                 ? 'bg-brand-red hover:bg-brand-redHover text-white shadow-lg shadow-red-900/30'
+                 : 'bg-white/5 hover:bg-white/10 border border-white/15 text-slate-100'}`}>
+              <Icon size={16} /> <span>{link.label}{link.native && <span lang={link.lang}>{link.native}</span>}{link.after}</span>
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+          );
+        };
+
+        // Click-to-load YouTube embed: no third-party iframe until the user asks for it.
+        const LiteYouTube = ({ id, label, lang }) => {
+          const [active, setActive] = useState(false);
+          return (
+            <figure className="rounded-xl overflow-hidden border border-white/10 bg-black">
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                {active ? (
+                  <iframe className="absolute inset-0 w-full h-full" src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
+                          title={label} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                ) : (
+                  <button type="button" onClick={() => setActive(true)} className="absolute inset-0 w-full h-full group" aria-label={`Play video: ${label}`}>
+                    <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <span className="w-16 h-16 rounded-full bg-brand-red/90 group-hover:bg-brand-red flex items-center justify-center shadow-xl text-white transition-transform group-hover:scale-110">
+                        <Play size={26} />
+                      </span>
+                    </span>
+                  </button>
+                )}
+              </div>
+              <figcaption lang={lang} className="px-4 py-3 text-sm text-slate-300 bg-navy-900">{label}</figcaption>
+            </figure>
+          );
+        };
+
+        const AudioPlayer = ({ src, label }) => (
+          <figure className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <figcaption className="flex items-center gap-2 text-sm font-semibold text-slate-200 mb-3"><Headphones size={18} className="text-brand-sky" /> {label}</figcaption>
+            <audio controls preload="none" src={src} className="w-full">Your browser does not support the audio element. <a href={src}>Download the audio</a>.</audio>
+          </figure>
+        );
+
+        // ====================================================================
+        // Navigation
+        // ====================================================================
+        const NAV_LINKS = [
+          { name: 'About', id: 'about' },
+          { name: 'Indicators', id: 'indicators' },
+          { name: 'Tools', id: 'tools' },
+          { name: 'Insights', id: 'insights' },
+          { name: 'Events', id: 'events' },
+          { name: 'Team', id: 'team' },
+          { name: 'Cite', id: 'cite' },
+        ].filter((l) => HAS_SECTION[l.id] !== false);
+
+        const Wordmark = ({ size = 'md' }) => (
+          <a href="#top" className="flex items-center gap-3 group" aria-label="GeoDevelopment Observatory of Bolivia, home">
+            <img src="images/logo/emblem-dark-192.png" alt="" width="40" height="40"
+                 className={`${size === 'lg' ? 'w-12 h-12' : 'w-10 h-10'} transition-transform duration-500 group-hover:rotate-12`} />
+            <span className="leading-tight">
+              <span className={`block font-bold tracking-tight text-white ${size === 'lg' ? 'text-lg' : 'text-[15px]'}`}>GeoDevelopment Observatory</span>
+              <span className={`block font-semibold text-[#ff6b6b] ${size === 'lg' ? 'text-base' : 'text-[13px]'}`}>of Bolivia</span>
+            </span>
+          </a>
+        );
+
+        const Navigation = ({ isHome }) => {
+          const [isOpen, setIsOpen] = useState(false);
+          const [scrolled, setScrolled] = useState(false);
+          const activeSection = useActiveSection(NAV_LINKS.map((l) => l.id), isHome);
+
+          useEffect(() => {
+            const onScroll = () => setScrolled(window.scrollY > 20);
+            onScroll();
+            window.addEventListener('scroll', onScroll, { passive: true });
+            return () => window.removeEventListener('scroll', onScroll);
+          }, []);
+          useEffect(() => {
+            const close = () => setIsOpen(false);
+            window.addEventListener('hashchange', close);
+            return () => window.removeEventListener('hashchange', close);
+          }, []);
+          useEffect(() => {
+            if (!isOpen) return;
+            const onKey = (e) => { if (e.key === 'Escape') setIsOpen(false); };
+            window.addEventListener('keydown', onKey);
+            return () => window.removeEventListener('keydown', onKey);
+          }, [isOpen]);
+
+          const solid = scrolled || isOpen;
+          return (
+            <header>
+              <nav aria-label="Main" className={`fixed w-full z-50 transition-all duration-300 ${solid ? 'bg-navy-950/85 backdrop-blur-xl shadow-lg shadow-black/40 border-b border-white/5 py-2' : 'bg-transparent py-4'}`}>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="flex items-center justify-between h-12">
+                    <Wordmark />
+                    <ul className="hidden lg:flex items-center gap-7">
+                      {NAV_LINKS.map((link) => (
+                        <li key={link.id}>
+                          <a href={`#${link.id}`} aria-current={activeSection === link.id ? 'true' : undefined}
+                             className={`nav-link-underline text-sm font-medium transition-colors ${activeSection === link.id ? 'text-brand-sky active' : 'text-slate-300 hover:text-white'}`}>
+                            {link.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="hidden lg:flex items-center">
+                      <a href={REPO_URL} target="_blank" rel="noopener noreferrer"
+                         className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-white/10 border border-white/15 hover:bg-white/15 hover:border-brand-sky/50 transition-all">
+                        <Github size={16} /> GitHub<span className="sr-only"> repository (opens in a new tab)</span>
+                      </a>
+                    </div>
+                    <button type="button" onClick={() => setIsOpen(!isOpen)} className="lg:hidden p-2 rounded-md text-white"
+                            aria-label={isOpen ? 'Close menu' : 'Open menu'} aria-expanded={isOpen} aria-controls="mobile-menu">
+                      {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                  </div>
+                </div>
+                {(
+                  <div id="mobile-menu" hidden={!isOpen} className="lg:hidden bg-navy-900 shadow-xl absolute w-full top-full left-0 border-t border-white/10">
+                    <ul className="px-3 pt-2 pb-4 space-y-1">
+                      {NAV_LINKS.map((link) => (
+                        <li key={link.id}>
+                          <a href={`#${link.id}`} onClick={() => setIsOpen(false)}
+                             className="block px-3 py-2.5 rounded-md text-base font-medium text-slate-200 hover:text-white hover:bg-navy-800">{link.name}</a>
+                        </li>
+                      ))}
+                      <li>
+                        <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2.5 rounded-md text-base font-medium text-slate-200 hover:text-white hover:bg-navy-800">
+                          <Github size={18} /> GitHub repository<span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </nav>
+            </header>
+          );
+        };
+
+        // ====================================================================
+        // Landing page sections
+        // ====================================================================
+        // Satellite globe (globe.gl), loaded on demand so it never blocks first paint
+        // Sentinel-2 cloudless 2016 (EOX, CC BY 4.0) patches draped over the globe, made by scripts/site_images.py:
+        // Bolivia from level-7 tiles (~600 m/px), each city from a 9 x 7 block of level-11 tiles (~38 m/px)
+        const BOLIVIA_PATCH = { url: 'images/hero-bolivia-s2.webp', lat: -16.171875, lng: -63.28125, width: 14.0625, height: 15.46875, altitude: 0.0004, curvature: 0.25 };
+        const cityPatch = (id, lat, lng) => ({ url: `images/hero-city-${id}.webp`, lat, lng, width: 0.791016, height: 0.615234, altitude: 0.0008, curvature: 0.05 });
+        const HERO_CITIES = [
+          { id: 'la-paz', name: 'La Paz', lat: -16.4955, lng: -68.1336, patch: cityPatch('la-paz', -16.479492, -68.15918) },
+          { id: 'cochabamba', name: 'Cochabamba', lat: -17.3895, lng: -66.1568, patch: cityPatch('cochabamba', -17.358398, -66.137695) },
+          { id: 'santa-cruz', name: 'Santa Cruz', lat: -17.7833, lng: -63.1821, patch: cityPatch('santa-cruz', -17.797852, -63.149414) },
+          { id: 'sucre', name: 'Sucre', lat: -19.0196, lng: -65.2619, patch: cityPatch('sucre', -19.02832, -65.258789) },
+          { id: 'potosi', name: 'Potosí', lat: -19.5836, lng: -65.7531, patch: cityPatch('potosi', -19.555664, -65.786133) },
+        ];
+        const HERO_THEMES = ['Measure regional development', 'Explore with open tools', 'Turn evidence into insight'];
+        // Altitudes in globe radii; city views sit low enough to match the ~38 m/px city imagery
+        const GLOBE_ALT = { intro: 2.6, overview: 0.9, city: 0.007, min: 0.005, max: 2.6, detail: 0.08 };
+
+        const loadScript = (() => {
+          const cache = {};
+          return (src) => cache[src] || (cache[src] = new Promise((resolve, reject) => {
+            const el = document.createElement('script');
+            el.src = src; el.async = true; el.crossOrigin = 'anonymous';
+            el.onload = resolve;
+            el.onerror = () => { delete cache[src]; reject(new Error(`Failed to load ${src}`)); };
+            document.head.appendChild(el);
+          }));
+        })();
+
+        const hasWebGL = () => {
+          try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); }
+          catch (e) { return false; }
+        };
+        const isSmallScreen = () => window.matchMedia('(max-width: 767px)').matches;
+        const formatCoord = (lat, lng) => `${Math.abs(lat).toFixed(2)}° ${lat >= 0 ? 'N' : 'S'}  ${Math.abs(lng).toFixed(2)}° ${lng >= 0 ? 'E' : 'W'}`;
+        const nearestCity = (lat, lng) => {
+          let best = null, bestDist = 0.45;
+          HERO_CITIES.forEach((c) => { const d = Math.hypot(c.lat - lat, c.lng - lng); if (d < bestDist) { best = c; bestDist = d; } });
+          return best;
+        };
+
+        // Image patches and street-level detail, tracked per globe instance
+        const globeLayers = new WeakMap();
+
+        // Drape a sharp image patch over the base globe, reusing globe.gl's bundled three.js classes
+        const addGlobePatch = (world, patch) => {
+          const layers = globeLayers.get(world);
+          const base = world.globeMaterial();
+          if (!layers || !base || !base.map || layers.requested.has(patch.url)) return;
+          layers.requested.add(patch.url);
+          const img = new Image();
+          img.onload = () => {
+            if (globeLayers.get(world) !== layers) return;
+            const texture = new base.map.constructor(img);
+            texture.colorSpace = base.map.colorSpace;
+            texture.anisotropy = world.renderer().capabilities.getMaxAnisotropy();
+            texture.needsUpdate = true;
+            layers.patches.push({ ...patch, material: new base.constructor({ map: texture, transparent: true }) });
+            world.tilesData([...layers.patches]);
+          };
+          img.onerror = () => layers.requested.delete(patch.url);
+          img.src = patch.url;
+        };
+
+        // Close to the ground, the outline and city markers would cover the imagery
+        const setGlobeDetail = (world, detail) => {
+          const layers = globeLayers.get(world);
+          if (!layers || layers.detail === detail) return;
+          layers.detail = detail;
+          world.polygonsData(detail ? [] : layers.outline).pointsData(detail ? [] : HERO_CITIES);
+        };
+
+        const useSatelliteGlobe = (containerRef, enabled, handlers) => {
+          const worldRef = useRef(null);
+          const handlersRef = useRef(handlers);
+          handlersRef.current = handlers;
+          useEffect(() => {
+            if (!enabled) return undefined;
+            const el = containerRef.current;
+            let world = null, ro = null, moveTimer = 0, cancelled = false;
+            const reportMove = () => {
+              moveTimer = 0;
+              const { lat, lng } = world.pointOfView();
+              handlersRef.current.onMove(lat, lng);
+            };
+            Promise.all([loadScript(GLOBE_JS_URL), fetch('geo/boundaries/country_outline_web.geojson').then((r) => r.json())])
+              .then(([, outline]) => {
+                if (cancelled || !el || typeof window.Globe !== 'function') throw new Error('Globe unavailable');
+                world = new window.Globe(el, { animateIn: false, rendererConfig: { logarithmicDepthBuffer: true } })
+                  .width(el.clientWidth).height(el.clientHeight)
+                  .backgroundColor('rgba(0,0,0,0)')
+                  .globeImageUrl('images/hero-globe-day.webp')
+                  .showAtmosphere(true).atmosphereColor('#7cc4ff').atmosphereAltitude(0.18)
+                  .polygonsData(outline.features)
+                  .polygonSideColor(() => 'rgba(255, 107, 107, 0.35)')
+                  .polygonStrokeColor(() => '#ff6b6b')
+                  .polygonAltitude(0.0012)
+                  .pointsData(HERO_CITIES).pointLat('lat').pointLng('lng')
+                  .pointColor(() => '#ffffff').pointAltitude(0.0015).pointRadius(0.045)
+                  .tileLat('lat').tileLng('lng').tileWidth('width').tileHeight('height')
+                  .tileAltitude('altitude').tileCurvatureResolution('curvature').tileMaterial('material')
+                  .ringsData(HERO_CITIES).ringLat('lat').ringLng('lng')
+                  .ringColor(() => (t) => `rgba(124, 196, 255, ${1 - t})`)
+                  .ringMaxRadius(0.9).ringPropagationSpeed(0.6).ringRepeatPeriod(1800)
+                  .pointOfView({ lat: -16, lng: -20, altitude: GLOBE_ALT.intro })
+                  .onGlobeReady(() => { if (cancelled) return; addGlobePatch(world, BOLIVIA_PATCH); handlersRef.current.onReady(); });
+                globeLayers.set(world, { patches: [], requested: new Set(), outline: outline.features, detail: false });
+                // An invisible cap that doesn't hide the Bolivia patch underneath
+                const capMaterial = new (world.globeMaterial().constructor)({ transparent: true, opacity: 0, depthWrite: false });
+                world.polygonCapMaterial(() => capMaterial);
+                world.lights().forEach((light) => { light.intensity *= light.isDirectionalLight ? 1.6 : 1.15; });
+                const controls = world.controls();
+                controls.enableZoom = false; // the mouse wheel keeps scrolling the page
+                controls.enablePan = false;
+                controls.autoRotateSpeed = 0.12;
+                if (isSmallScreen()) controls.enabled = false; // touch keeps scrolling the page
+                controls.addEventListener('start', () => handlersRef.current.onInteract());
+                controls.addEventListener('change', () => { if (!moveTimer) moveTimer = setTimeout(reportMove, 150); });
+                ro = new ResizeObserver(() => world.width(el.clientWidth).height(el.clientHeight));
+                ro.observe(el);
+                worldRef.current = world;
+              })
+              .catch(() => { if (!cancelled) handlersRef.current.onError(); });
+            return () => {
+              cancelled = true;
+              clearTimeout(moveTimer);
+              if (ro) ro.disconnect();
+              if (world) { globeLayers.delete(world); world.pauseAnimation(); if (world._destructor) world._destructor(); }
+              worldRef.current = null;
+              if (el) el.innerHTML = '';
+            };
+          }, [enabled]);
+          return worldRef;
+        };
+
+        const HeroIconButton = ({ label, onClick, children }) => (
+          <button type="button" onClick={onClick} aria-label={label} title={label}
+                  className="w-9 h-9 rounded-full bg-white/10 border border-white/15 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+            {children}
+          </button>
+        );
+
+        const Hero = () => {
+          const reduced = React.useContext(ReducedMotionContext);
+          const globeEnabled = useMemo(() => !reduced && hasWebGL(), [reduced]);
+          const containerRef = useRef(null);
+          const userTookOver = useRef(false);
+          const target = useRef(null); // camera destination, so zooming mid-flight keeps the course
+          const [ready, setReady] = useState(false);
+          const [playing, setPlaying] = useState(false);
+          const [activeId, setActiveId] = useState(HERO_CITIES[0].id);
+          const [motionPaused, setMotionPaused] = useState(false);   // the user paused: stop the orbit, rings and marquee
+          const [announcement, setAnnouncement] = useState('');      // read out only when the user picks a city
+          const [view, setView] = useState({ lat: HERO_CITIES[0].lat, lng: HERO_CITIES[0].lng });
+
+          const worldRef = useSatelliteGlobe(containerRef, globeEnabled, {
+            onReady: () => setReady(true),
+            onError: () => setReady(false),
+            onMove: (lat, lng) => setView({ lat, lng }),
+            onInteract: () => { userTookOver.current = true; target.current = null; setPlaying(false); setActiveId(null); },
+          });
+
+          // Intro: fly in from space to La Paz, then start a slow orbit on larger screens
+          useEffect(() => {
+            if (!ready || !worldRef.current) return undefined;
+            const pp = HERO_CITIES[0];
+            target.current = { lat: pp.lat, lng: pp.lng, altitude: GLOBE_ALT.overview };
+            worldRef.current.pointOfView(target.current, 3500);
+            if (isSmallScreen()) return undefined;
+            const timer = setTimeout(() => { if (!userTookOver.current) { setPlaying(true); setActiveId(null); } }, 5000);
+            return () => clearTimeout(timer);
+          }, [ready]);
+
+          useEffect(() => {
+            if (playing) target.current = null;
+            if (worldRef.current) worldRef.current.controls().autoRotate = playing;
+          }, [playing, ready]);
+
+          useEffect(() => {
+            if (worldRef.current) worldRef.current.ringsData(motionPaused ? [] : HERO_CITIES);
+          }, [motionPaused, ready]);
+
+          const preloadCity = (city) => { if (worldRef.current) addGlobePatch(worldRef.current, city.patch); };
+          const flyTo = (city) => {
+            const world = worldRef.current;
+            if (!world) return;
+            userTookOver.current = true;
+            setPlaying(false);
+            setActiveId(city.id);
+            setAnnouncement(`Flying to ${city.name}`);
+            setView({ lat: city.lat, lng: city.lng });
+            addGlobePatch(world, city.patch);
+            setGlobeDetail(world, true);
+            target.current = { lat: city.lat, lng: city.lng, altitude: GLOBE_ALT.city };
+            world.pointOfView(target.current, 2600);
+          };
+          const cycle = (step) => {
+            const index = HERO_CITIES.findIndex((c) => c.id === activeId);
+            const next = index < 0 ? 0 : (index + step + HERO_CITIES.length) % HERO_CITIES.length;
+            flyTo(HERO_CITIES[next]);
+          };
+          const zoom = (factor) => {
+            if (!worldRef.current) return;
+            const { lat, lng, altitude } = target.current || worldRef.current.pointOfView();
+            target.current = { lat, lng, altitude: Math.min(GLOBE_ALT.max, Math.max(GLOBE_ALT.min, altitude * factor)) };
+            setGlobeDetail(worldRef.current, target.current.altitude < GLOBE_ALT.detail);
+            worldRef.current.pointOfView(target.current, 800);
+          };
+          const togglePlay = () => {
+            const world = worldRef.current;
+            userTookOver.current = true;
+            // Orbiting from street level would race across the ground, so pull back out first
+            if (!playing && world && world.pointOfView().altitude < GLOBE_ALT.overview / 2) {
+              const { lat, lng } = world.pointOfView();
+              setGlobeDetail(world, false);
+              world.pointOfView({ lat, lng, altitude: GLOBE_ALT.overview }, 1500);
+            }
+            if (!playing) { target.current = null; setActiveId(null); }
+            setMotionPaused(playing);
+            setPlaying((p) => !p);
+          };
+          const onGlobeKeyDown = (e) => {
+            if (e.key === 'ArrowRight') { e.preventDefault(); cycle(1); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); cycle(-1); }
+            else if (e.key === '+' || e.key === '=') { e.preventDefault(); zoom(0.5); }
+            else if (e.key === '-') { e.preventDefault(); zoom(2); }
+          };
+
+          const place = nearestCity(view.lat, view.lng);
+          return (
+            <div id="top" className="relative min-h-[100svh] flex flex-col overflow-hidden bg-navy-950">
+              <div className="absolute inset-0 z-0" aria-hidden="true">
+                <img src="images/hero-day.webp" alt="" fetchpriority="high"
+                     className={`w-full h-full object-cover transition-opacity duration-[1200ms] ${ready ? 'opacity-0' : 'opacity-100'}`} />
+              </div>
+              {globeEnabled && (
+                <div ref={containerRef} tabIndex={ready ? 0 : -1} role="group" onKeyDown={onGlobeKeyDown}
+                     aria-hidden={!ready} aria-label="Interactive satellite globe centered on Bolivia. Use the left and right arrow keys to fly between cities, and plus or minus to zoom."
+                     className={`hero-globe absolute inset-0 z-[1] lg:left-[24%] lg:-right-[6%] transition-opacity duration-[1500ms] ${ready ? 'opacity-100' : 'opacity-0'}`}></div>
+              )}
+              <div className="absolute inset-0 z-[2] pointer-events-none bg-navy-950/60 lg:bg-transparent lg:bg-gradient-to-r lg:from-navy-950/95 lg:via-navy-950/50 lg:via-35% lg:to-transparent lg:to-60%" aria-hidden="true"></div>
+              <div className="absolute inset-x-0 top-0 h-32 z-[2] pointer-events-none bg-gradient-to-b from-navy-950/80 to-transparent" aria-hidden="true"></div>
+              <div className="absolute inset-x-0 bottom-0 h-48 z-[2] pointer-events-none bg-gradient-to-t from-navy-950 to-transparent" aria-hidden="true"></div>
+
+              <div className="relative z-10 flex-1 flex items-center pointer-events-none">
+                <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-10">
+                  <div className={`max-w-3xl pointer-events-auto text-white ${reduced ? '' : 'animate-fade-in-up'}`}>
+                    <p className="flex items-center gap-3 mb-6 font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] text-brand-sky">
+                      <span className="h-px w-8 bg-brand-sky/60" aria-hidden="true"></span>GeoDevelopment Observatory of Bolivia · GDO-Bolivia
+                    </p>
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter leading-[1.02] mb-6">
+                      Observing <span className="text-[#ff6b6b]">Bolivia's</span><br className="hidden sm:block" /> development<br className="hidden sm:block" /> <em className="gradient-text pr-2">from space.</em>
+                    </h1>
+                    <p className="text-lg md:text-xl text-slate-200 font-light leading-relaxed max-w-xl mb-10 [text-shadow:0_1px_12px_rgba(6,13,31,0.9)]">
+                      Open indicators, AI-enhanced tools, and research insights for monitoring sustainable development in Bolivia’s 339 municipalities.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <a href="#indicators" className="px-6 sm:px-8 py-3 rounded-lg bg-brand-red hover:bg-brand-redHover text-white font-bold text-base sm:text-lg transition-all hover:-translate-y-1 shadow-lg shadow-red-900/40 flex items-center justify-center gap-2">
+                        <Database size={20} /> Explore indicators
+                      </a>
+                      <a href="#tools" className="px-6 sm:px-8 py-3 rounded-lg bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-bold text-base sm:text-lg transition-all hover:-translate-y-1 shadow-lg border border-white/20 flex items-center justify-center gap-2">
+                        <Terminal size={20} /> Open the tools
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-6 pointer-events-none">
+                <div className="pointer-events-auto md:w-1/3">
+                  {ready && (
+                    <div className="flex flex-col gap-3">
+                      <div role="group" aria-label="Fly to a city" className="flex flex-wrap gap-2">
+                        {HERO_CITIES.map((c) => (
+                          <button key={c.id} type="button" onClick={() => flyTo(c)} onMouseEnter={() => preloadCity(c)} onFocus={() => preloadCity(c)} aria-pressed={activeId === c.id}
+                                  className={`px-3 py-1.5 rounded-full border font-mono text-[11px] uppercase tracking-[0.15em] transition-colors ${activeId === c.id ? 'bg-brand-sky text-navy-950 border-brand-sky' : 'bg-white/5 text-slate-200 border-white/15 hover:bg-white/15'}`}>
+                            {c.name}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <HeroIconButton label="Previous city" onClick={() => cycle(-1)}><ChevronLeft size={16} /></HeroIconButton>
+                        <HeroIconButton label={playing ? 'Pause rotation' : 'Rotate the globe'} onClick={togglePlay}>{playing ? <Pause size={14} /> : <Play size={14} />}</HeroIconButton>
+                        <HeroIconButton label="Next city" onClick={() => cycle(1)}><ChevronRight size={16} /></HeroIconButton>
+                        <span className="w-px h-5 bg-white/15 mx-1" aria-hidden="true"></span>
+                        <HeroIconButton label="Zoom out" onClick={() => zoom(2)}><Minus size={16} /></HeroIconButton>
+                        <HeroIconButton label="Zoom in" onClick={() => zoom(0.5)}><Plus size={16} /></HeroIconButton>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <a href="#about" className="hidden md:flex pointer-events-auto flex-col items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-slate-300 hover:text-white transition-colors">
+                  Explore the observatory <ArrowDown size={16} className="cue-bounce" />
+                </a>
+                <div className="pointer-events-auto md:w-1/3 md:text-right font-mono uppercase">
+                  <p className="text-sm sm:text-base tracking-[0.15em] text-white whitespace-pre">{formatCoord(view.lat, view.lng)}</p>
+                  <p className="mt-1 text-[11px] sm:text-xs tracking-[0.25em] text-brand-sky">{place ? `${place.name}, BO` : 'In orbit'}</p>
+                  <p className="sr-only" aria-live="polite">{announcement}</p>
+                  <p className="mt-2 text-[11px] tracking-[0.2em] text-slate-400">Sentinel-2 cloudless 2016 · NASA Blue Marble</p>
+                </div>
+              </div>
+
+              <div className={`marquee relative z-10 overflow-hidden border-t border-white/10 bg-navy-950/70 backdrop-blur-sm py-3 ${motionPaused ? 'paused' : ''}`} aria-hidden="true">
+                <div className="marquee-track flex">
+                  {[0, 1].map((copy) => (
+                    <div key={copy} className="flex shrink-0">
+                      {[0, 1].flatMap((rep) => HERO_THEMES.map((theme, i) => (
+                        <span key={`${rep}-${i}`} className="flex items-center gap-4 px-6 font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-slate-300 whitespace-nowrap">
+                          <span className="text-brand-sky">{String(i + 1).padStart(2, '0')}</span>{theme}<span className="text-brand-red pl-6">✦</span>
+                        </span>
+                      )))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const PILLARS = [
+          { title: 'GeoDevelopment Indicators', href: '#indicators', image: 'images/pillar-indicators.webp', icon: Database, accent: 'text-sky-300', border: 'hover:border-sky-400/40',
+            text: 'Harmonized municipal panels on poverty, health, education, infrastructure, night-time lights, population and satellite embeddings, ready to download as CSV, Parquet, and GeoJSON.' },
+          { title: 'GeoDevelopment Tools', href: '#tools', image: 'images/pillar-tools.webp', icon: Terminal, accent: 'text-amber-300', border: 'hover:border-amber-400/40',
+            text: 'AI-enhanced Colab notebooks and Earth Engine apps to explore, map, and model the indicators, with no installation required.' },
+          { title: 'GeoDevelopment Insights', href: HAS_SECTION.insights ? '#insights' : '#tools', image: 'images/pillar-insights.webp', icon: Lightbulb, accent: 'text-rose-300', border: 'hover:border-rose-400/40',
+            text: 'Research that uses the observatory’s data, summarized in plain language with links to the papers, so every audience can learn from it.' },
+        ];
+
+        const AUDIENCES = [
+          { title: 'Researchers', text: 'Run empirical analyses on ready-made subnational panels with reproducible code.', icon: BarChart2 },
+          { title: 'Decision-makers', text: 'Use evidence to design, target, and evaluate regional development policies.', icon: MapIcon },
+          { title: 'Citizens', text: 'Understand how development is unfolding in your own municipality and department.', icon: Users },
+        ];
+
+        const About = () => {
+          const indicators = byType(['indicator']);
+          const stats = [
+            { value: new Set(indicators.flatMap((i) => i.datasets || [i.dataset])).size, label: 'indicator datasets' },
+            { value: Math.max(...indicators.map((i) => i.units)), label: 'municipalities mapped' },
+            { value: '2001–2020', label: 'years covered' },
+            { value: byType(['package', 'notebook', 'app']).length, label: 'packages, notebooks & apps' },
+            { value: byType(['insight']).length, label: byType(['insight']).length === 1 ? 'research insight' : 'research insights' },
+          ];
+          return (
+            <section id="about" aria-labelledby="about-title" className="relative border-t border-white/10">
+              <SatelliteHeader band={SECTION_BANDS.about}>
+                <SectionHeading index={sectionIndex('about')} eyebrow="About the observatory" title="From pixels" emphasis="to policy" id="about-title">
+                  The GeoDevelopment Observatory of Bolivia (GDO-Bolivia) is a public-access platform for analyzing, monitoring, and evaluating sustainable regional development across Bolivia’s 339 municipalities. It brings together social, economic, and environmental indicators from satellite imagery, censuses, and administrative records; makes them explorable through AI-enhanced notebooks and web apps; and turns the results into insights anyone can use.
+                </SectionHeading>
+              </SatelliteHeader>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                  {PILLARS.map((p, i) => {
+                    const Icon = p.icon;
+                    return (
+                      <AnimateIn key={p.title} delay={i * 100}>
+                        <a href={p.href} className={`group block h-full bg-white/[0.03] rounded-xl border border-white/10 overflow-hidden transition-all duration-300 hover:-translate-y-0.5 ${p.border}`}>
+                          <div className="relative aspect-[3/2] overflow-hidden bg-navy-900">
+                            <img src={p.image} alt="" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/20 to-transparent"></div>
+                            <div className="absolute bottom-4 left-5 w-12 h-12 rounded-xl bg-navy-950/80 border border-white/10 flex items-center justify-center">
+                              <Icon size={24} className={p.accent} />
+                            </div>
+                          </div>
+                          <div className="p-6">
+                            <h3 className="text-xl font-bold text-white mb-2">{p.title}</h3>
+                            <p className="text-slate-400 leading-relaxed mb-4">{p.text}</p>
+                            <span className={`inline-flex items-center gap-1 text-sm font-semibold ${p.accent}`}>Explore <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></span>
+                          </div>
+                        </a>
+                      </AnimateIn>
+                    );
+                  })}
+                </div>
+
+                <AnimateIn>
+                  <dl className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16">
+                    {stats.map((s) => (
+                      <div key={s.label} className="rounded-xl bg-white/[0.03] border border-white/10 py-6 px-5 last:col-span-2 md:last:col-span-1">
+                        <dt className="sr-only">{s.label}</dt>
+                        <dd>
+                          <span className="block text-3xl lg:text-4xl font-extrabold tracking-tight text-white whitespace-nowrap">{s.value}</span>
+                          <span className="block h-px w-6 bg-brand-sky my-3" aria-hidden="true"></span>
+                          <span className="block text-xs sm:text-sm text-slate-400">{s.label}</span>
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </AnimateIn>
+
+                <AnimateIn>
+                  <Eyebrow as="h3" tone="text-slate-300" className="mb-6">Who it is for</Eyebrow>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {AUDIENCES.map((a) => {
+                      const Icon = a.icon;
+                      return (
+                        <div key={a.title} className="flex gap-4 items-start p-6 rounded-xl bg-white/[0.03] border border-white/10">
+                          <div className="w-11 h-11 flex-shrink-0 rounded-xl bg-brand-red/15 text-[#ff8a8a] flex items-center justify-center"><Icon size={22} /></div>
+                          <div>
+                            <h4 className="font-bold text-white mb-1">{a.title}</h4>
+                            <p className="text-sm text-slate-400 leading-relaxed">{a.text}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </AnimateIn>
+              </div>
+            </section>
+          );
+        };
+
+        const ItemCard = ({ item, showImage = true }) => {
+          const s = TYPE_STYLE[item.type];
+          return (
+            <article className={`group h-full bg-white/[0.03] rounded-xl border border-white/10 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-0.5 ${s.glow} relative`}>
+              {showImage && item.image && (
+                <div className="relative aspect-[16/9] overflow-hidden bg-navy-900">
+                  <img src={item.image} alt={item.imageAlt || ''} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 to-transparent"></div>
+                  <div className="absolute top-3 left-3"><TypeBadge item={item} solid /></div>
+                  {item.pinned && <span className="absolute top-3 right-3 text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-brand-red text-white">Featured</span>}
+                </div>
+              )}
+              <div className="p-6 flex flex-col flex-grow">
+                {item.scope && <p className="text-xs font-mono text-brand-sky mb-2">{item.scope}</p>}
+                <h3 className="text-lg font-bold text-white leading-snug mb-2">
+                  <a href={itemHref(item)} className="after:absolute after:inset-0">{item.title}</a>
+                </h3>
+                <p className="text-sm text-slate-400 mb-4 flex-grow leading-relaxed">{item.summary}</p>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {item.tags.slice(0, 4).map((t) => <Tag key={t} type={item.type}>{t}</Tag>)}
+                </div>
+                <span className={`inline-flex items-center gap-1 text-sm font-semibold ${s.text}`}>
+                  View details <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </div>
+            </article>
+          );
+        };
+
+        const IndicatorsSection = () => {
+          const items = byType(['indicator']);
+          return (
+            <section id="indicators" aria-labelledby="indicators-title" className="relative border-t border-white/10">
+              <SatelliteHeader band={SECTION_BANDS.indicators}>
+                <SectionHeading index={sectionIndex('indicators')} eyebrow="GeoDevelopment Indicators" title="Subnational data," emphasis="ready to analyze" id="indicators-title">
+                  Social, economic, and environmental indicators for Bolivia’s 339 municipalities from satellite imagery, censuses, and administrative records, documented variable by variable and free to download.
+                </SectionHeading>
+              </SatelliteHeader>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+                  {items.map((item, i) => <AnimateIn key={item.id} delay={i * 80}><ItemCard item={item} /></AnimateIn>)}
+                </div>
+
+                {/* Database architecture */}
+                <AnimateIn>
+                  <h3 id="get-the-data" className="text-2xl font-bold tracking-tight text-white flex items-baseline gap-3 mb-6">
+                    <span className="font-mono text-sm text-brand-sky">01</span>
+                    Database architecture
+                  </h3>
+                  <div className="rounded-xl overflow-hidden border border-white/10 bg-white/[0.03] mb-16">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-sm">
+                        <caption className="sr-only">Datasets, spatial scale, coverage, unit ID and files</caption>
+                        <thead className="bg-white/5 text-slate-300 text-xs uppercase tracking-wider">
+                          <tr>
+                            <th scope="col" className="px-4 py-3 md:px-6">Dataset</th>
+                            <th scope="col" className="px-4 py-3 md:px-6">Scale</th>
+                            <th scope="col" className="px-4 py-3 md:px-6">Period</th>
+                            <th scope="col" className="px-4 py-3 md:px-6">Unit ID</th>
+                            <th scope="col" className="px-4 py-3 md:px-6">Files</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                          {items.map((it) => (
+                            <tr key={it.id} className="hover:bg-sky-400/[0.04] transition-colors">
+                              <td className="px-4 py-4 md:px-6">
+                                <a href={`${REPO_URL}/blob/main/${it.docs}`} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-brand-sky hover:underline">{it.folder}/{it.dataset}<span className="sr-only"> (opens in a new tab)</span></a>
+                                <div className="text-slate-300 mt-1">{it.title}</div>
+                              </td>
+                              <td className="px-4 py-4 md:px-6 text-slate-300 whitespace-nowrap">{it.units} · {it.geography}</td>
+                              <td className="px-4 py-4 md:px-6 text-slate-300 whitespace-nowrap">{it.period}</td>
+                              <td className="px-4 py-4 md:px-6"><code className="font-mono text-brand-sky bg-sky-400/10 px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap">{it.idExample}</code></td>
+                              <td className="px-4 py-4 md:px-6 text-slate-400 whitespace-nowrap">{[...new Set(it.files.map((f) => f.format))].join(' · ')}</td>
+                            </tr>
+                          ))}
+                          <tr className="hover:bg-sky-400/[0.04] transition-colors">
+                            <td className="px-4 py-4 md:px-6">
+                              <a href={`${REPO_URL}/tree/main/geo`} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-brand-sky hover:underline">geo<span className="sr-only"> (opens in a new tab)</span></a>
+                              <div className="text-slate-300 mt-1">Units, boundaries and crosswalks</div>
+                            </td>
+                            <td className="px-4 py-4 md:px-6 text-slate-300 whitespace-nowrap">All scales · 461 units</td>
+                            <td className="px-4 py-4 md:px-6 text-slate-300">—</td>
+                            <td className="px-4 py-4 md:px-6"><code className="font-mono text-brand-sky bg-sky-400/10 px-2 py-0.5 rounded text-xs font-bold">BO</code></td>
+                            <td className="px-4 py-4 md:px-6 text-slate-400 whitespace-nowrap">CSV · Parquet · GeoJSON</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="bg-amber-950/30 px-4 py-4 md:px-6 border-t border-amber-900/30 flex gap-3">
+                      <Layers size={20} className="text-amber-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-amber-100/80">
+                        <strong className="text-amber-200">One ID system for every scale.</strong> Every unit has a geo ID that nests by prefix: municipality <code>BO-04-17-04</code> (La Paz) lies in province <code>BO-04-17</code> (Murillo), which lies in department <code>BO-04</code> (La Paz) and in Bolivia (<code>BO</code>). <a className="underline" href={`${REPO_URL}/blob/main/geo/units.csv`} target="_blank" rel="noopener noreferrer">geo/units.csv<span className="sr-only"> (opens in a new tab)</span></a> links each ID to its name and to its GADM, INE and DS4Bolivia codes, and the <a className="underline" href="#/tools/geo4bolivia-package">geo4bolivia Python package</a> loads, links and aggregates data across scales. Newer municipality maps will be added as scales of their own, linked to these 339 municipalities. <a className="underline" href={`${REPO_URL}/blob/main/docs/data-infrastructure.md`} target="_blank" rel="noopener noreferrer">How the database works<span className="sr-only"> (opens in a new tab)</span></a>.
+                      </p>
+                    </div>
+                  </div>
+                </AnimateIn>
+
+                {/* Code examples */}
+                <AnimateIn>
+                  <h3 className="text-2xl font-bold tracking-tight text-white flex items-baseline gap-3 mb-4">
+                    <span className="font-mono text-sm text-brand-sky">02</span>
+                    Start coding in seconds
+                  </h3>
+                  <p className="text-slate-400 max-w-2xl mb-6">Two ways in. With the <a className="text-brand-sky underline decoration-brand-sky/50 underline-offset-2" href="#/tools/geo4bolivia-package">geo4bolivia</a> package, one line gives you a panel with names and boundaries. Without it, every file is a plain URL that pandas reads directly. Every snippet runs as-is in a blank Google Colab notebook: its first line installs what Colab lacks.</p>
+                  <CodeTabs code={REGISTRY_BY_ID['municipalities339-sdg'].code} idPrefix="home-code" />
+                </AnimateIn>
+              </div>
+            </section>
+          );
+        };
+
+        const ToolsSection = () => {
+          const [filter, setFilter] = useState('all');
+          const all = byType(['package', 'notebook', 'app']);
+          const items = filter === 'all' ? all : all.filter((i) => i.type === filter);
+          const count = (t) => all.filter((i) => i.type === t).length;
+          const options = [['all', `All (${all.length})`], ['package', `Packages (${count('package')})`], ['notebook', `Notebooks (${count('notebook')})`], ['app', `Web apps (${count('app')})`]];
+          return (
+            <section id="tools" aria-labelledby="tools-title" className="relative border-t border-white/10">
+              <SatelliteHeader band={SECTION_BANDS.tools}>
+                <SectionHeading index={sectionIndex('tools')} eyebrow="GeoDevelopment Tools" title="Explore, map," emphasis="and model" id="tools-title">
+                  Python packages, computational notebooks and web applications for loading the indicators, building new ones, analyzing patterns and extending research results, all running in your browser.
+                </SectionHeading>
+              </SatelliteHeader>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
+                <div role="group" aria-label="Filter tools" className="flex flex-wrap gap-2 mb-10">
+                  {options.map(([k, label]) => (
+                    <button key={k} type="button" onClick={() => setFilter(k)} aria-pressed={filter === k}
+                            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${filter === k ? 'bg-brand-red text-white shadow-sm' : 'bg-transparent text-slate-300 border border-white/15 hover:border-white/30 hover:text-white'}`}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {items.map((item, i) => <AnimateIn key={item.id} delay={(i % 3) * 80}><ItemCard item={item} /></AnimateIn>)}
+                </div>
+              </div>
+            </section>
+          );
+        };
+
+        const InsightsSection = () => {
+          const items = byType(['insight']);
+          return (
+            <section id="insights" aria-labelledby="insights-title" className="relative border-t border-white/10">
+              <SatelliteHeader band={SECTION_BANDS.insights}>
+                <SectionHeading index={sectionIndex('insights')} eyebrow="GeoDevelopment Insights" title="Research," emphasis="made accessible" id="insights-title">
+                  Research that uses the observatory’s indicators, summarized in plain language with links to the published papers, for researchers, policymakers, and the public.
+                </SectionHeading>
+              </SatelliteHeader>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {items.map((item, i) => <AnimateIn key={item.id} delay={i * 80}><ItemCard item={item} /></AnimateIn>)}
+                </div>
+              </div>
+            </section>
+          );
+        };
+
+        const EventsSection = () => {
+          const events = byType(['event']);
+          const today = new Date().toISOString().slice(0, 10);
+          return (
+            <section id="events" aria-labelledby="events-title" className="relative border-t border-white/10">
+              <SatelliteHeader band={SECTION_BANDS.events}>
+                <SectionHeading index={sectionIndex('events')} eyebrow="Events" title="Workshops" emphasis="and talks" id="events-title">
+                  We bring together researchers, practitioners, and students working at the intersection of development, geospatial analytics, and AI.
+                </SectionHeading>
+              </SatelliteHeader>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
+                <div className="space-y-6 mb-12">
+                  {events.map((ev) => {
+                    const past = ev.date < today;
+                    return (
+                      <AnimateIn key={ev.id}>
+                        <article className="group relative grid grid-cols-1 md:grid-cols-[300px_minmax(0,1fr)] gap-0 bg-white/[0.03] rounded-xl border border-white/10 overflow-hidden hover:border-emerald-400/40 transition-all">
+                          <div className="bg-white aspect-square self-start overflow-hidden">
+                            <img src={ev.image} alt={ev.imageAlt} loading="lazy" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="p-6 md:p-8 flex flex-col">
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
+                              <TypeBadge item={ev} />
+                              <span className={`text-xs font-bold uppercase tracking-wide px-2.5 py-1 rounded-full ${past ? 'bg-slate-700/60 text-slate-300' : 'bg-emerald-500/20 text-emerald-300'}`}>{past ? 'Past event' : 'Upcoming'}</span>
+                            </div>
+                            <h3 className="text-xl md:text-2xl font-bold text-white mb-3 leading-snug">
+                              <a href={itemHref(ev)} className="after:absolute after:inset-0">{ev.title}</a>
+                            </h3>
+                            <ul className="space-y-1.5 text-sm text-slate-300 mb-4">
+                              <li className="flex gap-2"><Calendar size={16} className="text-emerald-300 flex-shrink-0 mt-0.5" /> {ev.dateLabel}</li>
+                              <li className="flex gap-2"><Clock size={16} className="text-emerald-300 flex-shrink-0 mt-0.5" /> {ev.time}</li>
+                              <li className="flex gap-2"><MapPin size={16} className="text-emerald-300 flex-shrink-0 mt-0.5" /> {ev.venue}</li>
+                            </ul>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-4">{ev.summary}</p>
+                            <span className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-emerald-300">Program and details <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" /></span>
+                          </div>
+                        </article>
+                      </AnimateIn>
+                    );
+                  })}
+                </div>
+                <AnimateIn>
+                  <div className="rounded-xl border border-white/10 bg-white/[0.03] p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div>
+                    <h3 className="text-xl font-bold text-white mb-2">Never miss an event</h3>
+                    <p className="text-slate-400 max-w-xl">Subscribe to our events calendar for upcoming workshops, seminars, and training sessions on spatial data science and development.</p>
+                    </div>
+                    <a href="https://luma.com/cmg" target="_blank" rel="noopener noreferrer"
+                       className="flex-shrink-0 self-start md:self-auto inline-flex items-center gap-2 px-7 py-3 rounded-lg font-semibold text-white bg-brand-red hover:bg-brand-redHover transition-all hover:-translate-y-0.5 shadow-lg shadow-red-900/30">
+                      <Calendar size={18} /> Subscribe to upcoming events<span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </div>
+                </AnimateIn>
+              </div>
+            </section>
+          );
+        };
+
+        const PersonCard = ({ person, small = false }) => {
+          const initials = person.name.split(' ').map((n) => n[0]).join('').slice(0, 2);
+          const size = small ? 'w-20 h-20 text-xl' : 'w-28 h-28 text-2xl';
+          return (
+            <div className="flex flex-col items-center text-center max-w-xs">
+              {person.avatar ? (
+                <img src={person.avatar} alt={`Portrait of ${person.name}`} loading="lazy" width="112" height="112"
+                     className={`contributor-avatar ${size} rounded-full mb-4 object-cover shadow-sm border-2 border-white/20`} />
+              ) : (
+                <div className={`contributor-avatar ${size} rounded-full mb-4 bg-gradient-to-br from-navy-600 to-navy-800 flex items-center justify-center text-slate-200 font-bold border-2 border-white/20`} aria-hidden="true">{initials}</div>
+              )}
+              <h4 className={`${small ? 'text-base' : 'text-lg'} font-bold text-white`}>
+                {person.website
+                  ? <a href={person.website} target="_blank" rel="noopener noreferrer" className="hover:text-brand-sky inline-flex items-center gap-1">{person.name} <ExternalLink size={12} /><span className="sr-only"> (profile, opens in a new tab)</span></a>
+                  : person.name}
+              </h4>
+              <p className="text-slate-400 text-sm mt-1">{person.affiliation}</p>
+            </div>
+          );
+        };
+
+        const TeamSection = () => (
+          <section id="team" aria-labelledby="team-title" className="py-24 border-t border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <AnimateIn className="mb-14">
+                <SectionHeading index={sectionIndex('team')} eyebrow="Team" title="The people behind" emphasis="GDO‑Bolivia" id="team-title" />
+              </AnimateIn>
+              <AnimateIn>
+                <Eyebrow as="h3" tone="text-slate-300" className="mb-8">Core team</Eyebrow>
+                <div className={`flex flex-wrap gap-x-16 gap-y-10 ${PEOPLE.associates.length ? 'mb-16' : ''}`}>
+                  {PEOPLE.core.map((p) => <PersonCard key={p.name} person={p} />)}
+                </div>
+              </AnimateIn>
+              {PEOPLE.associates.length > 0 && (
+              <AnimateIn>
+                <Eyebrow as="h3" tone="text-slate-300" className="mb-8">Research assistants</Eyebrow>
+                <div className="flex flex-wrap gap-x-16 gap-y-10">
+                  {PEOPLE.associates.map((p) => <PersonCard key={p.name} person={p} small />)}
+                </div>
+              </AnimateIn>
+              )}
+            </div>
+          </section>
+        );
+
+        const CommunitySection = () => (
+          <section id="community" aria-labelledby="community-title" className="py-24 border-t border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <AnimateIn className="mb-10">
+                <SectionHeading index={sectionIndex('community')} eyebrow="Community" title="Join" emphasis="the conversation" id="community-title">
+                  GDO-Bolivia is open by design. Use GitHub Discussions to connect with the team and with other users of the observatory.
+                </SectionHeading>
+              </AnimateIn>
+              <ul className="max-w-lg space-y-3 text-slate-300 mb-10">
+                {[
+                  [MessageCircle, 'Ask questions about the data, methods, and tools'],
+                  [Lightbulb, 'Suggest new indicators, regions, or features'],
+                  [Code, 'Share notebooks, maps, and analyses built on the observatory'],
+                  [AlertTriangle, 'Report errors or inconsistencies in the data'],
+                ].map(([Icon, text]) => (
+                  <li key={text} className="flex items-start gap-3"><Icon size={18} className="text-brand-sky mt-0.5 flex-shrink-0" /><span>{text}</span></li>
+                ))}
+              </ul>
+              <a href={`${REPO_URL}/discussions`} target="_blank" rel="noopener noreferrer"
+                 className="inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold rounded-lg text-white bg-brand-red hover:bg-brand-redHover transition-all hover:shadow-lg hover:-translate-y-0.5">
+                <Github size={18} /> Join GitHub Discussions<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </div>
+          </section>
+        );
+
+        const CiteSection = () => (
+          <section id="cite" aria-labelledby="cite-title" className="py-24 border-t border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <AnimateIn className="max-w-4xl">
+                <div className="mb-10">
+                  <SectionHeading index={sectionIndex('cite')} eyebrow="Cite" title="How to" emphasis="cite" id="cite-title">
+                    If you use the observatory in your work, please cite it as below. Each dataset also has its own recommended citation on its detail page.
+                  </SectionHeading>
+                </div>
+                <div className="bg-white/[0.03] p-6 rounded-xl border border-white/10 mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-bold text-slate-200 text-sm uppercase tracking-wide">APA</h3>
+                    <CopyButton text={CITATION_APA} />
+                  </div>
+                  <p className="text-slate-300">Mendez, C. (2026). <em>GeoDevelopment Observatory of Bolivia</em>. https://quarcs-lab.github.io/geo4bolivia/</p>
+                </div>
+                <CodeBlock title="BibTeX" language="bibtex" code={CITATION_BIB} />
+              </AnimateIn>
+            </div>
+          </section>
+        );
+
+        const ContactSection = () => (
+          <section id="contact" aria-labelledby="contact-title" className="py-24 border-t border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <AnimateIn>
+                <div className="mb-10">
+                  <SectionHeading index={sectionIndex('contact')} eyebrow="Contact" title="Contact" emphasis="us" id="contact-title" />
+                </div>
+                <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {CONTACTS.map((c) => (
+                    <li key={c.email}>
+                      <div className="flex items-center gap-3 p-5 rounded-xl bg-white/[0.03] border border-white/10 h-full">
+                        <span className="w-10 h-10 rounded-full bg-brand-red/15 text-[#ff8a8a] flex items-center justify-center flex-shrink-0"><Mail size={18} /></span>
+                        <span className="min-w-0">
+                          <span className="block font-semibold text-white">{c.name}</span>
+                          <span className="block text-xs text-slate-400 [overflow-wrap:anywhere]">{c.email}</span>
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </AnimateIn>
+            </div>
+          </section>
+        );
+
+        const Footer = () => {
+          const band = SECTION_BANDS.footer;
+          const imgRef = useParallax();
+          return (
+          <footer className="bg-navy-950 border-t border-white/10">
+            <div className="relative overflow-hidden">
+              <div className="absolute inset-0" aria-hidden="true">
+                <img ref={imgRef} src={band.image} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover scale-125 saturate-[1.2] brightness-110 will-change-transform" />
+                <div className="absolute inset-0 bg-navy-950/30"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/50 to-transparent"></div>
+                <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-navy-950 to-transparent"></div>
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-navy-950 to-transparent"></div>
+              </div>
+              <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
+                  <div className="max-w-md">
+                    <Wordmark size="lg" />
+                    <p className="text-slate-200 mt-5">Open data, tools, and insights for sustainable regional development in Bolivia.</p>
+                    <BandCaption band={band} className="mt-8" />
+                  </div>
+                  <div className="flex flex-wrap gap-12 items-start">
+                    <nav aria-label="Footer">
+                      <Eyebrow className="mb-4">Explore</Eyebrow>
+                      <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm">
+                        {NAV_LINKS.map((l) => <a key={l.id} href={`#${l.id}`} className="text-slate-300 hover:text-white">{l.name}</a>)}
+                        <a href="#community" className="text-slate-300 hover:text-white">Community</a>
+                        <a href="#contact" className="text-slate-300 hover:text-white">Contact</a>
+                      </div>
+                    </nav>
+                    <div>
+                      <Eyebrow className="mb-4">Code</Eyebrow>
+                      <a href={REPO_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub repository (opens in a new tab)"
+                         className="w-11 h-11 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-slate-200 hover:text-white hover:border-brand-sky/50">
+                        <Github size={20} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+              <div className="border-t border-white/10 pt-8 space-y-3 text-xs text-slate-400 leading-relaxed">
+                <p><strong className="text-slate-400">Disclaimer.</strong> The indicators, tools, and insights are the responsibility of the individual researchers and do not necessarily represent the views of their affiliated institutions or related organizations. Maps on this website are for geo-statistical use only and have a referential, informational character. They represent indicators spatially and do not constitute an official definition of Bolivia’s territorial boundaries.</p>
+                <p><strong className="text-slate-400">Credits.</strong> The section illustrations and map cards are rendered from the observatory’s data (scripts/site_images.py). The hero globe uses <a href="https://s2maps.eu" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-300">Sentinel-2 cloudless<span className="sr-only"> (opens in a new tab)</span></a> by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016), licensed under CC BY 4.0, over NASA's Blue Marble Next Generation (public domain), and is rendered with globe.gl; the section and footer backgrounds are Sentinel-2 cloudless crops of Bolivia from the same source. The emblem adapts the geo4cambodia emblem. App screenshots, figures, and photos belong to their respective authors. Code and data are released under the <a href={`${REPO_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-300">MIT License<span className="sr-only"> (opens in a new tab)</span></a>; the original data sources are credited on each dataset page.</p>
+                <p>Found an error? <a href={`${REPO_URL}/issues`} target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-300">Open an issue<span className="sr-only"> (opens in a new tab)</span></a> or start a thread in <a href={`${REPO_URL}/discussions`} target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-300">GitHub Discussions<span className="sr-only"> (opens in a new tab)</span></a>.</p>
+              </div>
+            </div>
+          </footer>
+          );
+        };
+
+        // ====================================================================
+        // Detail views
+        // ====================================================================
+        const SECTION_LABEL = { indicators: 'Indicators', tools: 'Tools', insights: 'Insights', events: 'Events' };
+
+        const DetailShell = ({ item, children, aside }) => {
+          const headingRef = useRef(null);
+          const imgRef = useParallax(0.05, 1.3);
+          useEffect(() => { if (headingRef.current) headingRef.current.focus({ preventScroll: true }); }, [item.id]);
+          return (
+            <article className="pb-20">
+              <header className="relative overflow-hidden min-h-[420px] md:min-h-[480px] flex items-end mb-12">
+                <div className="absolute inset-0" aria-hidden="true">
+                  {item.image && <img ref={imgRef} src={item.image} alt="" decoding="async" className="w-full h-full object-cover scale-[1.3] blur-[2px] will-change-transform" />}
+                  <div className="absolute inset-0 bg-navy-950/75"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/40 to-transparent"></div>
+                  <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-navy-950 to-transparent"></div>
+                  <div className="absolute inset-x-0 -bottom-0.5 h-40 bg-gradient-to-t from-navy-950 to-transparent"></div>
+                </div>
+                <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-6">
+                  <nav aria-label="Breadcrumb" className="mb-8">
+                    <ol className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                      <li><a href="#top" className="hover:text-white">Home</a></li>
+                      <li aria-hidden="true">/</li>
+                      <li><a href={`#${item.section}`} className="hover:text-white">{SECTION_LABEL[item.section]}</a></li>
+                      <li aria-hidden="true">/</li>
+                      <li aria-current="page" className="text-brand-sky truncate max-w-[60vw]">{item.title}</li>
+                    </ol>
+                  </nav>
+                  <div className="flex flex-wrap items-center gap-3 mb-5"><TypeBadge item={item} solid />{item.scope && <span className="text-xs font-mono text-brand-sky">{item.scope}</span>}</div>
+                  <h1 ref={headingRef} tabIndex={-1} className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter leading-[1.05] text-white mb-5 max-w-4xl focus:outline-none">{item.title}</h1>
+                  <p className="text-lg md:text-xl text-slate-200 max-w-3xl leading-relaxed">{item.summary}</p>
+                </div>
+              </header>
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-10">
+                  <div className="min-w-0 space-y-12">{children}</div>
+                  <div className="space-y-6 lg:sticky lg:top-24 self-start">{aside}</div>
+                </div>
+                <div className="mt-16">
+                  <a href={`#${item.section}`} className="inline-flex items-center gap-2 text-sm font-semibold text-brand-sky hover:text-white"><ArrowLeft size={16} /> Back to {SECTION_LABEL[item.section]}</a>
+                </div>
+              </div>
+            </article>
+          );
+        };
+
+        const Block = ({ title, children, id }) => (
+          <section aria-labelledby={id} className="pt-10 border-t border-white/10 first:pt-0 first:border-t-0">
+            <h2 id={id} className="text-2xl md:text-3xl font-bold tracking-tight text-white mb-5">{title}</h2>
+            {children}
+          </section>
+        );
+
+        const AsideCard = ({ title, children }) => (
+          <div className="rounded-xl bg-white/[0.03] border border-white/10 p-5">
+            {title && <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">{title}</h2>}
+            {children}
+          </div>
+        );
+
+        const RelatedList = ({ ids }) => {
+          const items = (ids || []).map((id) => REGISTRY_BY_ID[id]).filter(Boolean);
+          if (!items.length) return null;
+          return (
+            <AsideCard title="Related">
+              <ul className="space-y-3">
+                {items.map((r) => {
+                  const s = TYPE_STYLE[r.type]; const Icon = s.icon;
+                  return (
+                    <li key={r.id}>
+                      <a href={itemHref(r)} className="flex gap-3 group">
+                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${s.bg} ${s.text}`}><Icon size={16} /></span>
+                        <span className="text-sm text-slate-300 group-hover:text-white leading-snug">{r.title}<span className="block text-xs text-slate-400">{r.subtype || s.label}</span></span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </AsideCard>
+          );
+        };
+
+        const CitationBox = ({ text }) => (
+          <div className="rounded-xl bg-white/[0.03] border border-white/10 p-5">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400">Recommended citation</h2>
+              <CopyButton text={text} />
+            </div>
+            <p className="text-sm text-slate-300 leading-relaxed break-words">{text}</p>
+          </div>
+        );
+
+        const FORMAT_STYLE = { CSV: 'text-emerald-300 bg-emerald-400/10', Parquet: 'text-amber-300 bg-amber-400/10', GeoJSON: 'text-sky-300 bg-sky-400/10', JSON: 'text-violet-300 bg-violet-400/10' };
+
+        const IndicatorDetail = ({ item }) => (
+          <DetailShell item={item} aside={<>
+            <AsideCard title="At a glance">
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                <dt className="text-slate-400">Geography</dt><dd className="text-slate-200">{item.geography}</dd>
+                <dt className="text-slate-400">Units</dt><dd className="text-slate-200">{item.units}</dd>
+                <dt className="text-slate-400">Period</dt><dd className="text-slate-200">{item.period}</dd>
+                <dt className="text-slate-400">Frequency</dt><dd className="text-slate-200">{item.frequency}</dd>
+                <dt className="text-slate-400">Join key</dt><dd><code className="text-brand-sky text-xs font-bold">{item.key}</code> <span className="text-slate-400 text-xs">e.g. {item.idExample}</span></dd>
+                <dt className="text-slate-400">Dataset id</dt><dd><code className="text-brand-sky text-xs font-bold">{item.dataset}</code></dd>
+                <dt className="text-slate-400">Categories</dt><dd className="text-slate-200">{item.categories.join(', ')}</dd>
+              </dl>
+            </AsideCard>
+            <AsideCard title="Documentation">
+              <div className="flex flex-col gap-2">
+                <LinkButton link={{ label: 'Data folder on GitHub', url: `${REPO_URL}/tree/main/${item.folder}`, kind: 'github' }} />
+                <LinkButton link={{ label: 'Dictionary & docs', url: `${REPO_URL}/blob/main/${item.docs}`, kind: 'external' }} />
+                {(item.extraLinks || []).map((l) => <LinkButton key={l.url} link={l} />)}
+              </div>
+            </AsideCard>
+            <CitationBox text={item.citation} />
+            <RelatedList ids={item.related} />
+          </>}>
+            <figure className="rounded-xl overflow-hidden border border-white/10 bg-navy-900">
+              <img src={item.image} alt={item.imageAlt} className="w-full h-auto" />
+            </figure>
+            <Block title="About this dataset" id="d-about"><p className="text-slate-300 leading-relaxed">{item.description}</p>
+              {item.notice && (
+                <p className="mt-5 flex gap-3 text-sm text-amber-100/90 bg-amber-950/30 border border-amber-900/40 rounded-xl p-4"><AlertTriangle size={18} className="text-amber-400 flex-shrink-0 mt-0.5" /> {item.notice}</p>
+              )}
+            </Block>
+            <Block title="Download the data" id="d-download">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {item.files.map((f) => (
+                  <li key={f.path} className="min-w-0">
+                    <a href={f.path} download className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-brand-sky/40 hover:bg-white/[0.06] transition-all h-full">
+                      <span className={`text-[11px] font-bold px-2 py-1 rounded ${FORMAT_STYLE[f.format]}`}>{f.format}</span>
+                      <span className="min-w-0 flex-grow">
+                        <span className="block text-sm text-slate-200">{f.form}</span>
+                        <span className="block text-xs text-slate-400 font-mono truncate">{f.path.split('/').pop()}</span>
+                      </span>
+                      <Download size={16} className="text-slate-400 flex-shrink-0" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Block>
+            <Block title="Variables" id="d-variables">
+              <div className="rounded-xl overflow-hidden border border-white/10">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <caption className="sr-only">Variable dictionary</caption>
+                    <thead className="bg-white/5 text-slate-300 text-xs uppercase tracking-wider">
+                      <tr><th scope="col" className="px-4 py-3">Variable</th><th scope="col" className="px-4 py-3">Description</th><th scope="col" className="px-4 py-3">Source</th></tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {item.variables.map(([v, d, s]) => (
+                        <tr key={v}><td className="px-4 py-3 align-top"><code className="text-brand-sky text-xs font-bold whitespace-nowrap">{v}</code></td><td className="px-4 py-3 text-slate-300">{d}</td><td className="px-4 py-3 text-slate-400 whitespace-nowrap">{s}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Block>
+            <Block title="Use it in your code" id="d-code"><CodeTabs code={item.code} idPrefix={`code-${item.id}`} /></Block>
+            <Block title="References" id="d-refs">
+              <ul className="space-y-3 text-sm text-slate-300">
+                {item.references.map((r) => (
+                  <li key={r.url} className="pl-4 border-l-2 border-white/10">{r.text} <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-brand-sky underline decoration-brand-sky/50 underline-offset-2 hover:decoration-brand-sky break-all">{r.url}<span className="sr-only"> (opens in a new tab)</span></a></li>
+                ))}
+              </ul>
+            </Block>
+          </DetailShell>
+        );
+
+        const PackageDetail = ({ item }) => (
+          <DetailShell item={item} aside={<>
+            <AsideCard title="Install">
+              <div className="rounded-lg bg-navy-950/70 border border-white/10 px-3 py-2.5 font-mono text-xs text-teal-200 flex items-center justify-between gap-2">
+                <span className="truncate">{item.scope}</span><CopyButton text={item.scope} />
+              </div>
+            </AsideCard>
+            <AsideCard title="Open">
+              <div className="flex flex-col gap-2">{item.links.map((l, i) => <LinkButton key={l.url} link={l} primary={i === 0} />)}</div>
+            </AsideCard>
+            <AsideCard title="Topics"><div className="flex flex-wrap gap-1.5">{item.tags.map((t) => <Tag key={t} type={item.type}>{t}</Tag>)}</div></AsideCard>
+            <RelatedList ids={item.related} />
+          </>}>
+            <figure className="rounded-xl overflow-hidden border border-white/10 bg-navy-900">
+              <img src={item.image} alt={item.imageAlt} className="w-full h-auto" />
+            </figure>
+            <Block title="About this package" id="p-about"><p className="text-slate-300 leading-relaxed">{item.description}</p></Block>
+            <Block title="Install" id="p-install">
+              <CodeBlock title="Colab" language="text" code={item.install} colab />
+              <p className="text-sm text-slate-400 mt-3">Run this in a Google Colab code cell (Python 3.11+).{item.installNote ? ` ${item.installNote}` : ''}</p>
+            </Block>
+            <Block title="Quickstart" id="p-quick">
+              {item.quickstart.pandas && <p className="text-slate-300 leading-relaxed mb-4">Load data with the package, or read the same files without it.</p>}
+              <CodeTabs code={item.quickstart} idPrefix={`quick-${item.id}`} />
+            </Block>
+            {item.build && (
+              <Block title="Build your own indicator" id="p-build">
+                <p className="text-slate-300 leading-relaxed mb-4">Link your own data to the observatory’s units, extract indicators from rasters, combine them with the published datasets, and save the result in the same documented format.</p>
+                <CodeBlock title="my_indicator.py" language="python" code={item.build} colab />
+                </Block>
+            )}
+            <Block title="What it does" id="p-features">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {item.features.map((f) => (
+                  <div key={f.title} className="rounded-xl bg-white/[0.03] border border-white/10 p-5 hover:border-teal-400/30 transition-colors">
+                    <h3 className="text-base font-bold text-white mb-2">{f.title}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed mb-3">{f.text}</p>
+                    <div className="flex flex-wrap gap-1.5">{f.fns.map((fn) => <code key={fn} className="text-[11px] font-mono text-teal-200 bg-teal-400/10 px-1.5 py-0.5 rounded">{fn}()</code>)}</div>
+                  </div>
+                ))}
+              </div>
+            </Block>
+            <Block title="From data to insight" id="p-flow">
+              <ol className="flex flex-wrap items-center gap-2 text-sm">
+                {[['geo4bolivia', 'load & link'], ['geo4bolivia', 'build indicators'], ['geo4bolivia', 'move across scales'], ['expdpy', 'panel econometrics'], ['geometrics', 'spatial analysis'], ['observatory', 'insights']].map(([pkg, step], i, arr) => (
+                  <li key={step} className="flex items-center gap-2">
+                    <span className={`rounded-lg px-3 py-2 border ${pkg === 'geometrics' ? 'border-violet-400/30 bg-violet-400/10 text-violet-200' : pkg === 'expdpy' ? 'border-amber-400/30 bg-amber-400/10 text-amber-200' : pkg === 'observatory' ? 'border-rose-400/30 bg-rose-400/10 text-rose-200' : 'border-teal-400/30 bg-teal-400/10 text-teal-200'}`}>
+                      <span className="block font-mono text-[10px] uppercase tracking-widest opacity-75">{pkg}</span>{step}
+                    </span>
+                    {i < arr.length - 1 && <ArrowRight size={14} className="text-slate-500" />}
+                  </li>
+                ))}
+              </ol>
+            </Block>
+          </DetailShell>
+        );
+
+        const ToolDetail = ({ item }) => {
+          const primary = item.links[0];
+          return (
+            <DetailShell item={item} aside={<>
+              <AsideCard title="Open">
+                <div className="flex flex-col gap-2">{item.links.map((l, i) => <LinkButton key={l.url} link={l} primary={i === 0} />)}</div>
+              </AsideCard>
+              <AsideCard title="Topics"><div className="flex flex-wrap gap-1.5">{item.tags.map((t) => <Tag key={t} type={item.type}>{t}</Tag>)}</div></AsideCard>
+              <RelatedList ids={item.related} />
+            </>}>
+              <a href={primary.url} target="_blank" rel="noopener noreferrer" className="block rounded-xl overflow-hidden border border-white/10 bg-navy-900 group relative">
+                <img src={item.image} alt={item.imageAlt} className="w-full h-auto transition-transform duration-500 group-hover:scale-[1.02]" />
+                <span className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-navy-950/85 border border-white/15 text-sm font-semibold text-white">{primary.label} <ExternalLink size={14} /></span>
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              <Block title={item.type === 'app' ? 'About this app' : 'About this notebook'} id="t-about"><p className="text-slate-300 leading-relaxed">{item.description}</p></Block>
+              {item.type === 'notebook' && (
+                <Block title="Run it" id="t-run">
+                  <ol className="list-decimal pl-5 space-y-2 text-slate-300 leading-relaxed">
+                    <li>Open the notebook with the <em>Open in Colab</em> button.</li>
+                    <li>Choose <em>Runtime → Run all</em>.</li>
+                    <li>The notebook installs any packages Colab lacks before it uses them, and reads its data over the internet (the notebooks stream it from this repository with <code className="text-brand-sky">geo4bolivia</code>). No local setup is needed.</li>
+                  </ol>
+                </Block>
+              )}
+            </DetailShell>
+          );
+        };
+
+        const InsightDetail = ({ item }) => {
+          const videos = (item.media || []).filter((m) => m.kind === 'youtube');
+          const audios = (item.media || []).filter((m) => m.kind === 'audio');
+          return (
+            <DetailShell item={item} aside={<>
+              {item.links.length > 0 && (
+                <AsideCard title="Explore in other formats">
+                  <div className="flex flex-col gap-2">{item.links.map((l, i) => <LinkButton key={l.url} link={l} primary={i === 0 && l.kind === 'paper'} />)}</div>
+                  {item.note && <p className="text-xs text-slate-400 mt-4 leading-relaxed">{item.note}</p>}
+                </AsideCard>
+              )}
+              <AsideCard title="Topics"><div className="flex flex-wrap gap-1.5">{item.tags.map((t) => <Tag key={t} type={item.type}>{t}</Tag>)}</div></AsideCard>
+              <RelatedList ids={item.related} />
+            </>}>
+              {item.citation && (
+                <div className="rounded-xl border border-rose-400/20 bg-rose-500/[0.06] p-5">
+                  <div className="flex justify-between items-center mb-2 gap-4">
+                    <h2 className="text-xs font-bold uppercase tracking-widest text-rose-200">Original publication</h2>
+                    <CopyButton text={`${item.citation} ${item.doi}`} />
+                  </div>
+                  <p className="text-sm text-slate-200 leading-relaxed">{item.citation} <a className="text-brand-sky underline decoration-brand-sky/50 underline-offset-2 hover:decoration-brand-sky break-all" href={item.doi} target="_blank" rel="noopener noreferrer">{item.doi}<span className="sr-only"> (opens in a new tab)</span></a></p>
+                </div>
+              )}
+              <Block title="Overview" id="i-about"><p className="text-slate-300 leading-relaxed">{item.description}</p></Block>
+              {videos.length > 0 && (
+                <Block title={videos.length > 1 ? 'Watch' : 'Watch the video'} id="i-video">
+                  <div className={`grid gap-6 ${videos.length > 1 ? 'md:grid-cols-2' : ''}`}>
+                    {videos.map((v) => <LiteYouTube key={v.id} id={v.id} label={v.label} lang={v.lang} />)}
+                  </div>
+                </Block>
+              )}
+              {audios.length > 0 && (
+                <Block title="Listen" id="i-audio"><div className="space-y-4">{audios.map((a) => <AudioPlayer key={a.src} src={a.src} label={a.label} />)}</div></Block>
+              )}
+              {item.summarySections && (
+                <Block title="Key points" id="i-summary">
+                  <div className="space-y-3">
+                    {item.summarySections.map((s, i) => (
+                      <details key={s.h} className="group rounded-xl bg-white/[0.03] border border-white/10 open:border-rose-400/30" open={i === 0}>
+                        <summary className="flex items-center gap-3 px-5 py-4 font-semibold text-white">
+                          <ChevronRight size={16} className="chev text-rose-300 transition-transform" /> {s.h}
+                        </summary>
+                        <p className="px-5 pb-5 pl-12 text-slate-300 leading-relaxed">{s.p}</p>
+                      </details>
+                    ))}
+                  </div>
+                </Block>
+              )}
+            </DetailShell>
+          );
+        };
+
+        const EventDetail = ({ item }) => {
+          const past = item.date < new Date().toISOString().slice(0, 10);
+          return (
+            <DetailShell item={item} aside={<>
+              <AsideCard title="When and where">
+                <ul className="space-y-3 text-sm text-slate-300">
+                  <li className="flex gap-2"><Calendar size={16} className="text-emerald-300 flex-shrink-0 mt-0.5" /> {item.dateLabel}</li>
+                  <li className="flex gap-2"><Clock size={16} className="text-emerald-300 flex-shrink-0 mt-0.5" /> {item.time}</li>
+                  <li className="flex gap-2"><MapPin size={16} className="text-emerald-300 flex-shrink-0 mt-0.5" /> {item.venue}</li>
+                </ul>
+                <p className={`mt-4 text-xs font-bold uppercase tracking-wide inline-block px-2.5 py-1 rounded-full ${past ? 'bg-slate-700/60 text-slate-300' : 'bg-emerald-500/20 text-emerald-300'}`}>{past ? 'This event has ended' : 'Upcoming'}</p>
+                <div className="flex flex-col gap-2 mt-4">{item.links.map((l) => <LinkButton key={l.url} link={l} />)}</div>
+              </AsideCard>
+              <AsideCard title="Organizers"><ul className="space-y-2 text-sm text-slate-300">{item.organizers.map((o) => <li key={o}>{o}</li>)}</ul></AsideCard>
+              <RelatedList ids={item.related} />
+            </>}>
+              <figure className="rounded-xl overflow-hidden border border-white/10 bg-navy-900 max-w-xl">
+                <img src={item.image} alt={item.imageAlt} className="w-full h-auto" />
+              </figure>
+              <Block title="Overview" id="e-about"><p className="text-slate-300 leading-relaxed">{item.description}</p></Block>
+              <div className="grid md:grid-cols-2 gap-8">
+                <Block title="Themes" id="e-themes"><ul className="flex flex-wrap gap-2">{item.themes.map((t) => <li key={t}><Tag type="event">{t}</Tag></li>)}</ul></Block>
+                <Block title="Objectives" id="e-objectives"><ul className="space-y-2 text-slate-300 text-sm list-disc pl-5">{item.objectives.map((o) => <li key={o}>{o}</li>)}</ul></Block>
+              </div>
+              <Block title="Program" id="e-program">
+                <div className="rounded-xl overflow-hidden border border-white/10">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                      <caption className="sr-only">Workshop program</caption>
+                      <thead className="bg-white/5 text-slate-300 text-xs uppercase tracking-wider">
+                        <tr><th scope="col" className="px-4 py-3">Time</th><th scope="col" className="px-4 py-3">Session</th><th scope="col" className="px-4 py-3">Speakers</th></tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {item.program.map(([time, title, who]) => (
+                          <tr key={time}><td className="px-4 py-3 font-mono text-xs text-emerald-300 whitespace-nowrap align-top">{time}</td><td className="px-4 py-3 text-white">{title}</td><td className="px-4 py-3 text-slate-400">{who}</td></tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </Block>
+            </DetailShell>
+          );
+        };
+
+        const NotFound = () => {
+          const headingRef = useRef(null);
+          useEffect(() => { if (headingRef.current) headingRef.current.focus(); }, []);
+          return (
+            <div className="max-w-7xl mx-auto pt-40 pb-32 px-4 sm:px-6 lg:px-8">
+              <Eyebrow className="mb-5">Error 404</Eyebrow>
+              <h1 ref={headingRef} tabIndex={-1} className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter leading-[1.05] text-white mb-5 focus:outline-none">Page <em className="gradient-text pr-2">not found</em></h1>
+              <p className="text-lg text-slate-300 mb-8">We couldn’t find that item. It may have moved.</p>
+              <a href="#top" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-brand-red hover:bg-brand-redHover text-white font-semibold"><ArrowLeft size={16} /> Back to home</a>
+            </div>
+          );
+        };
+
+        const DetailView = ({ route }) => {
+          const item = REGISTRY_BY_ID[route.id];
+          if (!item || item.section !== route.section) return <NotFound />;
+          if (item.type === 'indicator') return <IndicatorDetail item={item} />;
+          if (item.type === 'package') return <PackageDetail item={item} />;
+          if (item.type === 'notebook' || item.type === 'app') return <ToolDetail item={item} />;
+          if (item.type === 'insight') return <InsightDetail item={item} />;
+          if (item.type === 'event') return <EventDetail item={item} />;
+          return <NotFound />;
+        };
+
+        // ====================================================================
+        // App
+        // ====================================================================
+        const Home = () => (
+          <>
+            <Hero />
+            <About />
+            <IndicatorsSection />
+            <ToolsSection />
+            {HAS_SECTION.insights && <InsightsSection />}
+            {HAS_SECTION.events && <EventsSection />}
+            <TeamSection />
+            <CommunitySection />
+            <CiteSection />
+            <ContactSection />
+          </>
+        );
+
+        const App = () => {
+          const route = useHashRoute();
+          const reduced = usePrefersReducedMotion();
+          const isHome = route.view === 'home';
+          const prevView = useRef(route.view);
+
+          useEffect(() => {
+            const cameFromDetail = prevView.current === 'detail';
+            prevView.current = route.view;
+            if (isHome) {
+              document.title = DEFAULT_TITLE;
+              if (route.anchor && route.anchor !== 'top' && route.anchor !== 'main') {
+                // Wait for the landing page to render before scrolling to the anchor.
+                // Jump instantly when arriving from a detail view (the page was just re-rendered).
+                requestAnimationFrame(() => {
+                  const el = document.getElementById(route.anchor);
+                  if (el) el.scrollIntoView({ behavior: reduced || cameFromDetail ? 'instant' : 'smooth' });
+                });
+              } else if (route.anchor === 'top') {
+                window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+              }
+            } else {
+              window.scrollTo({ top: 0, behavior: 'instant' });
+              const item = REGISTRY_BY_ID[route.id];
+              document.title = item ? `${item.title} | GDO-Bolivia` : `Not found | GDO-Bolivia`;
+            }
+          }, [route]);
+
+          return (
+            <ReducedMotionContext.Provider value={reduced}>
+              <div className="min-h-screen bg-navy-950 text-slate-200 font-sans selection:bg-brand-red/40 selection:text-white">
+                <Navigation isHome={isHome} />
+                <main id="main" tabIndex={-1} className="focus:outline-none">
+                  {isHome ? <Home /> : <DetailView route={route} />}
+                </main>
+                <Footer />
+              </div>
+            </ReducedMotionContext.Provider>
+          );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
