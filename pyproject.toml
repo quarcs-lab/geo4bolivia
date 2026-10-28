@@ -93,3 +93,6 @@ constraint-dependencies = [
     "numba>=0.60,<0.62",
     "llvmlite>=0.44,<0.45",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
