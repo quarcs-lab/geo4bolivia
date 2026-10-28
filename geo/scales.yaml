@@ -1,10 +1,11 @@
 # Spatial scales of the GeoDevelopment Observatory of Bolivia.
 #
 # Every unit at every scale has a geo ID matching `id_pattern`. Administrative
-# scales follow the GADM 4.1 hierarchy and nest by prefix (BO > BO-04 > BO-04-05
-# > BO-04-05-03). `parent` is the next coarser scale that a unit nests in exactly;
-# units of a scale with `parent: null` (grids, or a municipality map of another
-# vintage) are linked to others by area-weighted spatial overlay instead.
+# scales follow the GADM 4.1 hierarchy and nest by prefix: BO > BO-04 (La Paz)
+# > BO-04-17 (Murillo) > BO-04-17-04 (La Paz municipality). `parent` is the next
+# coarser scale that a unit nests in exactly; units of a scale with
+# `parent: null` (grids, or a municipality map of another vintage) are linked to
+# others by area-weighted spatial overlay instead.
 #
 # Municipality maps change over time as new municipalities are created. Each map
 # (vintage) is its own scale with its own ID prefix and boundaries, so data
@@ -30,7 +31,7 @@ department:
   level: 1
   parent: country
   id_pattern: '^BO-\d{2}$'
-  example: BO-04
+  example: BO-04            # La Paz (INE code 02)
   digits: 2
   source: GADM 4.1 level 1 (dissolved from municipalities)
   status: active
@@ -41,7 +42,7 @@ province:
   level: 2
   parent: department
   id_pattern: '^BO-\d{2}-\d{2}$'
-  example: BO-04-05
+  example: BO-04-17         # Murillo
   digits: 2
   source: GADM 4.1 level 2 (dissolved from municipalities)
   status: active
@@ -52,7 +53,7 @@ municipality:
   level: 3
   parent: province
   id_pattern: '^BO-\d{2}-\d{2}-\d{2}$'
-  example: BO-04-05-01
+  example: BO-04-17-04      # La Paz (seat of government)
   digits: 2
   source: GADM 4.1 level 3, without the 5 Lake Titicaca polygons
   status: active
@@ -63,7 +64,7 @@ municipality_ine:
   level: 3
   parent: null      # linked to the GADM scales by area-weighted overlay
   id_pattern: '^BO-INE-\d{6}$'
-  example: BO-INE-020101
+  example: BO-INE-020101    # La Paz
   source: Instituto Nacional de Estadística (INE) municipal codes (6 digits, DDPPMM)
   status: planned
 

@@ -1,0 +1,340 @@
+GID_3,name_gadm,name,asdf_id,asdf_id_atlas,mun_id,ine_code,share,swapped
+BOL.1.1.1_2,Azurduy,Azurduy,174,174,10201,010201,0.989,False
+BOL.1.1.2_2,Tarvita,Tarvita,186,186,10202,010202,0.9904,False
+BOL.1.2.1_2,VillaSerrano,Villa Serrano,246,246,10801,010801,0.9897,False
+BOL.1.3.1_2,Huacareta,Huacareta,193,193,10502,010502,0.9937,False
+BOL.1.3.2_2,Monteagudo,Monteagudo,194,194,10501,010501,0.9923,False
+BOL.1.4.1_2,Huacaya,Huacaya,191,191,11002,011002,0.9929,False
+BOL.1.4.2_2,Macharetí,Macharetí,247,247,11003,011003,0.9985,False
+BOL.1.4.3_2,VillaVacaGuzmán,Muyupampa,241,241,11001,011001,0.9918,False
+BOL.1.5.1_2,Camargo,Camargo,336,336,10701,010701,0.993,False
+BOL.1.5.2_2,Incahuasi,Incahuasi,37,37,10703,010703,0.9843,False
+BOL.1.5.3_2,SanLucas,San Lucas,35,35,10702,010702,0.9931,False
+BOL.1.5.4_2,VillaCharcas,Villa Charcas,322,322,10704,010704,0.985,False
+BOL.1.6.1_2,Poroma,Poroma,300,300,10103,010103,0.9768,False
+BOL.1.6.2_2,Sucre,Sucre,254,254,10101,010101,0.9841,False
+BOL.1.6.3_2,Yotala,Yotala,201,201,10102,010102,0.9841,False
+BOL.1.7.1_2,Culpina,Culpina,36,36,10902,010902,0.9886,False
+BOL.1.7.2_2,LasCarreras,Las Carreras,104,104,10903,010903,0.988,False
+BOL.1.7.3_2,VillaAbecia,Villa Abecia,105,105,10901,010901,0.989,False
+BOL.1.8.1_2,Alcalá,Villa Alcalá,198,198,10404,010404,0.9745,False
+BOL.1.8.2_2,ElVillar,El Villar,190,190,10405,010405,0.99,False
+BOL.1.8.3_2,Padilla,Padilla,243,243,10401,010401,0.9859,False
+BOL.1.8.4_2,Sopachui,Sopachuy,199,199,10403,010403,0.984,False
+BOL.1.8.5_2,Tomina,Tomina,203,203,10402,010402,0.9855,False
+BOL.1.9.1_2,Tarabuco,Tarabuco,205,205,10601,010601,0.9862,False
+BOL.1.9.2_2,Yamparáez,Yamparáez,202,202,10602,010602,0.9749,False
+BOL.1.10.1_2,Mojocoya,Mojocoya,244,244,10303,010303,0.9897,False
+BOL.1.10.2_2,Presto,Presto,255,255,10302,010302,0.9888,False
+BOL.1.10.3_2,VillaRicardoMugia-Icla,Icla,200,200,10304,010304,0.9902,False
+BOL.1.10.4_2,Zudañez,Zudañez,206,206,10301,010301,0.9854,False
+BOL.2.1.1_2,Arani,Arani,140,140,30501,030501,0.9797,False
+BOL.2.1.2_2,Vacas,Vacas,273,273,30502,030502,0.9843,False
+BOL.2.2.1_2,Arque,Arque,24,24,30601,030601,0.9839,False
+BOL.2.2.2_2,Tacopaya,Tacopaya,125,125,30602,030602,0.9883,False
+BOL.2.3.1_2,Ayopaya,Independencia,292,292,30301,030301,0.9915,False
+BOL.2.3.2_2,Cocapata,Cocapata,251,251,30303,030303,0.9959,False
+BOL.2.3.3_2,Morochata,Morochata,106,106,30302,030302,0.9919,False
+BOL.2.4.1_2,Bolivar,Bolívar,238,238,31501,031501,0.9869,False
+BOL.2.5.1_2,Aiquile,Aiquile,5,5,30201,030201,0.9916,False
+BOL.2.5.2_2,Omereque,Omereque,53,53,30203,030203,0.9808,False
+BOL.2.5.3_2,Pasorapa,Pasorapa,334,334,30202,030202,0.9904,False
+BOL.2.6.1_2,Capinota,Capinota,23,23,30701,030701,0.9804,False
+BOL.2.6.2_2,Santivañez,Santivañez,128,128,30702,030702,0.9894,False
+BOL.2.6.3_2,Sicaya,Sicaya,21,21,30703,030703,0.9723,False
+BOL.2.7.1_2,Chimoré,Chimoré,267,267,31204,031204,0.96,False
+BOL.2.7.2_2,EntreRíos,Entre Ríos,299,299,31206,031206,0.981,False
+BOL.2.7.3_2,Pocona,Pocona,274,274,31203,031203,0.9849,False
+BOL.2.7.4_2,Pojo,Pojo,298,298,31202,031202,0.9942,False
+BOL.2.7.5_2,PuertoVillarroel,Puerto Villarroel,283,283,31205,031205,0.9828,False
+BOL.2.7.6_2,Totora,Totora,86,86,31201,031201,0.9912,False
+BOL.2.8.1_2,Cochabamba,Cochabamba,135,135,30101,030101,0.9809,False
+BOL.2.9.1_2,Colomi,Colomi,301,301,31002,031002,0.9864,False
+BOL.2.9.2_2,Sacaba,Sacaba,80,80,31001,031001,0.9847,False
+BOL.2.9.3_2,VillaTunari,Villa Tunari,266,266,31003,031003,0.9952,False
+BOL.2.10.1_2,Anzaldo,Anzaldo,120,120,30402,030402,0.9813,False
+BOL.2.10.2_2,Arbieto,Arbieto,15,15,30403,030403,0.9726,False
+BOL.2.10.3_2,Sacabamba,Sacabamba,119,119,30404,030404,0.9727,False
+BOL.2.10.4_2,Tarata,Tarata,85,85,30401,030401,0.9827,False
+BOL.2.11.1_2,Cliza,Cliza,124,124,30801,030801,0.9451,False
+BOL.2.11.2_2,Toco,Toko,121,121,30802,030802,0.9627,False
+BOL.2.11.3_2,Tolata,Tolata,131,131,30803,030803,0.9421,False
+BOL.2.12.1_2,Alalay,Alalay,302,302,31303,031303,0.985,False
+BOL.2.12.2_2,Mizque,Mizque,333,333,31301,031301,0.9915,False
+BOL.2.12.3_2,VilaVila,Vila Vila,303,303,31302,031302,0.9842,False
+BOL.2.13.1_2,Punata,Punata,141,141,31401,031401,0.9531,False
+BOL.2.13.2_2,SanBenito,San Benito,26,26,31403,031403,0.974,False
+BOL.2.13.3_2,Tacachi,Tacachi,123,123,31404,031404,0.9213,False
+BOL.2.13.4_2,VillaGualbertoVillarroel,Cuchumuela,122,122,31405,031405,0.9367,False
+BOL.2.13.5_2,VillaRivero,Villa Rivero,12,12,31402,031402,0.9513,False
+BOL.2.14.1_2,Colcapirhua,Colcapirhua,82,82,30905,030905,0.9176,False
+BOL.2.14.2_2,Quillacollo,Quillacollo,79,79,30901,030901,0.9829,False
+BOL.2.14.3_2,Sipesipe,Sipe Sipe,83,83,30902,030902,0.98,False
+BOL.2.14.4_2,Tiquipaya,Tiquipaya,81,81,30903,030903,0.981,False
+BOL.2.14.5_2,Vinto,Vinto,84,84,30904,030904,0.975,False
+BOL.2.15.1_2,Tapacarí,Tapacarí,162,162,31101,031101,0.9858,False
+BOL.2.16.1_2,Shinahota,Shinahota,269,269,31602,031602,0.9838,False
+BOL.2.16.2_2,Tiraque,Tiraque,268,268,31601,031601,0.9936,False
+BOL.3.1.1_2,SanJavier,San Javier,57,264,80102,080102,0.9974,True
+BOL.3.1.2_2,Trinidad,Trinidad,296,296,80101,080101,0.9959,False
+BOL.3.2.1_2,PuertoMenordeRurrenabaque,Rurrenabaque,211,211,80304,080304,0.9904,False
+BOL.3.2.2_2,Reyes,Reyes,215,215,80301,080301,0.9914,False
+BOL.3.2.3_2,SanBorja,San Borja,214,214,80302,080302,0.9981,False
+BOL.3.2.4_2,SantaRosa,Santa Rosa,148,224,80303,080303,0.993,True
+BOL.3.3.1_2,Baures,Baures,295,295,80802,080802,0.9974,False
+BOL.3.3.2_2,Huacaraje,Huacaraje,70,70,80803,080803,0.9975,False
+BOL.3.3.3_2,Magdalena,Magdalena,89,89,80801,080801,0.9963,False
+BOL.3.4.1_2,PuertoSiles,Puerto Siles,217,217,80703,080703,0.9898,False
+BOL.3.4.2_2,SanJoaquín,San Joaquín,73,73,80701,080701,0.9856,False
+BOL.3.4.3_2,SanRamón,San Ramón,74,74,80702,080702,0.9924,False
+BOL.3.5.1_2,Loreto,Loreto,45,45,80601,080601,0.9938,False
+BOL.3.5.2_2,SanAndrés,San Andrés,272,272,80602,080602,0.9961,False
+BOL.3.6.1_2,SanIgnacio,San Ignacio,56,56,80501,080501,0.9968,False
+BOL.3.7.1_2,Guayaramerín,Guayaramerín,226,226,80202,080202,0.9861,False
+BOL.3.7.2_2,Riberalta,Riberalta,219,219,80201,080201,0.9955,False
+BOL.3.8.1_2,Exaltación,Exaltación,218,218,80402,080402,0.9984,False
+BOL.3.8.2_2,SantaAna,Santa Ana de Yacuma,213,213,80401,080401,0.9978,False
+BOL.4.2.1_2,Ixiamas,Ixiamas,304,304,21501,021501,0.9971,False
+BOL.4.2.2_2,SanBuenaventura,San Buenaventura,212,212,21502,021502,0.9909,False
+BOL.4.3.1_2,AyoAyo,Ayo Ayo,173,173,21303,021303,0.9874,False
+BOL.4.3.2_2,Calamarca,Calamarca,151,151,21304,021304,0.9888,False
+BOL.4.3.3_2,Collana,Collana,130,130,21307,021307,0.9878,False
+BOL.4.3.4_2,Colquencha,Colquencha,144,144,21306,021306,0.9844,False
+BOL.4.3.5_2,Patacamaya,Patacamaya,143,143,21305,021305,0.9833,False
+BOL.4.3.6_2,Sicasica,Sica Sica,142,142,21301,021301,0.9933,False
+BOL.4.3.7_2,Umala,Umala,17,17,21302,021302,0.9919,False
+BOL.4.4.1_2,Charazani,Charazani,183,183,21601,021601,0.9916,False
+BOL.4.4.2_2,Curva,Curva,207,207,21602,021602,0.9889,False
+BOL.4.5.1_2,Escoma,Escoma,324,324,20405,020405,0.9765,False
+BOL.4.5.2_2,Humanata,Humanata,240,240,20404,020404,0.9757,False
+BOL.4.5.4_2,Mocomoco,Mocomoco,51,51,20402,020402,0.9834,False
+BOL.4.5.5_2,PuertoAcosta,Puerto Acosta,323,323,20401,020401,0.9731,False
+BOL.4.5.6_2,PuertoMayordeCarabuco,Puerto Carabuco,43,43,20403,020403,0.9774,False
+BOL.4.6.1_2,AltoBeni,Alto Beni,235,235,22002,022002,0.9935,False
+BOL.4.6.2_2,Caranavi,Caranavi,236,236,22001,022001,0.9935,False
+BOL.4.7.1_2,Apolo,Apolo,210,210,20701,020701,0.9963,False
+BOL.4.7.2_2,Pelechuco,Pelechuco,208,208,20702,020702,0.9917,False
+BOL.4.8.1_2,Catacora,Catacora,137,137,21902,021902,0.9918,False
+BOL.4.8.2_2,SantiagodeMachaca,Santiago de Machaca,145,145,21901,021901,0.9901,False
+BOL.4.9.1_2,Chacarilla,Chacarilla,14,14,21803,021803,0.9848,False
+BOL.4.9.2_2,PapelPampa,Papel Pampa,16,16,21802,021802,0.9941,False
+BOL.4.9.3_2,SanPedrodeCurahuara,San Pedro Cuarahuara,20,20,21801,021801,0.986,False
+BOL.4.10.1_2,Desaguadero,Desaguadero,163,163,20804,020804,0.9705,False
+BOL.4.10.2_2,JesúsdeMachaka,Jesús de Machaca,164,164,20806,020806,0.9853,False
+BOL.4.10.3_2,La(Marka)SanAndrésdeMachaca,San Andrés de Machaca,328,328,20805,020805,0.9952,False
+BOL.4.10.5_2,PuertoMayordeGuaqui,Guaqui,165,165,20802,020802,0.9815,False
+BOL.4.10.6_2,Taraco,Taraco,327,327,20807,020807,0.9764,False
+BOL.4.10.7_2,Tiahuanacu,Tiahuanacu,75,75,20803,020803,0.9844,False
+BOL.4.10.8_2,Viacha,Viacha,152,152,20801,020801,0.9887,False
+BOL.4.11.1_2,Cajuata,Cajuata,59,59,21003,021003,0.9836,False
+BOL.4.11.2_2,Colquiri,Colquiri,29,29,21004,021004,0.9891,False
+BOL.4.11.3_2,Ichoca,Ichoca,30,30,21005,021005,0.9828,False
+BOL.4.11.4_2,Inquisivi,Inquisivi,60,60,21001,021001,0.9939,False
+BOL.4.11.5_2,Quime,Quime,154,154,21002,021002,0.9812,False
+BOL.4.11.6_2,VillaLibertadLicoma,Villa Libertad Licoma,153,153,21006,021006,0.9857,False
+BOL.4.12.1_2,Combaya,Combaya,168,168,20605,020605,0.9733,False
+BOL.4.12.2_2,Guanay,Guanay,180,180,20602,020602,0.9926,False
+BOL.4.12.3_2,Mapiri,Mapiri,182,182,20607,020607,0.9853,False
+BOL.4.12.4_2,Quiabaya,Quiabaya,171,171,20604,020604,0.9778,False
+BOL.4.12.5_2,Sorata,Sorata,177,177,20601,020601,0.9932,False
+BOL.4.12.6_2,Tacacoma,Tacacoma,192,192,20603,020603,0.9851,False
+BOL.4.12.7_2,Teoponte,Teoponte,181,181,20608,020608,0.9933,False
+BOL.4.12.8_2,Tipuani,Tipuani,175,175,20606,020606,0.9741,False
+BOL.4.13.1_2,Cairoma,Cairoma,28,28,20905,020905,0.9903,False
+BOL.4.13.2_2,Luribay,Luribay,116,116,20901,020901,0.9653,False
+BOL.4.13.3_2,Malla,Malla,149,149,20904,020904,0.9825,False
+BOL.4.13.4_2,Sapahaqui,Sapahaqui,27,27,20902,020902,0.9868,False
+BOL.4.13.5_2,Yaco,Yaco,138,138,20903,020903,0.9843,False
+BOL.4.14.1_2,Batallas,Batallas,242,242,21203,021203,0.9778,False
+BOL.4.14.3_2,Laja,Laja,156,156,21202,021202,0.9938,False
+BOL.4.14.4_2,Pucarani,Pucarani,167,167,21201,021201,0.9889,False
+BOL.4.14.5_2,PuertoPérez,Puerto Pérez,231,231,21204,021204,0.8881,False
+BOL.4.15.1_2,Copacabana,Copacabana,185,185,21701,021701,0.9622,False
+BOL.4.15.3_2,SanPedrodeTiquina,San Pedro de Tiquina,196,196,21702,021702,0.9474,False
+BOL.4.15.4_2,TitoYupanqui,Tito Yupanqui,166,166,21703,021703,0.8409,False
+BOL.4.16.1_2,Aucapata,Aucapata,172,172,20503,020503,0.9871,False
+BOL.4.16.2_2,Ayata,Ayata,305,305,20502,020502,0.9896,False
+BOL.4.16.3_2,Chuma,Chuma,179,179,20501,020501,0.9855,False
+BOL.4.17.1_2,Achocalla,Achocalla,159,159,20104,020104,0.9812,False
+BOL.4.17.2_2,ElAlto,El Alto,160,160,20105,020105,0.9758,False
+BOL.4.17.3_2,Mecapaca,Mecapaca,157,157,20103,020103,0.9791,False
+BOL.4.17.4_2,NuestraSeñoradeLaPaz,La Paz,176,176,20101,020101,0.9913,False
+BOL.4.17.5_2,Palca,Palca,158,158,20102,020102,0.985,False
+BOL.4.18.1_2,Coripata,Coripata,170,170,21402,021402,0.9928,False
+BOL.4.18.2_2,Coroico,Coroico,169,169,21401,021401,0.99,False
+BOL.4.19.1_2,Achacachi,Achacachi,326,326,20201,020201,0.9815,False
+BOL.4.19.2_2,ChuaCocani,Chua Cocani,239,239,20203,020203,0.9653,False
+BOL.4.19.3_2,Huarina,Huarina,237,237,20204,020204,0.9778,False
+BOL.4.19.4_2,Huatajata,Huatajata,155,155,20206,020206,0.9567,False
+BOL.4.19.6_2,SantiagodeHuata,Santiago de Huata,230,230,20205,020205,0.9486,False
+BOL.4.19.7_2,VillaAncoraimes,Ancoraimes,41,41,20202,020202,0.9853,False
+BOL.4.20.1_2,Calacoto,Calacoto,139,139,20303,020303,0.9912,False
+BOL.4.20.2_2,Caquiaviri,Caquiaviri,112,112,20302,020302,0.9838,False
+BOL.4.20.3_2,Charaña,Charaña,325,325,20305,020305,0.9947,False
+BOL.4.20.4_2,Comanche,Comanche,150,150,20304,020304,0.9809,False
+BOL.4.20.5_2,Corocoro,Coro Coro,25,25,20301,020301,0.9848,False
+BOL.4.20.6_2,NazacaradePacajes,Nazacara de Pacajes,111,111,20307,020307,0.9732,False
+BOL.4.20.7_2,SantiagodeCallapa,Callapa,134,134,20308,020308,0.9889,False
+BOL.4.20.8_2,WaldoBallivian,Waldo Ballivián,307,307,20306,020306,0.9756,False
+BOL.4.21.1_2,Chulumani,Chulumani,62,62,21101,021101,0.9798,False
+BOL.4.21.2_2,Irupana,Irupana,61,61,21102,021102,0.9859,False
+BOL.4.21.3_2,LaAsunta,La Asunta,178,178,21105,021105,0.9957,False
+BOL.4.21.4_2,PalosBlancos,Palos Blancos,209,209,21104,021104,0.9895,False
+BOL.4.21.5_2,Yanacachi,Yanacachi,161,161,21103,021103,0.9826,False
+BOL.5.1.1_2,Challapata,Challapata,330,330,40201,040201,0.9916,False
+BOL.5.1.2_2,SantuariodeQuillacas,Quillacas,1,1,40202,040202,0.9876,False
+BOL.5.2.1_2,Choquecota,Choque Cota,309,309,40302,040302,0.9929,False
+BOL.5.2.2_2,Corque,Corque,114,114,40301,040301,0.9968,False
+BOL.5.3.1_2,Caracollo,Caracollo,136,136,40102,040102,0.9919,False
+BOL.5.3.2_2,ElChoro,El Choro,126,126,40103,040103,0.994,False
+BOL.5.3.3_2,Oruro,Oruro,18,18,40101,040101,0.9914,False
+BOL.5.3.4_2,Paria,Pari-Paria-Soracachi,129,129,40104,040104,0.9952,False
+BOL.5.4.1_2,PampaAullagas,Pampa Aullagas,2,2,40802,040802,0.9844,False
+BOL.5.4.2_2,SalinasdeGarcíMendoza,Salinas de Garci Mendoza,314,314,40801,040801,0.9957,False
+BOL.5.5.1_2,CruzdeMachacamarca,Cruz de Machacamarca,109,109,40503,040503,0.9886,False
+BOL.5.5.2_2,Escara,Escara,310,310,40502,040502,0.9946,False
+BOL.5.5.3_2,Esmeralda,Esmeralda,0,0,40505,040505,0.9932,False
+BOL.5.5.4_2,Huachacalla,Huachacalla,9,9,40501,040501,0.9591,False
+BOL.5.5.5_2,YunguyodelLitoral,Yunguyo de Litoral,108,108,40504,040504,0.9771,False
+BOL.5.6.1_2,Carangas,Carangas,107,107,41503,041503,0.9711,False
+BOL.5.6.2_2,LaRivera,La Rivera,71,71,41501,041501,0.9856,False
+BOL.5.6.3_2,TodosSantos,Todos Santos,67,67,41502,041502,0.9928,False
+BOL.5.7.1_2,Huayllamarca,Huayllamarca,19,19,41601,041601,0.9848,False
+BOL.5.8.1_2,Huanuni,Huanuni,8,8,40701,040701,0.9856,False
+BOL.5.8.2_2,Machacamarca,Machacamarca,117,117,40702,040702,0.9898,False
+BOL.5.9.1_2,Antequera,Antequera,110,110,40603,040603,0.98,False
+BOL.5.9.2_2,Pazña,Pazña,11,11,40602,040602,0.9893,False
+BOL.5.9.3_2,Poopó,Poopó,63,63,40601,040601,0.9888,False
+BOL.5.10.1_2,Chipaya,Chipaya,312,312,40903,040903,0.9805,False
+BOL.5.10.2_2,Coipasa,Coipasa,311,311,40902,040902,1.0,False
+BOL.5.10.3_2,Sabaya,Sabaya,44,44,40901,040901,0.9926,False
+BOL.5.11.1_2,CurahuaradeCarangas,Curahuara de Carangas,308,308,40401,040401,0.994,False
+BOL.5.11.2_2,Turco,Turco,66,66,40402,040402,0.9962,False
+BOL.5.12.1_2,Totora,San Pedro de Totora,64,64,41301,041301,0.9927,False
+BOL.5.13.1_2,Toledo,Toledo,127,127,41001,041001,0.9973,False
+BOL.5.14.1_2,SantiagodeHuari,Huari,10,10,41401,041401,0.9958,False
+BOL.5.15.1_2,Andamarca,Santiago de Andamarca,13,13,41201,041201,0.9946,False
+BOL.5.15.2_2,BeléndeAndamarca,Belén de Andamarca,113,113,41202,041202,0.9928,False
+BOL.5.16.1_2,Eucaliptus,Eucaliptus,133,133,41101,041101,0.9854,False
+BOL.6.1.1_2,Ingavi,Ingavi,225,225,90402,090402,0.9961,False
+BOL.6.1.2_2,SantaRosa,Santa Rosa,224,148,90401,090401,0.993,True
+BOL.6.2.1_2,NuevaEsperanza,Nueva Esperanza,229,229,90501,090501,0.9945,False
+BOL.6.2.2_2,SantosMercado,Santos Mercado,228,228,90503,090503,0.9962,False
+BOL.6.2.3_2,VillaNueva,Villa Nueva-Loma Alta,227,227,90502,090502,0.9906,False
+BOL.6.3.1_2,PuertoGonzaloMoreno,Puerto Gonzalo Moreno,216,216,90301,090301,0.9855,False
+BOL.6.3.2_2,SanLorenzo,San Lorenzo,147,147,90302,090302,0.9901,False
+BOL.6.3.3_2,Sena,El Sena,146,146,90303,090303,0.9988,False
+BOL.6.4.1_2,Filadelfia,Filadelfia,234,234,90203,090203,0.9967,False
+BOL.6.4.2_2,PuertoRico,Puerto Rico,223,223,90201,090201,0.9951,False
+BOL.6.4.3_2,SanPedro,San Pedro,222,222,90202,090202,0.9821,False
+BOL.6.5.1_2,BellaFlor,Bella Flor,221,221,90104,090104,0.9894,False
+BOL.6.5.2_2,Bolpebra,Bolpebra,233,233,90103,090103,0.9785,False
+BOL.6.5.3_2,Cobija,Cobija,132,132,90101,090101,0.9685,False
+BOL.6.5.4_2,Porvenir,Porvenir,220,220,90102,090102,0.9888,False
+BOL.7.1.1_2,Caripuyo,Caripuyo,4,4,50702,050702,0.982,False
+BOL.7.1.2_2,Sacaca,Villa de Sacaca,6,6,50701,050701,0.9876,False
+BOL.7.2.1_2,Porco,Porco,47,47,51203,051203,0.994,False
+BOL.7.2.2_2,Tomave,Tomave,46,46,51202,051202,0.9973,False
+BOL.7.2.3_2,Uyuni,Uyuni,306,306,51201,051201,0.9958,False
+BOL.7.3.1_2,SanPedro,San Pedro de Buena Vista,40,40,50501,050501,0.9918,False
+BOL.7.3.2_2,ToroToro,Toro Toro,99,99,50502,050502,0.9885,False
+BOL.7.4.1_2,Colquechaca,Colquechaca,76,76,50401,050401,0.992,False
+BOL.7.4.2_2,Ocurí,Ocurí,204,204,50404,050404,0.9832,False
+BOL.7.4.3_2,Pocoata,Pocoata,77,77,50403,050403,0.9912,False
+BOL.7.4.4_2,Ravelo,Ravelo,332,332,50402,050402,0.9908,False
+BOL.7.5.1_2,Betanzos,Betanzos,65,65,50301,050301,0.9895,False
+BOL.7.5.2_2,Chaquí,Chaquí,187,187,50302,050302,0.9802,False
+BOL.7.5.3_2,Tacobamba,Tacobamba,329,329,50303,050303,0.9895,False
+BOL.7.6.1_2,Llica,Llica,78,78,51401,051401,0.9867,False
+BOL.7.6.2_2,Tahua,Tahua,102,102,51402,051402,0.9763,False
+BOL.7.7.1_2,SanAgustín,San Agustín,100,100,51601,051601,0.9994,False
+BOL.7.8.1_2,Acasio,Acasio,7,7,51302,051302,0.9745,False
+BOL.7.8.2_2,Arampampa,Arampampa,118,118,51301,051301,0.9778,False
+BOL.7.9.1_2,"Caiza""D""","Caiza ""D""",184,184,51102,051102,0.9905,False
+BOL.7.9.2_2,Ckochas,Ckochas,189,189,51103,051103,0.9883,False
+BOL.7.9.3_2,Puna,Puna,188,188,51101,051101,0.9822,False
+BOL.7.10.1_2,Villazón,Villazón,337,337,51501,051501,0.9939,False
+BOL.7.11.1_2,Cotagaita,Cotagaita,335,335,50601,050601,0.9954,False
+BOL.7.11.2_2,Vitiche,Vitichi,115,115,50602,050602,0.9951,False
+BOL.7.12.1_2,"Colcha""K""","Colcha ""K""",42,42,50901,050901,0.9991,False
+BOL.7.12.2_2,SanPedrodeQuemes,San Pedro de Quemes,317,317,50902,050902,0.9972,False
+BOL.7.13.1_2,Chayanta,Chayanta,313,313,50202,050202,0.9822,False
+BOL.7.13.2_2,ChuquihutaAylluJucumani,Chuquihuta,232,232,50204,050204,0.9761,False
+BOL.7.13.3_2,Llallagua,Llallagua,3,3,50203,050203,0.9904,False
+BOL.7.13.4_2,Uncía,Uncía,331,331,50201,050201,0.9889,False
+BOL.7.14.1_2,Atocha,Atocha,316,316,50802,050802,0.9957,False
+BOL.7.14.2_2,Tupiza,Tupiza,315,315,50801,050801,0.9943,False
+BOL.7.15.1_2,Mojinete,Mojinete,93,93,51002,051002,0.9785,False
+BOL.7.15.2_2,SanAntoniodeEsmoruco,San Antonio de Esmoruco,91,91,51003,051003,0.9945,False
+BOL.7.15.3_2,SanPablo,San Pablo de Lípez,103,103,51001,051001,0.9987,False
+BOL.7.16.1_2,Potosí,Potosí,195,195,50101,050101,0.9818,False
+BOL.7.16.2_2,Tinguipaya,Tinguipaya,39,39,50102,050102,0.9893,False
+BOL.7.16.3_2,Urmiri,Urmiri,50,50,50104,050104,0.9968,False
+BOL.7.16.4_2,Yocalla,Yocalla,49,49,50103,050103,0.9913,False
+BOL.8.1.1_2,Cotoca,Cotoca,260,260,70102,070102,0.9972,False
+BOL.8.1.2_2,ElTorno,El Torno,33,33,70105,070105,0.9846,False
+BOL.8.1.3_2,LaGuardia,La Guardia,31,31,70104,070104,0.984,False
+BOL.8.1.4_2,Porongo,Porongo,54,54,70103,070103,0.988,False
+BOL.8.1.5_2,SantaCruzdelaSierra,Santa Cruz de la Sierra,55,55,70101,070101,0.9902,False
+BOL.8.2.1_2,SanMatías,San Matías,288,288,71201,071201,0.9982,False
+BOL.8.3.1_2,Pailón,Pailón,278,278,70502,070502,0.9983,False
+BOL.8.3.2_2,Roboré,Roboré,287,287,70503,070503,0.9982,False
+BOL.8.3.3_2,SanJosé,San José de Chiquitos,290,290,70501,070501,0.9985,False
+BOL.8.4.1_2,Boyuibe,Boyuibe,248,248,70707,070707,0.9976,False
+BOL.8.4.2_2,Cabezas,Cabezas,259,259,70703,070703,0.9944,False
+BOL.8.4.3_2,Camiri,Camiri,250,250,70706,070706,0.9898,False
+BOL.8.4.4_2,Charagua,Charagua,289,289,70702,070702,0.9994,False
+BOL.8.4.5_2,Cuevo,Cuevo,249,249,70704,070704,0.9887,False
+BOL.8.4.6_2,Gutiérrez,Gutiérrez,253,253,70705,070705,0.9935,False
+BOL.8.4.7_2,Lagunillas,Lagunillas,197,197,70701,070701,0.9826,False
+BOL.8.5.1_2,Mairana,Mairana,282,282,70903,070903,0.9896,False
+BOL.8.5.2_2,PampaGrande,Pampa Grande,281,281,70902,070902,0.9857,False
+BOL.8.5.3_2,Quirusillas,Quirusillas,258,258,70904,070904,0.9698,False
+BOL.8.5.4_2,Samaipata,Samaipata,34,34,70901,070901,0.9914,False
+BOL.8.6.1_2,ElCarmenRiveroTórrez,Carmen Rivero Tórrez,286,286,71403,071403,1.0,False
+BOL.8.6.2_2,PuertoQuijarro,Puerto Quijarro,22,22,71402,071402,0.9871,False
+BOL.8.6.3_2,PuertoSuarez,Puerto Suárez,285,285,71401,071401,0.9946,False
+BOL.8.7.1_2,AscencióndeGuarayos,Ascensión de Guarayos,271,271,71501,071501,0.9913,False
+BOL.8.7.2_2,ElPuente,El Puente,319,98,71503,071503,0.9948,True
+BOL.8.7.3_2,Urubicha,Urubichá,294,294,71502,071502,0.9952,False
+BOL.8.8.1_2,BuenaVista,Buena Vista,87,87,70401,070401,0.9872,False
+BOL.8.8.2_2,SanCarlos,San Carlos,88,88,70402,070402,0.9914,False
+BOL.8.8.3_2,SanJuan,San Juan de Yapacaní,38,38,70404,070404,0.9693,False
+BOL.8.8.4_2,Yapacaní,Yapacaní,261,261,70403,070403,0.9858,False
+BOL.8.9.1_2,Comarapa,Comarapa,320,320,71301,071301,0.9936,False
+BOL.8.9.2_2,Saipina,Saipina,52,52,71302,071302,0.9888,False
+BOL.8.10.1_2,Concepción,Concepción,68,68,71101,071101,0.9975,False
+BOL.8.10.2_2,CuatroCañadas,Cuatro Cañadas,262,262,71106,071106,0.9966,False
+BOL.8.10.3_2,SanAntoniodeLomerio,San Antonio de Lomerío,297,297,71105,071105,0.9944,False
+BOL.8.10.4_2,SanJavier,San Javier,264,57,71102,071102,0.9934,True
+BOL.8.10.5_2,SanJulián,San Julián,318,318,71104,071104,0.9932,False
+BOL.8.10.6_2,SanRamón,San Ramón,263,263,71103,071103,0.9801,False
+BOL.8.11.1_2,FernándezAlonso,Fernández Alonso,279,279,71004,071004,0.9786,False
+BOL.8.11.2_2,GeneralSaavedra,Gral. Saavedra,277,277,71002,071002,0.9743,False
+BOL.8.11.3_2,Mineros,Mineros,280,280,71003,071003,0.9906,False
+BOL.8.11.4_2,Montero,Montero,270,270,71001,071001,0.9682,False
+BOL.8.11.5_2,SanPedro,San Pedro,58,58,71005,071005,0.984,False
+BOL.8.12.1_2,ColpaBélgica,Colpa Belgica,284,284,70603,070603,0.987,False
+BOL.8.12.2_2,Portachuelo,Portachuelo,90,90,70601,070601,0.9917,False
+BOL.8.12.3_2,SantaRosa,Santa Rosa del Sara,69,69,70602,070602,0.9852,False
+BOL.8.13.1_2,Moromoro,Moro Moro,32,32,70803,070803,0.9861,False
+BOL.8.13.2_2,Postrervalle,Postrer Valle,256,256,70804,070804,0.9883,False
+BOL.8.13.3_2,Pucará,Pucará,245,245,70805,070805,0.9892,False
+BOL.8.13.4_2,Trigal,Trigal,257,257,70802,070802,0.9829,False
+BOL.8.13.5_2,Vallegrande,Vallegrande,252,252,70801,070801,0.9881,False
+BOL.8.14.1_2,SanIgnacio,San Ignacio de Velasco,293,293,70301,070301,0.9989,False
+BOL.8.14.2_2,SanMiguel,San Miguel de Velasco,265,265,70302,070302,0.9967,False
+BOL.8.14.3_2,SanRafael,San Rafael,291,291,70303,070303,0.9986,False
+BOL.8.15.1_2,OkinawaUno,Okinawa Uno,275,275,70202,070202,0.9896,False
+BOL.8.15.2_2,Warnes,Warnes,276,276,70201,070201,0.9905,False
+BOL.9.1.1_2,Bermejo,Bermejo,321,321,60202,060202,0.9772,False
+BOL.9.1.2_2,Padcaya,Padcaya,338,338,60201,060201,0.9922,False
+BOL.9.2.1_2,Uriondo,Uriondo,92,92,60401,060401,0.9878,False
+BOL.9.2.2_2,Yunchará,Yunchará,95,95,60402,060402,0.9923,False
+BOL.9.3.1_2,Tarija,Tarija,101,101,60101,060101,0.9874,False
+BOL.9.4.1_2,Caraparí,Caraparí,96,96,60302,060302,0.9919,False
+BOL.9.4.2_2,VillaMontes,Villamontes,48,48,60303,060303,0.9983,False
+BOL.9.4.3_2,Yacuiba,Yacuiba,94,94,60301,060301,0.9977,False
+BOL.9.5.1_2,ElPuente,El Puente,98,319,60502,060502,0.9884,True
+BOL.9.5.2_2,SanLorenzo,Villa San Lorenzo,97,97,60501,060501,0.9915,False
+BOL.9.6.1_2,EntreRíos,Entre Ríos,72,72,60601,060601,0.9951,False

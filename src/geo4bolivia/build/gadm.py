@@ -30,7 +30,8 @@ def from_gadm(path, levels: dict[int, str], layer: str | None = None) -> tuple[p
     Parameters
     ----------
     path : a GADM file at the finest level you need (GeoPackage, GeoJSON or
-        shapefile), e.g. ``raw/boundaries/gadm41_KHM_2.json``
+        shapefile), e.g. ``raw/boundaries/gadm41_KHM_2.json``, or a GeoDataFrame
+        read from one (to drop units first, e.g. lakes)
     levels : GADM level -> scale id in geo/scales.yaml, e.g. ``{1: "province", 2: "district"}``.
         Level 0 is always the ``country`` scale.
     layer : GeoPackage layer, e.g. ``"ADM_ADM_2"``
@@ -40,7 +41,10 @@ def from_gadm(path, levels: dict[int, str], layer: str | None = None) -> tuple[p
     ``gid`` (the GADM code) and ``name_gadm``.
     """
     cfg = project.config()["country"]
-    shapes = gpd.read_file(path, layer=layer) if layer else gpd.read_file(path)
+    if isinstance(path, gpd.GeoDataFrame):
+        shapes = path.copy()
+    else:
+        shapes = gpd.read_file(path, layer=layer) if layer else gpd.read_file(path)
     finest = max(levels)
     gid_col = f"GID_{finest}"
     if gid_col not in shapes.columns:
