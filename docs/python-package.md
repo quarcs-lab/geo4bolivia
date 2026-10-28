@@ -2,7 +2,7 @@
 
 **Subnational development data for Bolivia, ready to analyse, at every spatial scale.**
 
-`geo4bolivia` is the Python package of the [GeoDevelopment Observatory of Bolivia](https://quarcs-lab.github.io/geo4bolivia/). It loads the observatory's indicators for Bolivia's 339 municipalities (population, night-time lights, 64 indicators of the Municipal Atlas of the SDGs, satellite embeddings...) as tidy panels, with boundaries for every scale. It also lets you **build your own indicators**: link your tables to the same unit IDs, summarise rasters over units, move data across scales and combine datasets. It works out of the box in Google Colab: every example below runs in a new Colab notebook (replace the placeholder files, such as your own table or raster, with yours).
+`geo4bolivia` is the Python package of the [GeoDevelopment Observatory of Bolivia](https://quarcs-lab.github.io/geo4bolivia/). It loads the observatory's indicators (population, night-time lights, 64 indicators of the Municipal Atlas of the SDGs, satellite embeddings...) as tidy panels, with boundaries for every scale. It also lets you **build your own indicators**: link your tables to the same unit IDs, summarise rasters over units, move data across scales and combine datasets. It works out of the box in Google Colab: every example below runs in a new Colab notebook (replace the placeholder files, such as your own table or raster, with yours).
 
 ```python
 !pip install -q geo4bolivia mapclassify             # mapclassify: for scheme="quantiles"
