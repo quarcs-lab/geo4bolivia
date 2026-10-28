@@ -85,6 +85,15 @@ def test_link_by_name_within_a_department():
     assert out["geo_id"].isin(potosi["geo_id"]).all()
 
 
+def test_link_refuses_names_shared_by_several_municipalities():
+    table = pd.DataFrame({"mun": ["San Javier", "Uyuni"]})
+    with pytest.raises(ValueError, match="BO-03-01-01, BO-08-10-04"):
+        geo.link(table, scale="municipality", on="mun", key="name")
+    with pytest.warns(UserWarning, match="name several"):
+        out = geo.link(table, scale="municipality", on="mun", key="name", errors="warn")
+    assert out["geo_id"].isna().tolist() == [True, False]
+
+
 def test_crosswalks_are_nested():
     xw = geo.crosswalk("municipality", "department")
     assert len(xw) == 339 and xw["geo_id_to"].nunique() == 9

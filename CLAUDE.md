@@ -113,7 +113,7 @@ Every unit has one **geo ID** (`geo_id`). Administrative IDs follow the GADM 4.1
 - Harmonized names: municipalities and departments use DS4Bolivia's spelling; provinces come from `raw/lookups/province_names.csv` (hand-checked; GADM writes names without spaces). `name_gadm` keeps GADM's spelling.
 - **Municipality vintages.** New municipalities are created over time. The `municipality` scale is the 339-unit GADM map and stays so. A newer map is a new scale (`municipality_ine` is reserved) linked by overlay; never relabel `municipality`. See `CONTRIBUTING_DATA.md`.
 - **DS4Bolivia's swapped homonyms.** San Javier (Beni/Santa Cruz), El Puente (Tarija/Santa Cruz) and Santa Rosa (Beni/Pando): DS4Bolivia attaches each pair's attribute rows (names, INE codes, SDG Atlas values) to the other polygon. Polygon-based data (`pop`, `ntl`, `emb`, `embpw`) link by `asdf_id`; the SDG Atlas data link by INE code (`mun_id`). Evidence in `raw/README.md`; `swapped` flags them in the lookup.
-- Municipality names repeat across departments, so link municipal tables by code (`key="mun_id"`, `"ine_code"` or `"asdf_id"`) rather than by name.
+- Municipality names repeat across departments (six pairs) and four provinces are called Cercado, so link municipal tables by code (`key="mun_id"`, `"ine_code"` or `"asdf_id"`) rather than by name. `geo.link()` refuses ambiguous names instead of guessing.
 
 ## Datasets
 

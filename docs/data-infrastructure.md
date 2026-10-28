@@ -257,7 +257,7 @@ codes = geo.link(codes, scale="municipality", on="mun_id", key="mun_id")   # BO-
 
 Unmatched values raise an error that suggests the closest spelling (`errors="warn"` to continue). Pass `key=` to match a specific code: `"gid"` (GADM), `"ine_code"` (INE, as text with leading zeros, e.g. `"020101"`), `"mun_id"` (INE, as a number) or `"asdf_id"` (DS4Bolivia polygon).
 
-Municipality names repeat across departments (San Javier, El Puente, Santa Rosa and others), so link municipalities by code where you can, or by `"Department-Municipality"` after adding the department yourself.
+Some names are shared by several units: six pairs of municipalities (El Puente, Entre Ríos, San Javier, San Pedro, San Ramón, Santa Rosa) and four provinces called Cercado. `geo.link()` never guesses between them: such rows stay unlinked and the error lists the candidate units, so link municipalities by code where you can.
 
 ### Recipe 2: extract an indicator from a raster
 
