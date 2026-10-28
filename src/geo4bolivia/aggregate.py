@@ -70,9 +70,12 @@ def aggregate(df: pd.DataFrame, to: str, dataset: str | None = None, rules: dict
 
     keys = ["geo_id", "year"] if "year" in df.columns else ["geo_id"]
     if variables is None:
-        # every numeric column except ids; variables without a rule are skipped with a warning
-        variables = [c for c in df.columns if c not in keys and c != "geometry"
-                     and pd.api.types.is_numeric_dtype(df[c])]
+        # every numeric column except ids and source keys (asdf_id, ...); variables without
+        # a rule are skipped with a warning
+        not_variables = {f["name"] for f in metadata.fields(dataset)
+                         if f.get("geo:role", "variable") != "variable"} if dataset else set()
+        variables = [c for c in df.columns if c not in keys and c != "geometry" and c not in not_variables
+                     and not c.endswith("_id") and pd.api.types.is_numeric_dtype(df[c])]
         known = dict(metadata.aggregation_rules(dataset)) if dataset else {}
         known.update(rules or {})
         if dataset or rules:
