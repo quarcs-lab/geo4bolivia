@@ -167,8 +167,36 @@ def polygonal(geom):
 
 
 def dissolve(layer, by: str):
-    """Dissolve a layer into the units named in column ``by`` (returned as ``geo_id``)."""
-    return layer.dissolve(by=by).reset_index()[[by, "geometry"]].rename(columns={by: "geo_id"})
+    """Dissolve a layer into the units named in column ``by`` (returned as ``geo_id``).
+
+    Neighbouring source polygons rarely share edges exactly, so dissolving leaves
+    slivers between them as holes. A hole is kept only if it is a hole of the source
+    layer too (a lake) or another source unit fills it (an enclave); gaps are filled.
+    """
+    from shapely import STRtree, unary_union
+    from shapely.geometry import MultiPolygon, Polygon
+
+    out = layer.dissolve(by=by).reset_index()[[by, "geometry"]].rename(columns={by: "geo_id"})
+    parts = [p for g in layer.geometry for p in getattr(g, "geoms", [g]) if not p.is_empty]
+    tree = STRtree(parts)
+    source_holes = unary_union([Polygon(r) for p in parts for r in p.interiors]) if any(p.interiors for p in parts) else None
+
+    def real(ring, outer) -> bool:
+        hole = Polygon(ring)
+        if hole.area < 1e-9 * outer.area:               # degenerate ring: zero area up to rounding
+            return False
+        if source_holes is not None and hole.intersection(source_holes).area > 0.5 * hole.area:
+            return True
+        filled = sum(parts[i].intersection(hole).area for i in tree.query(hole))
+        return filled > 0.5 * hole.area
+
+    def fill_gaps(geom):
+        polys = [Polygon(p.exterior, [r for r in p.interiors if real(r, Polygon(p.exterior))])
+                 for p in getattr(geom, "geoms", [geom])]
+        return polys[0] if len(polys) == 1 else MultiPolygon(polys)
+
+    out["geometry"] = out.geometry.map(fill_gaps)
+    return out
 
 
 def publish_geo(units: pd.DataFrame, layers: dict) -> pd.DataFrame:
