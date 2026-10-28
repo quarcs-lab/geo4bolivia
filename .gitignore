@@ -24,3 +24,7 @@ __pycache__/
 # Reference clones used to start this project (never committed)
 /geo4cambodia/
 /ds4bolivia/
+
+# Files written by running the notebooks
+/notebooks/my_data/
+/notebooks/*.tif
