@@ -1,0 +1,95 @@
+[project]
+name = "geo4bolivia"
+version = "0.1.0"
+description = "Subnational development data for Bolivia across spatial scales (GeoDevelopment Observatory of Bolivia)"
+readme = "docs/python-package.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Carlos Mendez"},
+]
+
+dependencies = [
+    # Kept small so `pip install geo4bolivia` is quick: Google Colab already has all of these
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "requests>=2.31",
+    "geopandas>=0.14",
+    "pyarrow>=15",
+    "pyyaml>=6.0",
+]
+
+keywords = ["bolivia", "geospatial", "regional development", "subnational data", "panel data", "gadm", "municipalities", "sdgs", "remote sensing"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+
+[project.optional-dependencies]
+raster = ["rasterio>=1.3"]   # geo4bolivia.zonal(): summarise rasters (GeoTIFF) over units
+
+[project.scripts]
+geo4bolivia = "geo4bolivia.cli:main"
+
+[project.urls]
+Homepage = "https://quarcs-lab.github.io/geo4bolivia/"
+Documentation = "https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/data-infrastructure.md"
+Repository = "https://github.com/quarcs-lab/geo4bolivia"
+Issues = "https://github.com/quarcs-lab/geo4bolivia/issues"
+
+[dependency-groups]
+analysis = [
+    # Visualization
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+    "plotly>=5.15",
+    "folium>=0.12",            # interactive maps (GeoDataFrame.explore), as in Colab
+    # Spatial analysis
+    "contextily>=1.4",
+    "rasterio>=1.3",
+    "libpysal>=4.9",
+    "mapclassify>=2.6",
+    "esda>=2.5",
+    "splot>=1.1",
+    "mgwr>=2.2",
+    "inequality>=1.0",
+    # Econometrics and machine learning
+    "statsmodels>=0.14",
+    "scikit-learn>=1.3",
+    "xgboost>=2.0",
+    # Jupyter
+    "jupyter>=1.0",
+    "notebook>=7.0",
+    "jupytext>=1.19.1",
+    "geometrics>=0.1.3",
+    "expdpy>=0.5.2",
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/geo4bolivia"]
+
+# Ship project.yaml inside the package, so an installed copy knows its repository
+[tool.hatch.build.targets.wheel.force-include]
+"project.yaml" = "geo4bolivia/project.yaml"
+
+# The source distribution holds the code only; data are read from GitHub
+[tool.hatch.build.targets.sdist]
+only-include = ["src", "project.yaml", "pyproject.toml", "docs/python-package.md", "LICENSE"]
+
+[tool.uv]
+package = true
+default-groups = ["analysis", "dev"]
+constraint-dependencies = [
+    "numba>=0.60,<0.62",
+    "llvmlite>=0.44,<0.45",
+]

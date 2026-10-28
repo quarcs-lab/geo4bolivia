@@ -1,0 +1,26 @@
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+/dist/
+.pytest_cache/
+/build/
+
+# Virtual environment (UV)
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Reference clones used to start this project (never committed)
+/geo4cambodia/
+/ds4bolivia/

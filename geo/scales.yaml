@@ -1,0 +1,79 @@
+# Spatial scales of the GeoDevelopment Observatory of Bolivia.
+#
+# Every unit at every scale has a geo ID matching `id_pattern`. Administrative
+# scales follow the GADM 4.1 hierarchy and nest by prefix (BO > BO-04 > BO-04-05
+# > BO-04-05-03). `parent` is the next coarser scale that a unit nests in exactly;
+# units of a scale with `parent: null` (grids, or a municipality map of another
+# vintage) are linked to others by area-weighted spatial overlay instead.
+#
+# Municipality maps change over time as new municipalities are created. Each map
+# (vintage) is its own scale with its own ID prefix and boundaries, so data
+# published on one map are never silently relabelled onto another; see
+# CONTRIBUTING_DATA.md, "Add a municipality map of another vintage".
+#
+# status: active  -> units, boundaries and crosswalks are published in geo/
+#         planned -> the scale and its ID scheme are reserved; no units yet
+
+country:
+  label: Country
+  kind: admin
+  level: 0
+  parent: null
+  id_pattern: '^BO$'
+  example: BO
+  source: GADM 4.1 (dissolved from municipalities)
+  status: active
+
+department:
+  label: Department
+  kind: admin
+  level: 1
+  parent: country
+  id_pattern: '^BO-\d{2}$'
+  example: BO-04
+  digits: 2
+  source: GADM 4.1 level 1 (dissolved from municipalities)
+  status: active
+
+province:
+  label: Province
+  kind: admin
+  level: 2
+  parent: department
+  id_pattern: '^BO-\d{2}-\d{2}$'
+  example: BO-04-05
+  digits: 2
+  source: GADM 4.1 level 2 (dissolved from municipalities)
+  status: active
+
+municipality:
+  label: Municipality (339, GADM 4.1)
+  kind: admin
+  level: 3
+  parent: province
+  id_pattern: '^BO-\d{2}-\d{2}-\d{2}$'
+  example: BO-04-05-01
+  digits: 2
+  source: GADM 4.1 level 3, without the 5 Lake Titicaca polygons
+  status: active
+
+municipality_ine:
+  label: Municipality (current INE map)
+  kind: custom
+  level: 3
+  parent: null      # linked to the GADM scales by area-weighted overlay
+  id_pattern: '^BO-INE-\d{6}$'
+  example: BO-INE-020101
+  source: Instituto Nacional de Estadística (INE) municipal codes (6 digits, DDPPMM)
+  status: planned
+
+grid10k:
+  label: 10 km grid cell
+  kind: grid
+  level: null
+  parent: null
+  id_pattern: '^BO-G10K-r\d{3}c\d{3}$'
+  example: BO-G10K-r012c034
+  cell_size_m: 10000
+  source: Regular grid in the equal-area projection of project.yaml
+  status: planned

@@ -1,0 +1,28 @@
+# Project identity. See TEMPLATE.md and docs/data-infrastructure.md.
+# Everything generic in the package reads its settings from here.
+
+name: GeoDevelopment Observatory of Bolivia
+short_name: GDO-Bolivia
+
+# Python package (import name), CLI command and prefix of the environment
+# variables (GEO4BOLIVIA_DATA_DIR, GEO4BOLIVIA_BASE_URL, GEO4BOLIVIA_REF).
+package: geo4bolivia
+
+# GitHub repository holding the published files, and the git ref an installed
+# package reads from by default (a release tag freezes the data).
+repository: quarcs-lab/geo4bolivia
+default_ref: main
+
+website: https://quarcs-lab.github.io/geo4bolivia/
+
+country:
+  name: Bolivia
+  iso2: BO     # prefix of every geo_id
+  iso3: BOL    # GADM country code (GID_0)
+
+# Equal-area projection for areas, crosswalk weights and overlays.
+# An Albers equal-area projection fitted to Bolivia (standard parallels 11°S and 21°S).
+equal_area_crs: "+proj=aea +lat_0=-16.5 +lon_0=-64.5 +lat_1=-11 +lat_2=-21 +datum=WGS84 +units=m +no_defs"
+
+# Generated table listing every variable of every dataset.
+catalog: definitions_gdo-bolivia.csv

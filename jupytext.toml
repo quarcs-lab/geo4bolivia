@@ -1,0 +1,4 @@
+[formats]
+"notebooks/" = "notebooks///ipynb,notebooks///md:myst"
+
+cell_metadata_filter = "-_sphinx_cell_id"
