@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeoDevelopment Observatory of Bolivia | GDO-Bolivia</title>
-    <meta name="description" content="GDO-Bolivia is a public-access platform of open municipal indicators, notebooks, web apps, and research insights for monitoring sustainable regional development in Bolivia's 339 municipalities with satellite data and AI.">
+    <meta name="description" content="GDO-Bolivia is a public-access platform of open subnational indicators, notebooks, web apps, and research insights for monitoring sustainable regional development in Bolivia with satellite data and AI.">
     <meta name="theme-color" content="#071417">
     <link rel="canonical" href="https://quarcs-lab.github.io/geo4bolivia/">
     <link rel="icon" type="image/png" sizes="32x32" href="images/logo/emblem-32.png">
@@ -15,14 +15,14 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="GDO-Bolivia">
     <meta property="og:title" content="GeoDevelopment Observatory of Bolivia">
-    <meta property="og:description" content="Open municipal indicators, tools, and insights for monitoring sustainable regional development in Bolivia.">
+    <meta property="og:description" content="Open subnational indicators, tools, and insights for monitoring sustainable regional development in Bolivia.">
     <meta property="og:url" content="https://quarcs-lab.github.io/geo4bolivia/">
     <meta property="og:image" content="https://quarcs-lab.github.io/geo4bolivia/images/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="GeoDevelopment Observatory of Bolivia">
-    <meta name="twitter:description" content="Open municipal indicators, tools, and insights for monitoring sustainable regional development in Bolivia.">
+    <meta name="twitter:description" content="Open subnational indicators, tools, and insights for monitoring sustainable regional development in Bolivia.">
     <meta name="twitter:image" content="https://quarcs-lab.github.io/geo4bolivia/images/og-image.jpg">
 
     <!-- Structured data -->
@@ -215,7 +215,7 @@
       <main class="static-fallback" style="max-width:56rem;margin:0 auto;padding:6rem 1.5rem;font-family:Inter,system-ui,sans-serif;color:#e3ecea;background:#071417">
         <img src="images/logo/emblem-192.png" alt="GDO-Bolivia emblem" width="72" height="72">
         <h1 style="font-size:2.25rem;font-weight:800;margin:1rem 0">GeoDevelopment Observatory of Bolivia</h1>
-        <p>A public-access platform for analyzing, monitoring, and evaluating sustainable regional development in Bolivia's 339 municipalities. It brings together social, economic, and environmental indicators from satellite imagery, censuses, and administrative records; makes them explorable through notebooks and web apps; and turns the results into accessible insights.</p>
+        <p>A public-access platform for analyzing, monitoring, and evaluating sustainable regional development in Bolivia, from departments and provinces to municipalities, cities and grid cells. It brings together social, economic, and environmental indicators from satellite imagery, censuses, and administrative records; makes them explorable through notebooks and web apps; and turns the results into accessible insights.</p>
         <h2>GeoDevelopment Indicators</h2>
         <ul>
           <li><a href="docs/datasets/sdg.md">SDG indicators of the Municipal Atlas of the SDGs 2020 (339 municipalities, 2010–2020)</a></li>
@@ -1624,7 +1624,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
                       Observing <span className="text-[#ff8597]">Bolivia's</span><br className="hidden sm:block" /> development<br className="hidden sm:block" /> <em className="gradient-text pr-2">from space.</em>
                     </h1>
                     <p className="text-lg md:text-xl text-salt-200 font-light leading-relaxed max-w-xl mb-10 [text-shadow:0_1px_12px_rgba(7,20,23,0.9)]">
-                      Open indicators, AI-enhanced tools, and research insights for monitoring sustainable development in Bolivia’s 339 municipalities.
+                      Open indicators, AI-enhanced tools, and research insights for monitoring sustainable regional development across Bolivia.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4">
                       <a href="#indicators" className="px-6 sm:px-8 py-3 rounded-lg bg-brand-rose hover:bg-brand-roseHover text-white font-bold text-base sm:text-lg transition-all hover:-translate-y-1 shadow-lg shadow-rose-950/40 flex items-center justify-center gap-2">
@@ -1701,14 +1701,14 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
         const AUDIENCES = [
           { title: 'Researchers', text: 'Run empirical analyses on ready-made subnational panels with reproducible code.', icon: BarChart2 },
           { title: 'Decision-makers', text: 'Use evidence to design, target, and evaluate regional development policies.', icon: MapIcon },
-          { title: 'Citizens', text: 'Understand how development is unfolding in your own municipality and department.', icon: Users },
+          { title: 'Citizens', text: 'Understand how development is unfolding in the place where you live.', icon: Users },
         ];
 
         const About = () => {
           const indicators = byType(['indicator']);
           const stats = [
             { value: new Set(indicators.flatMap((i) => i.datasets || [i.dataset])).size, label: 'indicator datasets' },
-            { value: Math.max(...indicators.map((i) => i.units)), label: 'municipalities mapped' },
+            { value: 4, label: 'spatial scales' },
             { value: '2001–2020', label: 'years covered' },
             { value: byType(['package', 'notebook', 'app']).length, label: 'packages, notebooks & apps' },
             { value: byType(['insight']).length, label: byType(['insight']).length === 1 ? 'research insight' : 'research insights' },
@@ -1717,7 +1717,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             <section id="about" aria-labelledby="about-title" className="relative border-t border-white/10">
               <SatelliteHeader band={SECTION_BANDS.about}>
                 <SectionHeading index={sectionIndex('about')} eyebrow="About the observatory" title="From pixels" emphasis="to policy" id="about-title">
-                  The GeoDevelopment Observatory of Bolivia (GDO-Bolivia) is a public-access platform for analyzing, monitoring, and evaluating sustainable regional development across Bolivia’s 339 municipalities. It brings together social, economic, and environmental indicators from satellite imagery, censuses, and administrative records; makes them explorable through AI-enhanced notebooks and web apps; and turns the results into insights anyone can use.
+                  The GeoDevelopment Observatory of Bolivia (GDO-Bolivia) is a public-access platform for analyzing, monitoring, and evaluating sustainable regional development across Bolivia’s regions, at whatever scale the data allow. It brings together social, economic, and environmental indicators from satellite imagery, censuses, and administrative records; makes them explorable through AI-enhanced notebooks and web apps; and turns the results into insights anyone can use.
                 </SectionHeading>
               </SatelliteHeader>
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
@@ -1817,7 +1817,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             <section id="indicators" aria-labelledby="indicators-title" className="relative border-t border-white/10">
               <SatelliteHeader band={SECTION_BANDS.indicators}>
                 <SectionHeading index={sectionIndex('indicators')} eyebrow="GeoDevelopment Indicators" title="Subnational data," emphasis="ready to analyze" id="indicators-title">
-                  Social, economic, and environmental indicators for Bolivia’s 339 municipalities from satellite imagery, censuses, and administrative records, documented variable by variable and free to download.
+                  Social, economic, and environmental indicators for Bolivia’s departments, provinces, municipalities and other regional units, from satellite imagery, censuses, and administrative records, documented variable by variable and free to download.
                 </SectionHeading>
               </SatelliteHeader>
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">

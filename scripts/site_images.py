@@ -329,7 +329,7 @@ def og() -> None:
     d.text((70, 250), "GeoDevelopment", font=font(64, True), fill=(255, 255, 255))
     d.text((70, 325), "Observatory", font=font(64, True), fill=(255, 255, 255))
     d.text((70, 400), "of Bolivia", font=font(48, True), fill=(255, 133, 151))
-    d.text((70, 490), "Open indicators, tools and insights for Bolivia's 339 municipalities",
+    d.text((70, 490), "Open indicators, tools and insights for regional development",
            font=font(24), fill=(203, 217, 215))
     img.convert("RGB").save(IMG / "og-image.jpg", quality=88)
     print("  wrote images/og-image.jpg")

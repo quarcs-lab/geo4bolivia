@@ -11,7 +11,7 @@
 
 **[Website](https://quarcs-lab.github.io/geo4bolivia/)** · **[Python package](https://pypi.org/project/geo4bolivia/)** · **[How the database works](docs/data-infrastructure.md)** · **[Quickstart notebook](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/geo4bolivia_quickstart.ipynb)** · **[Cite](#-citation)**
 
-The GeoDevelopment Observatory of Bolivia is a public-access platform for analyzing, monitoring and evaluating **sustainable regional development** in Bolivia's 339 municipalities. It has three parts:
+The GeoDevelopment Observatory of Bolivia is a public-access platform for analyzing, monitoring and evaluating **sustainable regional development** in Bolivia, at every spatial scale: departments, provinces, municipalities, cities and grids. It has three parts:
 
 - **GeoDevelopment Indicators:** social, economic and environmental indicators from satellite imagery, censuses and administrative records, at every spatial scale.
 - **GeoDevelopment Tools:** Python packages, notebooks and web apps to load, build and analyze them.
