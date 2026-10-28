@@ -4,8 +4,8 @@
   "start_url": "/geo4bolivia/",
   "scope": "/geo4bolivia/",
   "display": "standalone",
-  "background_color": "#060d1f",
-  "theme_color": "#060d1f",
+  "background_color": "#071417",
+  "theme_color": "#071417",
   "icons": [
     { "src": "images/logo/emblem-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "images/logo/emblem-512.png", "sizes": "512x512", "type": "image/png" }

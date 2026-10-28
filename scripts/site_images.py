@@ -6,8 +6,9 @@
   as WGS84 WMTS tiles and cached in the system temp folder. `hero` prints the
   patch settings to paste into index.html (BOLIVIA_PATCH, HERO_CITIES).
 - outline: geo/boundaries/country_outline_web.geojson, a light outline for the globe.
-- emblem: images/logo/emblem-*.png, the red instrument of the geo4cambodia emblem
-  (images/logo/src/) over a Bolivia silhouette.
+- emblem: images/logo/emblem-*.png, the GDO-Bolivia emblem: the nine departments shaded by
+  multidimensional poverty inside a satellite's orbit, on a lagoon tile (icons) or transparent
+  (emblem-dark-192.png, for the dark site header).
 - og: images/og-image.jpg, the social preview.
 - cards, pillars: maps and charts of the published data, in the site's colours.
 
@@ -31,14 +32,24 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 IMG = ROOT / "images"
-BG = "#060d1f"
-TEXT = "#e2e8f0"
-MUTED = "#94a3b8"
-SKY = "#7cc4ff"
-RED = "#d23c3c"
-TEAL = "#5eead4"
-# Diverging palette of the site's maps: deep navy -> sky -> salmon -> brand red
-SITE_PALETTE = ["#16224d", "#1f3a86", "#2d5cbf", "#5c9ee6", "#a9c8ec", "#eab0a2", "#e07b6f", "#d23c3c"]
+# The site's Altiplano palette (index.html, tailwind.config): the night over the Salar de Uyuni,
+# Laguna Verde's turquoise, Laguna Colorada's flamingos, salt and sand
+BG = "#071417"           # lagoon-950
+SURFACE = "#0b1e22"      # lagoon-900
+RAISED = "#122b30"       # lagoon-800
+EDGE = "#1b3c42"         # lagoon-700
+TEXT = "#e6efee"
+MUTED = "#a9bebb"        # salt-400
+SALT = "#f4f1e8"
+TURQUOISE = "#5ad6c6"    # highlights, indicators
+FLAMINGO = "#ff8597"     # accent text and marks
+ROSE = "#e8566b"
+SAND = "#e7c27d"         # packages
+DEEP_TEAL = "#1f8a80"
+# Diverging palette of the site's maps: deep lagoon -> turquoise -> salt -> flamingo rose
+SITE_PALETTE = ["#0f3a3f", "#13605f", "#1f8a80", "#5fb7a6", "#c9e2d6", "#f3c7c1", "#ec8f99", "#d84a64"]
+# Sequential palette for densities: deep lagoon -> turquoise -> salt
+SEQ_PALETTE = ["#0f3a3f", "#13605f", "#1f8a80", "#5fb7a6", "#a8dccf", "#f4f1e8"]
 
 TILE_URL = "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless/default/WGS84/{z}/{row}/{col}.jpg"
 CACHE = Path(tempfile.gettempdir()) / "gdo_s2cloudless_2016"
@@ -199,57 +210,99 @@ def outline() -> None:
     print(f"  wrote {out.relative_to(ROOT)}  {out.stat().st_size / 1e3:.0f} kB")
 
 
-def silhouette_px(size: int, box: tuple[float, float, float, float]):
-    """Bolivia's outline as pixel rings fitted in box = (x0, y0, x1, y1)."""
-    geom = country().simplify(0.02)
-    k = math.cos(math.radians(16.5))                          # keep the shape at Bolivia's latitude
-    minx, miny, maxx, maxy = geom.bounds
+def fit_px(geoms, box: tuple[float, float, float, float]):
+    """Pixel rings of (multi)polygons, fitted together in box = (x0, y0, x1, y1) at Bolivia's latitude."""
+    k = math.cos(math.radians(16.5))
+    minx, miny, maxx, maxy = country().bounds
     w, h = (maxx - minx) * k, maxy - miny
     x0, y0, x1, y1 = box
     s = min((x1 - x0) / w, (y1 - y0) / h)
     ox, oy = x0 + ((x1 - x0) - w * s) / 2, y0 + ((y1 - y0) - h * s) / 2
     to_px = lambda x, y: (ox + (x - minx) * k * s, oy + (maxy - y) * s)
-    return [[to_px(x, y) for x, y in p.exterior.coords] for p in getattr(geom, "geoms", [geom])]
+    return [[[to_px(x, y) for x, y in p.exterior.coords] for p in getattr(g, "geoms", [g])] for g in geoms]
 
 
-def compose_emblem(size: int, dark: bool) -> Image.Image:
+def hex_rgba(color: str, alpha: int = 255) -> tuple[int, int, int, int]:
+    c = color.lstrip("#")
+    return int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16), alpha
+
+
+def orbit_px(W: int, front: bool, n: int = 240):
+    """One half of a tilted satellite orbit around the map: the far (upper) or the near (lower) half."""
+    cx, cy, a, b, tilt = W * 0.5, W * 0.53, W * 0.45, W * 0.13, math.radians(-24)
+    ts = np.linspace(0, math.pi, n) if front else np.linspace(math.pi, 2 * math.pi, n)
+    return [(cx + a * math.cos(t) * math.cos(tilt) - b * math.sin(t) * math.sin(tilt),
+             cy + a * math.cos(t) * math.sin(tilt) + b * math.sin(t) * math.cos(tilt)) for t in ts]
+
+
+def compose_emblem(size: int, tile: bool) -> Image.Image:
+    """The GDO-Bolivia emblem: Bolivia's nine departments shaded by multidimensional poverty
+    (2012, population-weighted; turquoise = lower, flamingo = higher) inside a satellite's orbit.
+    tile=True draws it on a rounded lagoon tile (favicons, app icons); False leaves it transparent.
+    Below 64 px the country is one turquoise shape and the orbit is heavier, so the favicon stays legible."""
+    import geo4bolivia as geo
     ss = 4                                                    # supersampling for smooth edges
     W = size * ss
     canvas = Image.new("RGBA", (W, W), (0, 0, 0, 0))
+    if tile:
+        glow = Image.new("RGBA", (W, W), hex_rgba(BG))
+        halo = Image.new("L", (W, W), 0)
+        ImageDraw.Draw(halo).ellipse([W * 0.05, W * 0.0, W * 0.95, W * 0.9], fill=150)
+        glow.paste(Image.new("RGBA", (W, W), hex_rgba(RAISED)), mask=halo.filter(ImageFilter.GaussianBlur(W * 0.12)))
+        mask = Image.new("L", (W, W), 0)
+        ImageDraw.Draw(mask).rounded_rectangle([0, 0, W - 1, W - 1], radius=int(W * 0.22), fill=255)
+        canvas.paste(glow, mask=mask)
+    small = size <= 64
+    lw = max(2, int(W * (0.05 if small else 0.018 if tile else 0.03)))   # the header copy is shown at 40 px
+
+    back = Image.new("RGBA", (W, W), (0, 0, 0, 0))            # the far half of the orbit, behind the map
+    ImageDraw.Draw(back).line(orbit_px(W, front=False), fill=hex_rgba(SALT, 110), width=lw, joint="curve")
+    canvas.alpha_composite(back)
+
+    deps = geo.boundaries("department")
+    mpi = geo.aggregate(geo.load("sdg", variables="sdg1_2_mpi", years=2012), to="department",
+                        rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop", years=2012))
+    deps = deps.merge(mpi[["geo_id", "sdg1_2_mpi"]], on="geo_id")
+    rank = deps["sdg1_2_mpi"].rank(method="first").to_numpy() - 1
+    cmap = site_cmap()
+    shapes = fit_px(deps.geometry.simplify(0.01), (W * 0.2, W * 0.15, W * 0.8, W * 0.87))
     draw = ImageDraw.Draw(canvas)
-    navy = (42, 88, 198, 255) if dark else (30, 62, 121, 255)
-    line = (124, 176, 238, 255) if dark else (30, 62, 121, 255)
-    if not dark:
-        draw.rounded_rectangle([0, 0, W - 1, W - 1], radius=int(W * 0.2), fill=(249, 246, 243, 255))
-    c, r = W / 2, W * 0.40
-    lw = max(2, int(W * 0.007))
-    draw.ellipse([c - r, c - r, c + r, c + r], outline=line, width=lw)
-    draw.ellipse([c - r * 0.55, c - r * 0.55, c + r * 0.55, c + r * 0.55], outline=line, width=max(1, lw // 2))
-    for ang in (12, 102, 148):                               # three survey lines through the centre
-        a = math.radians(ang)
-        dx, dy = math.cos(a) * W * 0.48, math.sin(a) * W * 0.48
-        draw.line([c - dx, c - dy, c + dx, c + dy], fill=line, width=max(1, lw // 2))
-    for ang in range(0, 360, 45):                            # dots on the ring
-        a = math.radians(ang + 22.5)
-        x, y, rd = c + math.cos(a) * r, c + math.sin(a) * r, W * 0.016
-        draw.ellipse([x - rd, y - rd, x + rd, y + rd], fill=line)
-    for ring in silhouette_px(W, (W * 0.20, W * 0.13, W * 0.80, W * 0.87)):
-        draw.polygon(ring, fill=navy)
-    canvas = canvas.resize((size, size), Image.LANCZOS)
-    src = IMG / "logo/src" / ("instrument-dark-192.png" if dark else "instrument-light-512.png")
-    instrument = Image.open(src).convert("RGBA").resize((size, size), Image.LANCZOS)
-    canvas.alpha_composite(instrument)
-    return canvas
+    if small:
+        for rings in fit_px([country().simplify(0.05)], (W * 0.2, W * 0.15, W * 0.8, W * 0.87)):
+            for ring in rings:
+                draw.polygon(ring, fill=hex_rgba(TURQUOISE))
+    else:
+        for rings, r in zip(shapes, rank):
+            c = tuple(int(255 * v) for v in cmap(0.12 + 0.88 * r / (len(deps) - 1))[:3]) + (255,)
+            for ring in rings:
+                draw.polygon(ring, fill=c)
+        for rings in shapes:                                  # department borders in the background colour
+            for ring in rings:
+                draw.line(ring + [ring[0]], fill=hex_rgba(BG), width=max(1, int(W * 0.007)), joint="curve")
+
+    front = Image.new("RGBA", (W, W), (0, 0, 0, 0))           # the near half, in front of the map
+    ImageDraw.Draw(front).line(orbit_px(W, front=True), fill=hex_rgba(SALT, 235), width=lw, joint="curve")
+    canvas.alpha_composite(front)
+    sx, sy = orbit_px(W, front=True)[38]                      # the satellite, low on the near side
+    halo = Image.new("RGBA", (W, W), (0, 0, 0, 0))
+    rd = W * 0.075
+    ImageDraw.Draw(halo).ellipse([sx - rd, sy - rd, sx + rd, sy + rd], fill=hex_rgba(FLAMINGO, 150))
+    canvas.alpha_composite(halo.filter(ImageFilter.GaussianBlur(W * 0.03)))
+    rd = W * (0.085 if small else 0.042 if tile else 0.055)
+    draw = ImageDraw.Draw(canvas)
+    draw.ellipse([sx - rd, sy - rd, sx + rd, sy + rd], fill=hex_rgba(FLAMINGO), outline=hex_rgba(SALT), width=max(1, int(W * 0.01)))
+    return canvas.resize((size, size), Image.LANCZOS)
 
 
 def emblem() -> None:
     print("emblem")
     out = IMG / "logo"
-    light = compose_emblem(512, dark=False)
-    for s in (32, 180, 192, 512):
-        light.resize((s, s), Image.LANCZOS).save(out / f"emblem-{s}.png")
-    light.resize((256, 256), Image.LANCZOS).save(out / "emblem.webp", "WEBP", quality=90)
-    compose_emblem(192, dark=True).save(out / "emblem-dark-192.png")
+    icon = compose_emblem(512, tile=True)
+    for s in (180, 192, 512):
+        icon.resize((s, s), Image.LANCZOS).save(out / f"emblem-{s}.png")
+    compose_emblem(32, tile=True).save(out / "emblem-32.png")    # drawn at its own size, so the orbit stays crisp
+    icon.resize((256, 256), Image.LANCZOS).save(out / "emblem.webp", "WEBP", quality=90)
+    compose_emblem(192, tile=False).save(out / "emblem-dark-192.png")
     print("  wrote images/logo/emblem-{32,180,192,512}.png, emblem.webp, emblem-dark-192.png")
 
 
@@ -269,15 +322,15 @@ def og() -> None:
     for x in range(img.size[0]):                             # dark on the left, fading to the right
         a = int(235 * max(0.0, 1 - x / 900) ** 0.8)
         for y in range(img.size[1]):
-            px[x, y] = (6, 13, 31, a)
+            px[x, y] = (7, 20, 23, a)
     img.alpha_composite(shade)
     img.alpha_composite(Image.open(IMG / "logo/emblem-dark-192.png").convert("RGBA").resize((120, 120), Image.LANCZOS), (70, 90))
     d = ImageDraw.Draw(img)
     d.text((70, 250), "GeoDevelopment", font=font(64, True), fill=(255, 255, 255))
     d.text((70, 325), "Observatory", font=font(64, True), fill=(255, 255, 255))
-    d.text((70, 400), "of Bolivia", font=font(48, True), fill=(255, 107, 107))
+    d.text((70, 400), "of Bolivia", font=font(48, True), fill=(255, 133, 151))
     d.text((70, 490), "Open indicators, tools and insights for Bolivia's 339 municipalities",
-           font=font(24), fill=(203, 213, 225))
+           font=font(24), fill=(203, 217, 215))
     img.convert("RGB").save(IMG / "og-image.jpg", quality=88)
     print("  wrote images/og-image.jpg")
 
@@ -290,7 +343,7 @@ def mpl():
     import matplotlib.pyplot as plt
     plt.rcParams.update({"figure.facecolor": BG, "axes.facecolor": BG, "savefig.facecolor": BG,
                          "text.color": TEXT, "axes.labelcolor": TEXT, "xtick.color": MUTED, "ytick.color": MUTED,
-                         "axes.edgecolor": "#1c2f5e", "font.size": 13, "font.family": "DejaVu Sans"})
+                         "axes.edgecolor": EDGE, "font.size": 13, "font.family": "DejaVu Sans"})
     return plt
 
 
@@ -312,6 +365,11 @@ def site_cmap(n=None):
     return LinearSegmentedColormap.from_list("site", SITE_PALETTE)
 
 
+def seq_cmap():
+    from matplotlib.colors import LinearSegmentedColormap
+    return LinearSegmentedColormap.from_list("seq", SEQ_PALETTE)
+
+
 def quantile_map(ax, gdf, column, k, cmap, label, fmt="{:,.2f}", cax=None, reverse=False):
     import mapclassify
     q = mapclassify.Quantiles(gdf[column], k=k)
@@ -323,7 +381,7 @@ def quantile_map(ax, gdf, column, k, cmap, label, fmt="{:,.2f}", cax=None, rever
         norm = mplib.colors.BoundaryNorm(np.arange(k + 1), cm.N)
         cb = mplib.colorbar.ColorbarBase(cax, cmap=cm, norm=norm, ticks=np.arange(k) + 0.5)
         cb.ax.set_yticklabels([f"≤ {fmt.format(b)}" for b in q.bins])
-        cb.outline.set_edgecolor("#94a3b8")
+        cb.outline.set_edgecolor(MUTED)
         cb.set_label(label, color=TEXT)
         cb.ax.tick_params(colors=TEXT)
 
@@ -356,7 +414,7 @@ def cards() -> None:
     gdf["growth"] = 100 * ((gdf["pop2020"] / gdf["pop2001"]) ** (1 / 19) - 1)
     fig, axes = plt.subplots(1, 2, figsize=(16, 9))
     fig.subplots_adjust(left=0.02, right=0.98, top=0.9, bottom=0.08, wspace=0.05)
-    for ax, col, title, cmap in [(axes[0], "density", "People per km², 2020", plt.get_cmap("magma")),
+    for ax, col, title, cmap in [(axes[0], "density", "People per km², 2020", seq_cmap()),
                                  (axes[1], "growth", "Annual population growth 2001–2020 (%)", site_cmap())]:
         quantile_map(ax, gdf, col, 7, cmap, title)
         ax.set_title(title, fontsize=20, color=TEXT)
@@ -373,7 +431,7 @@ def cards() -> None:
     gdf.plot(color=np.clip(rgb[gdf["_i"]], 0, 1), ax=ax, edgecolor=BG, linewidth=0.25); ax.set_axis_off()
     fig.text(0.6, 0.62, "Satellite embeddings, 2017", fontsize=27, weight="bold", color="white")
     fig.text(0.6, 0.55, "64 dimensions per municipality,\nshown as the first three principal\ncomponents in red, green and blue", fontsize=19, color=MUTED, va="top")
-    fig.text(0.6, 0.3, 'geo.load("emb")   geo.load("embpw")', fontsize=17, color=TEAL, family="DejaVu Sans Mono")
+    fig.text(0.6, 0.3, 'geo.load("emb")   geo.load("embpw")', fontsize=17, color=TURQUOISE, family="DejaVu Sans Mono")
     save_fig(fig, IMG / "indicators/emb.webp")
 
     package_card(geo, plt)
@@ -396,9 +454,9 @@ def package_card(geo, plt):
     ax = fig.add_axes([0.02, 0.03, 0.4, 0.94]); ax.set_axis_off()
     mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
     pop = geo.load("pop", years=2012)
-    layers = [("department", "9 departments", "pop · BO-04", plt.get_cmap("viridis")),
-              ("province", "112 provinces", "sdg · BO-04-17", plt.get_cmap("cividis")),
-              ("municipality", "339 municipalities", "ntl · BO-04-17-04", plt.get_cmap("magma"))]
+    layers = [("department", "9 departments", "pop · BO-04", site_cmap()),
+              ("province", "112 provinces", "sdg · BO-04-17", seq_cmap()),
+              ("municipality", "339 municipalities", "ntl · BO-04-17-04", site_cmap().reversed())]
     for i, (scale, label, sub, cmap) in enumerate(layers):
         b = geo.boundaries(scale)
         vals = geo.aggregate(mpi, to=scale, rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=pop) if scale != "municipality" else mpi
@@ -408,24 +466,24 @@ def package_card(geo, plt):
         sq.assign(_c=mapclassify.Quantiles(g["sdg1_2_mpi"], k=min(6, len(g) - 1)).yb).plot(
             column="_c", cmap=cmap, ax=ax, edgecolor=BG, linewidth=0.3 if scale != "municipality" else 0.15)
         pt = geo.boundaries("municipality").set_index("geo_id").loc["BO-04-17-04", "geometry"].representative_point()
-        ax.plot(pt.x, pt.y * 0.42 + dy, "o", ms=9, mfc="white", mec=RED, mew=2.5, zorder=5)
+        ax.plot(pt.x, pt.y * 0.42 + dy, "o", ms=9, mfc="white", mec=ROSE, mew=2.5, zorder=5)
         fig.text(0.42, 0.84 - i * 0.33, label, fontsize=21, weight="bold", color="white")
-        fig.text(0.42, 0.79 - i * 0.33, sub, fontsize=15, color=SKY, family="DejaVu Sans Mono")
-    ax.plot([pt.x] * 2, [pt.y * 0.42, pt.y * 0.42 - 19], ls="--", color=RED, lw=1.5, zorder=4)
+        fig.text(0.42, 0.79 - i * 0.33, sub, fontsize=15, color=TURQUOISE, family="DejaVu Sans Mono")
+    ax.plot([pt.x] * 2, [pt.y * 0.42, pt.y * 0.42 - 19], ls="--", color=ROSE, lw=1.5, zorder=4)
     ax.set_xlim(-70, -57); ax.set_ylim(-31.5, -3.5)
     fig.text(0.62, 0.84, "geo4bolivia", fontsize=46, weight="bold", color="white")
-    fig.text(0.62, 0.77, "load · link · build · move across scales", fontsize=20, color=TEAL)
+    fig.text(0.62, 0.77, "load · link · build · move across scales", fontsize=20, color=SAND)
     from matplotlib.patches import FancyBboxPatch
     panel = FancyBboxPatch((0.61, 0.17), 0.365, 0.55, boxstyle="round,pad=0.005,rounding_size=0.015",
-                           transform=fig.transFigure, facecolor="#0b1733", edgecolor="#1c2f5e", lw=1.5)
+                           transform=fig.transFigure, facecolor=SURFACE, edgecolor=EDGE, lw=1.5)
     fig.patches.append(panel)
     for k, c in enumerate(["#ff5f57", "#febc2e", "#28c840"]):
         fig.patches.append(plt.Circle((0.63 + k * 0.013, 0.68), 0.0055, transform=fig.transFigure, color=c))
     lines = ['import geo4bolivia as geo', '', 'geo.load("ntl", geometry=True)', 'geo.link(df, "municipality", on="mun_id")',
              'geo.aggregate(df, to="department")', 'geo.combine(["ntl", "pop"], "municipality")', 'geo.for_geometrics("ntl")']
     for k, t in enumerate(lines):
-        fig.text(0.625, 0.61 - k * 0.055, t, fontsize=15, family="DejaVu Sans Mono", color="white" if k == 0 else "#93c5fd")
-    fig.text(0.62, 0.08, "pip install geo4bolivia", fontsize=21, weight="bold", family="DejaVu Sans Mono", color=TEAL)
+        fig.text(0.625, 0.61 - k * 0.055, t, fontsize=15, family="DejaVu Sans Mono", color="white" if k == 0 else "#bfe9e2")
+    fig.text(0.62, 0.08, "pip install geo4bolivia", fontsize=21, weight="bold", family="DejaVu Sans Mono", color=SAND)
     save_fig(fig, IMG / "tools/geo4bolivia-package.webp")
 
 
@@ -440,7 +498,7 @@ def geometrics_card(geo, plt):
     lisa = Moran_Local(y, w, seed=0, permutations=999)
     mi = Moran(y, w, permutations=0)
     quad = np.where(lisa.p_sim < 0.05, lisa.q, 0)
-    colors = {0: "#24304f", 1: RED, 2: "#5c9ee6", 3: "#1f3a86", 4: "#eab0a2"}
+    colors = {0: "#1d3a3f", 1: ROSE, 2: "#8fd3c5", 3: DEEP_TEAL, 4: "#f3b0b6"}
     fig = plt.figure(figsize=(16, 9))
     ax = fig.add_axes([0.02, 0.06, 0.42, 0.84])
     g.plot(color=[colors[q] for q in quad], ax=ax, edgecolor=BG, linewidth=0.2); ax.set_axis_off()
@@ -451,13 +509,13 @@ def geometrics_card(geo, plt):
     ax2 = fig.add_axes([0.52, 0.14, 0.42, 0.68])
     z = (y - y.mean()) / y.std()
     lag = libpysal.weights.lag_spatial(w, z)
-    ax2.scatter(z, lag, s=18, color=[colors[q] if q else "#5c6b8f" for q in quad], alpha=0.85)
+    ax2.scatter(z, lag, s=18, color=[colors[q] if q else "#5b7774" for q in quad], alpha=0.85)
     b = np.polyfit(z, lag, 1)
-    xs = np.linspace(z.min(), z.max(), 10); ax2.plot(xs, b[0] * xs + b[1], color=SKY, lw=2.5)
-    ax2.axhline(0, color="#334155", lw=1); ax2.axvline(0, color="#334155", lw=1)
+    xs = np.linspace(z.min(), z.max(), 10); ax2.plot(xs, b[0] * xs + b[1], color=SAND, lw=2.5)
+    ax2.axhline(0, color="#2c4a4e", lw=1); ax2.axvline(0, color="#2c4a4e", lw=1)
     ax2.set_xlabel("Lights per capita (standardized)"); ax2.set_ylabel("Spatial lag")
     ax2.set_title(f"Moran's I = {mi.I:.2f}", fontsize=17, color=TEXT)
-    for s in ax2.spines.values(): s.set_color("#1c2f5e")
+    for s in ax2.spines.values(): s.set_color(EDGE)
     fig.text(0.52, 0.9, "geometrics", fontsize=30, weight="bold", color="white")
     save_fig(fig, IMG / "tools/geometrics-package.webp")
 
@@ -470,22 +528,22 @@ def expdpy_card(geo, plt):
     fig = plt.figure(figsize=(16, 9))
     ax = fig.add_axes([0.06, 0.12, 0.56, 0.7])
     for _, s in d.groupby("geo_id"):
-        ax.plot(s["year"], s["ln_t400NTLpc"], color="#5c9ee6", alpha=0.12, lw=1)
+        ax.plot(s["year"], s["ln_t400NTLpc"], color="#5fb7a6", alpha=0.12, lw=1)
     means = d.groupby(["department_id", "year"])["ln_t400NTLpc"].mean().unstack(0)
-    cm = site_cmap(9)
+    cm = site_cmap()                                         # skip the darkest teals, unreadable on the background
     for k, col in enumerate(means.columns):
-        ax.plot(means.index, means[col], color=cm(k), lw=3, label=deps[col])
+        ax.plot(means.index, means[col], color=cm(0.25 + 0.75 * k / 8), lw=3, label=deps[col])
     ax.legend(ncol=3, fontsize=10, frameon=False, labelcolor=TEXT, loc="lower right")
     ax.set_xlabel("Year"); ax.set_ylabel("Log lights per capita (trend)")
     ax.set_title("339 municipal trajectories and department means, 2012–2020", fontsize=16, color=TEXT)
-    for s in ax.spines.values(): s.set_color("#1c2f5e")
+    for s in ax.spines.values(): s.set_color(EDGE)
     x = d["ln_t400NTLpc"]
     between = d.groupby("geo_id")["ln_t400NTLpc"].transform("mean")
     sd_b, sd_w = between.std(), (x - between).std()
     ax2 = fig.add_axes([0.7, 0.12, 0.26, 0.5])
-    ax2.bar(["between", "within"], [sd_b, sd_w], color=[RED, SKY], width=0.6)
+    ax2.bar(["between", "within"], [sd_b, sd_w], color=[ROSE, TURQUOISE], width=0.6)
     ax2.set_title("Standard deviation", fontsize=15, color=TEXT)
-    for s in ax2.spines.values(): s.set_color("#1c2f5e")
+    for s in ax2.spines.values(): s.set_color(EDGE)
     fig.text(0.7, 0.86, "expdpy", fontsize=30, weight="bold", color="white")
     fig.text(0.7, 0.8, "panel exploration and econometrics", fontsize=15, color=MUTED)
     save_fig(fig, IMG / "tools/expdpy-package.webp")
@@ -543,7 +601,7 @@ def backdrop(fig):
     ax = fig.add_axes([0, 0, 1, 1], zorder=-2); ax.set_axis_off()
     yy, xx = np.mgrid[0:1:400j, 0:1:600j]
     r = np.hypot((xx - 0.5) * 1.3, yy - 0.55)
-    ax.imshow(np.clip(1 - r * 1.4, 0, 1), cmap=site_cmap().from_list("bg", [BG, "#13224a"]), extent=[0, 1, 0, 1],
+    ax.imshow(np.clip(1 - r * 1.4, 0, 1), cmap=site_cmap().from_list("bg", [BG, RAISED]), extent=[0, 1, 0, 1],
               aspect="auto", zorder=0)
     return ax
 
@@ -580,9 +638,9 @@ def pillars() -> None:
         edge = skew(outline_geom, dy)
         for p in getattr(edge, "geoms", [edge]):
             xs, ys = p.exterior.xy
-            ax.fill(np.array(xs) + 0.15, np.array(ys) - 0.5, color="#020611", alpha=0.8, zorder=1)
-            ax.fill(xs, ys, color="#070b18", zorder=1.5)
-            glow_line(ax, xs, ys, SKY, width=1.0, layers=5, alpha=0.08, z=4)
+            ax.fill(np.array(xs) + 0.15, np.array(ys) - 0.5, color="#020a0c", alpha=0.8, zorder=1)
+            ax.fill(xs, ys, color="#0a1a1d", zorder=1.5)
+            glow_line(ax, xs, ys, TURQUOISE, width=1.0, layers=5, alpha=0.08, z=4)
         if layer == "imagery":
             tr = Affine2D([[1, SK, 0], [0, SY, dy], [0, 0, 1]]) + ax.transData
             ax.imshow(np.array(sat), extent=[lng0, lng0 + w, lat0 - h, lat0], transform=tr, zorder=3, interpolation="bilinear")
@@ -590,14 +648,14 @@ def pillars() -> None:
             for geom_, c in zip(mpi.geometry, cls):
                 gg = skew(geom_, dy)
                 for p in getattr(gg, "geoms", [gg]):
-                    ax.fill(*p.exterior.xy, color=cm(c), ec="#0b1733", lw=0.25, zorder=3)
+                    ax.fill(*p.exterior.xy, color=cm(c), ec=SURFACE, lw=0.25, zorder=3)
         else:
             px, py = pts.x + SK * pts.y, SY * pts.y + dy
             for k, a in [(420, 0.05), (160, 0.12), (36, 0.7)]:
                 ax.scatter(px, py, s=k * s ** 2, color="#ffb547", alpha=a, lw=0, zorder=3.5)
     for _, _, lat, lng in CITIES[:3]:                       # vertical links between the layers
         x = lng + SK * lat
-        ax.plot([x, x], [SY * lat - 2 * GAP, SY * lat], color=SKY, lw=1.2, alpha=0.8, zorder=5)
+        ax.plot([x, x], [SY * lat - 2 * GAP, SY * lat], color=FLAMINGO, lw=1.2, alpha=0.8, zorder=5)
         ax.scatter([x] * 3, [SY * lat - 2 * GAP, SY * lat - GAP, SY * lat], s=28, color="white", zorder=6)
     allb = [skew(outline_geom, dy).bounds for _, dy in layers]
     x0, y0 = min(b[0] for b in allb), min(b[1] for b in allb)
@@ -611,29 +669,29 @@ def pillars() -> None:
     from matplotlib.patches import FancyBboxPatch
     for k in range(6, 0, -1):
         fig.patches.append(FancyBboxPatch((0.07, 0.12), 0.86, 0.78, boxstyle="round,pad=0,rounding_size=0.03", zorder=-1,
-                                          transform=fig.transFigure, facecolor="none", edgecolor=SKY, lw=k * 2.5, alpha=0.05))
+                                          transform=fig.transFigure, facecolor="none", edgecolor=SAND, lw=k * 2.5, alpha=0.05))
     fig.patches.append(FancyBboxPatch((0.07, 0.12), 0.86, 0.78, boxstyle="round,pad=0,rounding_size=0.03", zorder=-1,
-                                      transform=fig.transFigure, facecolor="#0b1733", edgecolor=SKY, lw=1.6, alpha=0.92))
+                                      transform=fig.transFigure, facecolor=SURFACE, edgecolor=SAND, lw=1.6, alpha=0.92))
     ax = fig.add_axes([0.1, 0.15, 0.48, 0.72]); ax.set_axis_off()
     import mapclassify
     mpi.assign(_c=mapclassify.Quantiles(mpi["sdg1_2_mpi"], k=8).yb).plot(column="_c", cmap=site_cmap(8).reversed(),
-                                                                       ax=ax, edgecolor="#0b1733", linewidth=0.2)
+                                                                       ax=ax, edgecolor=SURFACE, linewidth=0.2)
     d = geo.load("ntl").merge(geo.units("municipality")[["geo_id", "department_id"]], on="geo_id")
     series = d.groupby(["year"])["ln_t400NTLpc"].quantile([0.25, 0.5, 0.75]).unstack()
     for k, (y0, title) in enumerate([(0.66, "lines"), (0.43, "bars"), (0.2, "density")]):
-        a = fig.add_axes([0.62, y0, 0.28, 0.18]); a.set_facecolor("#0e1c3d")
-        for s in a.spines.values(): s.set_color("#1c2f5e")
+        a = fig.add_axes([0.62, y0, 0.28, 0.18]); a.set_facecolor(RAISED)
+        for s in a.spines.values(): s.set_color(EDGE)
         a.set_xticks([]); a.set_yticks([])
         if title == "lines":
-            for q, c in zip(series.columns, [SKY, "#ff8a8a", SKY]):
+            for q, c in zip(series.columns, [TURQUOISE, FLAMINGO, TURQUOISE]):
                 a.plot(series.index, series[q], color=c, lw=2.2, marker="o", ms=4)
         elif title == "bars":
             pop = geo.aggregate(geo.load("pop", years=2020), to="department", dataset="pop").sort_values("pop")
-            a.bar(range(9), pop["pop"], color=[RED if i % 3 == 2 else "#5c9ee6" for i in range(9)])
+            a.bar(range(9), pop["pop"], color=[ROSE if i % 3 == 2 else DEEP_TEAL for i in range(9)])
         else:
             vals = np.sort(mpi["sdg1_2_mpi"].to_numpy())
             hist, edges = np.histogram(vals, bins=30, density=True)
-            a.fill_between(edges[:-1], hist, color="#5c9ee6", alpha=0.6); a.plot(edges[:-1], hist, color="#ff8a8a", lw=2)
+            a.fill_between(edges[:-1], hist, color=DEEP_TEAL, alpha=0.6); a.plot(edges[:-1], hist, color=FLAMINGO, lw=2)
     save_fig(fig, IMG / "pillar-tools.webp", size=(1200, 800))
 
     # Insights: a network of municipalities, glowing where lights are brightest
@@ -641,17 +699,17 @@ def pillars() -> None:
     ax = fig.add_axes([0.12, 0.04, 0.76, 0.92]); ax.set_axis_off()
     for p in getattr(outline_geom, "geoms", [outline_geom]):
         xs, ys = p.exterior.xy
-        glow_line(ax, xs, ys, SKY, width=1.6, layers=8, alpha=0.06)
+        glow_line(ax, xs, ys, FLAMINGO, width=1.6, layers=8, alpha=0.06)
     pts = ntl.geometry.representative_point()
     coords = np.column_stack([pts.x, pts.y])
     knn = libpysal.weights.KNN.from_array(coords, k=4)
     for i, nbrs in knn.neighbors.items():
         for j in nbrs:
             if i < j:
-                ax.plot(*zip(coords[i], coords[j]), color="#4f86d8", lw=0.6, alpha=0.45, zorder=2)
+                ax.plot(*zip(coords[i], coords[j]), color="#2f8f86", lw=0.6, alpha=0.5, zorder=2)
     v = ntl["ln_t400NTLpc"].to_numpy(); s = (v - v.min()) / np.ptp(v)
     for k, a in [(500, 0.04), (160, 0.12), (24, 0.9)]:
-        ax.scatter(coords[:, 0], coords[:, 1], s=k * s ** 3 + 4, color="#ff8a5c", alpha=a, lw=0, zorder=3)
+        ax.scatter(coords[:, 0], coords[:, 1], s=k * s ** 3 + 4, color="#f4d08a", alpha=a, lw=0, zorder=3)
     ax.set_aspect(1 / math.cos(math.radians(16.5)))
     save_fig(fig, IMG / "pillar-insights.webp", size=(1200, 800))
 

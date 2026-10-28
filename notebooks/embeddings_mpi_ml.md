@@ -183,7 +183,7 @@ table.round(3)
 ```{code-cell} ipython3
 fig, ax = plt.subplots(figsize=(9, 4.2))
 plot_df = results.assign(label=results["features"] + " | " + results["model"])
-sns.barplot(data=plot_df, y="label", x="R2", hue="cv", ax=ax, palette=["#7cc4ff", "#d23c3c"])
+sns.barplot(data=plot_df, y="label", x="R2", hue="cv", ax=ax, palette=["#1f8a80", "#d84a64"])
 ax.axvline(0, color="black", lw=0.8)
 ax.set_xlabel("Out-of-fold R²")
 ax.set_ylabel("")

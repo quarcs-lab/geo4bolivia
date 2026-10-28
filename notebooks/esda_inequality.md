@@ -160,7 +160,7 @@ theil_table.round(4)
 
 ```{code-cell} ipython3
 ax = theil_table[["between share", "within share"]].rename(index=labels).plot.barh(
-    stacked=True, color=["#d23c3c", "#7cc4ff"], figsize=(8, 2.6))
+    stacked=True, color=["#d84a64", "#1f8a80"], figsize=(8, 2.6))
 ax.set_xlim(0, 1)
 ax.set_xlabel("Share of total Theil inequality")
 ax.set_ylabel("")

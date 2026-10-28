@@ -174,7 +174,7 @@ All content is data in the `CONTENT_REGISTRY` array in `index.html`. To add an i
 - Maintainer commands (`uv ...`, releasing) stay as terminal commands.
 - Every Python code box links to a blank notebook, `https://colab.research.google.com/notebooks/empty.ipynb`. On the website it is an "Open in Colab" button in the box's footer bar (`CodeBlock`'s `colab` prop; `CodeTabs` sets it). In README and docs (including generated dataset docs) it is the Colab badge below each Python block. Not for BibTeX or terminal commands.
 
-Design tokens are defined in `tailwind.config`: `navy-950…500`, `brand-red` (#d23c3c), `brand-sky` (#7cc4ff). Packages use teal accents. Keep text contrast at WCAG AA or better, keep `prefers-reduced-motion` working, and give every image meaningful `alt` text.
+Design tokens are defined in `tailwind.config`, in the **Altiplano palette** (the night over the Salar de Uyuni, Laguna Verde, Laguna Colorada's flamingos): `lagoon-950…500` backgrounds, `salt-100…700` text greys, `brand-rose` (#d1405a, buttons, with white text), `brand-flamingo` (#ff8597, accent text), `brand-turquoise` (#5ad6c6, highlights and links) and `sand-200…400` (packages). Content types have their own hues: indicators teal, packages sand, notebooks violet, apps orange, insights rose, events emerald. `scripts/site_images.py` uses the same colours: `SITE_PALETTE` is the maps' lagoon-to-flamingo ramp. The emblem (`images/logo/`) is drawn by the same script: the nine departments shaded by multidimensional poverty inside a satellite's orbit. Keep text contrast at WCAG AA or better, keep `prefers-reduced-motion` working, and give every image meaningful `alt` text.
 
 ## Preferred libraries
 
