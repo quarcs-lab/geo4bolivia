@@ -2,13 +2,13 @@
 
 >>> import geo4bolivia as geo
 >>> geo.datasets()                               # what is available, at which scales and years
->>> df = geo.load("gdppc")                       # panel: geo_id, year, variables
->>> gdf = geo.load("env", geometry=True)         # with boundaries
->>> geo.aggregate(geo.load("env"), to="gdl", dataset="env")   # up the hierarchy
->>> mine = geo.link(my_table, scale="province", on="Province")  # your data -> geo_id
->>> geo.combine(["env", "hdi"], scale="gdl", extra=[mine])     # one panel, one scale
->>> gdf, df, df_dict = geo.for_geometrics("gdppc")             # ready for the geometrics package
->>> df, df_def = geo.for_expdpy("env", groups=["gdl"])          # ready for the expdpy package
+>>> df = geo.load("ntl")                         # panel: geo_id, year, variables
+>>> gdf = geo.load("pop", geometry=True)         # with boundaries
+>>> geo.aggregate(geo.load("pop"), to="department", dataset="pop")   # up the hierarchy
+>>> mine = geo.link(my_table, scale="municipality", on="mun_id", key="mun_id")  # your data -> geo_id
+>>> geo.combine(["ntl", "pop"], scale="municipality", extra=[mine])  # one panel, one scale
+>>> gdf, df, df_dict = geo.for_geometrics("ntl")                     # ready for the geometrics package
+>>> df, df_def = geo.for_expdpy("ntl", groups=["department"])        # ready for the expdpy package
 
 See docs/data-infrastructure.md in the repository for the full guide.
 """

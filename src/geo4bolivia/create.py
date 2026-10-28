@@ -202,7 +202,7 @@ def combine(datasets, scale: str, years=None, extra=(), rules: dict | None = Non
 ZONAL_STATS = ("sum", "mean", "min", "max", "median", "count")
 
 
-def zonal(raster, scale="district", stats=("sum", "mean"), name: str = "value", year: int | None = None,
+def zonal(raster, scale, stats=("sum", "mean"), name: str = "value", year: int | None = None,
           band: int = 1, all_touched: bool = False, ref: str | None = None) -> pd.DataFrame:
     """Summarise a raster (GeoTIFF path or URL) over the units of a scale.
 

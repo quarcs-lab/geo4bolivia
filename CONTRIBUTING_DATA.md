@@ -7,7 +7,7 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
 ## Add a dataset at an existing scale
 
 1. **Put the originals in `raw/<dataset>/`** and list them in `raw/README.md`. Never edit them. If something must be fixed, fix it in the builder, so the fix is documented and reproducible.
-2. **Describe it in `metadata/<dataset>.datapackage.json`.** Copy an existing package (e.g. `metadata/env.datapackage.json`), or the one `geo.save()` writes, and edit:
+2. **Describe it in `metadata/<dataset>.datapackage.json`.** Copy an existing package (e.g. `metadata/pop.datapackage.json`), or the one `geo.save()` writes, and edit:
    - `name`, `title`, `description`, `licenses`, `sources`, `geo:categories`, `geo:citation`, `geo:notes`
    - one resource per scale with:
      - `path`: the public URL, `https://raw.githubusercontent.com/<repository>/main/<geo:path>`
@@ -18,6 +18,7 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
      - `year`, with role `time`
      - optionally the original key, with role `source_key` and `geo:units_column` naming the matching column of `geo/units.csv`
      - the variables, each with `description`, `geo:unit`, `geo:source` and `geo:aggregation`
+     - for a variable observed in one year only, `geo:year` (see `metadata/sdg.datapackage.json`)
 
    Then add the dataset id to `metadata/index.json`.
 3. **Write a builder.** Copy `src/geo4bolivia/build/_template.py` to `src/geo4bolivia/build/<dataset>.py`. It reads the raw file, maps its key to `geo_id`, and calls `publish()` and `write_docs()`:
@@ -39,7 +40,7 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
 | Rule | Use for | Example |
 | --- | --- | --- |
 | `sum` | counts and totals that add up across units | population, GDP, zonal sums of lights |
-| `weighted_mean:<field>` | rates and averages, weighted by another field of the dataset | HDI and GNI per capita, weighted by `POP` |
+| `weighted_mean:<field>` | rates and averages, weighted by another field of the dataset | a poverty rate weighted by a `pop` field |
 | `mean`, `min`, `max` | unweighted summaries (use with care) | — |
 | `none` | values that cannot be aggregated without extra data | logs, HP trends, per-capita values without population |
 
@@ -47,13 +48,23 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
 
 ## Add a new spatial scale
 
-Scales are registered in [`geo/scales.yaml`](geo/scales.yaml). `commune` and `grid10k` are already reserved (`status: planned`).
+Scales are registered in [`geo/scales.yaml`](geo/scales.yaml). `municipality_ine` and `grid10k` are already reserved (`status: planned`).
 
-- **Administrative scales** (e.g. communes, GADM level 3) nest by prefix: `KH-16-01-01` lies in district `KH-16-01`.
+- **Administrative scales** nest by prefix: `BO-04-17-04` lies in province `BO-04-17`.
   1. Put the boundaries in `raw/boundaries/`.
   2. In `src/geo4bolivia/build/geo.py`, add their units (`geo_id`, `scale`, `name`, `parent_id`) and their layer. `build/gadm.py` (`from_gadm`) does this for any GADM file.
-  3. Set `status: active`. `publish_geo()` then adds the `commune_id` column and the crosswalks to every coarser scale.
-- **Groupings** (unions of whole units of another scale, like the Global Data Lab regions) set `children:` to the scale they group. They then nest exactly and work with `geo.aggregate()`.
-- **Grids, custom zones and historical boundaries** do not nest. Give them an `id_pattern` such as `^KH-G10K-r\d{3}c\d{3}$` and boundaries in `geo/boundaries/<scale>.parquet`. Use `geo.overlay()` / `geo.overlay_weights()` to move data onto or off them with area weights.
+  3. Set `status: active`. `publish_geo()` then adds the `<scale>_id` column and the crosswalks to every coarser scale.
+- **Groupings** (unions of whole units of another scale, e.g. statistical regions made of whole departments) set `children:` to the scale they group. They then nest exactly and work with `geo.aggregate()`.
+- **Grids, custom zones and historical boundaries** do not nest. Give them an `id_pattern` such as `^BO-G10K-r\d{3}c\d{3}$` and boundaries in `geo/boundaries/<scale>.parquet`. Use `geo.overlay()` / `geo.overlay_weights()` to move data onto or off them with area weights.
+
+### Add a municipality map of another vintage
+
+Bolivia keeps creating municipalities, so a new dataset may come on a map with more units than GADM's 339 (e.g. the current INE map). Never relabel the `municipality` scale: data published on it would silently move to different units. Add the map as its own scale instead. `municipality_ine` is reserved for the INE map, with IDs `BO-INE-DDPPMM` built from the 6-digit INE codes.
+
+1. **Boundaries.** Put the official map in `raw/boundaries/` unedited, with its INE code per polygon.
+2. **Register it.** Set `status: active` for `municipality_ine` in `geo/scales.yaml` (or add a scale with its own prefix and name, e.g. `municipality2024` with `^BO-M24-\d{6}$`). Keep `parent: null` unless every new municipality lies at least 99.5% inside one GADM province; then set `parent: province`, and `validate` checks it.
+3. **Units and layer.** In `build/geo.py`, add its units (`geo_id`, `scale`, `name`, `ine_code`, and `parent_id` if it nests) and its layer to `publish_geo(units, layers)`.
+4. **Links to the 339-unit map.** For a non-nested scale, `geo.overlay_weights("municipality", new_map, id_col="geo_id")` gives the area shares that move data between the maps with `geo.overlay()`. Where new municipalities were only carved out of old ones, publish a hand-checked lookup in `raw/lookups/` (old `geo_id` → new `geo_id`, with the population or area share) so the split is documented.
+5. **Datasets on the new map** get a resource with `geo:scale: municipality_ine` and geo IDs matching its pattern. The same dataset can have resources on both maps.
 
 After any change: `uv run geo4bolivia build && uv run geo4bolivia validate && uv run pytest`.
