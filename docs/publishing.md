@@ -14,14 +14,16 @@ The package is built with [hatchling](https://hatch.pypa.io/) and published with
 
 ## First release (one-time setup)
 
-1. **Check the name is free:** <https://pypi.org/project/geo4bolivia/> should return "Not Found" (checked for geo4bolivia on 2026-10-28: the name is free; it is not released yet).
+Do this once per project. If <https://pypi.org/project/geo4bolivia/> already shows the package, skip to [Every release](#every-release).
+
+1. **Check the name is free:** <https://pypi.org/project/geo4bolivia/> should return "Not Found".
 2. **Choose how to authenticate.** Use one of the two options below.
    - **Option A: an API token from your account (simplest).** On PyPI go to *Account settings → API tokens → Add API token*. Use scope "Entire account" for the very first upload, then replace it with a token scoped to `geo4bolivia`.
    - **Option B: Trusted Publishing from GitHub Actions (no token to store; recommended once it works).** Your geometrics package already uses it.
      1. On PyPI, go to *Your account → Publishing → Add a new pending publisher*.
      2. Fill in: PyPI project `geo4bolivia`, owner `quarcs-lab`, repository `geo4bolivia`, workflow `release.yml`, environment `pypi`.
      3. Add the workflow below to `.github/workflows/release.yml` (already in this repository).
-     4. In the GitHub repository, go to *Settings → Environments* and create an environment called `pypi` (still to do for geo4bolivia). With the GitHub CLI: `gh api -X PUT repos/<owner>/<repo>/environments/pypi`.
+     4. In the GitHub repository, go to *Settings → Environments* and create an environment called `pypi`. With the GitHub CLI: `gh api -X PUT repos/<owner>/<repo>/environments/pypi`.
 3. **Optional: try TestPyPI first.** It is a separate account at <https://test.pypi.org>. Publish with `uv publish --publish-url https://test.pypi.org/legacy/ --token <testpypi-token>`, then install with `pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ geo4bolivia`.
 
 ## Every release
