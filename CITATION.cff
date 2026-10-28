@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use the GeoDevelopment Observatory of Bolivia, please cite it as below."
+title: "GeoDevelopment Observatory of Bolivia"
+type: dataset
+authors:
+  - family-names: Mendez
+    given-names: Carlos
+    affiliation: "Nagoya University"
+version: 0.1.0
+date-released: 2026-10-28
+url: "https://quarcs-lab.github.io/geo4bolivia/"
+repository-code: "https://github.com/quarcs-lab/geo4bolivia"
+license: MIT
+keywords:
+  - Bolivia
+  - municipalities
+  - regional development
+  - sustainable development goals
+  - remote sensing
+  - night-time lights
+  - satellite embeddings
+  - spatial data science
