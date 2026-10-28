@@ -89,3 +89,48 @@ def test_crosswalks_are_nested():
     xw = geo.crosswalk("municipality", "department")
     assert len(xw) == 339 and xw["geo_id_to"].nunique() == 9
     assert np.allclose(xw["weight_area"], 1)
+
+
+# --- datasets ---------------------------------------------------------------------------
+
+def test_population_panel_and_aggregation():
+    df = geo.load("pop")
+    assert len(df) == 339 * 20 and df["year"].agg(["min", "max"]).tolist() == [2001, 2020]
+    dep = geo.aggregate(df, to="department", dataset="pop")
+    assert len(dep) == 9 * 20 and (dep["n_units"].groupby(dep["year"]).sum() == 339).all()
+    assert np.isclose(dep.loc[dep["year"] == 2020, "pop"].sum(), df.loc[df["year"] == 2020, "pop"].sum())
+
+
+def test_ntl_logs_are_not_aggregable():
+    df = geo.load("ntl")
+    assert df["year"].agg(["min", "max"]).tolist() == [2012, 2020]
+    with pytest.raises(ValueError, match="No aggregation rule"):
+        geo.aggregate(df, to="department", dataset="ntl", variables="ln_NTLpc")
+
+
+def test_sdg_indicators_are_stored_at_their_reference_years():
+    mpi = geo.load("sdg", variables="sdg1_2_mpi").dropna()
+    assert len(mpi) == 339 and set(mpi["year"]) == {2012}
+    malaria = geo.load("sdg", variables="sdg3_3_imr").dropna()           # average 2014-17 -> 2015
+    assert set(malaria["year"]) == {2015}
+    years = {f["name"]: f["geo:year"] for f in geo.metadata.fields("sdg") if "geo:year" in f}
+    assert len(years) == 64
+
+
+def test_sdg_rows_follow_ine_codes_for_homonyms():
+    pop = geo.load("sdg", variables="population_2020", years=2020).set_index("geo_id")["population_2020"]
+    assert pop["BO-08-10-04"] == 16027          # San Javier, Santa Cruz
+    assert pop["BO-03-01-01"] == 5906           # San Javier, Beni
+
+
+def test_population_weighted_sdg_by_department():
+    df = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
+    out = geo.aggregate(df, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop"))
+    assert len(out) == 9 and out["sdg1_2_mpi"].between(0, 1).all()
+
+
+@pytest.mark.parametrize("dataset", ["emb", "embpw"])
+def test_embeddings(dataset):
+    df = geo.load(dataset)
+    assert len(df) == 339 and set(df["year"]) == {2017}
+    assert len(geo.metadata.variables(dataset)) == 64 and df.filter(regex=r"^A\d{2}$").notna().all().all()

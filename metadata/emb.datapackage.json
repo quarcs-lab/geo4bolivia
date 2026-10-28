@@ -1,0 +1,601 @@
+{
+  "name": "emb",
+  "title": "Satellite embeddings 2017 (area-weighted)",
+  "description": "Sixty-four satellite embedding dimensions (A00–A63) for Bolivia's 339 municipalities in 2017: the area-weighted mean, over each municipality, of the annual 10 m embeddings from the Google Satellite Embedding dataset (AlphaEarth Foundations), which summarise Sentinel-2, Landsat and other imagery. The dimensions are abstract features, designed as inputs to machine-learning models, e.g. to predict poverty.",
+  "version": "1.0.0",
+  "licenses": [
+    {
+      "name": "MIT",
+      "path": "https://github.com/quarcs-lab/geo4bolivia/blob/main/LICENSE",
+      "title": "MIT License"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Brown, C. F., et al. (2025). AlphaEarth Foundations: An embedding field model for accurate and efficient global mapping from sparse label data. Google DeepMind. Earth Engine collection GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL.",
+      "path": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL"
+    },
+    {
+      "title": "Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.",
+      "path": "https://github.com/quarcs-lab/ds4bolivia"
+    }
+  ],
+  "geo:categories": [
+    "Environment",
+    "Economy"
+  ],
+  "geo:citation": "GeoDevelopment Observatory of Bolivia (2026). Satellite embeddings 2017, area-weighted (339 municipalities). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/emb.md",
+  "geo:notes": [
+    "The dimensions are not interpretable one by one and should not be aggregated; their aggregation rule is `none`.",
+    "Computed by DS4Bolivia in Google Earth Engine on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.",
+    "Every 10 m pixel counts the same (code/aggregate-satellite-embedings-to-adm.js in DS4Bolivia). For the population-weighted version, see the `embpw` dataset."
+  ],
+  "geo:notebooks": [],
+  "resources": [
+    {
+      "name": "emb-municipality",
+      "path": "https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/data/municipality/emb.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "geo:scale": "municipality",
+      "geo:period": [
+        2017,
+        2017
+      ],
+      "geo:path": "data/municipality/emb.csv",
+      "geo:parquet": "data/municipality/emb.parquet",
+      "geo:source_geometry": "DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the GADM 4.1 municipalities by area overlap",
+      "schema": {
+        "primaryKey": [
+          "geo_id",
+          "year"
+        ],
+        "fields": [
+          {
+            "name": "geo_id",
+            "type": "string",
+            "description": "Municipality geo ID",
+            "geo:role": "id",
+            "constraints": {
+              "required": true,
+              "pattern": "^BO-\\d{2}-\\d{2}-\\d{2}$"
+            }
+          },
+          {
+            "name": "year",
+            "type": "integer",
+            "description": "Year",
+            "geo:role": "time",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "asdf_id",
+            "type": "integer",
+            "description": "DS4Bolivia polygon ID",
+            "geo:role": "source_key",
+            "geo:units_column": "asdf_id",
+            "geo:source": "DS4Bolivia",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "A00",
+            "type": "number",
+            "description": "Satellite embedding dimension 0",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A01",
+            "type": "number",
+            "description": "Satellite embedding dimension 1",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A02",
+            "type": "number",
+            "description": "Satellite embedding dimension 2",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A03",
+            "type": "number",
+            "description": "Satellite embedding dimension 3",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A04",
+            "type": "number",
+            "description": "Satellite embedding dimension 4",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A05",
+            "type": "number",
+            "description": "Satellite embedding dimension 5",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A06",
+            "type": "number",
+            "description": "Satellite embedding dimension 6",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A07",
+            "type": "number",
+            "description": "Satellite embedding dimension 7",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A08",
+            "type": "number",
+            "description": "Satellite embedding dimension 8",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A09",
+            "type": "number",
+            "description": "Satellite embedding dimension 9",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A10",
+            "type": "number",
+            "description": "Satellite embedding dimension 10",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A11",
+            "type": "number",
+            "description": "Satellite embedding dimension 11",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A12",
+            "type": "number",
+            "description": "Satellite embedding dimension 12",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A13",
+            "type": "number",
+            "description": "Satellite embedding dimension 13",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A14",
+            "type": "number",
+            "description": "Satellite embedding dimension 14",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A15",
+            "type": "number",
+            "description": "Satellite embedding dimension 15",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A16",
+            "type": "number",
+            "description": "Satellite embedding dimension 16",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A17",
+            "type": "number",
+            "description": "Satellite embedding dimension 17",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A18",
+            "type": "number",
+            "description": "Satellite embedding dimension 18",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A19",
+            "type": "number",
+            "description": "Satellite embedding dimension 19",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A20",
+            "type": "number",
+            "description": "Satellite embedding dimension 20",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A21",
+            "type": "number",
+            "description": "Satellite embedding dimension 21",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A22",
+            "type": "number",
+            "description": "Satellite embedding dimension 22",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A23",
+            "type": "number",
+            "description": "Satellite embedding dimension 23",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A24",
+            "type": "number",
+            "description": "Satellite embedding dimension 24",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A25",
+            "type": "number",
+            "description": "Satellite embedding dimension 25",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A26",
+            "type": "number",
+            "description": "Satellite embedding dimension 26",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A27",
+            "type": "number",
+            "description": "Satellite embedding dimension 27",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A28",
+            "type": "number",
+            "description": "Satellite embedding dimension 28",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A29",
+            "type": "number",
+            "description": "Satellite embedding dimension 29",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A30",
+            "type": "number",
+            "description": "Satellite embedding dimension 30",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A31",
+            "type": "number",
+            "description": "Satellite embedding dimension 31",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A32",
+            "type": "number",
+            "description": "Satellite embedding dimension 32",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A33",
+            "type": "number",
+            "description": "Satellite embedding dimension 33",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A34",
+            "type": "number",
+            "description": "Satellite embedding dimension 34",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A35",
+            "type": "number",
+            "description": "Satellite embedding dimension 35",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A36",
+            "type": "number",
+            "description": "Satellite embedding dimension 36",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A37",
+            "type": "number",
+            "description": "Satellite embedding dimension 37",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A38",
+            "type": "number",
+            "description": "Satellite embedding dimension 38",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A39",
+            "type": "number",
+            "description": "Satellite embedding dimension 39",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A40",
+            "type": "number",
+            "description": "Satellite embedding dimension 40",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A41",
+            "type": "number",
+            "description": "Satellite embedding dimension 41",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A42",
+            "type": "number",
+            "description": "Satellite embedding dimension 42",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A43",
+            "type": "number",
+            "description": "Satellite embedding dimension 43",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A44",
+            "type": "number",
+            "description": "Satellite embedding dimension 44",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A45",
+            "type": "number",
+            "description": "Satellite embedding dimension 45",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A46",
+            "type": "number",
+            "description": "Satellite embedding dimension 46",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A47",
+            "type": "number",
+            "description": "Satellite embedding dimension 47",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A48",
+            "type": "number",
+            "description": "Satellite embedding dimension 48",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A49",
+            "type": "number",
+            "description": "Satellite embedding dimension 49",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A50",
+            "type": "number",
+            "description": "Satellite embedding dimension 50",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A51",
+            "type": "number",
+            "description": "Satellite embedding dimension 51",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A52",
+            "type": "number",
+            "description": "Satellite embedding dimension 52",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A53",
+            "type": "number",
+            "description": "Satellite embedding dimension 53",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A54",
+            "type": "number",
+            "description": "Satellite embedding dimension 54",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A55",
+            "type": "number",
+            "description": "Satellite embedding dimension 55",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A56",
+            "type": "number",
+            "description": "Satellite embedding dimension 56",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A57",
+            "type": "number",
+            "description": "Satellite embedding dimension 57",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A58",
+            "type": "number",
+            "description": "Satellite embedding dimension 58",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A59",
+            "type": "number",
+            "description": "Satellite embedding dimension 59",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A60",
+            "type": "number",
+            "description": "Satellite embedding dimension 60",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A61",
+            "type": "number",
+            "description": "Satellite embedding dimension 61",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A62",
+            "type": "number",
+            "description": "Satellite embedding dimension 62",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          },
+          {
+            "name": "A63",
+            "type": "number",
+            "description": "Satellite embedding dimension 63",
+            "geo:unit": "embedding value",
+            "geo:aggregation": "none",
+            "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
+          }
+        ]
+      }
+    }
+  ]
+}

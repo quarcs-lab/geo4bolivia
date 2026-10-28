@@ -1,3 +1,9 @@
 {
-  "datasets": []
+  "datasets": [
+    "pop",
+    "ntl",
+    "sdg",
+    "emb",
+    "embpw"
+  ]
 }

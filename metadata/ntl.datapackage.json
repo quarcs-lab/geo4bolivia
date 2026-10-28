@@ -1,0 +1,108 @@
+{
+  "name": "ntl",
+  "title": "Night-time lights per capita",
+  "description": "Annual night-time lights per capita for Bolivia's 339 municipalities, 2012–2020, in natural logs: the total VIIRS Day/Night Band radiance of each municipality divided by its population. A Hodrick–Prescott trend (λ = 400) of the same series isolates its long-run path. Night-time lights are a widely used proxy for local economic activity and electrification.",
+  "version": "1.0.0",
+  "licenses": [
+    {
+      "name": "MIT",
+      "path": "https://github.com/quarcs-lab/geo4bolivia/blob/main/LICENSE",
+      "title": "MIT License"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Elvidge, C. D., Zhizhin, M., Ghosh, T., Hsu, F.-C., & Taneja, J. (2021). Annual time series of global VIIRS nighttime lights derived from monthly averages: 2012 to 2019. Remote Sensing, 13(5), 922.",
+      "path": "https://doi.org/10.3390/rs13050922"
+    },
+    {
+      "title": "WorldPop (2018). Global High Resolution Population Denominators Project (100 m, 2000–2020). University of Southampton.",
+      "path": "https://doi.org/10.5258/SOTON/WP00645"
+    },
+    {
+      "title": "Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.",
+      "path": "https://github.com/quarcs-lab/ds4bolivia"
+    }
+  ],
+  "geo:categories": [
+    "Economy"
+  ],
+  "geo:citation": "GeoDevelopment Observatory of Bolivia (2026). Night-time lights per capita (339 municipalities, 2012–2020). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/ntl.md",
+  "geo:notes": [
+    "Both variables are logs of a ratio, so they cannot be summed or averaged up the hierarchy; their aggregation rule is `none`. Aggregate the levels instead, e.g. NTL = exp(ln_NTLpc) × pop, summed with `pop` from the population dataset.",
+    "Computed by DS4Bolivia on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.",
+    "Population is the gridded estimate of the `pop` dataset."
+  ],
+  "geo:notebooks": [],
+  "resources": [
+    {
+      "name": "ntl-municipality",
+      "path": "https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/data/municipality/ntl.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "geo:scale": "municipality",
+      "geo:period": [
+        2012,
+        2020
+      ],
+      "geo:path": "data/municipality/ntl.csv",
+      "geo:parquet": "data/municipality/ntl.parquet",
+      "geo:source_geometry": "DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the GADM 4.1 municipalities by area overlap",
+      "schema": {
+        "primaryKey": [
+          "geo_id",
+          "year"
+        ],
+        "fields": [
+          {
+            "name": "geo_id",
+            "type": "string",
+            "description": "Municipality geo ID",
+            "geo:role": "id",
+            "constraints": {
+              "required": true,
+              "pattern": "^BO-\\d{2}-\\d{2}-\\d{2}$"
+            }
+          },
+          {
+            "name": "year",
+            "type": "integer",
+            "description": "Year",
+            "geo:role": "time",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "asdf_id",
+            "type": "integer",
+            "description": "DS4Bolivia polygon ID",
+            "geo:role": "source_key",
+            "geo:units_column": "asdf_id",
+            "geo:source": "DS4Bolivia",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "ln_NTLpc",
+            "type": "number",
+            "description": "Natural log of night-time lights per capita",
+            "geo:unit": "log(radiance per person)",
+            "geo:aggregation": "none",
+            "geo:source": "VIIRS DNB via DS4Bolivia"
+          },
+          {
+            "name": "ln_t400NTLpc",
+            "type": "number",
+            "description": "Hodrick–Prescott trend (λ = 400) of the log of night-time lights per capita",
+            "geo:unit": "log(radiance per person)",
+            "geo:aggregation": "none",
+            "geo:source": "VIIRS DNB via DS4Bolivia"
+          }
+        ]
+      }
+    }
+  ]
+}

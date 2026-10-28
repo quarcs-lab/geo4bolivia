@@ -151,7 +151,8 @@ def validate_dataset(dataset: str) -> Report:
                 pairs = df[["geo_id", f["name"]]].drop_duplicates()
                 ref = units.loc[units["scale"] == sid, ["geo_id", ucol]].rename(columns={ucol: "_expected"})
                 joined = pairs.merge(ref, on="geo_id", how="left")
-                rep.check((joined[f["name"]] == joined["_expected"]).all(),
+                as_text = lambda s: s.astype("string").str.removesuffix(".0")   # 57 == "57"
+                rep.check((as_text(joined[f["name"]]) == as_text(joined["_expected"])).fillna(False).all(),
                           f"{tag}: {f['name']} disagrees with geo/units.{ucol} for some geo_id")
         pk = schema.get("primaryKey", ["geo_id", "year"])
         rep.check(not df.duplicated(pk).any(), f"{tag}: duplicate {pk}")

@@ -4,10 +4,10 @@
 Register each new dataset builder in DATASETS (see CONTRIBUTING_DATA.md).
 """
 
-from . import geo
+from . import emb, geo, ntl, pop, sdg
 from .common import write_catalog
 
-DATASETS = {}   # e.g. {"gdppc": gdppc.build} after `from . import gdppc`
+DATASETS = {"pop": pop.build, "ntl": ntl.build, "sdg": sdg.build, "emb": emb.build, "embpw": emb.build_pw}
 
 
 def build(target: str = "all") -> None:

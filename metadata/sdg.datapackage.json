@@ -1,0 +1,731 @@
+{
+  "name": "sdg",
+  "title": "SDG indicators (Municipal Atlas of the SDGs 2020)",
+  "description": "Sixty-four municipal indicators behind the Municipal Atlas of the Sustainable Development Goals in Bolivia 2020 (SDSN Bolivia), covering poverty, health, education, gender, water, energy, work, infrastructure, inequality, cities, climate, land, institutions and public finance for Bolivia's 339 municipalities. Each indicator is stored at its own reference year (2010–2020), so the panel is sparse: a variable has values only in its year. The Atlas's composite indices are not included.",
+  "version": "1.0.0",
+  "licenses": [
+    {
+      "name": "MIT",
+      "path": "https://github.com/quarcs-lab/geo4bolivia/blob/main/LICENSE",
+      "title": "MIT License"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Andersen, L. E., Canelas, S., Gonzales, A., & Peñaranda, L. (2020). Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia.",
+      "path": "https://unsdsn.org/resources/municipal-atlas-of-the-sdgs-in-bolivia-2020"
+    },
+    {
+      "title": "Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.",
+      "path": "https://github.com/quarcs-lab/ds4bolivia"
+    }
+  ],
+  "geo:categories": [
+    "Social",
+    "Economy",
+    "Environment",
+    "Institutions"
+  ],
+  "geo:citation": "GeoDevelopment Observatory of Bolivia (2026). SDG indicators of the Municipal Atlas of the SDGs 2020 (339 municipalities). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/sdg.md",
+  "geo:notes": [
+    "Reference years come from the variable labels. Indicators averaged over a period are stored at its midpoint, rounded down (e.g. average 2014–17 at 2015); the period is given in the description and `geo:year` holds the year used.",
+    "Load one indicator with its year, e.g. `geo.load(\"sdg\", variables=\"sdg1_2_mpi\", years=2012)`, or every indicator as a cross-section with `geo.load(\"sdg\").groupby(\"geo_id\").first()`.",
+    "Most indicators are rates, shares or indices, so their aggregation rule is `none`. Population-weighted averages can be built with the `pop` dataset, which covers every reference year: `geo.aggregate(df, to=\"department\", rules={\"sdg1_2_mpi\": \"weighted_mean:pop\"}, weights=geo.load(\"pop\"))`.",
+    "In DS4Bolivia the rows of three homonym pairs (San Javier in Beni and Santa Cruz, El Puente in Tarija and Santa Cruz, Santa Rosa in Beni and Pando) are attached to the other polygon of the pair. Here the indicators are linked by INE code (`mun_id`), so each lies in its correct municipality; see raw/README.md.",
+    "`population_2020` is the Atlas (INE-based) population and differs from the gridded `pop` dataset."
+  ],
+  "geo:notebooks": [],
+  "resources": [
+    {
+      "name": "sdg-municipality",
+      "path": "https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/data/municipality/sdg.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "geo:scale": "municipality",
+      "geo:period": [
+        2010,
+        2020
+      ],
+      "geo:path": "data/municipality/sdg.csv",
+      "geo:parquet": "data/municipality/sdg.parquet",
+      "geo:source_geometry": "Municipal statistics of the Atlas, linked by INE municipality code",
+      "schema": {
+        "primaryKey": [
+          "geo_id",
+          "year"
+        ],
+        "fields": [
+          {
+            "name": "geo_id",
+            "type": "string",
+            "description": "Municipality geo ID",
+            "geo:role": "id",
+            "constraints": {
+              "required": true,
+              "pattern": "^BO-\\d{2}-\\d{2}-\\d{2}$"
+            }
+          },
+          {
+            "name": "year",
+            "type": "integer",
+            "description": "Year",
+            "geo:role": "time",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "mun_id",
+            "type": "integer",
+            "description": "INE municipality code (DDPPMM, without the leading zero)",
+            "geo:role": "source_key",
+            "geo:units_column": "mun_id",
+            "geo:source": "INE via DS4Bolivia",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "population_2020",
+            "type": "number",
+            "description": "Population",
+            "geo:unit": "people",
+            "geo:year": 2020,
+            "geo:aggregation": "sum",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020"
+          },
+          {
+            "name": "urbano_2012",
+            "type": "number",
+            "description": "Urbanization rate",
+            "geo:unit": "% of population",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020"
+          },
+          {
+            "name": "sdg1_1_eepr",
+            "type": "number",
+            "description": "Extreme energy poverty rate",
+            "geo:unit": "% of houses",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 1
+          },
+          {
+            "name": "sdg1_1_ubn",
+            "type": "number",
+            "description": "Unsatisfied basic needs",
+            "geo:unit": "% of population",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 1
+          },
+          {
+            "name": "sdg1_2_mpi",
+            "type": "number",
+            "description": "Multidimensional poverty index",
+            "geo:unit": "index",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 1
+          },
+          {
+            "name": "sdg1_4_abs",
+            "type": "number",
+            "description": "Access to the 3 basic services",
+            "geo:unit": "% of households",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 1
+          },
+          {
+            "name": "sdg2_2_cmc",
+            "type": "number",
+            "description": "Chronic malnutrition in children (< 5 years)",
+            "geo:unit": "%",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 2
+          },
+          {
+            "name": "sdg2_2_oww",
+            "type": "number",
+            "description": "Obesity in women (15-49 years)",
+            "geo:unit": "%",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 2
+          },
+          {
+            "name": "sdg2_4_pual",
+            "type": "number",
+            "description": "Average area per Production Unit Agriculture and Livestock",
+            "geo:unit": "ha",
+            "geo:year": 2013,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 2
+          },
+          {
+            "name": "sdg2_4_td",
+            "type": "number",
+            "description": "Tractor density",
+            "geo:unit": "per 1,000 UPAs",
+            "geo:year": 2013,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 2
+          },
+          {
+            "name": "sdg3_1_idca",
+            "type": "number",
+            "description": "Institutional childbirth coverage (average 2008–2012; stored at 2010, the midpoint rounded down)",
+            "geo:unit": "%",
+            "geo:year": 2010,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg3_2_imr",
+            "type": "number",
+            "description": "Infant mortality rate (< 1 year)",
+            "geo:unit": "per 1,000 live births",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg3_2_mrc",
+            "type": "number",
+            "description": "Children mortality rate (< 5 years)",
+            "geo:unit": "per 1,000 live births",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg3_3_cdir",
+            "type": "number",
+            "description": "Chagas disease infestation rate",
+            "geo:unit": "% of households",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg3_3_di",
+            "type": "number",
+            "description": "Dengue incidence",
+            "geo:unit": "per 10,000 population",
+            "geo:year": 2018,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg3_3_imr",
+            "type": "number",
+            "description": "Malaria incidence (average 2014–2017; stored at 2015, the midpoint rounded down)",
+            "geo:unit": "per 1,000 population",
+            "geo:year": 2015,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg3_3_ti",
+            "type": "number",
+            "description": "Tuberculosis incidence",
+            "geo:unit": "per 100,000 population",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg3_3_hivi",
+            "type": "number",
+            "description": "HIV incidence (average 2014–2017; stored at 2015, the midpoint rounded down)",
+            "geo:unit": "per 1,000,000 population",
+            "geo:year": 2015,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg3_7_afr",
+            "type": "number",
+            "description": "Adolescent fertility rate (15-19 years)",
+            "geo:unit": "births per 1,000 women",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 3
+          },
+          {
+            "name": "sdg4_1_ssdrm",
+            "type": "number",
+            "description": "Secondary school dropout rate, male",
+            "geo:unit": "% of enrolled",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 4
+          },
+          {
+            "name": "sdg4_1_ssdrf",
+            "type": "number",
+            "description": "Secondary school dropout rate, female",
+            "geo:unit": "% of enrolled",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 4
+          },
+          {
+            "name": "sdg4_4_phe",
+            "type": "number",
+            "description": "Population with higher education (>= 19 years)",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 4
+          },
+          {
+            "name": "sdg4_6_lr",
+            "type": "number",
+            "description": "Literacy rate (>= 15 years)",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 4
+          },
+          {
+            "name": "sdg4_c_qti",
+            "type": "number",
+            "description": "Qualified teachers at the initial level",
+            "geo:unit": "%",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 4
+          },
+          {
+            "name": "sdg4_c_qts",
+            "type": "number",
+            "description": "Qualified teachers at the secondary level",
+            "geo:unit": "%",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 4
+          },
+          {
+            "name": "sdg5_1_gpsd",
+            "type": "number",
+            "description": "Gender parity in school dropouts in secondary school",
+            "geo:unit": "index",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 5
+          },
+          {
+            "name": "sdg5_1_gpyp",
+            "type": "number",
+            "description": "Gender parity in years of education of young people (25-35 years old)",
+            "geo:unit": "index",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 5
+          },
+          {
+            "name": "sdg5_1_gpmpi",
+            "type": "number",
+            "description": "Gender Parity in the Multidimensional Poverty Index",
+            "geo:unit": "index",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 5
+          },
+          {
+            "name": "sdg5_5_gpop",
+            "type": "number",
+            "description": "Gender parity in the overall participation rate (>= 10 years)",
+            "geo:unit": "index",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 5
+          },
+          {
+            "name": "sdg6_1_dwc",
+            "type": "number",
+            "description": "Drinking water coverage",
+            "geo:unit": "% of population",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 6
+          },
+          {
+            "name": "sdg6_2_sc",
+            "type": "number",
+            "description": "Sanitation coverage",
+            "geo:unit": "% of population",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 6
+          },
+          {
+            "name": "sdg6_3_wwt",
+            "type": "number",
+            "description": "Wastewater treatment",
+            "geo:unit": "% of wastewater",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 6
+          },
+          {
+            "name": "sdg7_1_ec",
+            "type": "number",
+            "description": "Electricity coverage",
+            "geo:unit": "% of population",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 7
+          },
+          {
+            "name": "sdg7_1_rec",
+            "type": "number",
+            "description": "Residential electricity consumption per capita",
+            "geo:unit": "kWh/person/year",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 7
+          },
+          {
+            "name": "sdg7_1_cce",
+            "type": "number",
+            "description": "Clean cooking energy",
+            "geo:unit": "% of households",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 7
+          },
+          {
+            "name": "sdg7_3_co2epc",
+            "type": "number",
+            "description": "CO2 emissions per capita by energy",
+            "geo:unit": "tCO2/person/year",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 7
+          },
+          {
+            "name": "sdg8_4_rem",
+            "type": "number",
+            "description": "Residential electric meters with zero consumption",
+            "geo:unit": "%",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 8
+          },
+          {
+            "name": "sdg8_5_oprm",
+            "type": "number",
+            "description": "Overall participation rate males (>= 10 years)",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 8
+          },
+          {
+            "name": "sdg8_5_ofrm",
+            "type": "number",
+            "description": "Overall female participation rate (>= 10 years)",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 8
+          },
+          {
+            "name": "sdg8_6_mlm",
+            "type": "number",
+            "description": "Men who do not study or participate in the labor market (15-24 years)",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 8
+          },
+          {
+            "name": "sdg8_6_wlm",
+            "type": "number",
+            "description": "Women who do not study or participate in the labor market (15-24 years)",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 8
+          },
+          {
+            "name": "sdg8_10_dbb",
+            "type": "number",
+            "description": "Density of bank branches",
+            "geo:unit": "per 100,000 inhabitants",
+            "geo:year": 2018,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 8
+          },
+          {
+            "name": "sdg8_11_idi",
+            "type": "number",
+            "description": "Index of the degree of intermediation in migration",
+            "geo:unit": "index",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 8
+          },
+          {
+            "name": "sdg9_1_routes",
+            "type": "number",
+            "description": "Number of railways/primary roads entering/leaving the municipality",
+            "geo:unit": "count",
+            "geo:year": 2019,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 9
+          },
+          {
+            "name": "sdg9_5_cd",
+            "type": "number",
+            "description": "Kuaa computers delivered",
+            "geo:unit": "per 100 school-age population, 6-19 years",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 9
+          },
+          {
+            "name": "sdg9_5_eutf",
+            "type": "number",
+            "description": "Educational units with technological floors",
+            "geo:unit": "%",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 9
+          },
+          {
+            "name": "sdg9_c_mnc",
+            "type": "number",
+            "description": "Fixed and mobile network coverage",
+            "geo:unit": "% of households",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 9
+          },
+          {
+            "name": "sdg9_c_drb",
+            "type": "number",
+            "description": "Density of radio bases",
+            "geo:unit": "number of radio bases per 1,000 inhabitants",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 9
+          },
+          {
+            "name": "sdg10_2_gcye",
+            "type": "number",
+            "description": "GINI coefficient of years of education",
+            "geo:unit": "index",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 10
+          },
+          {
+            "name": "sdg10_2_iec",
+            "type": "number",
+            "description": "Inequality in electricity consumption",
+            "geo:unit": "index",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 10
+          },
+          {
+            "name": "sdg10_2_nssp",
+            "type": "number",
+            "description": "Non-Spanish speaking population (>= 3 years)",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 10
+          },
+          {
+            "name": "sdg11_1_hocr",
+            "type": "number",
+            "description": "Overcrowding rate",
+            "geo:unit": "% of households",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 11
+          },
+          {
+            "name": "sdg11_1_hno",
+            "type": "number",
+            "description": "Households that do not have a toilet, bathroom or latrine",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 11
+          },
+          {
+            "name": "sdg11_2_samt",
+            "type": "number",
+            "description": "Seats available for mass transit",
+            "geo:unit": "per 1,000 inhabitants",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 11
+          },
+          {
+            "name": "sdg13_1_ccvi",
+            "type": "number",
+            "description": "Climate change vulnerability Index",
+            "geo:unit": "index",
+            "geo:year": 2015,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 13
+          },
+          {
+            "name": "sdg13_2_tco2e",
+            "type": "number",
+            "description": "Total CO2 emissions per capita",
+            "geo:unit": "tCO2/person/year",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 13
+          },
+          {
+            "name": "sdg13_2_dra",
+            "type": "number",
+            "description": "Deforestation rate (average 2016–2018; stored at 2017, the midpoint rounded down)",
+            "geo:unit": "% of forest area 2015",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 13
+          },
+          {
+            "name": "sdg15_1_pa",
+            "type": "number",
+            "description": "Protected areas",
+            "geo:unit": "% of the municipality's land area",
+            "geo:year": 2019,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 15
+          },
+          {
+            "name": "sdg15_5_blr",
+            "type": "number",
+            "description": "Biodiversity loss rate due to deforestation (average 2016–2018; stored at 2017, the midpoint rounded down)",
+            "geo:unit": "index",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 15
+          },
+          {
+            "name": "sdg16_1_rhr",
+            "type": "number",
+            "description": "Registered homicide rate (average 2015–2017; stored at 2016, the midpoint rounded down)",
+            "geo:unit": "per 100,000 inhabitants",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 16
+          },
+          {
+            "name": "sdg16_6_pbec",
+            "type": "number",
+            "description": "Programmed budget execution capacity",
+            "geo:unit": "%",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 16
+          },
+          {
+            "name": "sdg16_9_cr",
+            "type": "number",
+            "description": "Children registered in the civil registry (< 5 years)",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 16
+          },
+          {
+            "name": "sdg17_1_pmtax",
+            "type": "number",
+            "description": "Proportion of municipal revenues that come from local taxes",
+            "geo:unit": "%",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 17
+          },
+          {
+            "name": "sdg17_5_pipc",
+            "type": "number",
+            "description": "Public investment per capita",
+            "geo:unit": "Bs./person",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 17
+          }
+        ]
+      }
+    }
+  ]
+}

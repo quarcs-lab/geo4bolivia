@@ -4,5 +4,10 @@
 
 | Dataset | Title | Scale | Years | Files |
 | --- | --- | --- | --- | --- |
+| [`pop`](../docs/datasets/pop.md) | Population | `municipality` | 2001–2020 | [`data/municipality/pop.csv`](../data/municipality/pop.csv) · [`.parquet`](../data/municipality/pop.parquet) |
+| [`ntl`](../docs/datasets/ntl.md) | Night-time lights per capita | `municipality` | 2012–2020 | [`data/municipality/ntl.csv`](../data/municipality/ntl.csv) · [`.parquet`](../data/municipality/ntl.parquet) |
+| [`sdg`](../docs/datasets/sdg.md) | SDG indicators (Municipal Atlas of the SDGs 2020) | `municipality` | 2010–2020 | [`data/municipality/sdg.csv`](../data/municipality/sdg.csv) · [`.parquet`](../data/municipality/sdg.parquet) |
+| [`emb`](../docs/datasets/emb.md) | Satellite embeddings 2017 (area-weighted) | `municipality` | 2017–2017 | [`data/municipality/emb.csv`](../data/municipality/emb.csv) · [`.parquet`](../data/municipality/emb.parquet) |
+| [`embpw`](../docs/datasets/embpw.md) | Satellite embeddings 2017 (population-weighted) | `municipality` | 2017–2017 | [`data/municipality/embpw.csv`](../data/municipality/embpw.csv) · [`.parquet`](../data/municipality/embpw.parquet) |
 
 Variable dictionaries, sources and citations: [`docs/datasets/`](../docs/datasets/). Unit names, parents and source keys: [`geo/units.csv`](../geo/units.csv). All variables in one table: [`definitions_gdo-bolivia.csv`](../definitions_gdo-bolivia.csv).
