@@ -59,7 +59,10 @@ def link(df: pd.DataFrame, scale: str, on: str, key: str = "auto", errors: str =
         ``"auto"``: the column matching most values, with the others filling the
         gaps (so mixed spellings from different sources still link). Matching ignores
         accents, case, spaces and punctuation ("BântéayMéanchey" = "Banteay Meanchey").
+        A value shared by several units (two municipalities with the same name) is
+        ambiguous and links to none of them: link such units by a code instead.
     errors : ``"raise"`` (default), ``"warn"`` or ``"ignore"`` for values that match no unit
+        or are ambiguous
 
     Returns a copy of ``df`` with ``geo_id`` as its first column.
     """
@@ -68,12 +71,16 @@ def link(df: pd.DataFrame, scale: str, on: str, key: str = "auto", errors: str =
         raise ValueError(f"No units at scale {scale!r}; active scales: {', '.join(registry(active_only=True))}")
     values = df[on].map(normalize)
     columns = _candidates(units) if key == "auto" else [key]
-    ranked = []
+    ranked, ambiguous = [], {}
     for col in columns:
         if col not in units.columns:
             raise KeyError(f"geo.units({scale!r}) has no column {col!r}; try one of {_candidates(units)}")
         lookup = units.dropna(subset=[col])
-        mapping = dict(zip(lookup[col].map(normalize), lookup["geo_id"]))
+        keys = lookup[col].map(normalize)
+        shared = keys.groupby(keys).transform("size") > 1          # e.g. two "San Javier"
+        for k, ids_ in lookup.loc[shared, "geo_id"].groupby(keys[shared]):
+            ambiguous.setdefault(k, set()).update(ids_)
+        mapping = dict(zip(keys[~shared], lookup.loc[~shared, "geo_id"]))
         mapping.pop("", None)
         ranked.append((int(values.isin(mapping).sum()), col, mapping))
     ranked.sort(key=lambda r: -r[0])
@@ -89,7 +96,17 @@ def link(df: pd.DataFrame, scale: str, on: str, key: str = "auto", errors: str =
             ids = ids.fillna(values.map(mapping))
     out = df.copy()
     out.insert(0, "geo_id", ids)
-    missing = sorted(set(df.loc[out["geo_id"].isna(), on].dropna().astype(str)))
+    unlinked = out["geo_id"].isna() & df[on].notna()
+    unclear = unlinked & values.isin(ambiguous)
+    if unclear.any() and errors != "ignore":
+        shown = [f"{v!r} ({', '.join(sorted(ambiguous[normalize(v)]))})"
+                 for v in sorted(set(df.loc[unclear, on].astype(str)))[:10]]
+        message = (f"{unclear.sum()} row(s) of {on!r} name several {scale} units and were not linked: "
+                   f"{', '.join(shown)}. Link them by a code (key=...) instead.")
+        if errors == "raise":
+            raise ValueError(message)
+        warnings.warn(message, stacklevel=2)
+    missing = sorted(set(df.loc[unlinked & ~unclear, on].astype(str)))
     if missing and errors != "ignore":
         known = units[best].dropna().astype(str).tolist()
         hints = [f"{m!r} (did you mean {difflib.get_close_matches(m, known, n=1, cutoff=0.6)[0]!r}?)"
