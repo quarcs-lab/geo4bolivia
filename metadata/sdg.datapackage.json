@@ -34,7 +34,36 @@
     "In DS4Bolivia the rows of three homonym pairs (San Javier in Beni and Santa Cruz, El Puente in Tarija and Santa Cruz, Santa Rosa in Beni and Pando) are attached to the other polygon of the pair. Here the indicators are linked by INE code (`mun_id`), so each lies in its correct municipality; see raw/README.md.",
     "`population_2020` is the Atlas (INE-based) population and differs from the gridded `pop` dataset."
   ],
-  "geo:notebooks": [],
+  "geo:notebooks": [
+    {
+      "title": "Exploratory data analysis of multidimensional poverty",
+      "path": "../../notebooks/eda.ipynb"
+    },
+    {
+      "title": "Exploratory spatial data analysis of poverty",
+      "path": "../../notebooks/esda.ipynb"
+    },
+    {
+      "title": "Spatial distribution and dependence of poverty",
+      "path": "../../notebooks/esda_dependence.ipynb"
+    },
+    {
+      "title": "Spatial inequality of poverty and night-time lights",
+      "path": "../../notebooks/esda_inequality.ipynb"
+    },
+    {
+      "title": "GWR and MGWR of poverty on night-time lights",
+      "path": "../../notebooks/esda_heterogeneity.ipynb"
+    },
+    {
+      "title": "Extended EDA and ESDA",
+      "path": "../../notebooks/eda_esda.ipynb"
+    },
+    {
+      "title": "Predicting poverty from satellite embeddings",
+      "path": "../../notebooks/embeddings_mpi_ml.ipynb"
+    }
+  ],
   "resources": [
     {
       "name": "sdg-municipality",

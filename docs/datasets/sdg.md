@@ -121,6 +121,16 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 - In DS4Bolivia the rows of three homonym pairs (San Javier in Beni and Santa Cruz, El Puente in Tarija and Santa Cruz, Santa Rosa in Beni and Pando) are attached to the other polygon of the pair. Here the indicators are linked by INE code (`mun_id`), so each lies in its correct municipality; see raw/README.md.
 - `population_2020` is the Atlas (INE-based) population and differs from the gridded `pop` dataset.
 
+## Related notebooks
+
+- [Exploratory data analysis of multidimensional poverty](../../notebooks/eda.ipynb)
+- [Exploratory spatial data analysis of poverty](../../notebooks/esda.ipynb)
+- [Spatial distribution and dependence of poverty](../../notebooks/esda_dependence.ipynb)
+- [Spatial inequality of poverty and night-time lights](../../notebooks/esda_inequality.ipynb)
+- [GWR and MGWR of poverty on night-time lights](../../notebooks/esda_heterogeneity.ipynb)
+- [Extended EDA and ESDA](../../notebooks/eda_esda.ipynb)
+- [Predicting poverty from satellite embeddings](../../notebooks/embeddings_mpi_ml.ipynb)
+
 ## Sources
 
 - Andersen, L. E., Canelas, S., Gonzales, A., & Peñaranda, L. (2020). Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia. https://unsdsn.org/resources/municipal-atlas-of-the-sdgs-in-bolivia-2020

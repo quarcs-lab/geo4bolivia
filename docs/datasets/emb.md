@@ -119,6 +119,10 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 - Computed by DS4Bolivia in Google Earth Engine on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.
 - Every 10 m pixel counts the same (code/aggregate-satellite-embedings-to-adm.js in DS4Bolivia). For the population-weighted version, see the `embpw` dataset.
 
+## Related notebooks
+
+- [Predicting poverty from satellite embeddings](../../notebooks/embeddings_mpi_ml.ipynb)
+
 ## Sources
 
 - Brown, C. F., et al. (2025). AlphaEarth Foundations: An embedding field model for accurate and efficient global mapping from sparse label data. Google DeepMind. Earth Engine collection GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL. https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL

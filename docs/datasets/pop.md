@@ -56,6 +56,11 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 - DS4Bolivia's population README does not name the gridded product; its Earth Engine workflow (apps/geoexplorer1v100bolivia.js, code/aggregate-satellite-embedings-to-adm-pop-weighted1.js) uses WorldPop 100 m, which covers 2000–2020.
 - These are gridded estimates, not the official INE projections. The SDG dataset carries the Atlas population for 2020 (`sdg.population_2020`), which differs.
 
+## Related notebooks
+
+- [Load, link and build indicators with geo4bolivia](../../notebooks/geo4bolivia_quickstart.ipynb)
+- [Exploratory data analysis of multidimensional poverty](../../notebooks/eda.ipynb)
+
 ## Sources
 
 - WorldPop (2018). Global High Resolution Population Denominators Project (100 m, 2000–2020). University of Southampton. https://doi.org/10.5258/SOTON/WP00645

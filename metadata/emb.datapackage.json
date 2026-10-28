@@ -30,7 +30,12 @@
     "Computed by DS4Bolivia in Google Earth Engine on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.",
     "Every 10 m pixel counts the same (code/aggregate-satellite-embedings-to-adm.js in DS4Bolivia). For the population-weighted version, see the `embpw` dataset."
   ],
-  "geo:notebooks": [],
+  "geo:notebooks": [
+    {
+      "title": "Predicting poverty from satellite embeddings",
+      "path": "../../notebooks/embeddings_mpi_ml.ipynb"
+    }
+  ],
   "resources": [
     {
       "name": "emb-municipality",

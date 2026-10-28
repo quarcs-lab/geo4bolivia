@@ -33,7 +33,24 @@
     "Computed by DS4Bolivia on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.",
     "Population is the gridded estimate of the `pop` dataset."
   ],
-  "geo:notebooks": [],
+  "geo:notebooks": [
+    {
+      "title": "Exploratory data analysis of multidimensional poverty",
+      "path": "../../notebooks/eda.ipynb"
+    },
+    {
+      "title": "Spatial inequality of poverty and night-time lights",
+      "path": "../../notebooks/esda_inequality.ipynb"
+    },
+    {
+      "title": "GWR and MGWR of poverty on night-time lights",
+      "path": "../../notebooks/esda_heterogeneity.ipynb"
+    },
+    {
+      "title": "Predicting poverty from satellite embeddings",
+      "path": "../../notebooks/embeddings_mpi_ml.ipynb"
+    }
+  ],
   "resources": [
     {
       "name": "ntl-municipality",

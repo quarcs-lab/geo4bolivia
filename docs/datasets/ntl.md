@@ -57,6 +57,13 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 - Computed by DS4Bolivia on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.
 - Population is the gridded estimate of the `pop` dataset.
 
+## Related notebooks
+
+- [Exploratory data analysis of multidimensional poverty](../../notebooks/eda.ipynb)
+- [Spatial inequality of poverty and night-time lights](../../notebooks/esda_inequality.ipynb)
+- [GWR and MGWR of poverty on night-time lights](../../notebooks/esda_heterogeneity.ipynb)
+- [Predicting poverty from satellite embeddings](../../notebooks/embeddings_mpi_ml.ipynb)
+
 ## Sources
 
 - Elvidge, C. D., Zhizhin, M., Ghosh, T., Hsu, F.-C., & Taneja, J. (2021). Annual time series of global VIIRS nighttime lights derived from monthly averages: 2012 to 2019. Remote Sensing, 13(5), 922. https://doi.org/10.3390/rs13050922

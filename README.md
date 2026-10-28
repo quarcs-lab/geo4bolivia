@@ -143,11 +143,11 @@ Three pairs of municipalities share a name across departments: San Javier (Beni,
 | [Load, link and build indicators with geo4bolivia](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/geo4bolivia_quickstart.ipynb) | Load data with and without the package, move it across scales, link your own table, and save an indicator |
 | [Exploratory data analysis](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/eda.ipynb) | Multidimensional poverty, night-time lights and population: summaries, departments, treemaps and scatter plots |
 | [Exploratory spatial data analysis](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/esda.ipynb) | Maps, spatial weights, Moran's I and LISA clusters of multidimensional poverty |
-| [Spatial distribution and dependence](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/esda_dependence.ipynb) | Map classifications, KNN weights, global and local spatial autocorrelation, bivariate Moran |
+| [Spatial distribution and dependence](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/esda_dependence.ipynb) | Box-plot and Fisher-Jenks maps, KNN weights, the spatial lag, Moran's I and LISA clusters at two significance levels |
 | [Spatial inequality](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/esda_inequality.ipynb) | Gini, Theil decomposition between and within departments, spatial Gini |
 | [Spatial heterogeneity (GWR and MGWR)](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/esda_heterogeneity.ipynb) | Where night-time lights predict poverty better or worse: geographically weighted regressions |
 | [Extended EDA and ESDA](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/eda_esda.ipynb) | A full workflow on poverty, infrastructure and lights: statistics, correlations, clusters and bivariate maps |
-| [Predicting poverty from satellite embeddings](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/embeddings_mpi_ml.ipynb) | Random forest and XGBoost predict multidimensional poverty from 64 embedding dimensions, with spatial cross-validation and residual maps |
+| [Predicting poverty from satellite embeddings](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/embeddings_mpi_ml.ipynb) | Random forest and XGBoost predict multidimensional poverty from 64 embedding dimensions, with random and spatial (leave-one-department-out) cross-validation and residual maps |
 
 ### Web apps
 

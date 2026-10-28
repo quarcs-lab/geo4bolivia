@@ -30,7 +30,12 @@
     "Computed by DS4Bolivia in Google Earth Engine on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.",
     "Each pixel is weighted by WorldPop 100 m population, spread evenly over its 10 m pixels (code/aggregate-satellite-embedings-to-adm-pop-weighted1.js in DS4Bolivia), so the embeddings describe where people live. For the area-weighted version, see the `emb` dataset."
   ],
-  "geo:notebooks": [],
+  "geo:notebooks": [
+    {
+      "title": "Predicting poverty from satellite embeddings",
+      "path": "../../notebooks/embeddings_mpi_ml.ipynb"
+    }
+  ],
   "resources": [
     {
       "name": "embpw-municipality",
