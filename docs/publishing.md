@@ -54,9 +54,12 @@ uv publish --token pypi-XXXXXXXX              # or set UV_PUBLISH_TOKEN
 Then check that it works in a fresh Google Colab notebook:
 
 ```python
-!pip install -q geo4bolivia mapclassify
+!pip install -q geo4bolivia
 import geo4bolivia as geo
-geo.load("pop", years=2020, geometry=True).plot(column="pop", scheme="quantiles", legend=True)
+import plotly.express as px
+gdf = geo.load("pop", years=2020, geometry=True)
+px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="pop",
+                  hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4)
 ```
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/notebooks/empty.ipynb)
