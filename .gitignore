@@ -32,4 +32,5 @@ __pycache__/
 # Website build (site/)
 /site/node_modules/
 /_site/
-/raw/boundaries/geoboundaries/*.geojson
+/raw/boundaries/geoboundaries/geoBoundaries-BOL-ADM1.geojson
+/raw/boundaries/gadm41_*.json

@@ -44,7 +44,7 @@ px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_
 
 ## 📊 GeoDevelopment Indicators
 
-All data share one spatial backbone. Every unit at every scale has a **geo ID** that nests by prefix (GADM 4.1 hierarchy): municipality `BO-04-17-04` (La Paz) lies in province `BO-04-17` (Murillo), which lies in department `BO-04` (La Paz), which lies in Bolivia `BO`. INE codes and DS4Bolivia's `asdf_id` are kept as columns of [`geo/units.csv`](geo/units.csv). Each dataset is a panel with one row per unit (`geo_id`) and year, published as CSV and Parquet.
+All data share one spatial backbone. Every unit at every scale has a **geo ID** that nests by prefix (numbered as in GADM 4.1): municipality `BO-04-17-04` (La Paz) lies in province `BO-04-17` (Murillo), which lies in department `BO-04` (La Paz), which lies in Bolivia `BO`. INE codes, DS4Bolivia's `asdf_id` and GADM and geoBoundaries codes are kept as columns of [`geo/units.csv`](geo/units.csv). The boundaries are [geoBoundaries](https://www.geoboundaries.org)' municipalities from GeoBolivia, in the public domain; provinces, departments and the country are their exact unions. Each dataset is a panel with one row per unit (`geo_id`) and year, published as CSV and Parquet.
 
 | Dataset | Title | Scale | Period | Files |
 | --- | --- | --- | --- | --- |
@@ -60,7 +60,7 @@ Each dataset has three descriptions:
 - a generated page in [`docs/datasets/`](docs/datasets/), with its variable dictionary, coverage, sources and citation
 - its rows in [`definitions_gdo-bolivia.csv`](definitions_gdo-bolivia.csv), which lists every variable of every dataset
 
-New municipalities keep being created in Bolivia. The 339 municipalities here follow GADM 4.1; data on a newer map will be published at their own scale and linked to this one by area-weighted overlay ([how](CONTRIBUTING_DATA.md#add-a-municipality-map-of-another-vintage)).
+New municipalities keep being created in Bolivia. The 339 municipalities here are GeoBolivia's 2015 map (via geoBoundaries), numbered as in GADM 4.1; data on a newer map will be published at their own scale and linked to this one by area-weighted overlay ([how](CONTRIBUTING_DATA.md#add-a-municipality-map-of-another-vintage)).
 
 ### Load the data: two ways
 
@@ -79,7 +79,7 @@ geo.aggregate(geo.load("pop"), to="department", dataset="pop")    # municipaliti
 geo.aggregate(mpi, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"},
               weights=geo.load("pop"))                            # population-weighted poverty
 geo.combine(["ntl", "pop"], scale="municipality")                 # two datasets, one panel
-geo.load("ntl", ref="v0.1.0")                                     # a frozen release of the data
+geo.load("ntl", ref="v0.2.0")                                     # a frozen release of the data
 ```
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/notebooks/empty.ipynb)
@@ -248,4 +248,4 @@ Please also cite the original source of each dataset you use. The citations are 
 
 **Disclaimer.** The indicators, tools and insights are the responsibility of the individual researchers and do not necessarily represent the views of their affiliated institutions or related organizations. Maps are for geo-statistical use only. They have a referential, informational character and do not represent an official definition of Bolivia's territorial boundaries.
 
-**License.** Code: [MIT](LICENSE). Data: [CC BY 4.0](LICENSE-DATA), except the GADM-derived boundary files (`geo/boundaries/`, free for non-commercial use; redistribution needs GADM's permission) and where an original source requires otherwise. Each dataset's sources, their licenses and the credits they ask for are listed in its metadata, its page in `docs/datasets/` and its page on the website. The indicator maps use Esri's World Dark Gray Canvas basemap (Esri, HERE, Garmin, © OpenStreetMap contributors). Section illustrations come from the geo4cambodia template (generated with OpenAI image generation via Codex); satellite imagery in the hero and the section backgrounds is Sentinel-2 cloudless 2016 by EOX IT Services GmbH (CC BY 4.0), except the Laguna Verde background from Sentinel-2 cloudless 2024 (CC BY-NC-SA 4.0), and NASA Blue Marble (public domain).
+**License.** Code: [MIT](LICENSE). Data: [CC BY 4.0](LICENSE-DATA), except where an original source requires otherwise. The boundaries (`geo/boundaries/`) are geoBoundaries' (Runfola et al. 2020), from GeoBolivia, in the public domain. Each dataset's sources, their licenses and the credits they ask for are listed in its metadata, its page in `docs/datasets/` and its page on the website. The indicator maps use Esri's World Dark Gray Canvas basemap (Esri, HERE, Garmin, © OpenStreetMap contributors). Section illustrations come from the geo4cambodia template (generated with OpenAI image generation via Codex); satellite imagery in the hero and the section backgrounds is Sentinel-2 cloudless 2016 by EOX IT Services GmbH (CC BY 4.0), except the Laguna Verde background from Sentinel-2 cloudless 2024 (CC BY-NC-SA 4.0), and NASA Blue Marble (public domain).

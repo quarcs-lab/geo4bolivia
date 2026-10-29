@@ -34,7 +34,7 @@ GENERIC = [
 ]
 CORE_MODULES = ["__init__.py", "aggregate.py", "bridge.py", "cli.py", "create.py", "io.py", "metadata.py",
                 "project.py", "scales.py", "store.py", "validate.py"]
-BUILD_MODULES = ["common.py", "gadm.py", "_template.py", "_geo_template.py"]
+BUILD_MODULES = ["common.py", "gadm.py", "geoboundaries.py", "_template.py", "_geo_template.py"]
 
 
 BUILD_INIT = '''"""Builders that regenerate every published file from ``raw/``.

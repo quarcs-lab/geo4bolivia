@@ -30,7 +30,7 @@ px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_
 
 ## One ID for every unit, at every scale
 
-Every unit has a **geo ID** that nests by prefix (GADM 4.1 hierarchy): municipality `BO-04-17-04` (La Paz) lies in province `BO-04-17` (Murillo), which lies in department `BO-04` (La Paz), which lies in Bolivia `BO`. INE codes and DS4Bolivia's `asdf_id` are kept as columns of `geo.units()`. Each dataset is a long panel keyed by `geo_id` and `year`.
+Every unit has a **geo ID** that nests by prefix (numbered as in GADM 4.1): municipality `BO-04-17-04` (La Paz) lies in province `BO-04-17` (Murillo), which lies in department `BO-04` (La Paz), which lies in Bolivia `BO`. INE codes and DS4Bolivia's `asdf_id` are kept as columns of `geo.units()`. The boundaries (`geometry=True`, `geo.boundaries()`) are geoBoundaries' public-domain municipalities from GeoBolivia. Each dataset is a long panel keyed by `geo_id` and `year`.
 
 | Scale | Units | Example |
 | --- | --- | --- |

@@ -61,14 +61,14 @@ Scales are registered in [`geo/scales.yaml`](geo/scales.yaml). `municipality_ine
 
 - **Administrative scales** nest by prefix: `BO-04-17-04` lies in province `BO-04-17`.
   1. Put the boundaries in `raw/boundaries/`.
-  2. In `src/geo4bolivia/build/geo.py`, add their units (`geo_id`, `scale`, `name`, `parent_id`) and their layer. `build/gadm.py` (`from_gadm`) does this for any GADM file.
+  2. In `src/geo4bolivia/build/geo.py`, add their units (`geo_id`, `scale`, `name`, `parent_id`) and their layer. `build/gadm.py` (`from_gadm`, or `gadm_units` from GADM codes alone) does this for any GADM file, and `build/geoboundaries.py` (`from_geoboundaries`) builds the layers from a geoBoundaries file and a `shapeID -> geo_id` lookup.
   3. Set `status: active`. `publish_geo()` then adds the `<scale>_id` column and the crosswalks to every coarser scale.
 - **Groupings** (unions of whole units of another scale, e.g. statistical regions made of whole departments) set `children:` to the scale they group. They then nest exactly and work with `geo.aggregate()`.
 - **Grids, custom zones and historical boundaries** do not nest. Give them an `id_pattern` such as `^BO-G10K-r\d{3}c\d{3}$` and boundaries in `geo/boundaries/<scale>.parquet`. Use `geo.overlay()` / `geo.overlay_weights()` to move data onto or off them with area weights.
 
 ### Add a municipality map of another vintage
 
-Bolivia keeps creating municipalities, so a new dataset may come on a map with more units than GADM's 339 (e.g. the current INE map). Never relabel the `municipality` scale: data published on it would silently move to different units. Add the map as its own scale instead. `municipality_ine` is reserved for the INE map, with IDs `BO-INE-DDPPMM` built from the 6-digit INE codes.
+Bolivia keeps creating municipalities, so a new dataset may come on a map with more units than these 339 (e.g. the current INE map). Never relabel the `municipality` scale: data published on it would silently move to different units. Add the map as its own scale instead. `municipality_ine` is reserved for the INE map, with IDs `BO-INE-DDPPMM` built from the 6-digit INE codes.
 
 1. **Boundaries.** Put the official map in `raw/boundaries/` unedited, with its INE code per polygon.
 2. **Register it.** Set `status: active` for `municipality_ine` in `geo/scales.yaml` (or add a scale with its own prefix and name, e.g. `municipality2024` with `^BO-M24-\d{6}$`). Keep `parent: null` unless every new municipality lies at least 99.5% inside one GADM province; then set `parent: province`, and `validate` checks it.

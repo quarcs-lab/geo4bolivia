@@ -13,7 +13,7 @@ Annual population estimates for Bolivia's 339 municipalities, 2001–2020: gridd
 
 - **Units:** 339 of 339 municipality units
 - **Period:** 2001–2020, annual (6,780 rows: one per unit and year)
-- **Source geometry:** DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the GADM 4.1 municipalities by area overlap
+- **Source geometry:** DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the 339 municipalities by area overlap
 
 | File | Format |
 | --- | --- |
@@ -22,11 +22,11 @@ Annual population estimates for Bolivia's 339 municipalities, 2001–2020: gridd
 
 | Variable | Label | Description | Unit | Coverage | Aggregation | Source |
 | --- | --- | --- | --- | --- | --- | --- |
-| `geo_id` | Municipality ID | Municipality geo ID (BO-DD-PP-MM) in the GADM 4.1 hierarchy of the 339-unit municipality map. It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes. |  | 2001–2020 | — |  |
+| `geo_id` | Municipality ID | Municipality geo ID (BO-DD-PP-MM) of the 339-unit municipality map, numbered as in GADM 4.1; its boundary in geo/boundaries/ comes from geoBoundaries (GeoBolivia, public domain). It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes. |  | 2001–2020 | — |  |
 | `year` | Year | Calendar year of the estimate (2001–2020). |  | 2001–2020 | — |  |
-| `asdf_id` | DS4Bolivia polygon ID | ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the GADM municipality by area overlap. |  | 2001–2020 | — | DS4Bolivia |
+| `asdf_id` | DS4Bolivia polygon ID | ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the municipality by area overlap. |  | 2001–2020 | — | DS4Bolivia |
 | `pop` | Population | Estimated number of people living in the municipality: the sum over its polygon of the WorldPop unconstrained global population mosaic at 1 km (aggregated from 100 m random-forest dasymetric estimates; not UN-adjusted), extracted with AidData GeoQuery. Gridded estimates, not INE's official projections. | people | 2001–2020 | sum | WorldPop via DS4Bolivia |
-| `pop_density` | Population density (people per km²) | Population (pop) divided by the municipality's area in km², measured on its GADM 4.1 boundary in the project's equal-area projection (an Albers projection fitted to Bolivia). | people per km² | 2001–2020 | none | WorldPop via DS4Bolivia; areas from GADM 4.1 boundaries |
+| `pop_density` | Population density (people per km²) | Population (pop) divided by the municipality's area in km², measured on its geoBoundaries boundary (geo/boundaries/) in the project's equal-area projection (an Albers projection fitted to Bolivia). The salt flats and lakes that lie outside every municipality (Uyuni, Coipasa, Poopó, Uru Uru) are not counted. | people per km² | 2001–2020 | none | WorldPop via DS4Bolivia; areas from geoBoundaries (GeoBolivia) |
 
 ## Load it
 
@@ -53,7 +53,7 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 
 ## Notes
 
-- The counts were computed by DS4Bolivia on its own municipal polygons, which differ slightly from the GADM boundaries used for geo IDs; `asdf_id` keeps the DS4Bolivia polygon ID.
+- The counts were computed by DS4Bolivia on its own municipal polygons, geoBoundaries v4 polygons that differ slightly from the geoBoundaries gbOpen boundaries in geo/boundaries/; `asdf_id` keeps the DS4Bolivia polygon ID.
 - DS4Bolivia's population README does not name the gridded product; its Earth Engine workflow (apps/geoexplorer1v100bolivia.js, code/aggregate-satellite-embedings-to-adm-pop-weighted1.js) uses WorldPop 100 m, which covers 2000–2020.
 - These are gridded estimates, not the official INE projections. The SDG dataset carries the Atlas population for 2020 (`sdg.population_2020`), which differs.
 
@@ -67,7 +67,7 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 - WorldPop & CIESIN (2018). Global High Resolution Population Denominators Project (1 km aggregated, 2000–2020). University of Southampton and Columbia University. Funded by the Bill and Melinda Gates Foundation (OPP1134076). https://doi.org/10.5258/SOTON/WP00647
 - Goodman, S., BenYishay, A., Lv, Z., & Runfola, D. (2019). GeoQuery: Integrating HPC systems and public web-based geospatial data tools. Computers & Geosciences, 122, 103–112. https://doi.org/10.1016/j.cageo.2018.10.009
 - Runfola, D., Anderson, A., Baier, H., et al. (2020). geoBoundaries: A global database of political administrative boundaries. PLoS ONE, 15(4), e0231866. https://doi.org/10.1371/journal.pone.0231866
-- GADM (2022). Database of Global Administrative Areas, version 4.1. https://gadm.org
+- Runfola, D., et al. (2020). geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. Bolivia ADM3 (gbOpen, commit 9469f09), from GeoBolivia. https://doi.org/10.1371/journal.pone.0231866
 - Mendez, C., Gonzales, E., Leoni, P., Andersen, L., & Peralta, H. (2026). DS4Bolivia: A Data Science Repository to Study GeoSpatial Development in Bolivia [Data set]. GitHub. https://github.com/quarcs-lab/ds4bolivia
 
 ## Recommended citation
@@ -80,5 +80,5 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 - WorldPop (University of Southampton, University of Louisville, Université de Namur) and CIESIN, Columbia University: [Creative Commons Attribution 4.0 International License](https://hub.worldpop.org/doi/10.5258/SOTON/WP00647)
 - AidData, William & Mary: [Open Data Commons Attribution License 1.0](https://opendatacommons.org/licenses/by/1-0/)
 - geoBoundaries, William & Mary geoLab: [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). Required credit: “Boundaries: geoBoundaries (www.geoboundaries.org).”
-- GADM project: [GADM license: free for academic and other non-commercial use; redistribution and commercial use require permission](https://gadm.org/license.html)
+- geoBoundaries (William & Mary geoLab), from GeoBolivia: [Public domain (GeoBolivia: free use and access to information)](https://geo.gob.bo/geonetwork/srv/spa/catalog.search#/metadata/aeeb85a9-23df-48d4-a4e5-dd19e8b206db). Required credit: “Boundaries: geoBoundaries (Runfola et al. 2020), from GeoBolivia, public domain.”
 - Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta: [MIT License](https://github.com/quarcs-lab/ds4bolivia/blob/master/LICENSE)

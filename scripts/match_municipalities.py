@@ -1,7 +1,10 @@
 """Match the 339 GADM 4.1 municipalities to the DS4Bolivia municipalities (one-off).
 
 Writes ``raw/lookups/municipalities339_gadm.csv``, which ``build/geo.py`` and the
-dataset builders read. Run it again only if an input changes, and review the diff:
+dataset builders read. Since version 0.2 the repository no longer holds GADM's geometry
+(the boundaries come from geoBoundaries), so to run this again download GADM 4.1 level 3
+for Bolivia (https://gadm.org/download_country.html, GeoJSON) to the path below, and
+review the diff:
 
     uv run python scripts/match_municipalities.py
 
@@ -54,6 +57,8 @@ def fail(message: str) -> None:
 
 
 def main() -> None:
+    if not (RAW / "boundaries/gadm41_BOL_3.json").exists():
+        raise SystemExit("download GADM 4.1 level 3 for Bolivia to raw/boundaries/gadm41_BOL_3.json first (see above)")
     gadm = gpd.read_file(RAW / "boundaries/gadm41_BOL_3.json")
     gadm = gadm[gadm["TYPE_3"] != "Lago"].to_crs(CRS)
     rows = pd.read_csv(RAW / "lookups/regionNames.csv")

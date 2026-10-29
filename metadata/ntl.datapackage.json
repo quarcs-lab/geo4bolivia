@@ -79,7 +79,7 @@
   "geo:citation": "GeoDevelopment Observatory of Bolivia (2026). Night-time lights per capita (339 municipalities, 2012–2020). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/ntl.md",
   "geo:notes": [
     "Both variables are logs of a ratio, so they cannot be summed or averaged up the hierarchy; their aggregation rule is `none`. Aggregate the levels instead, e.g. NTL = exp(ln_NTLpc) × pop, summed with `pop` from the population dataset.",
-    "Computed by DS4Bolivia on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.",
+    "Computed by DS4Bolivia on its own municipal polygons (`asdf_id`), geoBoundaries v4 polygons that differ slightly from the geoBoundaries gbOpen boundaries in geo/boundaries/.",
     "Population is the gridded estimate of the `pop` dataset."
   ],
   "geo:notebooks": [
@@ -114,7 +114,7 @@
       ],
       "geo:path": "data/municipality/ntl.csv",
       "geo:parquet": "data/municipality/ntl.parquet",
-      "geo:source_geometry": "DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the GADM 4.1 municipalities by area overlap",
+      "geo:source_geometry": "DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the 339 municipalities by area overlap",
       "schema": {
         "primaryKey": [
           "geo_id",
@@ -125,7 +125,7 @@
             "name": "geo_id",
             "title": "Municipality ID",
             "type": "string",
-            "description": "Municipality geo ID (BO-DD-PP-MM) in the GADM 4.1 hierarchy of the 339-unit municipality map. It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes.",
+            "description": "Municipality geo ID (BO-DD-PP-MM) of the 339-unit municipality map, numbered as in GADM 4.1; its boundary in geo/boundaries/ comes from geoBoundaries (GeoBolivia, public domain). It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes.",
             "geo:role": "id",
             "constraints": {
               "required": true,
@@ -146,7 +146,7 @@
             "name": "asdf_id",
             "title": "DS4Bolivia polygon ID",
             "type": "integer",
-            "description": "ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the GADM municipality by area overlap.",
+            "description": "ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the municipality by area overlap.",
             "geo:role": "source_key",
             "geo:units_column": "asdf_id",
             "geo:source": "DS4Bolivia",

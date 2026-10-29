@@ -1,8 +1,10 @@
 # Spatial scales of the GeoDevelopment Observatory of Bolivia.
 #
 # Every unit at every scale has a geo ID matching `id_pattern`. Administrative
-# scales follow the GADM 4.1 hierarchy and nest by prefix: BO > BO-04 (La Paz)
-# > BO-04-17 (Murillo) > BO-04-17-04 (La Paz municipality). `parent` is the next
+# IDs are numbered as in GADM 4.1 and nest by prefix: BO > BO-04 (La Paz)
+# > BO-04-17 (Murillo) > BO-04-17-04 (La Paz municipality). The boundaries are
+# geoBoundaries' (gbOpen ADM3, from GeoBolivia, public domain): the municipalities,
+# and every coarser scale as the exact union of its municipalities. `parent` is the next
 # coarser scale that a unit nests in exactly; units of a scale with
 # `parent: null` (grids, or a municipality map of another vintage) are linked to
 # others by area-weighted spatial overlay instead.
@@ -22,7 +24,7 @@ country:
   parent: null
   id_pattern: '^BO$'
   example: BO
-  source: GADM 4.1 (dissolved from municipalities)
+  source: union of the geoBoundaries municipalities
   status: active
 
 department:
@@ -33,7 +35,7 @@ department:
   id_pattern: '^BO-\d{2}$'
   example: BO-04            # La Paz (INE code 02)
   digits: 2
-  source: GADM 4.1 level 1 (dissolved from municipalities)
+  source: union of the geoBoundaries municipalities (numbered as GADM 4.1 level 1)
   status: active
 
 province:
@@ -44,25 +46,25 @@ province:
   id_pattern: '^BO-\d{2}-\d{2}$'
   example: BO-04-17         # Murillo
   digits: 2
-  source: GADM 4.1 level 2 (dissolved from municipalities)
+  source: union of the geoBoundaries municipalities (numbered as GADM 4.1 level 2; 112 provinces)
   status: active
 
 municipality:
-  label: Municipality (339, GADM 4.1)
+  label: Municipality (339)
   kind: admin
   level: 3
   parent: province
   id_pattern: '^BO-\d{2}-\d{2}-\d{2}$'
   example: BO-04-17-04      # La Paz (seat of government)
   digits: 2
-  source: GADM 4.1 level 3, without the 5 Lake Titicaca polygons
+  source: geoBoundaries gbOpen ADM3 (GeoBolivia, public domain), numbered as GADM 4.1 level 3
   status: active
 
 municipality_ine:
   label: Municipality (current INE map)
   kind: custom
   level: 3
-  parent: null      # linked to the GADM scales by area-weighted overlay
+  parent: null      # linked to the administrative scales by area-weighted overlay
   id_pattern: '^BO-INE-\d{6}$'
   example: BO-INE-020101    # La Paz
   source: Instituto Nacional de Estadística (INE) municipal codes (6 digits, DDPPMM)

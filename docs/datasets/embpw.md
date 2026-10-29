@@ -13,7 +13,7 @@ Sixty-four satellite embedding dimensions (A00–A63) for Bolivia's 339 municipa
 
 - **Units:** 339 of 339 municipality units
 - **Period:** 2017–2017, annual (339 rows: one per unit and year)
-- **Source geometry:** DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the GADM 4.1 municipalities by area overlap
+- **Source geometry:** DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the 339 municipalities by area overlap
 
 | File | Format |
 | --- | --- |
@@ -22,9 +22,9 @@ Sixty-four satellite embedding dimensions (A00–A63) for Bolivia's 339 municipa
 
 | Variable | Label | Description | Unit | Coverage | Aggregation | Source |
 | --- | --- | --- | --- | --- | --- | --- |
-| `geo_id` | Municipality ID | Municipality geo ID (BO-DD-PP-MM) in the GADM 4.1 hierarchy of the 339-unit municipality map. It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes. |  | 2017–2017 | — |  |
+| `geo_id` | Municipality ID | Municipality geo ID (BO-DD-PP-MM) of the 339-unit municipality map, numbered as in GADM 4.1; its boundary in geo/boundaries/ comes from geoBoundaries (GeoBolivia, public domain). It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes. |  | 2017–2017 | — |  |
 | `year` | Year | Year of the satellite embeddings and population weights (2017). |  | 2017–2017 | — |  |
-| `asdf_id` | DS4Bolivia polygon ID | ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the GADM municipality by area overlap. |  | 2017–2017 | — | DS4Bolivia |
+| `asdf_id` | DS4Bolivia polygon ID | ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the municipality by area overlap. |  | 2017–2017 | — | DS4Bolivia |
 | `A00` | Embedding A00 (population-weighted) | Dimension 0 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with each 10 m pixel weighted by its population (WorldPop 100 m, 2017, resampled to 10 m): Σ(embedding × population) / Σ population. It describes the places where people live. An abstract feature without a physical unit. | embedding value | 2017–2017 | none | Google Satellite Embedding V1 via DS4Bolivia |
 | `A01` | Embedding A01 (population-weighted) | Dimension 1 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with each 10 m pixel weighted by its population (WorldPop 100 m, 2017, resampled to 10 m): Σ(embedding × population) / Σ population. It describes the places where people live. An abstract feature without a physical unit. | embedding value | 2017–2017 | none | Google Satellite Embedding V1 via DS4Bolivia |
 | `A02` | Embedding A02 (population-weighted) | Dimension 2 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with each 10 m pixel weighted by its population (WorldPop 100 m, 2017, resampled to 10 m): Σ(embedding × population) / Σ population. It describes the places where people live. An abstract feature without a physical unit. | embedding value | 2017–2017 | none | Google Satellite Embedding V1 via DS4Bolivia |
@@ -116,7 +116,7 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 ## Notes
 
 - The dimensions are not interpretable one by one and should not be aggregated; their aggregation rule is `none`.
-- Computed by DS4Bolivia in Google Earth Engine on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.
+- Computed by DS4Bolivia in Google Earth Engine on its own municipal polygons (`asdf_id`), geoBoundaries v4 polygons that differ slightly from the geoBoundaries gbOpen boundaries in geo/boundaries/.
 - Each pixel is weighted by WorldPop 100 m population, spread evenly over its 10 m pixels (code/aggregate-satellite-embedings-to-adm-pop-weighted1.js in DS4Bolivia), so the embeddings describe where people live. For the area-weighted version, see the `emb` dataset.
 
 ## Related notebooks

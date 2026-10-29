@@ -131,7 +131,7 @@ title="Night-time lights by department")`,
     image: 'images/indicators/pop.webp',
     imageAlt: 'Map of population density in 2020 across 339 Bolivian municipalities in three natural-break classes on a log scale: densest in the La Paz–El Alto, Cochabamba, Santa Cruz, Sucre and Tarija urban areas, intermediate across the altiplano and valleys, sparsest in the northern and eastern lowlands',
     map: 'images/indicators/pop-map.webp',
-    mapAlt: 'Map of population density in 2020 across 339 Bolivian municipalities in three natural-break classes on a log scale: densest in the La Paz–El Alto, Cochabamba, Santa Cruz, Sucre and Tarija urban areas, intermediate across the altiplano and valleys, sparsest in the northern and eastern lowlands. Legend: High 42 to 2,861 people per km² (55 municipalities), Middle 4 to 42 (200), Low 0 to 4 (84).',
+    mapAlt: 'Map of population density in 2020 across 339 Bolivian municipalities in three natural-break classes on a log scale: densest in the La Paz–El Alto, Cochabamba, Santa Cruz, Sucre and Tarija urban areas, intermediate across the altiplano and valleys, sparsest in the northern and eastern lowlands. Legend: High 42 to 2,860 people per km² (55 municipalities), Middle 4 to 42 (202), Low 0 to 4 (82).',
     date: '2026-10-28', pinned: false, dataset: 'pop',
     code: {
       python: `${PYTHON_SETUP}

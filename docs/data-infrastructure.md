@@ -61,13 +61,13 @@ A **scale** is a set of units that tile the country: departments, provinces, mun
 
 ```yaml
 municipality:
-  label: Municipality (339, GADM 4.1)
+  label: Municipality (339)
   kind: admin            # admin | grouping | grid | custom
-  level: 3               # administrative level (GADM)
+  level: 3               # administrative level
   parent: province       # the next coarser scale it nests in exactly
   id_pattern: '^BO-\d{2}-\d{2}-\d{2}$'
   example: BO-04-17-04
-  source: GADM 4.1 level 3, without the 5 Lake Titicaca polygons
+  source: geoBoundaries gbOpen ADM3 (GeoBolivia, public domain), numbered as GADM 4.1 level 3
   status: active         # active: published in geo/ | planned: reserved
 ```
 
@@ -91,9 +91,9 @@ municipality:
 | `municipality_ine` | planned | `BO-INE-NNNNNN` | `BO-INE-020101` | (overlay) |
 | `grid10k` | planned | `BO-G10K-rNNNcNNN` | `BO-G10K-r012c034` | (overlay) |
 
-Administrative numbers follow the GADM order. Codes from other sources are **kept as columns**, never used as keys: Bolivia's INE codes order the departments differently (La Paz is `BO-04` here and `02` in INE), so `ine_code` is a column of `geo/units.csv`, next to DS4Bolivia's `asdf_id` and the INE `mun_id`.
+Administrative numbers follow the GADM order; the boundaries are geoBoundaries' (Bolivia: GeoBolivia's 2015 map, public domain), attached to the IDs by a one-off area match (`scripts/match_geoboundaries.py`, `build/geoboundaries.py`). geoBoundaries leaves salt flats and lakes outside every unit, so they are holes at every scale and `area_km2` excludes them. Codes from other sources are **kept as columns**, never used as keys: Bolivia's INE codes order the departments differently (La Paz is `BO-04` here and `02` in INE), so `ine_code` is a column of `geo/units.csv`, next to DS4Bolivia's `asdf_id` and the INE `mun_id`.
 
-**Municipality maps of other vintages.** New municipalities are created over time, so later datasets may use a map with more units than GADM's 339. Each map is its own scale with its own ID prefix (e.g. the planned `municipality_ine`), never a relabelling of `municipality`. Its boundaries are published like any other scale, and data move between maps with `overlay()` (area weights), or through a hand-checked lookup when units only split. See [`CONTRIBUTING_DATA.md`](../CONTRIBUTING_DATA.md).
+**Municipality maps of other vintages.** New municipalities are created over time, so later datasets may use a map with more units than these 339. Each map is its own scale with its own ID prefix (e.g. the planned `municipality_ine`), never a relabelling of `municipality`. Its boundaries are published like any other scale, and data move between maps with `overlay()` (area weights), or through a hand-checked lookup when units only split. See [`CONTRIBUTING_DATA.md`](../CONTRIBUTING_DATA.md).
 
 ---
 
@@ -101,7 +101,7 @@ Administrative numbers follow the GADM order. Codes from other sources are **kep
 
 | File | Contents |
 | --- | --- |
-| `units.csv` / `.parquet` | One row per unit of every scale: `geo_id`, `scale`, `name`, `parent_id`; one `<scale>_id` column per scale it lies in (`country_id`, `department_id`, `province_id`, `municipality_id`); source keys (`gid` = GADM, `ine_code` = INE, and for municipalities `asdf_id` = DS4Bolivia polygon and `mun_id` = INE code as an integer); the GADM spelling (`name_gadm`); `area_km2` |
+| `units.csv` / `.parquet` | One row per unit of every scale: `geo_id`, `scale`, `name`, `parent_id`; one `<scale>_id` column per scale it lies in (`country_id`, `department_id`, `province_id`, `municipality_id`); source keys (`gid` = GADM, `ine_code` = INE, and for municipalities `asdf_id` = DS4Bolivia polygon, `mun_id` = INE code as an integer and `gb_id` = geoBoundaries `shapeID`); the GADM spelling (`name_gadm`); `area_km2` |
 | `boundaries/<scale>.geojson` / `.parquet` | Polygons in WGS 84 with `geo_id` and `name`. Coarser scales are dissolved from the finest one, so they nest exactly |
 | `crosswalks/<from>__<to>.csv` | `geo_id_from`, `geo_id_to`, `weight_area` for every nested pair, finer to coarser (`municipality__province.csv`) |
 
@@ -217,7 +217,7 @@ mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)   # one SDG indicator 
 names = geo.units("municipality")                  # names, parents, source keys
 shapes = geo.boundaries("department")
 xw = geo.crosswalk("municipality", "department")
-geo.load("ntl", ref="v0.1.0")                      # a frozen release of the data
+geo.load("ntl", ref="v0.2.0")                      # a frozen release of the data
 ```
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/notebooks/empty.ipynb)
@@ -478,10 +478,10 @@ How-tos:
 
 ## 9. Design decisions
 
-- **GADM as the administrative backbone.** It covers every country in one consistent format, and its codes give stable nested IDs. Other sources (INE codes, DS4Bolivia's polygons) are linked through columns of `geo/units`.
+- **GADM's numbering, geoBoundaries' polygons.** GADM covers every country in one consistent format, and its codes give stable nested IDs, but its license forbids redistribution. geoBoundaries' gbOpen polygons can be redistributed (Bolivia's are public domain), so since version 0.2 they are the boundaries, matched once to the IDs by area overlap; the IDs did not change. Other sources (INE codes, DS4Bolivia's polygons) are linked through columns of `geo/units`.
 - **Long panels, not wide files.** One shape for every dataset makes loading, combining, validating and aggregating generic. Wide tables are one `pivot` (or `wide=`) away.
 - **CSV and Parquet.** CSV for universal access (Excel, any tool); Parquet for exact types and speed. The validator keeps them identical.
 - **Aggregation rules in the metadata.** Whether a variable can be summed or must be weighted is a property of the data, so it is recorded once by whoever knows the data best.
 - **A small package that reads from GitHub.** The data are not inside the package, so `pip install` is quick and the package always reads the files the website links to. Pin a release tag (`ref=`) for reproducible research.
 - **Everything regenerated from `raw/`.** Any correction is a line of code in a builder, so it is documented and repeatable. Example: DS4Bolivia attaches the rows of three pairs of homonym municipalities to the wrong polygon of each pair; `build/sdg.py` links those rows by INE code instead (see [`raw/README.md`](../raw/README.md)).
-- **One scale per municipality map.** Bolivia keeps creating municipalities. Data published on the 339-unit GADM map stay on it; a newer map becomes a new scale linked by overlay, so no published number is silently moved to a different unit.
+- **One scale per municipality map.** Bolivia keeps creating municipalities. Data published on the 339-unit map stay on it; a newer map becomes a new scale linked by overlay, so no published number is silently moved to a different unit.

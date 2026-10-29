@@ -1,462 +1,462 @@
-geo_id,scale,name,parent_id,country_id,department_id,province_id,municipality_id,gid,ine_code,asdf_id,mun_id,name_gadm,area_km2
-BO,country,Bolivia,,BO,,,,BOL,,,,,1081407.41
-BO-01,department,Chuquisaca,BO,BO,BO-01,,,BOL.1_1,01,,,Chuquisaca,50946.35
-BO-02,department,Cochabamba,BO,BO,BO-02,,,BOL.2_1,03,,,Cochabamba,54447.12
-BO-03,department,Beni,BO,BO,BO-03,,,BOL.3_1,08,,,Beni,206803.04
-BO-04,department,La Paz,BO,BO,BO-04,,,BOL.4_1,02,,,LaPaz,128242.8
-BO-05,department,Oruro,BO,BO,BO-05,,,BOL.5_1,04,,,Oruro,52194.51
-BO-06,department,Pando,BO,BO,BO-06,,,BOL.6_1,09,,,Pando,63654.31
-BO-07,department,Potosí,BO,BO,BO-07,,,BOL.7_1,05,,,Potosí,119203.82
-BO-08,department,Santa Cruz,BO,BO,BO-08,,,BOL.8_1,07,,,SantaCruz,368653.69
-BO-09,department,Tarija,BO,BO,BO-09,,,BOL.9_1,06,,,Tarija,37258.79
-BO-01-01,province,Azurduy,BO-01,BO,BO-01,BO-01-01,,BOL.1.1_2,0102,,,Azurduy,3083.36
-BO-01-02,province,Belisario Boeto,BO-01,BO,BO-01,BO-01-02,,BOL.1.2_2,0108,,,BelisarioBoeto,1730.77
-BO-01-03,province,Hernando Siles,BO-01,BO,BO-01,BO-01-03,,BOL.1.3_2,0105,,,HernandoSiles,6345.02
-BO-01-04,province,Luis Calvo,BO-01,BO,BO-01,BO-01-04,,BOL.1.4_2,0110,,,LuisCalvo,13031.3
-BO-01-05,province,Nor Cinti,BO-01,BO,BO-01,BO-01-05,,BOL.1.5_2,0107,,,NorCinti,7708.55
-BO-01-06,province,Oropeza,BO-01,BO,BO-01,BO-01-06,,BOL.1.6_2,0101,,,Oropeza,3549.67
-BO-01-07,province,Sur Cinti,BO-01,BO,BO-01,BO-01-07,,BOL.1.7_2,0109,,,SurCinti,5462.53
-BO-01-08,province,Tomina,BO-01,BO,BO-01,BO-01-08,,BOL.1.8_2,0104,,,Tomina,4261.09
-BO-01-09,province,Yamparáez,BO-01,BO,BO-01,BO-01-09,,BOL.1.9_2,0106,,,Yamparáez,1724.54
-BO-01-10,province,Zudáñez,BO-01,BO,BO-01,BO-01-10,,BOL.1.10_2,0103,,,Zudáñez,4049.84
-BO-02-01,province,Arani,BO-02,BO,BO-02,BO-02-01,,BOL.2.1_2,0305,,,Arani,555.05
-BO-02-02,province,Arque,BO-02,BO,BO-02,BO-02-02,,BOL.2.2_2,0306,,,Arque,1106.51
-BO-02-03,province,Ayopaya,BO-02,BO,BO-02,BO-02-03,,BOL.2.3_2,0303,,,Ayopaya,9356.89
-BO-02-04,province,Bolívar,BO-02,BO,BO-02,BO-02-04,,BOL.2.4_2,0315,,,Bolivar,683.67
-BO-02-05,province,Campero,BO-02,BO,BO-02,BO-02-05,,BOL.2.5_2,0302,,,Campero,5832.06
-BO-02-06,province,Capinota,BO-02,BO,BO-02,BO-02-06,,BOL.2.6_2,0307,,,Capinota,984.75
-BO-02-07,province,Carrasco,BO-02,BO,BO-02,BO-02-07,,BOL.2.7_2,0312,,,Carrasco,12412.62
-BO-02-08,province,Cercado,BO-02,BO,BO-02,BO-02-08,,BOL.2.8_2,0301,,,Cercado,287.21
-BO-02-09,province,Chapare,BO-02,BO,BO-02,BO-02-09,,BOL.2.9_2,0310,,,Chapare,12442.52
-BO-02-10,province,Esteban Arce,BO-02,BO,BO-02,BO-02-10,,BOL.2.10_2,0304,,,EstebanArze,1352.98
-BO-02-11,province,Germán Jordán,BO-02,BO,BO-02,BO-02-11,,BOL.2.11_2,0308,,,GermánJordán,188.73
-BO-02-12,province,Mizque,BO-02,BO,BO-02,BO-02-12,,BOL.2.12_2,0313,,,Mizque,2896.79
-BO-02-13,province,Punata,BO-02,BO,BO-02,BO-02-13,,BOL.2.13_2,0314,,,Punata,419.42
-BO-02-14,province,Quillacollo,BO-02,BO,BO-02,BO-02-14,,BOL.2.14_2,0309,,,Quillacollo,1632.75
-BO-02-15,province,Tapacarí,BO-02,BO,BO-02,BO-02-15,,BOL.2.15_2,0311,,,Tapacarí,1568.74
-BO-02-16,province,Tiraque,BO-02,BO,BO-02,BO-02-16,,BOL.2.16_2,0316,,,Tiraque,2725.92
-BO-03-01,province,Cercado,BO-03,BO,BO-03,BO-03-01,,BOL.3.1_2,0801,,,Cercado,10688.63
-BO-03-02,province,General José Ballivián,BO-03,BO,BO-03,BO-03-02,,BOL.3.2_2,0803,,,GeneralJoséBallivián,32716.47
-BO-03-03,province,Iténez,BO-03,BO,BO-03,BO-03-03,,BOL.3.3_2,0808,,,Iténez,37306.12
-BO-03-04,province,Mamoré,BO-03,BO,BO-03,BO-03-04,,BOL.3.4_2,0807,,,Mamoré,18718.18
-BO-03-05,province,Marbán,BO-03,BO,BO-03,BO-03-05,,BOL.3.5_2,0806,,,Marbán,16795.0
-BO-03-06,province,Moxos,BO-03,BO,BO-03,BO-03-06,,BOL.3.6_2,0805,,,Moxos,25116.13
-BO-03-07,province,Vaca Díez,BO-03,BO,BO-03,BO-03-07,,BOL.3.7_2,0802,,,VacaDiez,19235.5
-BO-03-08,province,Yacuma,BO-03,BO,BO-03,BO-03-08,,BOL.3.8_2,0804,,,Yacuma,46228.3
-BO-04-02,province,Abel Iturralde,BO-04,BO,BO-04,BO-04-02,,BOL.4.2_2,0215,,,AbelIturralde,40079.97
-BO-04-03,province,Aroma,BO-04,BO,BO-04,BO-04-03,,BOL.4.3_2,0213,,,Aroma,4653.65
-BO-04-04,province,Bautista Saavedra,BO-04,BO,BO-04,BO-04-04,,BOL.4.4_2,0216,,,BautistaSaavedra,3061.8
-BO-04-05,province,Camacho,BO-04,BO,BO-04,BO-04-05,,BOL.4.5_2,0204,,,Camacho,1801.54
-BO-04-06,province,Caranavi,BO-04,BO,BO-04,BO-04-06,,BOL.4.6_2,0220,,,Caranavi,2599.57
-BO-04-07,province,Franz Tamayo,BO-04,BO,BO-04,BO-04-07,,BOL.4.7_2,0207,,,FranzTamayo,16683.98
-BO-04-08,province,General José Manuel Pando,BO-04,BO,BO-04,BO-04-08,,BOL.4.8_2,0219,,,GeneralJoséManuelPando,1827.06
-BO-04-09,province,Gualberto Villarroel,BO-04,BO,BO-04,BO-04-09,,BOL.4.9_2,0218,,,GualbertoVillarroel,2013.87
-BO-04-10,province,Ingavi,BO-04,BO,BO-04,BO-04-10,,BOL.4.10_2,0208,,,Ingavi,4138.36
-BO-04-11,province,Inquisivi,BO-04,BO,BO-04,BO-04-11,,BOL.4.11_2,0210,,,Inquisivi,7045.73
-BO-04-12,province,Larecaja,BO-04,BO,BO-04,BO-04-12,,BOL.4.12_2,0206,,,Larecaja,9650.29
-BO-04-13,province,Loayza,BO-04,BO,BO-04,BO-04-13,,BOL.4.13_2,0209,,,Loayza,2897.78
-BO-04-14,province,Los Andes,BO-04,BO,BO-04,BO-04-14,,BOL.4.14_2,0212,,,LosAndes,2804.8
-BO-04-15,province,Manco Kapac,BO-04,BO,BO-04,BO-04-15,,BOL.4.15_2,0217,,,MancoKapac,253.32
-BO-04-16,province,Muñecas,BO-04,BO,BO-04,BO-04-16,,BOL.4.16_2,0205,,,Muñecas,1601.74
-BO-04-17,province,Murillo,BO-04,BO,BO-04,BO-04-17,,BOL.4.17_2,0201,,,Murillo,3828.99
-BO-04-18,province,Nor Yungas,BO-04,BO,BO-04,BO-04-18,,BOL.4.18_2,0214,,,NorYungas,1784.46
-BO-04-19,province,Omasuyos,BO-04,BO,BO-04,BO-04-19,,BOL.4.19_2,0202,,,Omasuyos,1457.19
-BO-04-20,province,Pacajes,BO-04,BO,BO-04,BO-04-20,,BOL.4.20_2,0203,,,Pacajes,11252.14
-BO-04-21,province,Sud Yungas,BO-04,BO,BO-04,BO-04-21,,BOL.4.21_2,0211,,,SudYungas,8807.11
-BO-05-01,province,Abaroa,BO-05,BO,BO-05,BO-05-01,,BOL.5.1_2,0402,,,Abaroa,3818.81
-BO-05-02,province,Carangas,BO-05,BO,BO-05,BO-05-02,,BOL.5.2_2,0403,,,Carangas,4161.35
-BO-05-03,province,Cercado,BO-05,BO,BO-05,BO-05-03,,BOL.5.3_2,0401,,,Cercado,5273.65
-BO-05-04,province,Ladislao Cabrera,BO-05,BO,BO-05,BO-05-04,,BOL.5.4_2,0408,,,LadislaoCabrera,7168.45
-BO-05-05,province,Litoral,BO-05,BO,BO-05,BO-05-05,,BOL.5.5_2,0405,,,Litoral,2652.46
-BO-05-06,province,Mejillones,BO-05,BO,BO-05,BO-05-06,,BOL.5.6_2,0415,,,Mejillones,665.48
-BO-05-07,province,Nor Carangas,BO-05,BO,BO-05,BO-05-07,,BOL.5.7_2,0416,,,NorCarangas,904.52
-BO-05-08,province,Pantaleón Dalence,BO-05,BO,BO-05,BO-05-08,,BOL.5.8_2,0407,,,PantaleónDalence,927.28
-BO-05-09,province,Poopó,BO-05,BO,BO-05,BO-05-09,,BOL.5.9_2,0406,,,Poopó,1916.81
-BO-05-10,province,Sabaya,BO-05,BO,BO-05,BO-05-10,,BOL.5.10_2,0409,,,Sabaya,5853.2
-BO-05-11,province,Sajama,BO-05,BO,BO-05,BO-05-11,,BOL.5.11_2,0404,,,Sajama,7589.11
-BO-05-12,province,San Pedro de Totora,BO-05,BO,BO-05,BO-05-12,,BOL.5.12_2,0413,,,SanPedrodeTotora,1379.75
-BO-05-13,province,Saucarí,BO-05,BO,BO-05,BO-05-13,,BOL.5.13_2,0410,,,Saucarí,3197.97
-BO-05-14,province,Sebastián Pagador,BO-05,BO,BO-05,BO-05-14,,BOL.5.14_2,0414,,,SebastiánPagador,2574.41
-BO-05-15,province,Sur Carangas,BO-05,BO,BO-05,BO-05-15,,BOL.5.15_2,0412,,,SurCarangas,3743.26
-BO-05-16,province,Tomás Barrón,BO-05,BO,BO-05,BO-05-16,,BOL.5.16_2,0411,,,TomásBarrón,367.05
-BO-06-01,province,Abuná,BO-06,BO,BO-06,BO-06-01,,BOL.6.1_2,0904,,,Abuná,9822.29
-BO-06-02,province,Federico Román,BO-06,BO,BO-06,BO-06-02,,BOL.6.2_2,0905,,,FedericoRomán,13051.88
-BO-06-03,province,Madre de Dios,BO-06,BO,BO-06,BO-06-03,,BOL.6.3_2,0903,,,MadredeDios,11975.52
-BO-06-04,province,Manuripi,BO-06,BO,BO-06,BO-06-04,,BOL.6.4_2,0902,,,Manuripi,19649.12
-BO-06-05,province,Nicolás Suárez,BO-06,BO,BO-06,BO-06-05,,BOL.6.5_2,0901,,,NicolásSuárez,9155.58
-BO-07-01,province,Alonso de Ibáñez,BO-07,BO,BO-07,BO-07-01,,BOL.7.1_2,0507,,,AlonsodeIbáñez,1437.74
-BO-07-02,province,Antonio Quijarro,BO-07,BO,BO-07,BO-07-02,,BOL.7.2_2,0512,,,AntonioQuijarro,16884.52
-BO-07-03,province,Charcas,BO-07,BO,BO-07,BO-07-03,,BOL.7.3_2,0505,,,Chárcas,3394.28
-BO-07-04,province,Chayanta,BO-07,BO,BO-07,BO-07-04,,BOL.7.4_2,0504,,,Chayanta,5153.18
-BO-07-05,province,Cornelio Saavedra,BO-07,BO,BO-07,BO-07-05,,BOL.7.5_2,0503,,,CornelioSaavedra,3234.17
-BO-07-06,province,Daniel Campos,BO-07,BO,BO-07,BO-07-06,,BOL.7.6_2,0514,,,DanielCampos,10520.35
-BO-07-07,province,Enrique Baldivieso,BO-07,BO,BO-07,BO-07-07,,BOL.7.7_2,0516,,,EnriqueBaldivieso,2344.77
-BO-07-08,province,General Bilbao,BO-07,BO,BO-07,BO-07-08,,BOL.7.8_2,0513,,,GeneralBilbao,760.71
-BO-07-09,province,José María Linares,BO-07,BO,BO-07,BO-07-09,,BOL.7.9_2,0511,,,JoséMaríaLinares,4887.35
-BO-07-10,province,Modesto Omiste,BO-07,BO,BO-07,BO-07-10,,BOL.7.10_2,0515,,,ModestoOmiste,2495.67
-BO-07-11,province,Nor Chichas,BO-07,BO,BO-07,BO-07-11,,BOL.7.11_2,0506,,,NorChichas,8094.57
-BO-07-12,province,Nor Lípez,BO-07,BO,BO-07,BO-07-12,,BOL.7.12_2,0509,,,NorLipez,28425.18
-BO-07-13,province,Rafael Bustillo,BO-07,BO,BO-07,BO-07-13,,BOL.7.13_2,0502,,,RafaelBustillo,2120.27
-BO-07-14,province,Sur Chichas,BO-07,BO,BO-07,BO-07-14,,BOL.7.14_2,0508,,,SurChichas,8493.43
-BO-07-15,province,Sur Lípez,BO-07,BO,BO-07,BO-07-15,,BOL.7.15_2,0510,,,SurLipez,16185.03
-BO-07-16,province,Tomás Frías,BO-07,BO,BO-07,BO-07-16,,BOL.7.16_2,0501,,,TomásFrías,4773.21
-BO-08-01,province,Andrés Ibáñez,BO-08,BO,BO-08,BO-08-01,,BOL.8.1_2,0701,,,AndrésIbáñez,4808.24
-BO-08-02,province,Ángel Sandoval,BO-08,BO,BO-08,BO-08-02,,BOL.8.2_2,0712,,,AngelSandoval,27087.44
-BO-08-03,province,Chiquitos,BO-08,BO,BO-08,BO-08-03,,BOL.8.3_2,0705,,,Chiquitos,40064.66
-BO-08-04,province,Cordillera,BO-08,BO,BO-08,BO-08-04,,BOL.8.4_2,0707,,,Cordillera,83461.52
-BO-08-05,province,Florida,BO-08,BO,BO-08,BO-08-05,,BOL.8.5_2,0709,,,Florida,3964.14
-BO-08-06,province,Germán Busch,BO-08,BO,BO-08,BO-08-06,,BOL.8.6_2,0714,,,GermánBusch,25450.68
-BO-08-07,province,Guarayos,BO-08,BO,BO-08,BO-08-07,,BOL.8.7_2,0715,,,Guarayos,33312.67
-BO-08-08,province,Ichilo,BO-08,BO,BO-08,BO-08-08,,BOL.8.8_2,0704,,,Ichilo,15153.3
-BO-08-09,province,Manuel María Caballero,BO-08,BO,BO-08,BO-08-09,,BOL.8.9_2,0713,,,ManuelMaríaCaballero,3768.1
-BO-08-10,province,Ñuflo de Chávez,BO-08,BO,BO-08,BO-08-10,,BOL.8.10_2,0711,,,ÑufloDeChávez,43827.32
-BO-08-11,province,Obispo Santistevan,BO-08,BO,BO-08,BO-08-11,,BOL.8.11_2,0710,,,ObispoSantistéban,5049.83
-BO-08-12,province,Sara,BO-08,BO,BO-08,BO-08-12,,BOL.8.12_2,0706,,,Sara,5496.3
-BO-08-13,province,Vallegrande,BO-08,BO,BO-08,BO-08-13,,BOL.8.13_2,0708,,,Vallegrande,6100.52
-BO-08-14,province,Velasco,BO-08,BO,BO-08,BO-08-14,,BOL.8.14_2,0703,,,Velasco,68727.61
-BO-08-15,province,Warnes,BO-08,BO,BO-08,BO-08-15,,BOL.8.15_2,0702,,,Warnes,2376.16
-BO-09-01,province,Arce,BO-09,BO,BO-09,BO-09-01,,BOL.9.1_2,0602,,,Arce,4838.07
-BO-09-02,province,Avilés,BO-09,BO,BO-09,BO-09-02,,BOL.9.2_2,0604,,,Avilés,2672.49
-BO-09-03,province,Cercado,BO-09,BO,BO-09,BO-09-03,,BOL.9.3_2,0601,,,Cercado,2063.9
-BO-09-04,province,Gran Chaco,BO-09,BO,BO-09,BO-09-04,,BOL.9.4_2,0603,,,GranChaco,17696.41
-BO-09-05,province,Méndez,BO-09,BO,BO-09,BO-09-05,,BOL.9.5_2,0605,,,Méndez,4042.33
-BO-09-06,province,O'Connor,BO-09,BO,BO-09,BO-09-06,,BOL.9.6_2,0606,,,O'Connor,5945.53
-BO-01-01-01,municipality,Azurduy,BO-01-01,BO,BO-01,BO-01-01,BO-01-01-01,BOL.1.1.1_2,010201,174,10201,Azurduy,1728.99
-BO-01-01-02,municipality,Tarvita,BO-01-01,BO,BO-01,BO-01-01,BO-01-01-02,BOL.1.1.2_2,010202,186,10202,Tarvita,1354.43
-BO-01-02-01,municipality,Villa Serrano,BO-01-02,BO,BO-01,BO-01-02,BO-01-02-01,BOL.1.2.1_2,010801,246,10801,VillaSerrano,1730.77
-BO-01-03-01,municipality,Huacareta,BO-01-03,BO,BO-01,BO-01-03,BO-01-03-01,BOL.1.3.1_2,010502,193,10502,Huacareta,2964.36
-BO-01-03-02,municipality,Monteagudo,BO-01-03,BO,BO-01,BO-01-03,BO-01-03-02,BOL.1.3.2_2,010501,194,10501,Monteagudo,3380.7
-BO-01-04-01,municipality,Huacaya,BO-01-04,BO,BO-01,BO-01-04,BO-01-04-01,BOL.1.4.1_2,011002,191,11002,Huacaya,1280.83
-BO-01-04-02,municipality,Macharetí,BO-01-04,BO,BO-01,BO-01-04,BO-01-04-02,BOL.1.4.2_2,011003,247,11003,Macharetí,7973.35
-BO-01-04-03,municipality,Muyupampa,BO-01-04,BO,BO-01,BO-01-04,BO-01-04-03,BOL.1.4.3_2,011001,241,11001,VillaVacaGuzmán,3777.34
-BO-01-05-01,municipality,Camargo,BO-01-05,BO,BO-01,BO-01-05,BO-01-05-01,BOL.1.5.1_2,010701,336,10701,Camargo,2084.62
-BO-01-05-02,municipality,Incahuasi,BO-01-05,BO,BO-01,BO-01-05,BO-01-05-02,BOL.1.5.2_2,010703,37,10703,Incahuasi,1043.55
-BO-01-05-03,municipality,San Lucas,BO-01-05,BO,BO-01,BO-01-05,BO-01-05-03,BOL.1.5.3_2,010702,35,10702,SanLucas,3891.58
-BO-01-05-04,municipality,Villa Charcas,BO-01-05,BO,BO-01,BO-01-05,BO-01-05-04,BOL.1.5.4_2,010704,322,10704,VillaCharcas,688.81
-BO-01-06-01,municipality,Poroma,BO-01-06,BO,BO-01,BO-01-06,BO-01-06-01,BOL.1.6.1_2,010103,300,10103,Poroma,1433.32
-BO-01-06-02,municipality,Sucre,BO-01-06,BO,BO-01,BO-01-06,BO-01-06-02,BOL.1.6.2_2,010101,254,10101,Sucre,1681.49
-BO-01-06-03,municipality,Yotala,BO-01-06,BO,BO-01,BO-01-06,BO-01-06-03,BOL.1.6.3_2,010102,201,10102,Yotala,434.87
-BO-01-07-01,municipality,Culpina,BO-01-07,BO,BO-01,BO-01-07,BO-01-07-01,BOL.1.7.1_2,010902,36,10902,Culpina,3895.55
-BO-01-07-02,municipality,Las Carreras,BO-01-07,BO,BO-01,BO-01-07,BO-01-07-02,BOL.1.7.2_2,010903,104,10903,LasCarreras,906.22
-BO-01-07-03,municipality,Villa Abecia,BO-01-07,BO,BO-01,BO-01-07,BO-01-07-03,BOL.1.7.3_2,010901,105,10901,VillaAbecia,660.85
-BO-01-08-01,municipality,Villa Alcalá,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-01,BOL.1.8.1_2,010404,198,10404,Alcalá,305.85
-BO-01-08-02,municipality,El Villar,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-02,BOL.1.8.2_2,010405,190,10405,ElVillar,889.84
-BO-01-08-03,municipality,Padilla,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-03,BOL.1.8.3_2,010401,243,10401,Padilla,1666.56
-BO-01-08-04,municipality,Sopachuy,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-04,BOL.1.8.4_2,010403,199,10403,Sopachui,586.36
-BO-01-08-05,municipality,Tomina,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-05,BOL.1.8.5_2,010402,203,10402,Tomina,812.54
-BO-01-09-01,municipality,Tarabuco,BO-01-09,BO,BO-01,BO-01-09,BO-01-09-01,BOL.1.9.1_2,010601,205,10601,Tarabuco,1082.44
-BO-01-09-02,municipality,Yamparáez,BO-01-09,BO,BO-01,BO-01-09,BO-01-09-02,BOL.1.9.2_2,010602,202,10602,Yamparáez,642.14
-BO-01-10-01,municipality,Mojocoya,BO-01-10,BO,BO-01,BO-01-10,BO-01-10-01,BOL.1.10.1_2,010303,244,10303,Mojocoya,1239.0
-BO-01-10-02,municipality,Presto,BO-01-10,BO,BO-01,BO-01-10,BO-01-10-02,BOL.1.10.2_2,010302,255,10302,Presto,1351.45
-BO-01-10-03,municipality,Icla,BO-01-10,BO,BO-01,BO-01-10,BO-01-10-03,BOL.1.10.3_2,010304,200,10304,VillaRicardoMugia-Icla,801.24
-BO-01-10-04,municipality,Zudañez,BO-01-10,BO,BO-01,BO-01-10,BO-01-10-04,BOL.1.10.4_2,010301,206,10301,Zudañez,657.98
-BO-02-01-01,municipality,Arani,BO-02-01,BO,BO-02,BO-02-01,BO-02-01-01,BOL.2.1.1_2,030501,140,30501,Arani,205.73
-BO-02-01-02,municipality,Vacas,BO-02-01,BO,BO-02,BO-02-01,BO-02-01-02,BOL.2.1.2_2,030502,273,30502,Vacas,349.32
-BO-02-02-01,municipality,Arque,BO-02-02,BO,BO-02,BO-02-02,BO-02-02-01,BOL.2.2.1_2,030601,24,30601,Arque,518.52
-BO-02-02-02,municipality,Tacopaya,BO-02-02,BO,BO-02,BO-02-02,BO-02-02-02,BOL.2.2.2_2,030602,125,30602,Tacopaya,587.99
-BO-02-03-01,municipality,Independencia,BO-02-03,BO,BO-02,BO-02-03,BO-02-03-01,BOL.2.3.1_2,030301,292,30301,Ayopaya,1499.15
-BO-02-03-02,municipality,Cocapata,BO-02-03,BO,BO-02,BO-02-03,BO-02-03-02,BOL.2.3.2_2,030303,251,30303,Cocapata,7120.18
-BO-02-03-03,municipality,Morochata,BO-02-03,BO,BO-02,BO-02-03,BO-02-03-03,BOL.2.3.3_2,030302,106,30302,Morochata,737.47
-BO-02-04-01,municipality,Bolívar,BO-02-04,BO,BO-02,BO-02-04,BO-02-04-01,BOL.2.4.1_2,031501,238,31501,Bolivar,683.67
-BO-02-05-01,municipality,Aiquile,BO-02-05,BO,BO-02,BO-02-05,BO-02-05-01,BOL.2.5.1_2,030201,5,30201,Aiquile,2685.34
-BO-02-05-02,municipality,Omereque,BO-02-05,BO,BO-02,BO-02-05,BO-02-05-02,BOL.2.5.2_2,030203,53,30203,Omereque,766.64
-BO-02-05-03,municipality,Pasorapa,BO-02-05,BO,BO-02,BO-02-05,BO-02-05-03,BOL.2.5.3_2,030202,334,30202,Pasorapa,2380.21
-BO-02-06-01,municipality,Capinota,BO-02-06,BO,BO-02,BO-02-06,BO-02-06-01,BOL.2.6.1_2,030701,23,30701,Capinota,569.58
-BO-02-06-02,municipality,Santivañez,BO-02-06,BO,BO-02,BO-02-06,BO-02-06-02,BOL.2.6.2_2,030702,128,30702,Santivañez,300.04
-BO-02-06-03,municipality,Sicaya,BO-02-06,BO,BO-02,BO-02-06,BO-02-06-03,BOL.2.6.3_2,030703,21,30703,Sicaya,115.36
-BO-02-07-01,municipality,Chimoré,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-01,BOL.2.7.1_2,031204,267,31204,Chimoré,2787.02
-BO-02-07-02,municipality,Entre Ríos,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-02,BOL.2.7.2_2,031206,299,31206,EntreRíos,2196.55
-BO-02-07-03,municipality,Pocona,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-03,BOL.2.7.3_2,031203,274,31203,Pocona,909.4
-BO-02-07-04,municipality,Pojo,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-04,BOL.2.7.4_2,031202,298,31202,Pojo,2406.68
-BO-02-07-05,municipality,Puerto Villarroel,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-05,BOL.2.7.5_2,031205,283,31205,PuertoVillarroel,1977.34
-BO-02-07-06,municipality,Totora,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-06,BOL.2.7.6_2,031201,86,31201,Totora,2135.43
-BO-02-08-01,municipality,Cochabamba,BO-02-08,BO,BO-02,BO-02-08,BO-02-08-01,BOL.2.8.1_2,030101,135,30101,Cochabamba,287.21
-BO-02-09-01,municipality,Colomi,BO-02-09,BO,BO-02,BO-02-09,BO-02-09-01,BOL.2.9.1_2,031002,301,31002,Colomi,515.18
-BO-02-09-02,municipality,Sacaba,BO-02-09,BO,BO-02,BO-02-09,BO-02-09-02,BOL.2.9.2_2,031001,80,31001,Sacaba,750.82
-BO-02-09-03,municipality,Villa Tunari,BO-02-09,BO,BO-02,BO-02-09,BO-02-09-03,BOL.2.9.3_2,031003,266,31003,VillaTunari,11176.31
-BO-02-10-01,municipality,Anzaldo,BO-02-10,BO,BO-02,BO-02-10,BO-02-10-01,BOL.2.10.1_2,030402,120,30402,Anzaldo,670.13
-BO-02-10-02,municipality,Arbieto,BO-02-10,BO,BO-02,BO-02-10,BO-02-10-02,BOL.2.10.2_2,030403,15,30403,Arbieto,147.7
-BO-02-10-03,municipality,Sacabamba,BO-02-10,BO,BO-02,BO-02-10,BO-02-10-03,BOL.2.10.3_2,030404,119,30404,Sacabamba,196.28
-BO-02-10-04,municipality,Tarata,BO-02-10,BO,BO-02,BO-02-10,BO-02-10-04,BOL.2.10.4_2,030401,85,30401,Tarata,338.88
-BO-02-11-01,municipality,Cliza,BO-02-11,BO,BO-02,BO-02-11,BO-02-11-01,BOL.2.11.1_2,030801,124,30801,Cliza,55.81
-BO-02-11-02,municipality,Toko,BO-02-11,BO,BO-02,BO-02-11,BO-02-11-02,BOL.2.11.2_2,030802,121,30802,Toco,61.84
-BO-02-11-03,municipality,Tolata,BO-02-11,BO,BO-02,BO-02-11,BO-02-11-03,BOL.2.11.3_2,030803,131,30803,Tolata,71.27
-BO-02-12-01,municipality,Alalay,BO-02-12,BO,BO-02,BO-02-12,BO-02-12-01,BOL.2.12.1_2,031303,302,31303,Alalay,418.63
-BO-02-12-02,municipality,Mizque,BO-02-12,BO,BO-02,BO-02-12,BO-02-12-02,BOL.2.12.2_2,031301,333,31301,Mizque,1879.72
-BO-02-12-03,municipality,Vila Vila,BO-02-12,BO,BO-02,BO-02-12,BO-02-12-03,BOL.2.12.3_2,031302,303,31302,VilaVila,598.5
-BO-02-13-01,municipality,Punata,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-01,BOL.2.13.1_2,031401,141,31401,Punata,85.88
-BO-02-13-02,municipality,San Benito,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-02,BOL.2.13.2_2,031403,26,31403,SanBenito,141.41
-BO-02-13-03,municipality,Tacachi,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-03,BOL.2.13.3_2,031404,123,31404,Tacachi,19.88
-BO-02-13-04,municipality,Cuchumuela,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-04,BOL.2.13.4_2,031405,122,31405,VillaGualbertoVillarroel,72.7
-BO-02-13-05,municipality,Villa Rivero,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-05,BOL.2.13.5_2,031402,12,31402,VillaRivero,99.49
-BO-02-14-01,municipality,Colcapirhua,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-01,BOL.2.14.1_2,030905,82,30905,Colcapirhua,29.32
-BO-02-14-02,municipality,Quillacollo,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-02,BOL.2.14.2_2,030901,79,30901,Quillacollo,567.74
-BO-02-14-03,municipality,Sipe Sipe,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-03,BOL.2.14.3_2,030902,83,30902,Sipesipe,503.99
-BO-02-14-04,municipality,Tiquipaya,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-04,BOL.2.14.4_2,030903,81,30903,Tiquipaya,316.73
-BO-02-14-05,municipality,Vinto,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-05,BOL.2.14.5_2,030904,84,30904,Vinto,214.91
-BO-02-15-01,municipality,Tapacarí,BO-02-15,BO,BO-02,BO-02-15,BO-02-15-01,BOL.2.15.1_2,031101,162,31101,Tapacarí,1568.74
-BO-02-16-01,municipality,Shinahota,BO-02-16,BO,BO-02,BO-02-16,BO-02-16-01,BOL.2.16.1_2,031602,269,31602,Shinahota,737.38
-BO-02-16-02,municipality,Tiraque,BO-02-16,BO,BO-02,BO-02-16,BO-02-16-02,BOL.2.16.2_2,031601,268,31601,Tiraque,1988.54
-BO-03-01-01,municipality,San Javier,BO-03-01,BO,BO-03,BO-03-01,BO-03-01-01,BOL.3.1.1_2,080102,57,80102,SanJavier,8792.83
-BO-03-01-02,municipality,Trinidad,BO-03-01,BO,BO-03,BO-03-01,BO-03-01-02,BOL.3.1.2_2,080101,296,80101,Trinidad,1895.8
-BO-03-02-01,municipality,Rurrenabaque,BO-03-02,BO,BO-03,BO-03-02,BO-03-02-01,BOL.3.2.1_2,080304,211,80304,PuertoMenordeRurrenabaque,2520.1
-BO-03-02-02,municipality,Reyes,BO-03-02,BO,BO-03,BO-03-02,BO-03-02-02,BOL.3.2.2_2,080301,215,80301,Reyes,11901.52
-BO-03-02-03,municipality,San Borja,BO-03-02,BO,BO-03,BO-03-02,BO-03-02-03,BOL.3.2.3_2,080302,214,80302,SanBorja,8798.48
-BO-03-02-04,municipality,Santa Rosa,BO-03-02,BO,BO-03,BO-03-02,BO-03-02-04,BOL.3.2.4_2,080303,148,80303,SantaRosa,9496.25
-BO-03-03-01,municipality,Baures,BO-03-03,BO,BO-03,BO-03-03,BO-03-03-01,BOL.3.3.1_2,080802,295,80802,Baures,17690.21
-BO-03-03-02,municipality,Huacaraje,BO-03-03,BO,BO-03,BO-03-03,BO-03-03-02,BOL.3.3.2_2,080803,70,80803,Huacaraje,5513.77
-BO-03-03-03,municipality,Magdalena,BO-03-03,BO,BO-03,BO-03-03,BO-03-03-03,BOL.3.3.3_2,080801,89,80801,Magdalena,14104.23
-BO-03-04-01,municipality,Puerto Siles,BO-03-04,BO,BO-03,BO-03-04,BO-03-04-01,BOL.3.4.1_2,080703,217,80703,PuertoSiles,2086.25
-BO-03-04-02,municipality,San Joaquín,BO-03-04,BO,BO-03,BO-03-04,BO-03-04-02,BOL.3.4.2_2,080701,73,80701,SanJoaquín,8641.05
-BO-03-04-03,municipality,San Ramón,BO-03-04,BO,BO-03,BO-03-04,BO-03-04-03,BOL.3.4.3_2,080702,74,80702,SanRamón,7991.26
-BO-03-05-01,municipality,Loreto,BO-03-05,BO,BO-03,BO-03-05,BO-03-05-01,BOL.3.5.1_2,080601,45,80601,Loreto,6825.48
-BO-03-05-02,municipality,San Andrés,BO-03-05,BO,BO-03,BO-03-05,BO-03-05-02,BOL.3.5.2_2,080602,272,80602,SanAndrés,9969.68
-BO-03-06-01,municipality,San Ignacio,BO-03-06,BO,BO-03,BO-03-06,BO-03-06-01,BOL.3.6.1_2,080501,56,80501,SanIgnacio,25116.13
-BO-03-07-01,municipality,Guayaramerín,BO-03-07,BO,BO-03,BO-03-07,BO-03-07-01,BOL.3.7.1_2,080202,226,80202,Guayaramerín,6436.79
-BO-03-07-02,municipality,Riberalta,BO-03-07,BO,BO-03,BO-03-07,BO-03-07-02,BOL.3.7.2_2,080201,219,80201,Riberalta,12798.61
-BO-03-08-01,municipality,Exaltación,BO-03-08,BO,BO-03,BO-03-08,BO-03-08-01,BOL.3.8.1_2,080402,218,80402,Exaltación,24913.82
-BO-03-08-02,municipality,Santa Ana de Yacuma,BO-03-08,BO,BO-03,BO-03-08,BO-03-08-02,BOL.3.8.2_2,080401,213,80401,SantaAna,21314.47
-BO-04-02-01,municipality,Ixiamas,BO-04-02,BO,BO-04,BO-04-02,BO-04-02-01,BOL.4.2.1_2,021501,304,21501,Ixiamas,37112.75
-BO-04-02-02,municipality,San Buenaventura,BO-04-02,BO,BO-04,BO-04-02,BO-04-02-02,BOL.4.2.2_2,021502,212,21502,SanBuenaventura,2967.25
-BO-04-03-01,municipality,Ayo Ayo,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-01,BOL.4.3.1_2,021303,173,21303,AyoAyo,558.97
-BO-04-03-02,municipality,Calamarca,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-02,BOL.4.3.2_2,021304,151,21304,Calamarca,480.59
-BO-04-03-03,municipality,Collana,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-03,BOL.4.3.3_2,021307,130,21307,Collana,106.74
-BO-04-03-04,municipality,Colquencha,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-04,BOL.4.3.4_2,021306,144,21306,Colquencha,340.77
-BO-04-03-05,municipality,Patacamaya,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-05,BOL.4.3.5_2,021305,143,21305,Patacamaya,557.23
-BO-04-03-06,municipality,Sica Sica,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-06,BOL.4.3.6_2,021301,142,21301,Sicasica,1738.3
-BO-04-03-07,municipality,Umala,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-07,BOL.4.3.7_2,021302,17,21302,Umala,871.01
-BO-04-04-01,municipality,Charazani,BO-04-04,BO,BO-04,BO-04-04,BO-04-04-01,BOL.4.4.1_2,021601,183,21601,Charazani,2476.44
-BO-04-04-02,municipality,Curva,BO-04-04,BO,BO-04,BO-04-04,BO-04-04-02,BOL.4.4.2_2,021602,207,21602,Curva,585.36
-BO-04-05-01,municipality,Escoma,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-01,BOL.4.5.1_2,020405,324,20405,Escoma,121.03
-BO-04-05-02,municipality,Humanata,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-02,BOL.4.5.2_2,020404,240,20404,Humanata,289.21
-BO-04-05-04,municipality,Mocomoco,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-04,BOL.4.5.4_2,020402,51,20402,Mocomoco,653.47
-BO-04-05-05,municipality,Puerto Acosta,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-05,BOL.4.5.5_2,020401,323,20401,PuertoAcosta,352.33
-BO-04-05-06,municipality,Puerto Carabuco,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-06,BOL.4.5.6_2,020403,43,20403,PuertoMayordeCarabuco,385.53
-BO-04-06-01,municipality,Alto Beni,BO-04-06,BO,BO-04,BO-04-06,BO-04-06-01,BOL.4.6.1_2,022002,235,22002,AltoBeni,1045.16
-BO-04-06-02,municipality,Caranavi,BO-04-06,BO,BO-04,BO-04-06,BO-04-06-02,BOL.4.6.2_2,022001,236,22001,Caranavi,1554.42
-BO-04-07-01,municipality,Apolo,BO-04-07,BO,BO-04,BO-04-07,BO-04-07-01,BOL.4.7.1_2,020701,210,20701,Apolo,14235.75
-BO-04-07-02,municipality,Pelechuco,BO-04-07,BO,BO-04,BO-04-07,BO-04-07-02,BOL.4.7.2_2,020702,208,20702,Pelechuco,2448.25
-BO-04-08-01,municipality,Catacora,BO-04-08,BO,BO-04,BO-04-08,BO-04-08-01,BOL.4.8.1_2,021902,137,21902,Catacora,524.37
-BO-04-08-02,municipality,Santiago de Machaca,BO-04-08,BO,BO-04,BO-04-08,BO-04-08-02,BOL.4.8.2_2,021901,145,21901,SantiagodeMachaca,1302.7
-BO-04-09-01,municipality,Chacarilla,BO-04-09,BO,BO-04,BO-04-09,BO-04-09-01,BOL.4.9.1_2,021803,14,21803,Chacarilla,363.45
-BO-04-09-02,municipality,Papel Pampa,BO-04-09,BO,BO-04,BO-04-09,BO-04-09-02,BOL.4.9.2_2,021802,16,21802,PapelPampa,860.49
-BO-04-09-03,municipality,San Pedro Cuarahuara,BO-04-09,BO,BO-04,BO-04-09,BO-04-09-03,BOL.4.9.3_2,021801,20,21801,SanPedrodeCurahuara,789.83
-BO-04-10-01,municipality,Desaguadero,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-01,BOL.4.10.1_2,020804,163,20804,Desaguadero,103.5
-BO-04-10-02,municipality,Jesús de Machaca,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-02,BOL.4.10.2_2,020806,164,20806,JesúsdeMachaka,992.34
-BO-04-10-03,municipality,San Andrés de Machaca,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-03,BOL.4.10.3_2,020805,328,20805,La(Marka)SanAndrésdeMachaca,1534.99
-BO-04-10-05,municipality,Guaqui,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-05,BOL.4.10.5_2,020802,165,20802,PuertoMayordeGuaqui,191.15
-BO-04-10-06,municipality,Taraco,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-06,BOL.4.10.6_2,020807,327,20807,Taraco,114.73
-BO-04-10-07,municipality,Tiahuanacu,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-07,BOL.4.10.7_2,020803,75,20803,Tiahuanacu,352.69
-BO-04-10-08,municipality,Viacha,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-08,BOL.4.10.8_2,020801,152,20801,Viacha,848.7
-BO-04-11-01,municipality,Cajuata,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-01,BOL.4.11.1_2,021003,59,21003,Cajuata,711.94
-BO-04-11-02,municipality,Colquiri,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-02,BOL.4.11.2_2,021004,29,21004,Colquiri,1011.83
-BO-04-11-03,municipality,Ichoca,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-03,BOL.4.11.3_2,021005,30,21005,Ichoca,839.24
-BO-04-11-04,municipality,Inquisivi,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-04,BOL.4.11.4_2,021001,60,21001,Inquisivi,3288.77
-BO-04-11-05,municipality,Quime,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-05,BOL.4.11.5_2,021002,154,21002,Quime,997.18
-BO-04-11-06,municipality,Villa Libertad Licoma,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-06,BOL.4.11.6_2,021006,153,21006,VillaLibertadLicoma,196.98
-BO-04-12-01,municipality,Combaya,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-01,BOL.4.12.1_2,020605,168,20605,Combaya,90.62
-BO-04-12-02,municipality,Guanay,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-02,BOL.4.12.2_2,020602,180,20602,Guanay,3612.37
-BO-04-12-03,municipality,Mapiri,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-03,BOL.4.12.3_2,020607,182,20607,Mapiri,1499.1
-BO-04-12-04,municipality,Quiabaya,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-04,BOL.4.12.4_2,020604,171,20604,Quiabaya,118.29
-BO-04-12-05,municipality,Sorata,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-05,BOL.4.12.5_2,020601,177,20601,Sorata,1902.17
-BO-04-12-06,municipality,Tacacoma,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-06,BOL.4.12.6_2,020603,192,20603,Tacacoma,800.06
-BO-04-12-07,municipality,Teoponte,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-07,BOL.4.12.7_2,020608,181,20608,Teoponte,1379.06
-BO-04-12-08,municipality,Tipuani,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-08,BOL.4.12.8_2,020606,175,20606,Tipuani,247.97
-BO-04-13-01,municipality,Cairoma,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-01,BOL.4.13.1_2,020905,28,20905,Cairoma,685.72
-BO-04-13-02,municipality,Luribay,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-02,BOL.4.13.2_2,020901,116,20901,Luribay,451.13
-BO-04-13-03,municipality,Malla,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-03,BOL.4.13.3_2,020904,149,20904,Malla,350.47
-BO-04-13-04,municipality,Sapahaqui,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-04,BOL.4.13.4_2,020902,27,20902,Sapahaqui,814.7
-BO-04-13-05,municipality,Yaco,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-05,BOL.4.13.5_2,020903,138,20903,Yaco,596.02
-BO-04-14-01,municipality,Batallas,BO-04-14,BO,BO-04,BO-04-14,BO-04-14-01,BOL.4.14.1_2,021203,242,21203,Batallas,792.57
-BO-04-14-03,municipality,Laja,BO-04-14,BO,BO-04,BO-04-14,BO-04-14-03,BOL.4.14.3_2,021202,156,21202,Laja,690.69
-BO-04-14-04,municipality,Pucarani,BO-04-14,BO,BO-04,BO-04-14,BO-04-14-04,BOL.4.14.4_2,021201,167,21201,Pucarani,1256.75
-BO-04-14-05,municipality,Puerto Pérez,BO-04-14,BO,BO-04,BO-04-14,BO-04-14-05,BOL.4.14.5_2,021204,231,21204,PuertoPérez,64.84
-BO-04-15-01,municipality,Copacabana,BO-04-15,BO,BO-04,BO-04-15,BO-04-15-01,BOL.4.15.1_2,021701,185,21701,Copacabana,178.51
-BO-04-15-03,municipality,San Pedro de Tiquina,BO-04-15,BO,BO-04,BO-04-15,BO-04-15-03,BOL.4.15.3_2,021702,196,21702,SanPedrodeTiquina,61.78
-BO-04-15-04,municipality,Tito Yupanqui,BO-04-15,BO,BO-04,BO-04-15,BO-04-15-04,BOL.4.15.4_2,021703,166,21703,TitoYupanqui,13.02
-BO-04-16-01,municipality,Aucapata,BO-04-16,BO,BO-04,BO-04-16,BO-04-16-01,BOL.4.16.1_2,020503,172,20503,Aucapata,234.18
-BO-04-16-02,municipality,Ayata,BO-04-16,BO,BO-04,BO-04-16,BO-04-16-02,BOL.4.16.2_2,020502,305,20502,Ayata,748.9
-BO-04-16-03,municipality,Chuma,BO-04-16,BO,BO-04,BO-04-16,BO-04-16-03,BOL.4.16.3_2,020501,179,20501,Chuma,618.66
-BO-04-17-01,municipality,Achocalla,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-01,BOL.4.17.1_2,020104,159,20104,Achocalla,178.4
-BO-04-17-02,municipality,El Alto,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-02,BOL.4.17.2_2,020105,160,20105,ElAlto,347.97
-BO-04-17-03,municipality,Mecapaca,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-03,BOL.4.17.3_2,020103,157,20103,Mecapaca,523.75
-BO-04-17-04,municipality,La Paz,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-04,BOL.4.17.4_2,020101,176,20101,NuestraSeñoradeLaPaz,2042.69
-BO-04-17-05,municipality,Palca,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-05,BOL.4.17.5_2,020102,158,20102,Palca,736.6
-BO-04-18-01,municipality,Coripata,BO-04-18,BO,BO-04,BO-04-18,BO-04-18-01,BOL.4.18.1_2,021402,170,21402,Coripata,693.2
-BO-04-18-02,municipality,Coroico,BO-04-18,BO,BO-04,BO-04-18,BO-04-18-02,BOL.4.18.2_2,021401,169,21401,Coroico,1091.27
-BO-04-19-01,municipality,Achacachi,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-01,BOL.4.19.1_2,020201,326,20201,Achacachi,746.44
-BO-04-19-02,municipality,Chua Cocani,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-02,BOL.4.19.2_2,020203,239,20203,ChuaCocani,81.05
-BO-04-19-03,municipality,Huarina,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-03,BOL.4.19.3_2,020204,237,20204,Huarina,181.77
-BO-04-19-04,municipality,Huatajata,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-04,BOL.4.19.4_2,020206,155,20206,Huatajata,19.71
-BO-04-19-06,municipality,Santiago de Huata,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-06,BOL.4.19.6_2,020205,230,20205,SantiagodeHuata,93.31
-BO-04-19-07,municipality,Ancoraimes,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-07,BOL.4.19.7_2,020202,41,20202,VillaAncoraimes,334.9
-BO-04-20-01,municipality,Calacoto,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-01,BOL.4.20.1_2,020303,139,20303,Calacoto,3905.07
-BO-04-20-02,municipality,Caquiaviri,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-02,BOL.4.20.2_2,020302,112,20302,Caquiaviri,1548.96
-BO-04-20-03,municipality,Charaña,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-03,BOL.4.20.3_2,020305,325,20305,Charaña,2926.24
-BO-04-20-04,municipality,Comanche,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-04,BOL.4.20.4_2,020304,150,20304,Comanche,450.62
-BO-04-20-05,municipality,Coro Coro,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-05,BOL.4.20.5_2,020301,25,20301,Corocoro,1101.8
-BO-04-20-06,municipality,Nazacara de Pacajes,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-06,BOL.4.20.6_2,020307,111,20307,NazacaradePacajes,18.42
-BO-04-20-07,municipality,Callapa,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-07,BOL.4.20.7_2,020308,134,20308,SantiagodeCallapa,1192.15
-BO-04-20-08,municipality,Waldo Ballivián,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-08,BOL.4.20.8_2,020306,307,20306,WaldoBallivian,108.66
-BO-04-21-01,municipality,Chulumani,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-01,BOL.4.21.1_2,021101,62,21101,Chulumani,301.18
-BO-04-21-02,municipality,Irupana,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-02,BOL.4.21.2_2,021102,61,21102,Irupana,1358.79
-BO-04-21-03,municipality,La Asunta,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-03,BOL.4.21.3_2,021105,178,21105,LaAsunta,2832.36
-BO-04-21-04,municipality,Palos Blancos,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-04,BOL.4.21.4_2,021104,209,21104,PalosBlancos,3734.41
-BO-04-21-05,municipality,Yanacachi,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-05,BOL.4.21.5_2,021103,161,21103,Yanacachi,580.48
-BO-05-01-01,municipality,Challapata,BO-05-01,BO,BO-05,BO-05-01,BO-05-01-01,BOL.5.1.1_2,040201,330,40201,Challapata,2823.45
-BO-05-01-02,municipality,Quillacas,BO-05-01,BO,BO-05,BO-05-01,BO-05-01-02,BOL.5.1.2_2,040202,1,40202,SantuariodeQuillacas,995.36
-BO-05-02-01,municipality,Choque Cota,BO-05-02,BO,BO-05,BO-05-02,BO-05-02-01,BOL.5.2.1_2,040302,309,40302,Choquecota,894.83
-BO-05-02-02,municipality,Corque,BO-05-02,BO,BO-05,BO-05-02,BO-05-02-02,BOL.5.2.2_2,040301,114,40301,Corque,3266.52
-BO-05-03-01,municipality,Caracollo,BO-05-03,BO,BO-05,BO-05-03,BO-05-03-01,BOL.5.3.1_2,040102,136,40102,Caracollo,2374.17
-BO-05-03-02,municipality,El Choro,BO-05-03,BO,BO-05,BO-05-03,BO-05-03-02,BOL.5.3.2_2,040103,126,40103,ElChoro,1179.09
-BO-05-03-03,municipality,Oruro,BO-05-03,BO,BO-05,BO-05-03,BO-05-03-03,BOL.5.3.3_2,040101,18,40101,Oruro,259.08
-BO-05-03-04,municipality,Pari-Paria-Soracachi,BO-05-03,BO,BO-05,BO-05-03,BO-05-03-04,BOL.5.3.4_2,040104,129,40104,Paria,1461.36
-BO-05-04-01,municipality,Pampa Aullagas,BO-05-04,BO,BO-05,BO-05-04,BO-05-04-01,BOL.5.4.1_2,040802,2,40802,PampaAullagas,1097.36
-BO-05-04-02,municipality,Salinas de Garci Mendoza,BO-05-04,BO,BO-05,BO-05-04,BO-05-04-02,BOL.5.4.2_2,040801,314,40801,SalinasdeGarcíMendoza,6071.2
-BO-05-05-01,municipality,Cruz de Machacamarca,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-01,BOL.5.5.1_2,040503,109,40503,CruzdeMachacamarca,529.68
-BO-05-05-02,municipality,Escara,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-02,BOL.5.5.2_2,040502,310,40502,Escara,1335.72
-BO-05-05-03,municipality,Esmeralda,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-03,BOL.5.5.3_2,040505,0,40505,Esmeralda,586.78
-BO-05-05-04,municipality,Huachacalla,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-04,BOL.5.5.4_2,040501,9,40501,Huachacalla,20.5
-BO-05-05-05,municipality,Yunguyo de Litoral,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-05,BOL.5.5.5_2,040504,108,40504,YunguyodelLitoral,180.13
-BO-05-06-01,municipality,Carangas,BO-05-06,BO,BO-05,BO-05-06,BO-05-06-01,BOL.5.6.1_2,041503,107,41503,Carangas,227.83
-BO-05-06-02,municipality,La Rivera,BO-05-06,BO,BO-05,BO-05-06,BO-05-06-02,BOL.5.6.2_2,041501,71,41501,LaRivera,218.6
-BO-05-06-03,municipality,Todos Santos,BO-05-06,BO,BO-05,BO-05-06,BO-05-06-03,BOL.5.6.3_2,041502,67,41502,TodosSantos,219.06
-BO-05-07-01,municipality,Huayllamarca,BO-05-07,BO,BO-05,BO-05-07,BO-05-07-01,BOL.5.7.1_2,041601,19,41601,Huayllamarca,904.52
-BO-05-08-01,municipality,Huanuni,BO-05-08,BO,BO-05,BO-05-08,BO-05-08-01,BOL.5.8.1_2,040701,8,40701,Huanuni,567.61
-BO-05-08-02,municipality,Machacamarca,BO-05-08,BO,BO-05,BO-05-08,BO-05-08-02,BOL.5.8.2_2,040702,117,40702,Machacamarca,359.85
-BO-05-09-01,municipality,Antequera,BO-05-09,BO,BO-05,BO-05-09,BO-05-09-01,BOL.5.9.1_2,040603,110,40603,Antequera,279.4
-BO-05-09-02,municipality,Pazña,BO-05-09,BO,BO-05,BO-05-09,BO-05-09-02,BOL.5.9.2_2,040602,11,40602,Pazña,947.27
-BO-05-09-03,municipality,Poopó,BO-05-09,BO,BO-05,BO-05-09,BO-05-09-03,BOL.5.9.3_2,040601,63,40601,Poopó,690.3
-BO-05-10-01,municipality,Chipaya,BO-05-10,BO,BO-05,BO-05-10,BO-05-10-01,BOL.5.10.1_2,040903,312,40903,Chipaya,355.94
-BO-05-10-02,municipality,Coipasa,BO-05-10,BO,BO-05,BO-05-10,BO-05-10-02,BOL.5.10.2_2,040902,311,40902,Coipasa,1888.35
-BO-05-10-03,municipality,Sabaya,BO-05-10,BO,BO-05,BO-05-10,BO-05-10-03,BOL.5.10.3_2,040901,44,40901,Sabaya,3608.73
-BO-05-11-01,municipality,Curahuara de Carangas,BO-05-11,BO,BO-05,BO-05-11,BO-05-11-01,BOL.5.11.1_2,040401,308,40401,CurahuaradeCarangas,2865.8
-BO-05-11-02,municipality,Turco,BO-05-11,BO,BO-05,BO-05-11,BO-05-11-02,BOL.5.11.2_2,040402,66,40402,Turco,4723.2
-BO-05-12-01,municipality,San Pedro de Totora,BO-05-12,BO,BO-05,BO-05-12,BO-05-12-01,BOL.5.12.1_2,041301,64,41301,Totora,1379.75
-BO-05-13-01,municipality,Toledo,BO-05-13,BO,BO-05,BO-05-13,BO-05-13-01,BOL.5.13.1_2,041001,127,41001,Toledo,3197.97
-BO-05-14-01,municipality,Huari,BO-05-14,BO,BO-05,BO-05-14,BO-05-14-01,BOL.5.14.1_2,041401,10,41401,SantiagodeHuari,2574.41
-BO-05-15-01,municipality,Santiago de Andamarca,BO-05-15,BO,BO-05,BO-05-15,BO-05-15-01,BOL.5.15.1_2,041201,13,41201,Andamarca,2674.54
-BO-05-15-02,municipality,Belén de Andamarca,BO-05-15,BO,BO-05,BO-05-15,BO-05-15-02,BOL.5.15.2_2,041202,113,41202,BeléndeAndamarca,1068.72
-BO-05-16-01,municipality,Eucaliptus,BO-05-16,BO,BO-05,BO-05-16,BO-05-16-01,BOL.5.16.1_2,041101,133,41101,Eucaliptus,367.05
-BO-06-01-01,municipality,Ingavi,BO-06-01,BO,BO-06,BO-06-01,BO-06-01-01,BOL.6.1.1_2,090402,225,90402,Ingavi,5417.1
-BO-06-01-02,municipality,Santa Rosa,BO-06-01,BO,BO-06,BO-06-01,BO-06-01-02,BOL.6.1.2_2,090401,224,90401,SantaRosa,4405.19
-BO-06-02-01,municipality,Nueva Esperanza,BO-06-02,BO,BO-06,BO-06-02,BO-06-02-01,BOL.6.2.1_2,090501,229,90501,NuevaEsperanza,3637.3
-BO-06-02-02,municipality,Santos Mercado,BO-06-02,BO,BO-06,BO-06-02,BO-06-02-02,BOL.6.2.2_2,090503,228,90503,SantosMercado,6595.04
-BO-06-02-03,municipality,Villa Nueva-Loma Alta,BO-06-02,BO,BO-06,BO-06-02,BO-06-02-03,BOL.6.2.3_2,090502,227,90502,VillaNueva,2817.3
-BO-06-03-01,municipality,Puerto Gonzalo Moreno,BO-06-03,BO,BO-06,BO-06-03,BO-06-03-01,BOL.6.3.1_2,090301,216,90301,PuertoGonzaloMoreno,1267.45
-BO-06-03-02,municipality,San Lorenzo,BO-06-03,BO,BO-06,BO-06-03,BO-06-03-02,BOL.6.3.2_2,090302,147,90302,SanLorenzo,3159.87
-BO-06-03-03,municipality,El Sena,BO-06-03,BO,BO-06,BO-06-03,BO-06-03-03,BOL.6.3.3_2,090303,146,90303,Sena,7548.2
-BO-06-04-01,municipality,Filadelfia,BO-06-04,BO,BO-06,BO-06-04,BO-06-04-01,BOL.6.4.1_2,090203,234,90203,Filadelfia,11759.6
-BO-06-04-02,municipality,Puerto Rico,BO-06-04,BO,BO-06,BO-06-04,BO-06-04-02,BOL.6.4.2_2,090201,223,90201,PuertoRico,5252.51
-BO-06-04-03,municipality,San Pedro,BO-06-04,BO,BO-06,BO-06-04,BO-06-04-03,BOL.6.4.3_2,090202,222,90202,SanPedro,2637.01
-BO-06-05-01,municipality,Bella Flor,BO-06-05,BO,BO-06,BO-06-05,BO-06-05-01,BOL.6.5.1_2,090104,221,90104,BellaFlor,5216.44
-BO-06-05-02,municipality,Bolpebra,BO-06-05,BO,BO-06,BO-06-05,BO-06-05-02,BOL.6.5.2_2,090103,233,90103,Bolpebra,2433.2
-BO-06-05-03,municipality,Cobija,BO-06-05,BO,BO-06,BO-06-05,BO-06-05-03,BOL.6.5.3_2,090101,132,90101,Cobija,434.72
-BO-06-05-04,municipality,Porvenir,BO-06-05,BO,BO-06,BO-06-05,BO-06-05-04,BOL.6.5.4_2,090102,220,90102,Porvenir,1071.22
-BO-07-01-01,municipality,Caripuyo,BO-07-01,BO,BO-07,BO-07-01,BO-07-01-01,BOL.7.1.1_2,050702,4,50702,Caripuyo,521.93
-BO-07-01-02,municipality,Villa de Sacaca,BO-07-01,BO,BO-07,BO-07-01,BO-07-01-02,BOL.7.1.2_2,050701,6,50701,Sacaca,915.81
-BO-07-02-01,municipality,Porco,BO-07-02,BO,BO-07,BO-07-02,BO-07-02-01,BOL.7.2.1_2,051203,47,51203,Porco,1088.53
-BO-07-02-02,municipality,Tomave,BO-07-02,BO,BO-07,BO-07-02,BO-07-02-02,BOL.7.2.2_2,051202,46,51202,Tomave,8155.89
-BO-07-02-03,municipality,Uyuni,BO-07-02,BO,BO-07,BO-07-02,BO-07-02-03,BOL.7.2.3_2,051201,306,51201,Uyuni,7640.12
-BO-07-03-01,municipality,San Pedro de Buena Vista,BO-07-03,BO,BO-07,BO-07-03,BO-07-03-01,BOL.7.3.1_2,050501,40,50501,SanPedro,2212.3
-BO-07-03-02,municipality,Toro Toro,BO-07-03,BO,BO-07,BO-07-03,BO-07-03-02,BOL.7.3.2_2,050502,99,50502,ToroToro,1181.9
-BO-07-04-01,municipality,Colquechaca,BO-07-04,BO,BO-07,BO-07-04,BO-07-04-01,BOL.7.4.1_2,050401,76,50401,Colquechaca,1743.91
-BO-07-04-02,municipality,Ocurí,BO-07-04,BO,BO-07,BO-07-04,BO-07-04-02,BOL.7.4.2_2,050404,204,50404,Ocurí,862.68
-BO-07-04-03,municipality,Pocoata,BO-07-04,BO,BO-07,BO-07-04,BO-07-04-03,BOL.7.4.3_2,050403,77,50403,Pocoata,1191.74
-BO-07-04-04,municipality,Ravelo,BO-07-04,BO,BO-07,BO-07-04,BO-07-04-04,BOL.7.4.4_2,050402,332,50402,Ravelo,1355.05
-BO-07-05-01,municipality,Betanzos,BO-07-05,BO,BO-07,BO-07-05,BO-07-05-01,BOL.7.5.1_2,050301,65,50301,Betanzos,1874.24
-BO-07-05-02,municipality,Chaquí,BO-07-05,BO,BO-07,BO-07-05,BO-07-05-02,BOL.7.5.2_2,050302,187,50302,Chaquí,466.8
-BO-07-05-03,municipality,Tacobamba,BO-07-05,BO,BO-07,BO-07-05,BO-07-05-03,BOL.7.5.3_2,050303,329,50303,Tacobamba,893.11
-BO-07-06-01,municipality,Llica,BO-07-06,BO,BO-07,BO-07-06,BO-07-06-01,BOL.7.6.1_2,051401,78,51401,Llica,7277.72
-BO-07-06-02,municipality,Tahua,BO-07-06,BO,BO-07,BO-07-06,BO-07-06-02,BOL.7.6.2_2,051402,102,51402,Tahua,3242.62
-BO-07-07-01,municipality,San Agustín,BO-07-07,BO,BO-07,BO-07-07,BO-07-07-01,BOL.7.7.1_2,051601,100,51601,SanAgustín,2344.77
-BO-07-08-01,municipality,Acasio,BO-07-08,BO,BO-07,BO-07-08,BO-07-08-01,BOL.7.8.1_2,051302,7,51302,Acasio,374.81
-BO-07-08-02,municipality,Arampampa,BO-07-08,BO,BO-07,BO-07-08,BO-07-08-02,BOL.7.8.2_2,051301,118,51301,Arampampa,385.96
-BO-07-09-01,municipality,"Caiza ""D""",BO-07-09,BO,BO-07,BO-07-09,BO-07-09-01,BOL.7.9.1_2,051102,184,51102,"Caiza""D""",1319.57
-BO-07-09-02,municipality,Ckochas,BO-07-09,BO,BO-07,BO-07-09,BO-07-09-02,BOL.7.9.2_2,051103,189,51103,Ckochas,2089.46
-BO-07-09-03,municipality,Puna,BO-07-09,BO,BO-07,BO-07-09,BO-07-09-03,BOL.7.9.3_2,051101,188,51101,Puna,1478.23
-BO-07-10-01,municipality,Villazón,BO-07-10,BO,BO-07,BO-07-10,BO-07-10-01,BOL.7.10.1_2,051501,337,51501,Villazón,2495.67
-BO-07-11-01,municipality,Cotagaita,BO-07-11,BO,BO-07,BO-07-11,BO-07-11-01,BOL.7.11.1_2,050601,335,50601,Cotagaita,6477.07
-BO-07-11-02,municipality,Vitichi,BO-07-11,BO,BO-07,BO-07-11,BO-07-11-02,BOL.7.11.2_2,050602,115,50602,Vitiche,1617.52
-BO-07-12-01,municipality,"Colcha ""K""",BO-07-12,BO,BO-07,BO-07-12,BO-07-12-01,BOL.7.12.1_2,050901,42,50901,"Colcha""K""",24070.7
-BO-07-12-02,municipality,San Pedro de Quemes,BO-07-12,BO,BO-07,BO-07-12,BO-07-12-02,BOL.7.12.2_2,050902,317,50902,SanPedrodeQuemes,4354.5
-BO-07-13-01,municipality,Chayanta,BO-07-13,BO,BO-07,BO-07-13,BO-07-13-01,BOL.7.13.1_2,050202,313,50202,Chayanta,632.37
-BO-07-13-02,municipality,Chuquihuta,BO-07-13,BO,BO-07,BO-07-13,BO-07-13-02,BOL.7.13.2_2,050204,232,50204,ChuquihutaAylluJucumani,262.45
-BO-07-13-03,municipality,Llallagua,BO-07-13,BO,BO-07,BO-07-13,BO-07-13-03,BOL.7.13.3_2,050203,3,50203,Llallagua,527.59
-BO-07-13-04,municipality,Uncía,BO-07-13,BO,BO-07,BO-07-13,BO-07-13-04,BOL.7.13.4_2,050201,331,50201,Uncía,698.0
-BO-07-14-01,municipality,Atocha,BO-07-14,BO,BO-07,BO-07-14,BO-07-14-01,BOL.7.14.1_2,050802,316,50802,Atocha,2329.67
-BO-07-14-02,municipality,Tupiza,BO-07-14,BO,BO-07,BO-07-14,BO-07-14-02,BOL.7.14.2_2,050801,315,50801,Tupiza,6163.77
-BO-07-15-01,municipality,Mojinete,BO-07-15,BO,BO-07,BO-07-15,BO-07-15-01,BOL.7.15.1_2,051002,93,51002,Mojinete,399.3
-BO-07-15-02,municipality,San Antonio de Esmoruco,BO-07-15,BO,BO-07,BO-07-15,BO-07-15-02,BOL.7.15.2_2,051003,91,51003,SanAntoniodeEsmoruco,2523.2
-BO-07-15-03,municipality,San Pablo de Lípez,BO-07-15,BO,BO-07,BO-07-15,BO-07-15-03,BOL.7.15.3_2,051001,103,51001,SanPablo,13262.55
-BO-07-16-01,municipality,Potosí,BO-07-16,BO,BO-07,BO-07-16,BO-07-16-01,BOL.7.16.1_2,050101,195,50101,Potosí,1195.52
-BO-07-16-02,municipality,Tinguipaya,BO-07-16,BO,BO-07,BO-07-16,BO-07-16-02,BOL.7.16.2_2,050102,39,50102,Tinguipaya,1430.16
-BO-07-16-03,municipality,Urmiri,BO-07-16,BO,BO-07,BO-07-16,BO-07-16-03,BOL.7.16.3_2,050104,50,50104,Urmiri,1246.0
-BO-07-16-04,municipality,Yocalla,BO-07-16,BO,BO-07,BO-07-16,BO-07-16-04,BOL.7.16.4_2,050103,49,50103,Yocalla,901.52
-BO-08-01-01,municipality,Cotoca,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-01,BOL.8.1.1_2,070102,260,70102,Cotoca,621.19
-BO-08-01-02,municipality,El Torno,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-02,BOL.8.1.2_2,070105,33,70105,ElTorno,970.54
-BO-08-01-03,municipality,La Guardia,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-03,BOL.8.1.3_2,070104,31,70104,LaGuardia,977.22
-BO-08-01-04,municipality,Porongo,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-04,BOL.8.1.4_2,070103,54,70103,Porongo,939.58
-BO-08-01-05,municipality,Santa Cruz de la Sierra,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-05,BOL.8.1.5_2,070101,55,70101,SantaCruzdelaSierra,1299.48
-BO-08-02-01,municipality,San Matías,BO-08-02,BO,BO-08,BO-08-02,BO-08-02-01,BOL.8.2.1_2,071201,288,71201,SanMatías,27087.44
-BO-08-03-01,municipality,Pailón,BO-08-03,BO,BO-08,BO-08-03,BO-08-03-01,BOL.8.3.1_2,070502,278,70502,Pailón,13772.75
-BO-08-03-02,municipality,Roboré,BO-08-03,BO,BO-08,BO-08-03,BO-08-03-02,BOL.8.3.2_2,070503,287,70503,Roboré,7194.11
-BO-08-03-03,municipality,San José de Chiquitos,BO-08-03,BO,BO-08,BO-08-03,BO-08-03-03,BOL.8.3.3_2,070501,290,70501,SanJosé,19097.96
-BO-08-04-01,municipality,Boyuibe,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-01,BOL.8.4.1_2,070707,248,70707,Boyuibe,1624.96
-BO-08-04-02,municipality,Cabezas,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-02,BOL.8.4.2_2,070703,259,70703,Cabezas,5020.39
-BO-08-04-03,municipality,Camiri,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-03,BOL.8.4.3_2,070706,250,70706,Camiri,1006.58
-BO-08-04-04,municipality,Charagua,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-04,BOL.8.4.4_2,070702,289,70702,Charagua,70942.95
-BO-08-04-05,municipality,Cuevo,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-05,BOL.8.4.5_2,070704,249,70704,Cuevo,886.6
-BO-08-04-06,municipality,Gutiérrez,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-06,BOL.8.4.6_2,070705,253,70705,Gutiérrez,2870.53
-BO-08-04-07,municipality,Lagunillas,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-07,BOL.8.4.7_2,070701,197,70701,Lagunillas,1109.61
-BO-08-05-01,municipality,Mairana,BO-08-05,BO,BO-08,BO-08-05,BO-08-05-01,BOL.8.5.1_2,070903,282,70903,Mairana,744.15
-BO-08-05-02,municipality,Pampa Grande,BO-08-05,BO,BO-08,BO-08-05,BO-08-05-02,BOL.8.5.2_2,070902,281,70902,PampaGrande,1007.05
-BO-08-05-03,municipality,Quirusillas,BO-08-05,BO,BO-08,BO-08-05,BO-08-05-03,BOL.8.5.3_2,070904,258,70904,Quirusillas,286.66
-BO-08-05-04,municipality,Samaipata,BO-08-05,BO,BO-08,BO-08-05,BO-08-05-04,BOL.8.5.4_2,070901,34,70901,Samaipata,1926.25
-BO-08-06-01,municipality,Carmen Rivero Tórrez,BO-08-06,BO,BO-08,BO-08-06,BO-08-06-01,BOL.8.6.1_2,071403,286,71403,ElCarmenRiveroTórrez,10685.04
-BO-08-06-02,municipality,Puerto Quijarro,BO-08-06,BO,BO-08,BO-08-06,BO-08-06-02,BOL.8.6.2_2,071402,22,71402,PuertoQuijarro,1424.68
-BO-08-06-03,municipality,Puerto Suárez,BO-08-06,BO,BO-08,BO-08-06,BO-08-06-03,BOL.8.6.3_2,071401,285,71401,PuertoSuarez,13340.96
-BO-08-07-01,municipality,Ascensión de Guarayos,BO-08-07,BO,BO-08,BO-08-07,BO-08-07-01,BOL.8.7.1_2,071501,271,71501,AscencióndeGuarayos,9039.11
-BO-08-07-02,municipality,El Puente,BO-08-07,BO,BO-08,BO-08-07,BO-08-07-02,BOL.8.7.2_2,071503,319,71503,ElPuente,7943.44
-BO-08-07-03,municipality,Urubichá,BO-08-07,BO,BO-08,BO-08-07,BO-08-07-03,BOL.8.7.3_2,071502,294,71502,Urubicha,16330.47
-BO-08-08-01,municipality,Buena Vista,BO-08-08,BO,BO-08,BO-08-08,BO-08-08-01,BOL.8.8.1_2,070401,87,70401,BuenaVista,2731.18
-BO-08-08-02,municipality,San Carlos,BO-08-08,BO,BO-08,BO-08-08,BO-08-08-02,BOL.8.8.2_2,070402,88,70402,SanCarlos,1217.13
-BO-08-08-03,municipality,San Juan de Yapacaní,BO-08-08,BO,BO-08,BO-08-08,BO-08-08-03,BOL.8.8.3_2,070404,38,70404,SanJuan,1585.88
-BO-08-08-04,municipality,Yapacaní,BO-08-08,BO,BO-08,BO-08-08,BO-08-08-04,BOL.8.8.4_2,070403,261,70403,Yapacaní,9619.33
-BO-08-09-01,municipality,Comarapa,BO-08-09,BO,BO-08,BO-08-09,BO-08-09-01,BOL.8.9.1_2,071301,320,71301,Comarapa,3318.12
-BO-08-09-02,municipality,Saipina,BO-08-09,BO,BO-08,BO-08-09,BO-08-09-02,BOL.8.9.2_2,071302,52,71302,Saipina,450.09
-BO-08-10-01,municipality,Concepción,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-01,BOL.8.10.1_2,071101,68,71101,Concepción,29145.84
-BO-08-10-02,municipality,Cuatro Cañadas,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-02,BOL.8.10.2_2,071106,262,71106,CuatroCañadas,4458.27
-BO-08-10-03,municipality,San Antonio de Lomerío,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-03,BOL.8.10.3_2,071105,297,71105,SanAntoniodeLomerio,2386.62
-BO-08-10-04,municipality,San Javier,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-04,BOL.8.10.4_2,071102,264,71102,SanJavier,2273.31
-BO-08-10-05,municipality,San Julián,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-05,BOL.8.10.5_2,071104,318,71104,SanJulián,5060.38
-BO-08-10-06,municipality,San Ramón,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-06,BOL.8.10.6_2,071103,263,71103,SanRamón,504.03
-BO-08-11-01,municipality,Fernández Alonso,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-01,BOL.8.11.1_2,071004,279,71004,FernándezAlonso,764.52
-BO-08-11-02,municipality,Gral. Saavedra,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-02,BOL.8.11.2_2,071002,277,71002,GeneralSaavedra,535.03
-BO-08-11-03,municipality,Mineros,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-03,BOL.8.11.3_2,071003,280,71003,Mineros,427.21
-BO-08-11-04,municipality,Montero,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-04,BOL.8.11.4_2,071001,270,71001,Montero,246.95
-BO-08-11-05,municipality,San Pedro,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-05,BOL.8.11.5_2,071005,58,71005,SanPedro,3076.12
-BO-08-12-01,municipality,Colpa Belgica,BO-08-12,BO,BO-08,BO-08-12,BO-08-12-01,BOL.8.12.1_2,070603,284,70603,ColpaBélgica,292.04
-BO-08-12-02,municipality,Portachuelo,BO-08-12,BO,BO-08,BO-08-12,BO-08-12-02,BOL.8.12.2_2,070601,90,70601,Portachuelo,1109.93
-BO-08-12-03,municipality,Santa Rosa del Sara,BO-08-12,BO,BO-08,BO-08-12,BO-08-12-03,BOL.8.12.3_2,070602,69,70602,SantaRosa,4094.34
-BO-08-13-01,municipality,Moro Moro,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-01,BOL.8.13.1_2,070803,32,70803,Moromoro,680.72
-BO-08-13-02,municipality,Postrer Valle,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-02,BOL.8.13.2_2,070804,256,70804,Postrervalle,1117.67
-BO-08-13-03,municipality,Pucará,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-03,BOL.8.13.3_2,070805,245,70805,Pucará,684.3
-BO-08-13-04,municipality,Trigal,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-04,BOL.8.13.4_2,070802,257,70802,Trigal,400.39
-BO-08-13-05,municipality,Vallegrande,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-05,BOL.8.13.5_2,070801,252,70801,Vallegrande,3217.65
-BO-08-14-01,municipality,San Ignacio de Velasco,BO-08-14,BO,BO-08,BO-08-14,BO-08-14-01,BOL.8.14.1_2,070301,293,70301,SanIgnacio,49390.99
-BO-08-14-02,municipality,San Miguel de Velasco,BO-08-14,BO,BO-08,BO-08-14,BO-08-14-02,BOL.8.14.2_2,070302,265,70302,SanMiguel,9617.65
-BO-08-14-03,municipality,San Rafael,BO-08-14,BO,BO-08,BO-08-14,BO-08-14-03,BOL.8.14.3_2,070303,291,70303,SanRafael,9719.15
-BO-08-15-01,municipality,Okinawa Uno,BO-08-15,BO,BO-08,BO-08-15,BO-08-15-01,BOL.8.15.1_2,070202,275,70202,OkinawaUno,1034.03
-BO-08-15-02,municipality,Warnes,BO-08-15,BO,BO-08,BO-08-15,BO-08-15-02,BOL.8.15.2_2,070201,276,70201,Warnes,1342.13
-BO-09-01-01,municipality,Bermejo,BO-09-01,BO,BO-09,BO-09-01,BO-09-01-01,BOL.9.1.1_2,060202,321,60202,Bermejo,389.81
-BO-09-01-02,municipality,Padcaya,BO-09-01,BO,BO-09,BO-09-01,BO-09-01-02,BOL.9.1.2_2,060201,338,60201,Padcaya,4448.26
-BO-09-02-01,municipality,Uriondo,BO-09-02,BO,BO-09,BO-09-02,BO-09-02-01,BOL.9.2.1_2,060401,92,60401,Uriondo,826.22
-BO-09-02-02,municipality,Yunchará,BO-09-02,BO,BO-09,BO-09-02,BO-09-02-02,BOL.9.2.2_2,060402,95,60402,Yunchará,1846.25
-BO-09-03-01,municipality,Tarija,BO-09-03,BO,BO-09,BO-09-03,BO-09-03-01,BOL.9.3.1_2,060101,101,60101,Tarija,2063.9
-BO-09-04-01,municipality,Caraparí,BO-09-04,BO,BO-09,BO-09-04,BO-09-04-01,BOL.9.4.1_2,060302,96,60302,Caraparí,2929.21
-BO-09-04-02,municipality,Villamontes,BO-09-04,BO,BO-09,BO-09-04,BO-09-04-02,BOL.9.4.2_2,060303,48,60303,VillaMontes,10841.41
-BO-09-04-03,municipality,Yacuiba,BO-09-04,BO,BO-09,BO-09-04,BO-09-04-03,BOL.9.4.3_2,060301,94,60301,Yacuiba,3925.77
-BO-09-05-01,municipality,El Puente,BO-09-05,BO,BO-09,BO-09-05,BO-09-05-01,BOL.9.5.1_2,060502,98,60502,ElPuente,2064.01
-BO-09-05-02,municipality,Villa San Lorenzo,BO-09-05,BO,BO-09,BO-09-05,BO-09-05-02,BOL.9.5.2_2,060501,97,60501,SanLorenzo,1978.35
-BO-09-06-01,municipality,Entre Ríos,BO-09-06,BO,BO-09,BO-09-06,BO-09-06-01,BOL.9.6.1_2,060601,72,60601,EntreRíos,5945.53
+geo_id,scale,name,parent_id,country_id,department_id,province_id,municipality_id,gid,ine_code,asdf_id,mun_id,gb_id,name_gadm,area_km2
+BO,country,Bolivia,,BO,,,,BOL,,,,,,1068783.49
+BO-01,department,Chuquisaca,BO,BO,BO-01,,,BOL.1_1,01,,,,Chuquisaca,50946.15
+BO-02,department,Cochabamba,BO,BO,BO-02,,,BOL.2_1,03,,,,Cochabamba,54449.12
+BO-03,department,Beni,BO,BO,BO-03,,,BOL.3_1,08,,,,Beni,206886.01
+BO-04,department,La Paz,BO,BO,BO-04,,,BOL.4_1,02,,,,LaPaz,128243.91
+BO-05,department,Oruro,BO,BO,BO-05,,,BOL.5_1,04,,,,Oruro,48658.63
+BO-06,department,Pando,BO,BO,BO-06,,,BOL.6_1,09,,,,Pando,63747.7
+BO-07,department,Potosí,BO,BO,BO-07,,,BOL.7_1,05,,,,Potosí,109824.52
+BO-08,department,Santa Cruz,BO,BO,BO-08,,,BOL.8_1,07,,,,SantaCruz,368769.81
+BO-09,department,Tarija,BO,BO,BO-09,,,BOL.9_1,06,,,,Tarija,37257.64
+BO-01-01,province,Azurduy,BO-01,BO,BO-01,BO-01-01,,BOL.1.1_2,0102,,,,Azurduy,3083.51
+BO-01-02,province,Belisario Boeto,BO-01,BO,BO-01,BO-01-02,,BOL.1.2_2,0108,,,,BelisarioBoeto,1730.36
+BO-01-03,province,Hernando Siles,BO-01,BO,BO-01,BO-01-03,,BOL.1.3_2,0105,,,,HernandoSiles,6343.6
+BO-01-04,province,Luis Calvo,BO-01,BO,BO-01,BO-01-04,,BOL.1.4_2,0110,,,,LuisCalvo,13033.51
+BO-01-05,province,Nor Cinti,BO-01,BO,BO-01,BO-01-05,,BOL.1.5_2,0107,,,,NorCinti,7707.48
+BO-01-06,province,Oropeza,BO-01,BO,BO-01,BO-01-06,,BOL.1.6_2,0101,,,,Oropeza,3548.86
+BO-01-07,province,Sur Cinti,BO-01,BO,BO-01,BO-01-07,,BOL.1.7_2,0109,,,,SurCinti,5462.43
+BO-01-08,province,Tomina,BO-01,BO,BO-01,BO-01-08,,BOL.1.8_2,0104,,,,Tomina,4261.52
+BO-01-09,province,Yamparáez,BO-01,BO,BO-01,BO-01-09,,BOL.1.9_2,0106,,,,Yamparáez,1725.15
+BO-01-10,province,Zudáñez,BO-01,BO,BO-01,BO-01-10,,BOL.1.10_2,0103,,,,Zudáñez,4049.74
+BO-02-01,province,Arani,BO-02,BO,BO-02,BO-02-01,,BOL.2.1_2,0305,,,,Arani,554.84
+BO-02-02,province,Arque,BO-02,BO,BO-02,BO-02-02,,BOL.2.2_2,0306,,,,Arque,1106.57
+BO-02-03,province,Ayopaya,BO-02,BO,BO-02,BO-02-03,,BOL.2.3_2,0303,,,,Ayopaya,9357.02
+BO-02-04,province,Bolívar,BO-02,BO,BO-02,BO-02-04,,BOL.2.4_2,0315,,,,Bolivar,684.58
+BO-02-05,province,Campero,BO-02,BO,BO-02,BO-02-05,,BOL.2.5_2,0302,,,,Campero,5831.95
+BO-02-06,province,Capinota,BO-02,BO,BO-02,BO-02-06,,BOL.2.6_2,0307,,,,Capinota,983.68
+BO-02-07,province,Carrasco,BO-02,BO,BO-02,BO-02-07,,BOL.2.7_2,0312,,,,Carrasco,12413.84
+BO-02-08,province,Cercado,BO-02,BO,BO-02,BO-02-08,,BOL.2.8_2,0301,,,,Cercado,287.59
+BO-02-09,province,Chapare,BO-02,BO,BO-02,BO-02-09,,BOL.2.9_2,0310,,,,Chapare,12442.12
+BO-02-10,province,Esteban Arce,BO-02,BO,BO-02,BO-02-10,,BOL.2.10_2,0304,,,,EstebanArze,1352.57
+BO-02-11,province,Germán Jordán,BO-02,BO,BO-02,BO-02-11,,BOL.2.11_2,0308,,,,GermánJordán,189.02
+BO-02-12,province,Mizque,BO-02,BO,BO-02,BO-02-12,,BOL.2.12_2,0313,,,,Mizque,2896.87
+BO-02-13,province,Punata,BO-02,BO,BO-02,BO-02-13,,BOL.2.13_2,0314,,,,Punata,419.41
+BO-02-14,province,Quillacollo,BO-02,BO,BO-02,BO-02-14,,BOL.2.14_2,0309,,,,Quillacollo,1633.36
+BO-02-15,province,Tapacarí,BO-02,BO,BO-02,BO-02-15,,BOL.2.15_2,0311,,,,Tapacarí,1568.71
+BO-02-16,province,Tiraque,BO-02,BO,BO-02,BO-02-16,,BOL.2.16_2,0316,,,,Tiraque,2727.0
+BO-03-01,province,Cercado,BO-03,BO,BO-03,BO-03-01,,BOL.3.1_2,0801,,,,Cercado,10685.39
+BO-03-02,province,General José Ballivián,BO-03,BO,BO-03,BO-03-02,,BOL.3.2_2,0803,,,,GeneralJoséBallivián,32716.31
+BO-03-03,province,Iténez,BO-03,BO,BO-03,BO-03-03,,BOL.3.3_2,0808,,,,Iténez,37301.47
+BO-03-04,province,Mamoré,BO-03,BO,BO-03,BO-03-04,,BOL.3.4_2,0807,,,,Mamoré,18754.23
+BO-03-05,province,Marbán,BO-03,BO,BO-03,BO-03-05,,BOL.3.5_2,0806,,,,Marbán,16797.97
+BO-03-06,province,Moxos,BO-03,BO,BO-03,BO-03-06,,BOL.3.6_2,0805,,,,Moxos,25116.76
+BO-03-07,province,Vaca Díez,BO-03,BO,BO-03,BO-03-07,,BOL.3.7_2,0802,,,,VacaDiez,19287.03
+BO-03-08,province,Yacuma,BO-03,BO,BO-03,BO-03-08,,BOL.3.8_2,0804,,,,Yacuma,46226.84
+BO-04-02,province,Abel Iturralde,BO-04,BO,BO-04,BO-04-02,,BOL.4.2_2,0215,,,,AbelIturralde,40080.71
+BO-04-03,province,Aroma,BO-04,BO,BO-04,BO-04-03,,BOL.4.3_2,0213,,,,Aroma,4652.8
+BO-04-04,province,Bautista Saavedra,BO-04,BO,BO-04,BO-04-04,,BOL.4.4_2,0216,,,,BautistaSaavedra,3060.78
+BO-04-05,province,Camacho,BO-04,BO,BO-04,BO-04-05,,BOL.4.5_2,0204,,,,Camacho,1801.62
+BO-04-06,province,Caranavi,BO-04,BO,BO-04,BO-04-06,,BOL.4.6_2,0220,,,,Caranavi,2599.09
+BO-04-07,province,Franz Tamayo,BO-04,BO,BO-04,BO-04-07,,BOL.4.7_2,0207,,,,FranzTamayo,16684.33
+BO-04-08,province,General José Manuel Pando,BO-04,BO,BO-04,BO-04-08,,BOL.4.8_2,0219,,,,GeneralJoséManuelPando,1827.23
+BO-04-09,province,Gualberto Villarroel,BO-04,BO,BO-04,BO-04-09,,BOL.4.9_2,0218,,,,GualbertoVillarroel,2014.32
+BO-04-10,province,Ingavi,BO-04,BO,BO-04,BO-04-10,,BOL.4.10_2,0208,,,,Ingavi,4138.89
+BO-04-11,province,Inquisivi,BO-04,BO,BO-04,BO-04-11,,BOL.4.11_2,0210,,,,Inquisivi,7046.66
+BO-04-12,province,Larecaja,BO-04,BO,BO-04,BO-04-12,,BOL.4.12_2,0206,,,,Larecaja,9650.16
+BO-04-13,province,Loayza,BO-04,BO,BO-04,BO-04-13,,BOL.4.13_2,0209,,,,Loayza,2898.33
+BO-04-14,province,Los Andes,BO-04,BO,BO-04,BO-04-14,,BOL.4.14_2,0212,,,,LosAndes,2805.05
+BO-04-15,province,Manco Kapac,BO-04,BO,BO-04,BO-04-15,,BOL.4.15_2,0217,,,,MancoKapac,252.69
+BO-04-16,province,Muñecas,BO-04,BO,BO-04,BO-04-16,,BOL.4.16_2,0205,,,,Muñecas,1601.24
+BO-04-17,province,Murillo,BO-04,BO,BO-04,BO-04-17,,BOL.4.17_2,0201,,,,Murillo,3828.44
+BO-04-18,province,Nor Yungas,BO-04,BO,BO-04,BO-04-18,,BOL.4.18_2,0214,,,,NorYungas,1784.51
+BO-04-19,province,Omasuyos,BO-04,BO,BO-04,BO-04-19,,BOL.4.19_2,0202,,,,Omasuyos,1457.47
+BO-04-20,province,Pacajes,BO-04,BO,BO-04,BO-04-20,,BOL.4.20_2,0203,,,,Pacajes,11251.55
+BO-04-21,province,Sud Yungas,BO-04,BO,BO-04,BO-04-21,,BOL.4.21_2,0211,,,,SudYungas,8808.04
+BO-05-01,province,Abaroa,BO-05,BO,BO-05,BO-05-01,,BOL.5.1_2,0402,,,,Abaroa,3529.61
+BO-05-02,province,Carangas,BO-05,BO,BO-05,BO-05-02,,BOL.5.2_2,0403,,,,Carangas,4162.01
+BO-05-03,province,Cercado,BO-05,BO,BO-05,BO-05-03,,BOL.5.3_2,0401,,,,Cercado,5139.78
+BO-05-04,province,Ladislao Cabrera,BO-05,BO,BO-05,BO-05-04,,BOL.5.4_2,0408,,,,LadislaoCabrera,6636.38
+BO-05-05,province,Litoral,BO-05,BO,BO-05,BO-05-05,,BOL.5.5_2,0405,,,,Litoral,2652.03
+BO-05-06,province,Mejillones,BO-05,BO,BO-05,BO-05-06,,BOL.5.6_2,0415,,,,Mejillones,665.0
+BO-05-07,province,Nor Carangas,BO-05,BO,BO-05,BO-05-07,,BOL.5.7_2,0416,,,,NorCarangas,904.03
+BO-05-08,province,Pantaleón Dalence,BO-05,BO,BO-05,BO-05-08,,BOL.5.8_2,0407,,,,PantaleónDalence,893.38
+BO-05-09,province,Poopó,BO-05,BO,BO-05,BO-05-09,,BOL.5.9_2,0406,,,,Poopó,1714.93
+BO-05-10,province,Sabaya,BO-05,BO,BO-05,BO-05-10,,BOL.5.10_2,0409,,,,Sabaya,4169.69
+BO-05-11,province,Sajama,BO-05,BO,BO-05,BO-05-11,,BOL.5.11_2,0404,,,,Sajama,7589.21
+BO-05-12,province,San Pedro de Totora,BO-05,BO,BO-05,BO-05-12,,BOL.5.12_2,0413,,,,SanPedrodeTotora,1379.83
+BO-05-13,province,Saucarí,BO-05,BO,BO-05,BO-05-13,,BOL.5.13_2,0410,,,,Saucarí,3055.27
+BO-05-14,province,Sebastián Pagador,BO-05,BO,BO-05,BO-05-14,,BOL.5.14_2,0414,,,,SebastiánPagador,2403.0
+BO-05-15,province,Sur Carangas,BO-05,BO,BO-05,BO-05-15,,BOL.5.15_2,0412,,,,SurCarangas,3397.62
+BO-05-16,province,Tomás Barrón,BO-05,BO,BO-05,BO-05-16,,BOL.5.16_2,0411,,,,TomásBarrón,366.87
+BO-06-01,province,Abuná,BO-06,BO,BO-06,BO-06-01,,BOL.6.1_2,0904,,,,Abuná,9822.88
+BO-06-02,province,Federico Román,BO-06,BO,BO-06,BO-06-02,,BOL.6.2_2,0905,,,,FedericoRomán,13076.39
+BO-06-03,province,Madre de Dios,BO-06,BO,BO-06,BO-06-03,,BOL.6.3_2,0903,,,,MadredeDios,11978.31
+BO-06-04,province,Manuripi,BO-06,BO,BO-06,BO-06-04,,BOL.6.4_2,0902,,,,Manuripi,19646.45
+BO-06-05,province,Nicolás Suárez,BO-06,BO,BO-06,BO-06-05,,BOL.6.5_2,0901,,,,NicolásSuárez,9223.67
+BO-07-01,province,Alonso de Ibáñez,BO-07,BO,BO-07,BO-07-01,,BOL.7.1_2,0507,,,,AlonsodeIbáñez,1436.97
+BO-07-02,province,Antonio Quijarro,BO-07,BO,BO-07,BO-07-02,,BOL.7.2_2,0512,,,,AntonioQuijarro,16884.23
+BO-07-03,province,Charcas,BO-07,BO,BO-07,BO-07-03,,BOL.7.3_2,0505,,,,Chárcas,3394.87
+BO-07-04,province,Chayanta,BO-07,BO,BO-07,BO-07-04,,BOL.7.4_2,0504,,,,Chayanta,5152.98
+BO-07-05,province,Cornelio Saavedra,BO-07,BO,BO-07,BO-07-05,,BOL.7.5_2,0503,,,,CornelioSaavedra,3235.53
+BO-07-06,province,Daniel Campos,BO-07,BO,BO-07,BO-07-06,,BOL.7.6_2,0514,,,,DanielCampos,7005.21
+BO-07-07,province,Enrique Baldivieso,BO-07,BO,BO-07,BO-07-07,,BOL.7.7_2,0516,,,,EnriqueBaldivieso,2345.06
+BO-07-08,province,General Bilbao,BO-07,BO,BO-07,BO-07-08,,BOL.7.8_2,0513,,,,GeneralBilbao,761.87
+BO-07-09,province,José María Linares,BO-07,BO,BO-07,BO-07-09,,BOL.7.9_2,0511,,,,JoséMaríaLinares,4886.33
+BO-07-10,province,Modesto Omiste,BO-07,BO,BO-07,BO-07-10,,BOL.7.10_2,0515,,,,ModestoOmiste,2496.75
+BO-07-11,province,Nor Chichas,BO-07,BO,BO-07,BO-07-11,,BOL.7.11_2,0506,,,,NorChichas,8094.43
+BO-07-12,province,Nor Lípez,BO-07,BO,BO-07,BO-07-12,,BOL.7.12_2,0509,,,,NorLipez,22558.89
+BO-07-13,province,Rafael Bustillo,BO-07,BO,BO-07,BO-07-13,,BOL.7.13_2,0502,,,,RafaelBustillo,2119.55
+BO-07-14,province,Sur Chichas,BO-07,BO,BO-07,BO-07-14,,BOL.7.14_2,0508,,,,SurChichas,8494.01
+BO-07-15,province,Sur Lípez,BO-07,BO,BO-07,BO-07-15,,BOL.7.15_2,0510,,,,SurLipez,16184.75
+BO-07-16,province,Tomás Frías,BO-07,BO,BO-07,BO-07-16,,BOL.7.16_2,0501,,,,TomásFrías,4773.08
+BO-08-01,province,Andrés Ibáñez,BO-08,BO,BO-08,BO-08-01,,BOL.8.1_2,0701,,,,AndrésIbáñez,4809.05
+BO-08-02,province,Ángel Sandoval,BO-08,BO,BO-08,BO-08-02,,BOL.8.2_2,0712,,,,AngelSandoval,27117.14
+BO-08-03,province,Chiquitos,BO-08,BO,BO-08,BO-08-03,,BOL.8.3_2,0705,,,,Chiquitos,40064.29
+BO-08-04,province,Cordillera,BO-08,BO,BO-08,BO-08-04,,BOL.8.4_2,0707,,,,Cordillera,83463.9
+BO-08-05,province,Florida,BO-08,BO,BO-08,BO-08-05,,BOL.8.5_2,0709,,,,Florida,3964.54
+BO-08-06,province,Germán Busch,BO-08,BO,BO-08,BO-08-06,,BOL.8.6_2,0714,,,,GermánBusch,25533.17
+BO-08-07,province,Guarayos,BO-08,BO,BO-08,BO-08-07,,BOL.8.7_2,0715,,,,Guarayos,33318.74
+BO-08-08,province,Ichilo,BO-08,BO,BO-08,BO-08-08,,BOL.8.8_2,0704,,,,Ichilo,15152.86
+BO-08-09,province,Manuel María Caballero,BO-08,BO,BO-08,BO-08-09,,BOL.8.9_2,0713,,,,ManuelMaríaCaballero,3768.32
+BO-08-10,province,Ñuflo de Chávez,BO-08,BO,BO-08,BO-08-10,,BOL.8.10_2,0711,,,,ÑufloDeChávez,43828.91
+BO-08-11,province,Obispo Santistevan,BO-08,BO,BO-08,BO-08-11,,BOL.8.11_2,0710,,,,ObispoSantistéban,5049.82
+BO-08-12,province,Sara,BO-08,BO,BO-08,BO-08-12,,BOL.8.12_2,0706,,,,Sara,5495.34
+BO-08-13,province,Vallegrande,BO-08,BO,BO-08,BO-08-13,,BOL.8.13_2,0708,,,,Vallegrande,6100.43
+BO-08-14,province,Velasco,BO-08,BO,BO-08,BO-08-14,,BOL.8.14_2,0703,,,,Velasco,68727.05
+BO-08-15,province,Warnes,BO-08,BO,BO-08,BO-08-15,,BOL.8.15_2,0702,,,,Warnes,2376.24
+BO-09-01,province,Arce,BO-09,BO,BO-09,BO-09-01,,BOL.9.1_2,0602,,,,Arce,4838.65
+BO-09-02,province,Avilés,BO-09,BO,BO-09,BO-09-02,,BOL.9.2_2,0604,,,,Avilés,2672.37
+BO-09-03,province,Cercado,BO-09,BO,BO-09,BO-09-03,,BOL.9.3_2,0601,,,,Cercado,2064.21
+BO-09-04,province,Gran Chaco,BO-09,BO,BO-09,BO-09-04,,BOL.9.4_2,0603,,,,GranChaco,17694.66
+BO-09-05,province,Méndez,BO-09,BO,BO-09,BO-09-05,,BOL.9.5_2,0605,,,,Méndez,4042.5
+BO-09-06,province,O'Connor,BO-09,BO,BO-09,BO-09-06,,BOL.9.6_2,0606,,,,O'Connor,5945.24
+BO-01-01-01,municipality,Azurduy,BO-01-01,BO,BO-01,BO-01-01,BO-01-01-01,BOL.1.1.1_2,010201,174,10201,33444609B62658320396895,Azurduy,1729.28
+BO-01-01-02,municipality,Tarvita,BO-01-01,BO,BO-01,BO-01-01,BO-01-01-02,BOL.1.1.2_2,010202,186,10202,33444609B76156877684982,Tarvita,1354.24
+BO-01-02-01,municipality,Villa Serrano,BO-01-02,BO,BO-01,BO-01-02,BO-01-02-01,BOL.1.2.1_2,010801,246,10801,33444609B68968725846071,VillaSerrano,1730.36
+BO-01-03-01,municipality,Huacareta,BO-01-03,BO,BO-01,BO-01-03,BO-01-03-01,BOL.1.3.1_2,010502,193,10502,33444609B67628799140504,Huacareta,2963.81
+BO-01-03-02,municipality,Monteagudo,BO-01-03,BO,BO-01,BO-01-03,BO-01-03-02,BOL.1.3.2_2,010501,194,10501,33444609B30758171946201,Monteagudo,3379.79
+BO-01-04-01,municipality,Huacaya,BO-01-04,BO,BO-01,BO-01-04,BO-01-04-01,BOL.1.4.1_2,011002,191,11002,33444609B96109340201829,Huacaya,1280.03
+BO-01-04-02,municipality,Macharetí,BO-01-04,BO,BO-01,BO-01-04,BO-01-04-02,BOL.1.4.2_2,011003,247,11003,33444609B47022297338478,Macharetí,7974.61
+BO-01-04-03,municipality,Muyupampa,BO-01-04,BO,BO-01,BO-01-04,BO-01-04-03,BOL.1.4.3_2,011001,241,11001,33444609B52288986040036,VillaVacaGuzmán,3778.87
+BO-01-05-01,municipality,Camargo,BO-01-05,BO,BO-01,BO-01-05,BO-01-05-01,BOL.1.5.1_2,010701,336,10701,33444609B38666801583111,Camargo,2084.9
+BO-01-05-02,municipality,Incahuasi,BO-01-05,BO,BO-01,BO-01-05,BO-01-05-02,BOL.1.5.2_2,010703,37,10703,33444609B4098134198546,Incahuasi,1043.16
+BO-01-05-03,municipality,San Lucas,BO-01-05,BO,BO-01,BO-01-05,BO-01-05-03,BOL.1.5.3_2,010702,35,10702,33444609B15145252179158,SanLucas,3890.92
+BO-01-05-04,municipality,Villa Charcas,BO-01-05,BO,BO-01,BO-01-05,BO-01-05-04,BOL.1.5.4_2,010704,322,10704,33444609B84762285129243,VillaCharcas,688.51
+BO-01-06-01,municipality,Poroma,BO-01-06,BO,BO-01,BO-01-06,BO-01-06-01,BOL.1.6.1_2,010103,300,10103,33444609B65989852008987,Poroma,1433.47
+BO-01-06-02,municipality,Sucre,BO-01-06,BO,BO-01,BO-01-06,BO-01-06-02,BOL.1.6.2_2,010101,254,10101,33444609B11070786962150,Sucre,1680.74
+BO-01-06-03,municipality,Yotala,BO-01-06,BO,BO-01,BO-01-06,BO-01-06-03,BOL.1.6.3_2,010102,201,10102,33444609B81169817147128,Yotala,434.64
+BO-01-07-01,municipality,Culpina,BO-01-07,BO,BO-01,BO-01-07,BO-01-07-01,BOL.1.7.1_2,010902,36,10902,33444609B53576453696708,Culpina,3895.79
+BO-01-07-02,municipality,Las Carreras,BO-01-07,BO,BO-01,BO-01-07,BO-01-07-02,BOL.1.7.2_2,010903,104,10903,33444609B55992635688297,LasCarreras,905.93
+BO-01-07-03,municipality,Villa Abecia,BO-01-07,BO,BO-01,BO-01-07,BO-01-07-03,BOL.1.7.3_2,010901,105,10901,33444609B27495966165879,VillaAbecia,660.7
+BO-01-08-01,municipality,Villa Alcalá,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-01,BOL.1.8.1_2,010404,198,10404,33444609B86314639611720,Alcalá,305.63
+BO-01-08-02,municipality,El Villar,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-02,BOL.1.8.2_2,010405,190,10405,33444609B83747609401179,ElVillar,890.13
+BO-01-08-03,municipality,Padilla,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-03,BOL.1.8.3_2,010401,243,10401,33444609B66883350442245,Padilla,1666.92
+BO-01-08-04,municipality,Sopachuy,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-04,BOL.1.8.4_2,010403,199,10403,33444609B87999109220849,Sopachui,586.44
+BO-01-08-05,municipality,Tomina,BO-01-08,BO,BO-01,BO-01-08,BO-01-08-05,BOL.1.8.5_2,010402,203,10402,33444609B83955779121658,Tomina,812.39
+BO-01-09-01,municipality,Tarabuco,BO-01-09,BO,BO-01,BO-01-09,BO-01-09-01,BOL.1.9.1_2,010601,205,10601,33444609B19243666661684,Tarabuco,1082.56
+BO-01-09-02,municipality,Yamparáez,BO-01-09,BO,BO-01,BO-01-09,BO-01-09-02,BOL.1.9.2_2,010602,202,10602,33444609B60792384243911,Yamparáez,642.59
+BO-01-10-01,municipality,Mojocoya,BO-01-10,BO,BO-01,BO-01-10,BO-01-10-01,BOL.1.10.1_2,010303,244,10303,33444609B86842882084082,Mojocoya,1239.32
+BO-01-10-02,municipality,Presto,BO-01-10,BO,BO-01,BO-01-10,BO-01-10-02,BOL.1.10.2_2,010302,255,10302,33444609B83807214228893,Presto,1351.46
+BO-01-10-03,municipality,Icla,BO-01-10,BO,BO-01,BO-01-10,BO-01-10-03,BOL.1.10.3_2,010304,200,10304,33444609B41074792088949,VillaRicardoMugia-Icla,801.35
+BO-01-10-04,municipality,Zudañez,BO-01-10,BO,BO-01,BO-01-10,BO-01-10-04,BOL.1.10.4_2,010301,206,10301,33444609B67740783757565,Zudañez,657.61
+BO-02-01-01,municipality,Arani,BO-02-01,BO,BO-02,BO-02-01,BO-02-01-01,BOL.2.1.1_2,030501,140,30501,33444609B46766858850204,Arani,205.98
+BO-02-01-02,municipality,Vacas,BO-02-01,BO,BO-02,BO-02-01,BO-02-01-02,BOL.2.1.2_2,030502,273,30502,33444609B35797728260661,Vacas,348.86
+BO-02-02-01,municipality,Arque,BO-02-02,BO,BO-02,BO-02-02,BO-02-02-01,BOL.2.2.1_2,030601,24,30601,33444609B18219057043364,Arque,519.18
+BO-02-02-02,municipality,Tacopaya,BO-02-02,BO,BO-02,BO-02-02,BO-02-02-02,BOL.2.2.2_2,030602,125,30602,33444609B15713098034609,Tacopaya,587.4
+BO-02-03-01,municipality,Independencia,BO-02-03,BO,BO-02,BO-02-03,BO-02-03-01,BOL.2.3.1_2,030301,292,30301,33444609B12220391228460,Ayopaya,1498.95
+BO-02-03-02,municipality,Cocapata,BO-02-03,BO,BO-02,BO-02-03,BO-02-03-02,BOL.2.3.2_2,030303,251,30303,33444609B56968020257741,Cocapata,7120.41
+BO-02-03-03,municipality,Morochata,BO-02-03,BO,BO-02,BO-02-03,BO-02-03-03,BOL.2.3.3_2,030302,106,30302,33444609B59657749227939,Morochata,737.66
+BO-02-04-01,municipality,Bolívar,BO-02-04,BO,BO-02,BO-02-04,BO-02-04-01,BOL.2.4.1_2,031501,238,31501,33444609B16273160162041,Bolivar,684.58
+BO-02-05-01,municipality,Aiquile,BO-02-05,BO,BO-02,BO-02-05,BO-02-05-01,BOL.2.5.1_2,030201,5,30201,33444609B82494338608308,Aiquile,2684.65
+BO-02-05-02,municipality,Omereque,BO-02-05,BO,BO-02,BO-02-05,BO-02-05-02,BOL.2.5.2_2,030203,53,30203,33444609B63331396503512,Omereque,767.13
+BO-02-05-03,municipality,Pasorapa,BO-02-05,BO,BO-02,BO-02-05,BO-02-05-03,BOL.2.5.3_2,030202,334,30202,33444609B25744708798577,Pasorapa,2380.17
+BO-02-06-01,municipality,Capinota,BO-02-06,BO,BO-02,BO-02-06,BO-02-06-01,BOL.2.6.1_2,030701,23,30701,33444609B66706734684943,Capinota,568.64
+BO-02-06-02,municipality,Santivañez,BO-02-06,BO,BO-02,BO-02-06,BO-02-06-02,BOL.2.6.2_2,030702,128,30702,33444609B41026649849342,Santivañez,299.65
+BO-02-06-03,municipality,Sicaya,BO-02-06,BO,BO-02,BO-02-06,BO-02-06-03,BOL.2.6.3_2,030703,21,30703,33444609B1405113854465,Sicaya,115.39
+BO-02-07-01,municipality,Chimoré,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-01,BOL.2.7.1_2,031204,267,31204,33444609B68399492959992,Chimoré,2787.59
+BO-02-07-02,municipality,Entre Ríos,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-02,BOL.2.7.2_2,031206,299,31206,33444609B76566475114194,EntreRíos,2197.02
+BO-02-07-03,municipality,Pocona,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-03,BOL.2.7.3_2,031203,274,31203,33444609B94763330407872,Pocona,909.39
+BO-02-07-04,municipality,Pojo,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-04,BOL.2.7.4_2,031202,298,31202,33444609B53846776766101,Pojo,2405.84
+BO-02-07-05,municipality,Puerto Villarroel,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-05,BOL.2.7.5_2,031205,283,31205,33444609B64066273416575,PuertoVillarroel,1978.38
+BO-02-07-06,municipality,Totora,BO-02-07,BO,BO-02,BO-02-07,BO-02-07-06,BOL.2.7.6_2,031201,86,31201,33444609B18863033470661,Totora,2135.63
+BO-02-08-01,municipality,Cochabamba,BO-02-08,BO,BO-02,BO-02-08,BO-02-08-01,BOL.2.8.1_2,030101,135,30101,33444609B27526751369816,Cochabamba,287.59
+BO-02-09-01,municipality,Colomi,BO-02-09,BO,BO-02,BO-02-09,BO-02-09-01,BOL.2.9.1_2,031002,301,31002,33444609B90961772674672,Colomi,515.42
+BO-02-09-02,municipality,Sacaba,BO-02-09,BO,BO-02,BO-02-09,BO-02-09-02,BOL.2.9.2_2,031001,80,31001,33444609B48485513338171,Sacaba,750.74
+BO-02-09-03,municipality,Villa Tunari,BO-02-09,BO,BO-02,BO-02-09,BO-02-09-03,BOL.2.9.3_2,031003,266,31003,33444609B66530394396936,VillaTunari,11175.96
+BO-02-10-01,municipality,Anzaldo,BO-02-10,BO,BO-02,BO-02-10,BO-02-10-01,BOL.2.10.1_2,030402,120,30402,33444609B81309355467602,Anzaldo,669.67
+BO-02-10-02,municipality,Arbieto,BO-02-10,BO,BO-02,BO-02-10,BO-02-10-02,BOL.2.10.2_2,030403,15,30403,33444609B97054191509014,Arbieto,147.84
+BO-02-10-03,municipality,Sacabamba,BO-02-10,BO,BO-02,BO-02-10,BO-02-10-03,BOL.2.10.3_2,030404,119,30404,33444609B18883337685485,Sacabamba,196.33
+BO-02-10-04,municipality,Tarata,BO-02-10,BO,BO-02,BO-02-10,BO-02-10-04,BOL.2.10.4_2,030401,85,30401,33444609B31469614530390,Tarata,338.73
+BO-02-11-01,municipality,Cliza,BO-02-11,BO,BO-02,BO-02-11,BO-02-11-01,BOL.2.11.1_2,030801,124,30801,33444609B22053957630457,Cliza,55.74
+BO-02-11-02,municipality,Toko,BO-02-11,BO,BO-02,BO-02-11,BO-02-11-02,BOL.2.11.2_2,030802,121,30802,33444609B32204314645953,Toco,61.9
+BO-02-11-03,municipality,Tolata,BO-02-11,BO,BO-02,BO-02-11,BO-02-11-03,BOL.2.11.3_2,030803,131,30803,33444609B32250162071750,Tolata,71.38
+BO-02-12-01,municipality,Alalay,BO-02-12,BO,BO-02,BO-02-12,BO-02-12-01,BOL.2.12.1_2,031303,302,31303,33444609B29621079558140,Alalay,418.73
+BO-02-12-02,municipality,Mizque,BO-02-12,BO,BO-02,BO-02-12,BO-02-12-02,BOL.2.12.2_2,031301,333,31301,33444609B12985777514866,Mizque,1879.7
+BO-02-12-03,municipality,Vila Vila,BO-02-12,BO,BO-02,BO-02-12,BO-02-12-03,BOL.2.12.3_2,031302,303,31302,33444609B95189851852541,VilaVila,598.43
+BO-02-13-01,municipality,Punata,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-01,BOL.2.13.1_2,031401,141,31401,33444609B26432554311973,Punata,85.89
+BO-02-13-02,municipality,San Benito,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-02,BOL.2.13.2_2,031403,26,31403,33444609B77393923680161,SanBenito,141.28
+BO-02-13-03,municipality,Tacachi,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-03,BOL.2.13.3_2,031404,123,31404,33444609B47983827224849,Tacachi,19.96
+BO-02-13-04,municipality,Cuchumuela,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-04,BOL.2.13.4_2,031405,122,31405,33444609B47460788483359,VillaGualbertoVillarroel,72.63
+BO-02-13-05,municipality,Villa Rivero,BO-02-13,BO,BO-02,BO-02-13,BO-02-13-05,BOL.2.13.5_2,031402,12,31402,33444609B60672792923544,VillaRivero,99.64
+BO-02-14-01,municipality,Colcapirhua,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-01,BOL.2.14.1_2,030905,82,30905,33444609B43655210044613,Colcapirhua,29.21
+BO-02-14-02,municipality,Quillacollo,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-02,BOL.2.14.2_2,030901,79,30901,33444609B75465910616049,Quillacollo,567.34
+BO-02-14-03,municipality,Sipe Sipe,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-03,BOL.2.14.3_2,030902,83,30902,33444609B23121429906838,Sipesipe,504.93
+BO-02-14-04,municipality,Tiquipaya,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-04,BOL.2.14.4_2,030903,81,30903,33444609B72319271026199,Tiquipaya,316.89
+BO-02-14-05,municipality,Vinto,BO-02-14,BO,BO-02,BO-02-14,BO-02-14-05,BOL.2.14.5_2,030904,84,30904,33444609B99012460291790,Vinto,214.99
+BO-02-15-01,municipality,Tapacarí,BO-02-15,BO,BO-02,BO-02-15,BO-02-15-01,BOL.2.15.1_2,031101,162,31101,33444609B17870319498880,Tapacarí,1568.71
+BO-02-16-01,municipality,Shinahota,BO-02-16,BO,BO-02,BO-02-16,BO-02-16-01,BOL.2.16.1_2,031602,269,31602,33444609B87245009197301,Shinahota,737.95
+BO-02-16-02,municipality,Tiraque,BO-02-16,BO,BO-02,BO-02-16,BO-02-16-02,BOL.2.16.2_2,031601,268,31601,33444609B59497509988332,Tiraque,1989.05
+BO-03-01-01,municipality,San Javier,BO-03-01,BO,BO-03,BO-03-01,BO-03-01-01,BOL.3.1.1_2,080102,57,80102,33444609B12431524462052,SanJavier,8790.45
+BO-03-01-02,municipality,Trinidad,BO-03-01,BO,BO-03,BO-03-01,BO-03-01-02,BOL.3.1.2_2,080101,296,80101,33444609B48677883311760,Trinidad,1894.94
+BO-03-02-01,municipality,Rurrenabaque,BO-03-02,BO,BO-03,BO-03-02,BO-03-02-01,BOL.3.2.1_2,080304,211,80304,33444609B23267727061352,PuertoMenordeRurrenabaque,2519.8
+BO-03-02-02,municipality,Reyes,BO-03-02,BO,BO-03,BO-03-02,BO-03-02-02,BOL.3.2.2_2,080301,215,80301,33444609B89900352461749,Reyes,11899.69
+BO-03-02-03,municipality,San Borja,BO-03-02,BO,BO-03,BO-03-02,BO-03-02-03,BOL.3.2.3_2,080302,214,80302,33444609B64615222978764,SanBorja,8799.09
+BO-03-02-04,municipality,Santa Rosa,BO-03-02,BO,BO-03,BO-03-02,BO-03-02-04,BOL.3.2.4_2,080303,148,80303,33444609B16610654471178,SantaRosa,9497.73
+BO-03-03-01,municipality,Baures,BO-03-03,BO,BO-03,BO-03-03,BO-03-03-01,BOL.3.3.1_2,080802,295,80802,33444609B65909683301576,Baures,17685.32
+BO-03-03-02,municipality,Huacaraje,BO-03-03,BO,BO-03,BO-03-03,BO-03-03-02,BOL.3.3.2_2,080803,70,80803,33444609B44567487529281,Huacaraje,5513.87
+BO-03-03-03,municipality,Magdalena,BO-03-03,BO,BO-03,BO-03-03,BO-03-03-03,BOL.3.3.3_2,080801,89,80801,33444609B7651682532702,Magdalena,14102.28
+BO-03-04-01,municipality,Puerto Siles,BO-03-04,BO,BO-03,BO-03-04,BO-03-04-01,BOL.3.4.1_2,080703,217,80703,33444609B1908744314968,PuertoSiles,2084.81
+BO-03-04-02,municipality,San Joaquín,BO-03-04,BO,BO-03,BO-03-04,BO-03-04-02,BOL.3.4.2_2,080701,73,80701,33444609B16128435013083,SanJoaquín,8678.33
+BO-03-04-03,municipality,San Ramón,BO-03-04,BO,BO-03,BO-03-04,BO-03-04-03,BOL.3.4.3_2,080702,74,80702,33444609B15362743729446,SanRamón,7991.09
+BO-03-05-01,municipality,Loreto,BO-03-05,BO,BO-03,BO-03-05,BO-03-05-01,BOL.3.5.1_2,080601,45,80601,33444609B99781459042510,Loreto,6827.37
+BO-03-05-02,municipality,San Andrés,BO-03-05,BO,BO-03,BO-03-05,BO-03-05-02,BOL.3.5.2_2,080602,272,80602,33444609B89434785378712,SanAndrés,9970.6
+BO-03-06-01,municipality,San Ignacio,BO-03-06,BO,BO-03,BO-03-06,BO-03-06-01,BOL.3.6.1_2,080501,56,80501,33444609B10050371270030,SanIgnacio,25116.76
+BO-03-07-01,municipality,Guayaramerín,BO-03-07,BO,BO-03,BO-03-07,BO-03-07-01,BOL.3.7.1_2,080202,226,80202,33444609B41079308112448,Guayaramerín,6488.65
+BO-03-07-02,municipality,Riberalta,BO-03-07,BO,BO-03,BO-03-07,BO-03-07-02,BOL.3.7.2_2,080201,219,80201,33444609B7043215970473,Riberalta,12798.38
+BO-03-08-01,municipality,Exaltación,BO-03-08,BO,BO-03,BO-03-08,BO-03-08-01,BOL.3.8.1_2,080402,218,80402,33444609B96722610536110,Exaltación,24919.07
+BO-03-08-02,municipality,Santa Ana de Yacuma,BO-03-08,BO,BO-03,BO-03-08,BO-03-08-02,BOL.3.8.2_2,080401,213,80401,33444609B11826411748903,SantaAna,21307.78
+BO-04-02-01,municipality,Ixiamas,BO-04-02,BO,BO-04,BO-04-02,BO-04-02-01,BOL.4.2.1_2,021501,304,21501,33444609B28912487480203,Ixiamas,37113.42
+BO-04-02-02,municipality,San Buenaventura,BO-04-02,BO,BO-04,BO-04-02,BO-04-02-02,BOL.4.2.2_2,021502,212,21502,33444609B18020580610302,SanBuenaventura,2967.3
+BO-04-03-01,municipality,Ayo Ayo,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-01,BOL.4.3.1_2,021303,173,21303,33444609B98285318048439,AyoAyo,558.71
+BO-04-03-02,municipality,Calamarca,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-02,BOL.4.3.2_2,021304,151,21304,33444609B38768782979401,Calamarca,480.53
+BO-04-03-03,municipality,Collana,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-03,BOL.4.3.3_2,021307,130,21307,33444609B63285386672997,Collana,106.31
+BO-04-03-04,municipality,Colquencha,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-04,BOL.4.3.4_2,021306,144,21306,33444609B6473688215206,Colquencha,341.36
+BO-04-03-05,municipality,Patacamaya,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-05,BOL.4.3.5_2,021305,143,21305,33444609B26735572911236,Patacamaya,556.79
+BO-04-03-06,municipality,Sica Sica,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-06,BOL.4.3.6_2,021301,142,21301,33444609B95478506606452,Sicasica,1738.27
+BO-04-03-07,municipality,Umala,BO-04-03,BO,BO-04,BO-04-03,BO-04-03-07,BOL.4.3.7_2,021302,17,21302,33444609B76077444402532,Umala,870.82
+BO-04-04-01,municipality,Charazani,BO-04-04,BO,BO-04,BO-04-04,BO-04-04-01,BOL.4.4.1_2,021601,183,21601,33444609B54666452176060,Charazani,2475.88
+BO-04-04-02,municipality,Curva,BO-04-04,BO,BO-04,BO-04-04,BO-04-04-02,BOL.4.4.2_2,021602,207,21602,33444609B75864273749740,Curva,584.9
+BO-04-05-01,municipality,Escoma,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-01,BOL.4.5.1_2,020405,324,20405,33444609B39927632122083,Escoma,121.19
+BO-04-05-02,municipality,Humanata,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-02,BOL.4.5.2_2,020404,240,20404,33444609B82567957087546,Humanata,289.53
+BO-04-05-04,municipality,Mocomoco,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-04,BOL.4.5.4_2,020402,51,20402,33444609B98158201077979,Mocomoco,653.29
+BO-04-05-05,municipality,Puerto Acosta,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-05,BOL.4.5.5_2,020401,323,20401,33444609B33685537880720,PuertoAcosta,352.14
+BO-04-05-06,municipality,Puerto Carabuco,BO-04-05,BO,BO-04,BO-04-05,BO-04-05-06,BOL.4.5.6_2,020403,43,20403,33444609B17461740190048,PuertoMayordeCarabuco,385.47
+BO-04-06-01,municipality,Alto Beni,BO-04-06,BO,BO-04,BO-04-06,BO-04-06-01,BOL.4.6.1_2,022002,235,22002,33444609B16251095523342,AltoBeni,1045.32
+BO-04-06-02,municipality,Caranavi,BO-04-06,BO,BO-04,BO-04-06,BO-04-06-02,BOL.4.6.2_2,022001,236,22001,33444609B53711106973107,Caranavi,1553.77
+BO-04-07-01,municipality,Apolo,BO-04-07,BO,BO-04,BO-04-07,BO-04-07-01,BOL.4.7.1_2,020701,210,20701,33444609B86510773304645,Apolo,14235.07
+BO-04-07-02,municipality,Pelechuco,BO-04-07,BO,BO-04,BO-04-07,BO-04-07-02,BOL.4.7.2_2,020702,208,20702,33444609B99732646106619,Pelechuco,2449.26
+BO-04-08-01,municipality,Catacora,BO-04-08,BO,BO-04,BO-04-08,BO-04-08-01,BOL.4.8.1_2,021902,137,21902,33444609B53912589906034,Catacora,524.27
+BO-04-08-02,municipality,Santiago de Machaca,BO-04-08,BO,BO-04,BO-04-08,BO-04-08-02,BOL.4.8.2_2,021901,145,21901,33444609B94808550291451,SantiagodeMachaca,1302.96
+BO-04-09-01,municipality,Chacarilla,BO-04-09,BO,BO-04,BO-04-09,BO-04-09-01,BOL.4.9.1_2,021803,14,21803,33444609B29640008146581,Chacarilla,363.32
+BO-04-09-02,municipality,Papel Pampa,BO-04-09,BO,BO-04,BO-04-09,BO-04-09-02,BOL.4.9.2_2,021802,16,21802,33444609B7303523216327,PapelPampa,860.53
+BO-04-09-03,municipality,San Pedro Cuarahuara,BO-04-09,BO,BO-04,BO-04-09,BO-04-09-03,BOL.4.9.3_2,021801,20,21801,33444609B50126659359990,SanPedrodeCurahuara,790.46
+BO-04-10-01,municipality,Desaguadero,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-01,BOL.4.10.1_2,020804,163,20804,33444609B96352249244207,Desaguadero,103.95
+BO-04-10-02,municipality,Jesús de Machaca,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-02,BOL.4.10.2_2,020806,164,20806,33444609B47461403586621,JesúsdeMachaka,992.45
+BO-04-10-03,municipality,San Andrés de Machaca,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-03,BOL.4.10.3_2,020805,328,20805,33444609B21047921560744,La(Marka)SanAndrésdeMachaca,1535.27
+BO-04-10-05,municipality,Guaqui,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-05,BOL.4.10.5_2,020802,165,20802,33444609B49611510093836,PuertoMayordeGuaqui,191.0
+BO-04-10-06,municipality,Taraco,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-06,BOL.4.10.6_2,020807,327,20807,33444609B63839789391509,Taraco,114.64
+BO-04-10-07,municipality,Tiahuanacu,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-07,BOL.4.10.7_2,020803,75,20803,33444609B43712289794182,Tiahuanacu,352.57
+BO-04-10-08,municipality,Viacha,BO-04-10,BO,BO-04,BO-04-10,BO-04-10-08,BOL.4.10.8_2,020801,152,20801,33444609B96909492368604,Viacha,849.01
+BO-04-11-01,municipality,Cajuata,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-01,BOL.4.11.1_2,021003,59,21003,33444609B77156552266229,Cajuata,712.04
+BO-04-11-02,municipality,Colquiri,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-02,BOL.4.11.2_2,021004,29,21004,33444609B12400479215018,Colquiri,1011.47
+BO-04-11-03,municipality,Ichoca,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-03,BOL.4.11.3_2,021005,30,21005,33444609B79081950890950,Ichoca,839.87
+BO-04-11-04,municipality,Inquisivi,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-04,BOL.4.11.4_2,021001,60,21001,33444609B88428284840122,Inquisivi,3289.2
+BO-04-11-05,municipality,Quime,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-05,BOL.4.11.5_2,021002,154,21002,33444609B66068098323869,Quime,997.14
+BO-04-11-06,municipality,Villa Libertad Licoma,BO-04-11,BO,BO-04,BO-04-11,BO-04-11-06,BOL.4.11.6_2,021006,153,21006,33444609B79791485502962,VillaLibertadLicoma,196.94
+BO-04-12-01,municipality,Combaya,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-01,BOL.4.12.1_2,020605,168,20605,33444609B2278379059384,Combaya,90.57
+BO-04-12-02,municipality,Guanay,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-02,BOL.4.12.2_2,020602,180,20602,33444609B52828655886232,Guanay,3612.31
+BO-04-12-03,municipality,Mapiri,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-03,BOL.4.12.3_2,020607,182,20607,33444609B90487518666109,Mapiri,1500.06
+BO-04-12-04,municipality,Quiabaya,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-04,BOL.4.12.4_2,020604,171,20604,33444609B19470062781672,Quiabaya,118.42
+BO-04-12-05,municipality,Sorata,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-05,BOL.4.12.5_2,020601,177,20601,33444609B53779243458077,Sorata,1902.03
+BO-04-12-06,municipality,Tacacoma,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-06,BOL.4.12.6_2,020603,192,20603,33444609B98934619149672,Tacacoma,799.75
+BO-04-12-07,municipality,Teoponte,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-07,BOL.4.12.7_2,020608,181,20608,33444609B39778154262646,Teoponte,1378.68
+BO-04-12-08,municipality,Tipuani,BO-04-12,BO,BO-04,BO-04-12,BO-04-12-08,BOL.4.12.8_2,020606,175,20606,33444609B47389416832497,Tipuani,248.34
+BO-04-13-01,municipality,Cairoma,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-01,BOL.4.13.1_2,020905,28,20905,33444609B66993909697087,Cairoma,685.41
+BO-04-13-02,municipality,Luribay,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-02,BOL.4.13.2_2,020901,116,20901,33444609B75165017372098,Luribay,451.05
+BO-04-13-03,municipality,Malla,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-03,BOL.4.13.3_2,020904,149,20904,33444609B35270149728657,Malla,350.57
+BO-04-13-04,municipality,Sapahaqui,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-04,BOL.4.13.4_2,020902,27,20902,33444609B21789584343976,Sapahaqui,815.76
+BO-04-13-05,municipality,Yaco,BO-04-13,BO,BO-04,BO-04-13,BO-04-13-05,BOL.4.13.5_2,020903,138,20903,33444609B16260246494278,Yaco,595.53
+BO-04-14-01,municipality,Batallas,BO-04-14,BO,BO-04,BO-04-14,BO-04-14-01,BOL.4.14.1_2,021203,242,21203,33444609B53168005042481,Batallas,791.87
+BO-04-14-03,municipality,Laja,BO-04-14,BO,BO-04,BO-04-14,BO-04-14-03,BOL.4.14.3_2,021202,156,21202,33444609B94572476227725,Laja,690.6
+BO-04-14-04,municipality,Pucarani,BO-04-14,BO,BO-04,BO-04-14,BO-04-14-04,BOL.4.14.4_2,021201,167,21201,33444609B90026346100934,Pucarani,1257.08
+BO-04-14-05,municipality,Puerto Pérez,BO-04-14,BO,BO-04,BO-04-14,BO-04-14-05,BOL.4.14.5_2,021204,231,21204,33444609B94716916323106,PuertoPérez,65.5
+BO-04-15-01,municipality,Copacabana,BO-04-15,BO,BO-04,BO-04-15,BO-04-15-01,BOL.4.15.1_2,021701,185,21701,33444609B11745829350788,Copacabana,177.6
+BO-04-15-03,municipality,San Pedro de Tiquina,BO-04-15,BO,BO-04,BO-04-15,BO-04-15-03,BOL.4.15.3_2,021702,196,21702,33444609B84631070029018,SanPedrodeTiquina,62.19
+BO-04-15-04,municipality,Tito Yupanqui,BO-04-15,BO,BO-04,BO-04-15,BO-04-15-04,BOL.4.15.4_2,021703,166,21703,33444609B73200424953612,TitoYupanqui,12.9
+BO-04-16-01,municipality,Aucapata,BO-04-16,BO,BO-04,BO-04-16,BO-04-16-01,BOL.4.16.1_2,020503,172,20503,33444609B66752898484800,Aucapata,234.45
+BO-04-16-02,municipality,Ayata,BO-04-16,BO,BO-04,BO-04-16,BO-04-16-02,BOL.4.16.2_2,020502,305,20502,33444609B12360837751720,Ayata,748.7
+BO-04-16-03,municipality,Chuma,BO-04-16,BO,BO-04,BO-04-16,BO-04-16-03,BOL.4.16.3_2,020501,179,20501,33444609B56285140398817,Chuma,618.09
+BO-04-17-01,municipality,Achocalla,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-01,BOL.4.17.1_2,020104,159,20104,33444609B84266929032964,Achocalla,178.16
+BO-04-17-02,municipality,El Alto,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-02,BOL.4.17.2_2,020105,160,20105,33444609B20684770700645,ElAlto,348.05
+BO-04-17-03,municipality,Mecapaca,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-03,BOL.4.17.3_2,020103,157,20103,33444609B11725886202666,Mecapaca,523.66
+BO-04-17-04,municipality,La Paz,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-04,BOL.4.17.4_2,020101,176,20101,33444609B30054444947779,NuestraSeñoradeLaPaz,2042.28
+BO-04-17-05,municipality,Palca,BO-04-17,BO,BO-04,BO-04-17,BO-04-17-05,BOL.4.17.5_2,020102,158,20102,33444609B84379321397954,Palca,736.28
+BO-04-18-01,municipality,Coripata,BO-04-18,BO,BO-04,BO-04-18,BO-04-18-01,BOL.4.18.1_2,021402,170,21402,33444609B54017053342801,Coripata,692.72
+BO-04-18-02,municipality,Coroico,BO-04-18,BO,BO-04,BO-04-18,BO-04-18-02,BOL.4.18.2_2,021401,169,21401,33444609B88894082934764,Coroico,1091.79
+BO-04-19-01,municipality,Achacachi,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-01,BOL.4.19.1_2,020201,326,20201,33444609B34314580060082,Achacachi,746.77
+BO-04-19-02,municipality,Chua Cocani,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-02,BOL.4.19.2_2,020203,239,20203,33444609B63835408453765,ChuaCocani,81.22
+BO-04-19-03,municipality,Huarina,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-03,BOL.4.19.3_2,020204,237,20204,33444609B575530110852,Huarina,181.99
+BO-04-19-04,municipality,Huatajata,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-04,BOL.4.19.4_2,020206,155,20206,33444609B62639355704517,Huatajata,19.55
+BO-04-19-06,municipality,Santiago de Huata,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-06,BOL.4.19.6_2,020205,230,20205,33444609B37952475448846,SantiagodeHuata,93.35
+BO-04-19-07,municipality,Ancoraimes,BO-04-19,BO,BO-04,BO-04-19,BO-04-19-07,BOL.4.19.7_2,020202,41,20202,33444609B71472644827326,VillaAncoraimes,334.59
+BO-04-20-01,municipality,Calacoto,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-01,BOL.4.20.1_2,020303,139,20303,33444609B66948412737804,Calacoto,3904.6
+BO-04-20-02,municipality,Caquiaviri,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-02,BOL.4.20.2_2,020302,112,20302,33444609B96108355808325,Caquiaviri,1548.88
+BO-04-20-03,municipality,Charaña,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-03,BOL.4.20.3_2,020305,325,20305,33444609B48852820167974,Charaña,2926.62
+BO-04-20-04,municipality,Comanche,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-04,BOL.4.20.4_2,020304,150,20304,33444609B59929170096269,Comanche,450.18
+BO-04-20-05,municipality,Coro Coro,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-05,BOL.4.20.5_2,020301,25,20301,33444609B39944389415662,Corocoro,1101.98
+BO-04-20-06,municipality,Nazacara de Pacajes,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-06,BOL.4.20.6_2,020307,111,20307,33444609B33820079384156,NazacaradePacajes,18.43
+BO-04-20-07,municipality,Callapa,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-07,BOL.4.20.7_2,020308,134,20308,33444609B65388094899537,SantiagodeCallapa,1192.2
+BO-04-20-08,municipality,Waldo Ballivián,BO-04-20,BO,BO-04,BO-04-20,BO-04-20-08,BOL.4.20.8_2,020306,307,20306,33444609B35732252811684,WaldoBallivian,108.66
+BO-04-21-01,municipality,Chulumani,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-01,BOL.4.21.1_2,021101,62,21101,33444609B41146269338275,Chulumani,301.91
+BO-04-21-02,municipality,Irupana,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-02,BOL.4.21.2_2,021102,61,21102,33444609B15308160792726,Irupana,1358.97
+BO-04-21-03,municipality,La Asunta,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-03,BOL.4.21.3_2,021105,178,21105,33444609B14318271782280,LaAsunta,2832.02
+BO-04-21-04,municipality,Palos Blancos,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-04,BOL.4.21.4_2,021104,209,21104,33444609B22281579359136,PalosBlancos,3734.84
+BO-04-21-05,municipality,Yanacachi,BO-04-21,BO,BO-04,BO-04-21,BO-04-21-05,BOL.4.21.5_2,021103,161,21103,33444609B66803804688089,Yanacachi,580.29
+BO-05-01-01,municipality,Challapata,BO-05-01,BO,BO-05,BO-05-01,BO-05-01-01,BOL.5.1.1_2,040201,330,40201,33444609B60498158532372,Challapata,2597.18
+BO-05-01-02,municipality,Quillacas,BO-05-01,BO,BO-05,BO-05-01,BO-05-01-02,BOL.5.1.2_2,040202,1,40202,33444609B71951854464849,SantuariodeQuillacas,932.43
+BO-05-02-01,municipality,Choque Cota,BO-05-02,BO,BO-05,BO-05-02,BO-05-02-01,BOL.5.2.1_2,040302,309,40302,33444609B8170629951372,Choquecota,894.96
+BO-05-02-02,municipality,Corque,BO-05-02,BO,BO-05,BO-05-02,BO-05-02-02,BOL.5.2.2_2,040301,114,40301,33444609B62076889110000,Corque,3267.05
+BO-05-03-01,municipality,Caracollo,BO-05-03,BO,BO-05,BO-05-03,BO-05-03-01,BOL.5.3.1_2,040102,136,40102,33444609B66148831057410,Caracollo,2374.25
+BO-05-03-02,municipality,El Choro,BO-05-03,BO,BO-05,BO-05-03,BO-05-03-02,BOL.5.3.2_2,040103,126,40103,33444609B37704271756462,ElChoro,1044.59
+BO-05-03-03,municipality,Oruro,BO-05-03,BO,BO-05,BO-05-03,BO-05-03-03,BOL.5.3.3_2,040101,18,40101,33444609B77497164223755,Oruro,259.11
+BO-05-03-04,municipality,Pari-Paria-Soracachi,BO-05-03,BO,BO-05,BO-05-03,BO-05-03-04,BOL.5.3.4_2,040104,129,40104,33444609B5449087304618,Paria,1461.83
+BO-05-04-01,municipality,Pampa Aullagas,BO-05-04,BO,BO-05,BO-05-04,BO-05-04-01,BOL.5.4.1_2,040802,2,40802,33444609B88214983921346,PampaAullagas,1017.04
+BO-05-04-02,municipality,Salinas de Garci Mendoza,BO-05-04,BO,BO-05,BO-05-04,BO-05-04-02,BOL.5.4.2_2,040801,314,40801,33444609B29217167078616,SalinasdeGarcíMendoza,5619.34
+BO-05-05-01,municipality,Cruz de Machacamarca,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-01,BOL.5.5.1_2,040503,109,40503,33444609B94406013672696,CruzdeMachacamarca,529.83
+BO-05-05-02,municipality,Escara,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-02,BOL.5.5.2_2,040502,310,40502,33444609B36208978209072,Escara,1335.25
+BO-05-05-03,municipality,Esmeralda,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-03,BOL.5.5.3_2,040505,0,40505,33444609B57201856831117,Esmeralda,585.99
+BO-05-05-04,municipality,Huachacalla,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-04,BOL.5.5.4_2,040501,9,40501,33444609B83222231373504,Huachacalla,20.78
+BO-05-05-05,municipality,Yunguyo de Litoral,BO-05-05,BO,BO-05,BO-05-05,BO-05-05-05,BOL.5.5.5_2,040504,108,40504,33444609B56613812261920,YunguyodelLitoral,180.19
+BO-05-06-01,municipality,Carangas,BO-05-06,BO,BO-05,BO-05-06,BO-05-06-01,BOL.5.6.1_2,041503,107,41503,33444609B5074353558643,Carangas,227.68
+BO-05-06-02,municipality,La Rivera,BO-05-06,BO,BO-05,BO-05-06,BO-05-06-02,BOL.5.6.2_2,041501,71,41501,33444609B59221122553365,LaRivera,218.62
+BO-05-06-03,municipality,Todos Santos,BO-05-06,BO,BO-05,BO-05-06,BO-05-06-03,BOL.5.6.3_2,041502,67,41502,33444609B43594236077815,TodosSantos,218.71
+BO-05-07-01,municipality,Huayllamarca,BO-05-07,BO,BO-05,BO-05-07,BO-05-07-01,BOL.5.7.1_2,041601,19,41601,33444609B13066361877979,Huayllamarca,904.03
+BO-05-08-01,municipality,Huanuni,BO-05-08,BO,BO-05,BO-05-08,BO-05-08-01,BOL.5.8.1_2,040701,8,40701,33444609B29063164393645,Huanuni,567.36
+BO-05-08-02,municipality,Machacamarca,BO-05-08,BO,BO-05,BO-05-08,BO-05-08-02,BOL.5.8.2_2,040702,117,40702,33444609B87493590509816,Machacamarca,326.02
+BO-05-09-01,municipality,Antequera,BO-05-09,BO,BO-05,BO-05-09,BO-05-09-01,BOL.5.9.1_2,040603,110,40603,33444609B36196390956184,Antequera,279.63
+BO-05-09-02,municipality,Pazña,BO-05-09,BO,BO-05,BO-05-09,BO-05-09-02,BOL.5.9.2_2,040602,11,40602,33444609B14454066848756,Pazña,745.09
+BO-05-09-03,municipality,Poopó,BO-05-09,BO,BO-05,BO-05-09,BO-05-09-03,BOL.5.9.3_2,040601,63,40601,33444609B87346349783915,Poopó,690.21
+BO-05-10-01,municipality,Chipaya,BO-05-10,BO,BO-05,BO-05-10,BO-05-10-01,BOL.5.10.1_2,040903,312,40903,33444609B26446428041607,Chipaya,356.05
+BO-05-10-02,municipality,Coipasa,BO-05-10,BO,BO-05,BO-05-10,BO-05-10-02,BOL.5.10.2_2,040902,311,40902,33444609B72131316245790,Coipasa,203.86
+BO-05-10-03,municipality,Sabaya,BO-05-10,BO,BO-05,BO-05-10,BO-05-10-03,BOL.5.10.3_2,040901,44,40901,33444609B18113963457012,Sabaya,3609.78
+BO-05-11-01,municipality,Curahuara de Carangas,BO-05-11,BO,BO-05,BO-05-11,BO-05-11-01,BOL.5.11.1_2,040401,308,40401,33444609B46553389278346,CurahuaradeCarangas,2866.51
+BO-05-11-02,municipality,Turco,BO-05-11,BO,BO-05,BO-05-11,BO-05-11-02,BOL.5.11.2_2,040402,66,40402,33444609B646874487024,Turco,4722.69
+BO-05-12-01,municipality,San Pedro de Totora,BO-05-12,BO,BO-05,BO-05-12,BO-05-12-01,BOL.5.12.1_2,041301,64,41301,33444609B99158720513986,Totora,1379.83
+BO-05-13-01,municipality,Toledo,BO-05-13,BO,BO-05,BO-05-13,BO-05-13-01,BOL.5.13.1_2,041001,127,41001,33444609B1406724056762,Toledo,3055.27
+BO-05-14-01,municipality,Huari,BO-05-14,BO,BO-05,BO-05-14,BO-05-14-01,BOL.5.14.1_2,041401,10,41401,33444609B75340926517548,SantiagodeHuari,2403.0
+BO-05-15-01,municipality,Santiago de Andamarca,BO-05-15,BO,BO-05,BO-05-15,BO-05-15-01,BOL.5.15.1_2,041201,13,41201,33444609B27198701178343,Andamarca,2328.31
+BO-05-15-02,municipality,Belén de Andamarca,BO-05-15,BO,BO-05,BO-05-15,BO-05-15-02,BOL.5.15.2_2,041202,113,41202,33444609B44506121649653,BeléndeAndamarca,1069.31
+BO-05-16-01,municipality,Eucaliptus,BO-05-16,BO,BO-05,BO-05-16,BO-05-16-01,BOL.5.16.1_2,041101,133,41101,33444609B81900423194944,Eucaliptus,366.87
+BO-06-01-01,municipality,Ingavi,BO-06-01,BO,BO-06,BO-06-01,BO-06-01-01,BOL.6.1.1_2,090402,225,90402,33444609B42624034326490,Ingavi,5417.67
+BO-06-01-02,municipality,Santa Rosa,BO-06-01,BO,BO-06,BO-06-01,BO-06-01-02,BOL.6.1.2_2,090401,224,90401,33444609B81701949602189,SantaRosa,4405.21
+BO-06-02-01,municipality,Nueva Esperanza,BO-06-02,BO,BO-06,BO-06-02,BO-06-02-01,BOL.6.2.1_2,090501,229,90501,33444609B5715084615270,NuevaEsperanza,3646.82
+BO-06-02-02,municipality,Santos Mercado,BO-06-02,BO,BO-06,BO-06-02,BO-06-02-02,BOL.6.2.2_2,090503,228,90503,33444609B60217288598766,SantosMercado,6609.05
+BO-06-02-03,municipality,Villa Nueva-Loma Alta,BO-06-02,BO,BO-06,BO-06-02,BO-06-02-03,BOL.6.2.3_2,090502,227,90502,33444609B73714991892627,VillaNueva,2820.52
+BO-06-03-01,municipality,Puerto Gonzalo Moreno,BO-06-03,BO,BO-06,BO-06-03,BO-06-03-01,BOL.6.3.1_2,090301,216,90301,33444609B93982227860972,PuertoGonzaloMoreno,1268.15
+BO-06-03-02,municipality,San Lorenzo,BO-06-03,BO,BO-06,BO-06-03,BO-06-03-02,BOL.6.3.2_2,090302,147,90302,33444609B99016642424530,SanLorenzo,3161.54
+BO-06-03-03,municipality,El Sena,BO-06-03,BO,BO-06,BO-06-03,BO-06-03-03,BOL.6.3.3_2,090303,146,90303,33444609B57445770143414,Sena,7548.62
+BO-06-04-01,municipality,Filadelfia,BO-06-04,BO,BO-06,BO-06-04,BO-06-04-01,BOL.6.4.1_2,090203,234,90203,33444609B10245751683769,Filadelfia,11758.95
+BO-06-04-02,municipality,Puerto Rico,BO-06-04,BO,BO-06,BO-06-04,BO-06-04-02,BOL.6.4.2_2,090201,223,90201,33444609B43735839399611,PuertoRico,5252.12
+BO-06-04-03,municipality,San Pedro,BO-06-04,BO,BO-06,BO-06-04,BO-06-04-03,BOL.6.4.3_2,090202,222,90202,33444609B7381778480362,SanPedro,2635.38
+BO-06-05-01,municipality,Bella Flor,BO-06-05,BO,BO-06,BO-06-05,BO-06-05-01,BOL.6.5.1_2,090104,221,90104,33444609B28212867948173,BellaFlor,5223.21
+BO-06-05-02,municipality,Bolpebra,BO-06-05,BO,BO-06,BO-06-05,BO-06-05-02,BOL.6.5.2_2,090103,233,90103,33444609B86203932538370,Bolpebra,2476.88
+BO-06-05-03,municipality,Cobija,BO-06-05,BO,BO-06,BO-06-05,BO-06-05-03,BOL.6.5.3_2,090101,132,90101,33444609B7849397274919,Cobija,449.56
+BO-06-05-04,municipality,Porvenir,BO-06-05,BO,BO-06,BO-06-05,BO-06-05-04,BOL.6.5.4_2,090102,220,90102,33444609B59962567250824,Porvenir,1074.02
+BO-07-01-01,municipality,Caripuyo,BO-07-01,BO,BO-07,BO-07-01,BO-07-01-01,BOL.7.1.1_2,050702,4,50702,33444609B42617908308497,Caripuyo,521.59
+BO-07-01-02,municipality,Villa de Sacaca,BO-07-01,BO,BO-07,BO-07-01,BO-07-01-02,BOL.7.1.2_2,050701,6,50701,33444609B71602422836649,Sacaca,915.38
+BO-07-02-01,municipality,Porco,BO-07-02,BO,BO-07,BO-07-02,BO-07-02-01,BOL.7.2.1_2,051203,47,51203,33444609B79044682111122,Porco,1088.24
+BO-07-02-02,municipality,Tomave,BO-07-02,BO,BO-07,BO-07-02,BO-07-02-02,BOL.7.2.2_2,051202,46,51202,33444609B7463816187412,Tomave,8155.24
+BO-07-02-03,municipality,Uyuni,BO-07-02,BO,BO-07,BO-07-02,BO-07-02-03,BOL.7.2.3_2,051201,306,51201,33444609B90570289336522,Uyuni,7640.75
+BO-07-03-01,municipality,San Pedro de Buena Vista,BO-07-03,BO,BO-07,BO-07-03,BO-07-03-01,BOL.7.3.1_2,050501,40,50501,33444609B86371599265633,SanPedro,2213.27
+BO-07-03-02,municipality,Toro Toro,BO-07-03,BO,BO-07,BO-07-03,BO-07-03-02,BOL.7.3.2_2,050502,99,50502,33444609B29168680242230,ToroToro,1181.61
+BO-07-04-01,municipality,Colquechaca,BO-07-04,BO,BO-07,BO-07-04,BO-07-04-01,BOL.7.4.1_2,050401,76,50401,33444609B76433710749582,Colquechaca,1743.77
+BO-07-04-02,municipality,Ocurí,BO-07-04,BO,BO-07,BO-07-04,BO-07-04-02,BOL.7.4.2_2,050404,204,50404,33444609B87397305819800,Ocurí,863.16
+BO-07-04-03,municipality,Pocoata,BO-07-04,BO,BO-07,BO-07-04,BO-07-04-03,BOL.7.4.3_2,050403,77,50403,33444609B11272039894845,Pocoata,1191.08
+BO-07-04-04,municipality,Ravelo,BO-07-04,BO,BO-07,BO-07-04,BO-07-04-04,BOL.7.4.4_2,050402,332,50402,33444609B82418500440763,Ravelo,1354.97
+BO-07-05-01,municipality,Betanzos,BO-07-05,BO,BO-07,BO-07-05,BO-07-05-01,BOL.7.5.1_2,050301,65,50301,33444609B68393515819561,Betanzos,1875.64
+BO-07-05-02,municipality,Chaquí,BO-07-05,BO,BO-07,BO-07-05,BO-07-05-02,BOL.7.5.2_2,050302,187,50302,33444609B64224527105675,Chaquí,466.87
+BO-07-05-03,municipality,Tacobamba,BO-07-05,BO,BO-07,BO-07-05,BO-07-05-03,BOL.7.5.3_2,050303,329,50303,33444609B41080864179622,Tacobamba,893.02
+BO-07-06-01,municipality,Llica,BO-07-06,BO,BO-07,BO-07-06,BO-07-06-01,BOL.7.6.1_2,051401,78,51401,33444609B52785153687716,Llica,5701.21
+BO-07-06-02,municipality,Tahua,BO-07-06,BO,BO-07,BO-07-06,BO-07-06-02,BOL.7.6.2_2,051402,102,51402,33444609B32481854194408,Tahua,1304.0
+BO-07-07-01,municipality,San Agustín,BO-07-07,BO,BO-07,BO-07-07,BO-07-07-01,BOL.7.7.1_2,051601,100,51601,33444609B18422043164051,SanAgustín,2345.06
+BO-07-08-01,municipality,Acasio,BO-07-08,BO,BO-07,BO-07-08,BO-07-08-01,BOL.7.8.1_2,051302,7,51302,33444609B4735104256984,Acasio,375.47
+BO-07-08-02,municipality,Arampampa,BO-07-08,BO,BO-07,BO-07-08,BO-07-08-02,BOL.7.8.2_2,051301,118,51301,33444609B40887506200330,Arampampa,386.4
+BO-07-09-01,municipality,"Caiza ""D""",BO-07-09,BO,BO-07,BO-07-09,BO-07-09-01,BOL.7.9.1_2,051102,184,51102,33444609B28027714511600,"Caiza""D""",1319.39
+BO-07-09-02,municipality,Ckochas,BO-07-09,BO,BO-07,BO-07-09,BO-07-09-02,BOL.7.9.2_2,051103,189,51103,33444609B42204155189224,Ckochas,2088.77
+BO-07-09-03,municipality,Puna,BO-07-09,BO,BO-07,BO-07-09,BO-07-09-03,BOL.7.9.3_2,051101,188,51101,33444609B48342123516815,Puna,1478.17
+BO-07-10-01,municipality,Villazón,BO-07-10,BO,BO-07,BO-07-10,BO-07-10-01,BOL.7.10.1_2,051501,337,51501,33444609B99991540254109,Villazón,2496.75
+BO-07-11-01,municipality,Cotagaita,BO-07-11,BO,BO-07,BO-07-11,BO-07-11-01,BOL.7.11.1_2,050601,335,50601,33444609B16805384083212,Cotagaita,6476.9
+BO-07-11-02,municipality,Vitichi,BO-07-11,BO,BO-07,BO-07-11,BO-07-11-02,BOL.7.11.2_2,050602,115,50602,33444609B96814563613923,Vitiche,1617.53
+BO-07-12-01,municipality,"Colcha ""K""",BO-07-12,BO,BO-07,BO-07-12,BO-07-12-01,BOL.7.12.1_2,050901,42,50901,33444609B22431638786486,"Colcha""K""",18203.73
+BO-07-12-02,municipality,San Pedro de Quemes,BO-07-12,BO,BO-07,BO-07-12,BO-07-12-02,BOL.7.12.2_2,050902,317,50902,33444609B95564977085297,SanPedrodeQuemes,4355.16
+BO-07-13-01,municipality,Chayanta,BO-07-13,BO,BO-07,BO-07-13,BO-07-13-01,BOL.7.13.1_2,050202,313,50202,33444609B79163463361084,Chayanta,631.91
+BO-07-13-02,municipality,Chuquihuta,BO-07-13,BO,BO-07,BO-07-13,BO-07-13-02,BOL.7.13.2_2,050204,232,50204,33444609B69303205756490,ChuquihutaAylluJucumani,262.27
+BO-07-13-03,municipality,Llallagua,BO-07-13,BO,BO-07,BO-07-13,BO-07-13-03,BOL.7.13.3_2,050203,3,50203,33444609B34172686843624,Llallagua,527.79
+BO-07-13-04,municipality,Uncía,BO-07-13,BO,BO-07,BO-07-13,BO-07-13-04,BOL.7.13.4_2,050201,331,50201,33444609B22107510404073,Uncía,697.59
+BO-07-14-01,municipality,Atocha,BO-07-14,BO,BO-07,BO-07-14,BO-07-14-01,BOL.7.14.1_2,050802,316,50802,33444609B71720460351131,Atocha,2329.7
+BO-07-14-02,municipality,Tupiza,BO-07-14,BO,BO-07,BO-07-14,BO-07-14-02,BOL.7.14.2_2,050801,315,50801,33444609B61633911846553,Tupiza,6164.31
+BO-07-15-01,municipality,Mojinete,BO-07-15,BO,BO-07,BO-07-15,BO-07-15-01,BOL.7.15.1_2,051002,93,51002,33444609B25099809335217,Mojinete,399.88
+BO-07-15-02,municipality,San Antonio de Esmoruco,BO-07-15,BO,BO-07,BO-07-15,BO-07-15-02,BOL.7.15.2_2,051003,91,51003,33444609B71196125248498,SanAntoniodeEsmoruco,2523.58
+BO-07-15-03,municipality,San Pablo de Lípez,BO-07-15,BO,BO-07,BO-07-15,BO-07-15-03,BOL.7.15.3_2,051001,103,51001,33444609B32441545677292,SanPablo,13261.3
+BO-07-16-01,municipality,Potosí,BO-07-16,BO,BO-07,BO-07-16,BO-07-16-01,BOL.7.16.1_2,050101,195,50101,33444609B36797056246117,Potosí,1195.94
+BO-07-16-02,municipality,Tinguipaya,BO-07-16,BO,BO-07,BO-07-16,BO-07-16-02,BOL.7.16.2_2,050102,39,50102,33444609B11350853706888,Tinguipaya,1429.46
+BO-07-16-03,municipality,Urmiri,BO-07-16,BO,BO-07,BO-07-16,BO-07-16-03,BOL.7.16.3_2,050104,50,50104,33444609B33584659743544,Urmiri,1246.19
+BO-07-16-04,municipality,Yocalla,BO-07-16,BO,BO-07,BO-07-16,BO-07-16-04,BOL.7.16.4_2,050103,49,50103,33444609B69122991895984,Yocalla,901.49
+BO-08-01-01,municipality,Cotoca,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-01,BOL.8.1.1_2,070102,260,70102,33444609B11345399563766,Cotoca,621.15
+BO-08-01-02,municipality,El Torno,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-02,BOL.8.1.2_2,070105,33,70105,33444609B31411493851761,ElTorno,970.11
+BO-08-01-03,municipality,La Guardia,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-03,BOL.8.1.3_2,070104,31,70104,33444609B85604814998629,LaGuardia,977.95
+BO-08-01-04,municipality,Porongo,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-04,BOL.8.1.4_2,070103,54,70103,33444609B85928377360947,Porongo,940.05
+BO-08-01-05,municipality,Santa Cruz de la Sierra,BO-08-01,BO,BO-08,BO-08-01,BO-08-01-05,BOL.8.1.5_2,070101,55,70101,33444609B74930780338369,SantaCruzdelaSierra,1299.79
+BO-08-02-01,municipality,San Matías,BO-08-02,BO,BO-08,BO-08-02,BO-08-02-01,BOL.8.2.1_2,071201,288,71201,33444609B56918274933766,SanMatías,27117.14
+BO-08-03-01,municipality,Pailón,BO-08-03,BO,BO-08,BO-08-03,BO-08-03-01,BOL.8.3.1_2,070502,278,70502,33444609B16289966834176,Pailón,13768.9
+BO-08-03-02,municipality,Roboré,BO-08-03,BO,BO-08,BO-08-03,BO-08-03-02,BOL.8.3.2_2,070503,287,70503,33444609B71274633078064,Roboré,7194.94
+BO-08-03-03,municipality,San José de Chiquitos,BO-08-03,BO,BO-08,BO-08-03,BO-08-03-03,BOL.8.3.3_2,070501,290,70501,33444609B52631082521155,SanJosé,19100.45
+BO-08-04-01,municipality,Boyuibe,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-01,BOL.8.4.1_2,070707,248,70707,33444609B14253065035844,Boyuibe,1623.78
+BO-08-04-02,municipality,Cabezas,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-02,BOL.8.4.2_2,070703,259,70703,33444609B33134353779622,Cabezas,5019.5
+BO-08-04-03,municipality,Camiri,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-03,BOL.8.4.3_2,070706,250,70706,33444609B54145753271339,Camiri,1006.89
+BO-08-04-04,municipality,Charagua,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-04,BOL.8.4.4_2,070702,289,70702,33444609B77130469432244,Charagua,70947.4
+BO-08-04-05,municipality,Cuevo,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-05,BOL.8.4.5_2,070704,249,70704,33444609B18663584408757,Cuevo,886.36
+BO-08-04-06,municipality,Gutiérrez,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-06,BOL.8.4.6_2,070705,253,70705,33444609B67414278842190,Gutiérrez,2870.48
+BO-08-04-07,municipality,Lagunillas,BO-08-04,BO,BO-08,BO-08-04,BO-08-04-07,BOL.8.4.7_2,070701,197,70701,33444609B81031201486612,Lagunillas,1109.48
+BO-08-05-01,municipality,Mairana,BO-08-05,BO,BO-08,BO-08-05,BO-08-05-01,BOL.8.5.1_2,070903,282,70903,33444609B74474526316324,Mairana,743.93
+BO-08-05-02,municipality,Pampa Grande,BO-08-05,BO,BO-08,BO-08-05,BO-08-05-02,BOL.8.5.2_2,070902,281,70902,33444609B79262560384094,PampaGrande,1007.13
+BO-08-05-03,municipality,Quirusillas,BO-08-05,BO,BO-08,BO-08-05,BO-08-05-03,BOL.8.5.3_2,070904,258,70904,33444609B47690123540318,Quirusillas,287.26
+BO-08-05-04,municipality,Samaipata,BO-08-05,BO,BO-08,BO-08-05,BO-08-05-04,BOL.8.5.4_2,070901,34,70901,33444609B8613227717055,Samaipata,1926.23
+BO-08-06-01,municipality,Carmen Rivero Tórrez,BO-08-06,BO,BO-08,BO-08-06,BO-08-06-01,BOL.8.6.1_2,071403,286,71403,33444609B27645116377416,ElCarmenRiveroTórrez,10685.06
+BO-08-06-02,municipality,Puerto Quijarro,BO-08-06,BO,BO-08,BO-08-06,BO-08-06-02,BOL.8.6.2_2,071402,22,71402,33444609B84006512105817,PuertoQuijarro,1438.92
+BO-08-06-03,municipality,Puerto Suárez,BO-08-06,BO,BO-08,BO-08-06,BO-08-06-03,BOL.8.6.3_2,071401,285,71401,33444609B88491920297327,PuertoSuarez,13409.19
+BO-08-07-01,municipality,Ascensión de Guarayos,BO-08-07,BO,BO-08,BO-08-07,BO-08-07-01,BOL.8.7.1_2,071501,271,71501,33444609B37424012603652,AscencióndeGuarayos,9038.27
+BO-08-07-02,municipality,El Puente,BO-08-07,BO,BO-08,BO-08-07,BO-08-07-02,BOL.8.7.2_2,071503,319,71503,33444609B89155420291798,ElPuente,7943.99
+BO-08-07-03,municipality,Urubichá,BO-08-07,BO,BO-08,BO-08-07,BO-08-07-03,BOL.8.7.3_2,071502,294,71502,33444609B82577999245543,Urubicha,16336.48
+BO-08-08-01,municipality,Buena Vista,BO-08-08,BO,BO-08,BO-08-08,BO-08-08-01,BOL.8.8.1_2,070401,87,70401,33444609B45243819568304,BuenaVista,2731.11
+BO-08-08-02,municipality,San Carlos,BO-08-08,BO,BO-08,BO-08-08,BO-08-08-02,BOL.8.8.2_2,070402,88,70402,33444609B55195122244338,SanCarlos,1217.17
+BO-08-08-03,municipality,San Juan de Yapacaní,BO-08-08,BO,BO-08,BO-08-08,BO-08-08-03,BOL.8.8.3_2,070404,38,70404,33444609B22163740198957,SanJuan,1586.47
+BO-08-08-04,municipality,Yapacaní,BO-08-08,BO,BO-08,BO-08-08,BO-08-08-04,BOL.8.8.4_2,070403,261,70403,33444609B10362086076024,Yapacaní,9618.1
+BO-08-09-01,municipality,Comarapa,BO-08-09,BO,BO-08,BO-08-09,BO-08-09-01,BOL.8.9.1_2,071301,320,71301,33444609B75127969809861,Comarapa,3318.28
+BO-08-09-02,municipality,Saipina,BO-08-09,BO,BO-08,BO-08-09,BO-08-09-02,BOL.8.9.2_2,071302,52,71302,33444609B63925853061271,Saipina,450.04
+BO-08-10-01,municipality,Concepción,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-01,BOL.8.10.1_2,071101,68,71101,33444609B98126850967385,Concepción,29144.97
+BO-08-10-02,municipality,Cuatro Cañadas,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-02,BOL.8.10.2_2,071106,262,71106,33444609B17485546516015,CuatroCañadas,4459.1
+BO-08-10-03,municipality,San Antonio de Lomerío,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-03,BOL.8.10.3_2,071105,297,71105,33444609B3199887143734,SanAntoniodeLomerio,2387.5
+BO-08-10-04,municipality,San Javier,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-04,BOL.8.10.4_2,071102,264,71102,33444609B54848470540593,SanJavier,2273.21
+BO-08-10-05,municipality,San Julián,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-05,BOL.8.10.5_2,071104,318,71104,33444609B76659460952427,SanJulián,5060.07
+BO-08-10-06,municipality,San Ramón,BO-08-10,BO,BO-08,BO-08-10,BO-08-10-06,BOL.8.10.6_2,071103,263,71103,33444609B19548266592982,SanRamón,504.06
+BO-08-11-01,municipality,Fernández Alonso,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-01,BOL.8.11.1_2,071004,279,71004,33444609B55193180916172,FernándezAlonso,764.7
+BO-08-11-02,municipality,Gral. Saavedra,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-02,BOL.8.11.2_2,071002,277,71002,33444609B63759358254008,GeneralSaavedra,535.02
+BO-08-11-03,municipality,Mineros,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-03,BOL.8.11.3_2,071003,280,71003,33444609B30579367598125,Mineros,427.21
+BO-08-11-04,municipality,Montero,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-04,BOL.8.11.4_2,071001,270,71001,33444609B54288948385106,Montero,246.82
+BO-08-11-05,municipality,San Pedro,BO-08-11,BO,BO-08,BO-08-11,BO-08-11-05,BOL.8.11.5_2,071005,58,71005,33444609B97070790179336,SanPedro,3076.08
+BO-08-12-01,municipality,Colpa Belgica,BO-08-12,BO,BO-08,BO-08-12,BO-08-12-01,BOL.8.12.1_2,070603,284,70603,33444609B32686236713383,ColpaBélgica,291.85
+BO-08-12-02,municipality,Portachuelo,BO-08-12,BO,BO-08,BO-08-12,BO-08-12-02,BOL.8.12.2_2,070601,90,70601,33444609B35916892778618,Portachuelo,1109.93
+BO-08-12-03,municipality,Santa Rosa del Sara,BO-08-12,BO,BO-08,BO-08-12,BO-08-12-03,BOL.8.12.3_2,070602,69,70602,33444609B96933565771979,SantaRosa,4093.56
+BO-08-13-01,municipality,Moro Moro,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-01,BOL.8.13.1_2,070803,32,70803,33444609B83192257115411,Moromoro,680.5
+BO-08-13-02,municipality,Postrer Valle,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-02,BOL.8.13.2_2,070804,256,70804,33444609B36728674976540,Postrervalle,1117.72
+BO-08-13-03,municipality,Pucará,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-03,BOL.8.13.3_2,070805,245,70805,33444609B78492876188788,Pucará,683.51
+BO-08-13-04,municipality,Trigal,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-04,BOL.8.13.4_2,070802,257,70802,33444609B45030994488644,Trigal,400.48
+BO-08-13-05,municipality,Vallegrande,BO-08-13,BO,BO-08,BO-08-13,BO-08-13-05,BOL.8.13.5_2,070801,252,70801,33444609B44211930978587,Vallegrande,3218.22
+BO-08-14-01,municipality,San Ignacio de Velasco,BO-08-14,BO,BO-08,BO-08-14,BO-08-14-01,BOL.8.14.1_2,070301,293,70301,33444609B47526027263545,SanIgnacio,49394.36
+BO-08-14-02,municipality,San Miguel de Velasco,BO-08-14,BO,BO-08,BO-08-14,BO-08-14-02,BOL.8.14.2_2,070302,265,70302,33444609B38940526070954,SanMiguel,9616.86
+BO-08-14-03,municipality,San Rafael,BO-08-14,BO,BO-08,BO-08-14,BO-08-14-03,BOL.8.14.3_2,070303,291,70303,33444609B3963156860596,SanRafael,9715.83
+BO-08-15-01,municipality,Okinawa Uno,BO-08-15,BO,BO-08,BO-08-15,BO-08-15-01,BOL.8.15.1_2,070202,275,70202,33444609B34196646796591,OkinawaUno,1033.6
+BO-08-15-02,municipality,Warnes,BO-08-15,BO,BO-08,BO-08-15,BO-08-15-02,BOL.8.15.2_2,070201,276,70201,33444609B87953905630236,Warnes,1342.65
+BO-09-01-01,municipality,Bermejo,BO-09-01,BO,BO-09,BO-09-01,BO-09-01-01,BOL.9.1.1_2,060202,321,60202,33444609B62055803609078,Bermejo,390.13
+BO-09-01-02,municipality,Padcaya,BO-09-01,BO,BO-09,BO-09-01,BO-09-01-02,BOL.9.1.2_2,060201,338,60201,33444609B37432500831930,Padcaya,4448.52
+BO-09-02-01,municipality,Uriondo,BO-09-02,BO,BO-09,BO-09-02,BO-09-02-01,BOL.9.2.1_2,060401,92,60401,33444609B91325519005657,Uriondo,825.69
+BO-09-02-02,municipality,Yunchará,BO-09-02,BO,BO-09,BO-09-02,BO-09-02-02,BOL.9.2.2_2,060402,95,60402,33444609B25815189417469,Yunchará,1846.68
+BO-09-03-01,municipality,Tarija,BO-09-03,BO,BO-09,BO-09-03,BO-09-03-01,BOL.9.3.1_2,060101,101,60101,33444609B44539291803591,Tarija,2064.21
+BO-09-04-01,municipality,Caraparí,BO-09-04,BO,BO-09,BO-09-04,BO-09-04-01,BOL.9.4.1_2,060302,96,60302,33444609B34906930858660,Caraparí,2929.36
+BO-09-04-02,municipality,Villamontes,BO-09-04,BO,BO-09,BO-09-04,BO-09-04-02,BOL.9.4.2_2,060303,48,60303,33444609B44077689145094,VillaMontes,10840.15
+BO-09-04-03,municipality,Yacuiba,BO-09-04,BO,BO-09,BO-09-04,BO-09-04-03,BOL.9.4.3_2,060301,94,60301,33444609B93730371424229,Yacuiba,3925.15
+BO-09-05-01,municipality,El Puente,BO-09-05,BO,BO-09,BO-09-05,BO-09-05-01,BOL.9.5.1_2,060502,98,60502,33444609B49061859676910,ElPuente,2064.05
+BO-09-05-02,municipality,Villa San Lorenzo,BO-09-05,BO,BO-09,BO-09-05,BO-09-05-02,BOL.9.5.2_2,060501,97,60501,33444609B28508666034993,SanLorenzo,1978.45
+BO-09-06-01,municipality,Entre Ríos,BO-09-06,BO,BO-09,BO-09-06,BO-09-06-01,BOL.9.6.1_2,060601,72,60601,33444609B84965714784201,EntreRíos,5945.24

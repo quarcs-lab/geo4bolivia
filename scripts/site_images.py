@@ -1,12 +1,11 @@
 """Render the website's images from the data and from Sentinel-2 cloudless.
 
-    uv run python scripts/site_images.py [all | hero | bands | outline | emblem | og | cards | pillars]
+    uv run python scripts/site_images.py [all | hero | bands | emblem | og | cards | pillars]
 
 - hero, bands: Sentinel-2 cloudless by EOX IT Services GmbH, read as WGS84 WMTS tiles and cached
   in the system temp folder: the 2016 mosaic (CC BY 4.0), except the Laguna Verde band from the
   2024 mosaic (CC BY-NC-SA 4.0). `hero` prints the patch settings to paste into site/src/app.jsx
   (BOLIVIA_PATCH, HERO_CITIES): a level-11 patch around each city and a level-13 close-up of its centre.
-- outline: geo/boundaries/country_outline_web.geojson, a light outline for the globe.
 - emblem: images/logo/emblem-*.png, the GDO-Bolivia emblem: the nine departments shaded by
   multidimensional poverty inside a satellite's orbit, on a lagoon tile (icons) or transparent
   (emblem-dark-192.png, for the dark site header).
@@ -220,16 +219,6 @@ def slug(text: str) -> str:
 
 # --- outline, emblem, social preview --------------------------------------------------------
 
-def outline() -> None:
-    import geopandas as gpd
-    print("outline")
-    g = gpd.GeoDataFrame({"name": ["Bolivia"]}, geometry=[country().simplify(0.01)], crs="EPSG:4326")
-    out = ROOT / "geo/boundaries/country_outline_web.geojson"
-    out.unlink(missing_ok=True)
-    g.to_file(out, driver="GeoJSON", COORDINATE_PRECISION=4)
-    print(f"  wrote {out.relative_to(ROOT)}  {out.stat().st_size / 1e3:.0f} kB")
-
-
 def fit_px(geoms, box: tuple[float, float, float, float]):
     """Pixel rings of (multi)polygons, fitted together in box = (x0, y0, x1, y1) at Bolivia's latitude."""
     k = math.cos(math.radians(16.5))
@@ -280,6 +269,9 @@ def compose_emblem(size: int, tile: bool) -> Image.Image:
     canvas.alpha_composite(back)
 
     deps = geo.boundaries("department")
+    # a logo reads better solid: fill the salt flats and lakes that lie outside every unit
+    from shapely.geometry import MultiPolygon, Polygon
+    deps["geometry"] = [MultiPolygon([Polygon(p.exterior) for p in getattr(g, "geoms", [g])]) for g in deps.geometry]
     mpi = geo.aggregate(geo.load("sdg", variables="sdg1_2_mpi", years=2012), to="department",
                         rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop", years=2012))
     deps = deps.merge(mpi[["geo_id", "sdg1_2_mpi"]], on="geo_id")
@@ -842,7 +834,7 @@ def pillars() -> None:
     save_fig(fig, IMG / "pillar-insights.webp", size=(1200, 800))
 
 
-STEPS = {"hero": hero, "bands": bands, "outline": outline, "emblem": emblem, "og": og, "cards": cards, "pillars": pillars}
+STEPS = {"hero": hero, "bands": bands, "emblem": emblem, "og": og, "cards": cards, "pillars": pillars}
 
 if __name__ == "__main__":
     targets = sys.argv[1:] or ["all"]

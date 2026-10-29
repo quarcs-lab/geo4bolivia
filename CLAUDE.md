@@ -61,12 +61,12 @@ CONTRIBUTING_DATA.md, and register it on the website."
   | `aggregate.py` | generic | `aggregate`, `overlay`, `overlay_weights` |
   | `validate.py` | generic | the validator |
   | `cli.py` | generic | the command line |
-  | `build/common.py`, `build/gadm.py` | generic | writing data, docs and `geo/`; geography from any GADM file |
+  | `build/common.py`, `build/gadm.py`, `build/geoboundaries.py` | generic | writing data, docs and `geo/`; geo IDs and units from GADM codes (`gadm_units`, `from_gadm`); boundaries from geoBoundaries keyed by geo ID (`from_geoboundaries`) |
   | `build/geo.py`, `build/{pop,ntl,sdg,emb}.py` | Bolivia-specific | the builders |
   | `build/_template.py`, `build/_geo_template.py` | templates | starting points for new builders |
 
 - **`tests/test_core.py`**: generic tests, driven by the registry and metadata. **`tests/test_project.py`**: Bolivia facts.
-- **`scripts/web_boundaries.py`**: matches geoBoundaries ADM3/ADM1 (public domain, pinned in `raw/boundaries/geoboundaries/*.meta.json`, downloaded on demand) one-to-one to the `geo_id`s by overlap and writes the simplified `site/data/*.geojson`. **`scripts/match_municipalities.py`**: one-off matching of GADM municipalities to DS4Bolivia (`raw/lookups/municipalities339_gadm.csv`). **`scripts/indicator_map.py`** (generic): the indicator pages' headline maps and cards, three Fisher–Jenks classes on the `site/data/` boundaries over Esri's keyless World Dark Gray Canvas (settings in `project.yaml` `site:`, which also holds the five-class `ramp` of the interactive maps). **`scripts/site_images.py`**: renders the website's other images. **`scripts/new_project.py`** + `scripts/template/*.tpl`: the template generator.
+- **`scripts/match_geoboundaries.py`**: one-off matching of geoBoundaries ADM3 polygons to the `geo_id`s by area overlap, with nesting checked against ADM1 (`raw/lookups/municipalities339_geoboundaries.csv`). **`scripts/web_boundaries.py`**: simplifies `geo/boundaries/` for the website (`site/data/*.geojson`). **`scripts/match_municipalities.py`**: one-off matching of the GADM municipality codes to DS4Bolivia (`raw/lookups/municipalities339_gadm.csv`; rerunning it needs the GADM file, no longer in the repo). **`scripts/indicator_map.py`** (generic): the indicator pages' headline maps and cards, three Fisher–Jenks classes on the `site/data/` boundaries over Esri's keyless World Dark Gray Canvas (settings in `project.yaml` `site:`, which also holds the five-class `ramp` of the interactive maps). **`scripts/site_images.py`**: renders the website's other images. **`scripts/new_project.py`** + `scripts/template/*.tpl`: the template generator.
 - **`notebooks/`**: Colab notebooks paired with MyST `.md` files through jupytext.
   - `geo4bolivia_quickstart`: load, link and build indicators.
   - `eda`, `esda`, `esda_dependence`, `esda_inequality`, `esda_heterogeneity`, `eda_esda`: ported from DS4Bolivia, on multidimensional poverty (`sdg1_2_mpi`, 2012) and night-time lights.
@@ -75,7 +75,7 @@ CONTRIBUTING_DATA.md, and register it on the website."
 - **`code/`**: pointers to data-preparation code.
 - **`media/`**, **`images/`**: site assets.
 - **`.claude/skills/create-indicator-website/`**: the skill that turns a dataset and its information into an indicator page (generic; port it with the template).
-- **Licenses**: code MIT (`LICENSE`), data CC BY 4.0 (`LICENSE-DATA`), except the GADM-derived `geo/boundaries/` (GADM: non-commercial, no redistribution without permission; a rebuild on geoBoundaries is planned) and where a source requires otherwise. Every map on the website (interactive, headline maps, globe outline) draws geoBoundaries' public-domain polygons from `site/data/`, credited as "geoBoundaries (GeoBolivia, public domain)". The SDG Atlas states no open license and is used with SDSN Bolivia's permission.
+- **Licenses**: code MIT (`LICENSE`), data CC BY 4.0 (`LICENSE-DATA`), except where a source requires otherwise. Every boundary (`geo/boundaries/`, `site/data/`, every map) is geoBoundaries' public-domain polygons from GeoBolivia, credited as "geoBoundaries (GeoBolivia, public domain)". No GADM geometry is in the repository since version 0.2; GADM's codes and names stay as source keys (`gid`, `name_gadm`). The SDG Atlas states no open license and is used with SDSN Bolivia's permission.
 - `geo4cambodia/` and `ds4bolivia/` at the root, if present, are local reference clones. They are ignored by git and pytest; never edit or commit them.
 
 ## Environment setup (uv)
@@ -92,7 +92,7 @@ uv add <package>                           # add a dependency (commit uv.lock)
 npm ci --prefix site                       # website build tools (once)
 npm run --prefix site preview              # build with base / and serve at http://localhost:8765/
 npm run --prefix site build                # build _site/ for the Pages URL (CI adds --full)
-uv run python scripts/web_boundaries.py    # regenerate the maps' boundaries (site/data/)
+uv run python scripts/web_boundaries.py    # regenerate the website's boundaries (site/data/) from geo/boundaries/
 ```
 
 - Always use `uv run` for Python and Jupyter.
@@ -105,21 +105,21 @@ uv run python scripts/web_boundaries.py    # regenerate the maps' boundaries (si
 
 ## Spatial scales and geo IDs
 
-Every unit has one **geo ID** (`geo_id`). Administrative IDs follow the GADM 4.1 hierarchy and nest by prefix. Source keys are kept as columns in `geo/units.csv`.
+Every unit has one **geo ID** (`geo_id`). Administrative IDs are numbered as in GADM 4.1 and nest by prefix. The boundaries are geoBoundaries' gbOpen ADM3 (339 municipalities, GeoBolivia, public domain), lightly simplified as a coverage (~100 m); provinces, departments and the country are their exact unions. Source keys are kept as columns in `geo/units.csv`.
 
 | Scale | Units | geo ID | Source keys kept | Datasets |
 | --- | --- | --- | --- | --- |
 | `country` | 1 | `BO` | `gid` | — |
 | `department` | 9 | `BO-04` (La Paz) | `gid` (GADM), `ine_code` (`02`) | — |
 | `province` | 112 | `BO-04-17` (Murillo) | `gid`, `ine_code` (`0201`) | — |
-| `municipality` | 339 | `BO-04-17-04` (La Paz) | `gid` (`GID_3`), `ine_code` (`020101`), `asdf_id` (DS4Bolivia polygon), `mun_id` (INE code as integer) | `pop`, `ntl`, `sdg`, `emb`, `embpw` |
+| `municipality` | 339 | `BO-04-17-04` (La Paz) | `gid` (`GID_3`), `ine_code` (`020101`), `asdf_id` (DS4Bolivia polygon), `mun_id` (INE code as integer), `gb_id` (geoBoundaries `shapeID`) | `pop`, `ntl`, `sdg`, `emb`, `embpw` |
 | `municipality_ine`, `grid10k` | planned | `BO-INE-020101`, `BO-G10K-r012c034` | — | — |
 
 - Every unit row carries `<scale>_id` columns for each scale it lies in (`department_id`, `province_id`, ...).
 - Department and province numbers follow GADM order and **differ from INE codes** (La Paz is `BO-04` here and `02` in INE). GADM skips province index 1 in La Paz, so La Paz provinces run `BO-04-02` to `BO-04-21`.
-- GADM level 3 has 5 Lake Titicaca polygons (`TYPE_3 == "Lago"`); they are not units.
+- **Holes.** geoBoundaries leaves the salt flats of Uyuni and Coipasa and lakes Poopó and Uru Uru (~13,000 km²) outside every municipality, so they are holes at every scale and `area_km2` excludes them (Coipasa keeps 11% of its GADM area). Lake Titicaca lies outside the country.
 - Harmonized names: municipalities and departments use DS4Bolivia's spelling; provinces come from `raw/lookups/province_names.csv` (hand-checked; GADM writes names without spaces). `name_gadm` keeps GADM's spelling.
-- **Municipality vintages.** New municipalities are created over time. The `municipality` scale is the 339-unit GADM map and stays so. A newer map is a new scale (`municipality_ine` is reserved) linked by overlay; never relabel `municipality`. See `CONTRIBUTING_DATA.md`.
+- **Municipality vintages.** New municipalities are created over time. The `municipality` scale is the 339-unit map (GeoBolivia 2015, numbered as GADM) and stays so. A newer map is a new scale (`municipality_ine` is reserved) linked by overlay; never relabel `municipality`. See `CONTRIBUTING_DATA.md`.
 - **DS4Bolivia's swapped homonyms.** San Javier (Beni/Santa Cruz), El Puente (Tarija/Santa Cruz) and Santa Rosa (Beni/Pando): DS4Bolivia attaches each pair's attribute rows (names, INE codes, SDG Atlas values) to the other polygon. Polygon-based data (`pop`, `ntl`, `emb`, `embpw`) link by `asdf_id`; the SDG Atlas data link by INE code (`mun_id`). Evidence in `raw/README.md`; `swapped` flags them in the lookup.
 - Municipality names repeat across departments (six pairs) and four provinces are called Cercado, so link municipal tables by code (`key="mun_id"`, `"ine_code"` or `"asdf_id"`) rather than by name. `geo.link()` refuses ambiguous names instead of guessing.
 
@@ -127,7 +127,7 @@ Every unit has one **geo ID** (`geo_id`). Administrative IDs follow the GADM 4.1
 
 | Dataset | Years | Notes |
 | --- | --- | --- |
-| `pop` | 2001–2020 | gridded population (WorldPop 1 km, via DS4Bolivia); `sum`. `pop_density` (people per km² of the GADM area); `none` |
+| `pop` | 2001–2020 | gridded population (WorldPop 1 km, via DS4Bolivia); `sum`. `pop_density` (people per km² of the geoBoundaries area); `none` |
 | `ntl` | 2012–2020 | `ln_NTLpc` = ln(10⁸ × EOG VIIRS radiance / WorldPop) and its HP trend `ln_t400NTLpc`; logs, so `none` |
 | `sdg` | 2010–2020 | 64 SDG Atlas indicators, **each at its own reference year** (`geo:year`); period averages at the midpoint, rounded down. The composite indices (IMDS, `index_sdg*`) are deliberately not included |
 | `emb`, `embpw` | 2017 | 64 satellite embedding dimensions (A00–A63), area- and population-weighted; `none` |

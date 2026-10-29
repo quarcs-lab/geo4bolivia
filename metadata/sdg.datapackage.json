@@ -105,7 +105,7 @@
             "name": "geo_id",
             "title": "Municipality ID",
             "type": "string",
-            "description": "GDO-Bolivia geo ID of the municipality (BO-DD-PP-MM), following the GADM 4.1 hierarchy of the 339-unit municipality map; department and province numbers follow GADM order and differ from INE codes. Nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs.",
+            "description": "GDO-Bolivia municipality geo ID (BO-DD-PP-MM) of the 339-unit municipality map, numbered as in GADM 4.1; its boundary in geo/boundaries/ comes from geoBoundaries (GeoBolivia, public domain). It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes.",
             "geo:role": "id",
             "constraints": {
               "required": true,

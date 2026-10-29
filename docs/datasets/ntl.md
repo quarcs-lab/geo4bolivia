@@ -13,7 +13,7 @@ Annual night-time lights per capita for Bolivia's 339 municipalities, 2012–202
 
 - **Units:** 339 of 339 municipality units
 - **Period:** 2012–2020, annual (3,051 rows: one per unit and year)
-- **Source geometry:** DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the GADM 4.1 municipalities by area overlap
+- **Source geometry:** DS4Bolivia polygons (bolivia339geoqueryFull, keyed by asdf_id), matched one-to-one to the 339 municipalities by area overlap
 
 | File | Format |
 | --- | --- |
@@ -22,9 +22,9 @@ Annual night-time lights per capita for Bolivia's 339 municipalities, 2012–202
 
 | Variable | Label | Description | Unit | Coverage | Aggregation | Source |
 | --- | --- | --- | --- | --- | --- | --- |
-| `geo_id` | Municipality ID | Municipality geo ID (BO-DD-PP-MM) in the GADM 4.1 hierarchy of the 339-unit municipality map. It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes. |  | 2012–2020 | — |  |
+| `geo_id` | Municipality ID | Municipality geo ID (BO-DD-PP-MM) of the 339-unit municipality map, numbered as in GADM 4.1; its boundary in geo/boundaries/ comes from geoBoundaries (GeoBolivia, public domain). It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes. |  | 2012–2020 | — |  |
 | `year` | Year | Calendar year of the observation (2012–2020). The 2012 lights composite covers April 2012 to March 2013. |  | 2012–2020 | — |  |
-| `asdf_id` | DS4Bolivia polygon ID | ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the GADM municipality by area overlap. |  | 2012–2020 | — | DS4Bolivia |
+| `asdf_id` | DS4Bolivia polygon ID | ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the municipality by area overlap. |  | 2012–2020 | — | DS4Bolivia |
 | `ln_NTLpc` | Log night-time lights per capita | Natural log of night-time radiance per person, ln(10⁸ × NTL / population). NTL is the sum over the municipality of the EOG Annual VIIRS Nighttime Lights V2 average radiance (background masked, 15 arc-seconds, nW/cm²/sr), extracted with AidData GeoQuery; population is the same year's WorldPop 1 km sum. Missing where no pixel remained lit after masking (2–15 municipalities a year). | log(10⁸ × nW/cm²/sr per person) | 2012–2020 | none | EOG VIIRS nighttime lights and WorldPop, via DS4Bolivia |
 | `ln_t400NTLpc` | Log night-time lights per capita (trend) | Hodrick–Prescott trend (λ = 400) of the log of night-time lights per capita. The log of lights, gap-filled within each municipality by linear interpolation and extrapolation (and a fixed-effects prediction where needed), and the log of population are each HP-filtered and combined as ln(10⁸ × trend NTL / trend population). Complete for every municipality and year, including years where ln_NTLpc is missing. | log(10⁸ × nW/cm²/sr per person) | 2012–2020 | none | EOG VIIRS nighttime lights and WorldPop, via DS4Bolivia |
 
@@ -54,7 +54,7 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 ## Notes
 
 - Both variables are logs of a ratio, so they cannot be summed or averaged up the hierarchy; their aggregation rule is `none`. Aggregate the levels instead, e.g. NTL = exp(ln_NTLpc) × pop, summed with `pop` from the population dataset.
-- Computed by DS4Bolivia on its own municipal polygons (`asdf_id`), which differ slightly from the GADM boundaries used for geo IDs.
+- Computed by DS4Bolivia on its own municipal polygons (`asdf_id`), geoBoundaries v4 polygons that differ slightly from the geoBoundaries gbOpen boundaries in geo/boundaries/.
 - Population is the gridded estimate of the `pop` dataset.
 
 ## Related notebooks

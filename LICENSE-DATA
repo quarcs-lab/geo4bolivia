@@ -19,15 +19,13 @@ sources, provide a link to the license, and indicate if changes were made.
 
 Exceptions
 
-  - Boundaries. geo/boundaries/ and raw/boundaries/gadm41_BOL_3.json are derived from GADM
-    4.1 (https://gadm.org). GADM data are freely available for academic and other
-    non-commercial use; redistribution or commercial use is not allowed without prior
-    permission from GADM (https://gadm.org/license.html). These files are NOT covered by
-    CC BY 4.0.
-  - Map boundaries. site/data/*.geojson, drawn on every map of the website, are simplified
+  - Boundaries. geo/boundaries/, site/data/*.geojson and raw/boundaries/geoboundaries/ come
     from geoBoundaries gbOpen (https://www.geoboundaries.org; Runfola et al. 2020, PLoS ONE
     15(4): e0231866), whose Bolivian boundaries come from GeoBolivia and are in the public
-    domain. Please credit "geoBoundaries (GeoBolivia, public domain)".
+    domain: free to use and redistribute, including commercially. Please credit
+    "geoBoundaries (GeoBolivia, public domain)". The geo IDs follow GADM 4.1's numbering,
+    and geo/units keeps GADM's codes and names (gid, name_gadm) as source keys; no GADM
+    geometry is distributed (version 0.1 of the observatory did).
   - Original sources. Each dataset is derived from third-party data whose own terms and
     required credits are listed in its metadata (metadata/<dataset>.datapackage.json,
     "sources") and on its page of the website. Where a source requires otherwise, its
