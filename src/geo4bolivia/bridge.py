@@ -33,7 +33,8 @@ def _describe(fields) -> dict:
     out = {}
     for f in fields:
         unit = f.get("geo:unit")
-        out[f["name"]] = (f.get("description", ""), f.get("description", "") + (f" ({unit})" if unit else ""))
+        out[f["name"]] = (f.get("title") or f.get("description", ""),
+                          f.get("description", "") + (f" ({unit})" if unit else ""))
     return out
 
 

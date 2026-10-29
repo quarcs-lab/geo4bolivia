@@ -106,6 +106,12 @@ def validate_dataset(dataset: str) -> Report:
     pkg = metadata.package(dataset)
     for key in ("name", "title", "description", "licenses", "sources", "resources"):
         rep.check(key in pkg, f"datapackage missing {key!r}")
+    licenses = pkg.get("licenses") or [{}]
+    rep.check(all(lic.get("name") for lic in licenses), "'licenses' must list licenses that have a 'name'")
+    for src in pkg.get("sources", []):
+        name = src.get("title", "")[:40]
+        rep.check(bool(name), f"a source has no 'title': {src}")
+        rep.check(bool(src.get("geo:license", {"name": "-"}).get("name")), f"source {name!r}: geo:license has no 'name'")
     for res in pkg["resources"]:
         sid = res["geo:scale"]
         tag = f"{dataset}[{sid}]"
@@ -129,6 +135,8 @@ def validate_dataset(dataset: str) -> Report:
         except AssertionError as exc:
             rep.check(False, f"{tag}: CSV and Parquet differ: {str(exc).splitlines()[0]}")
         for f in schema["fields"]:
+            rep.check(bool(f.get("title")), f"{tag}: {f['name']} has no 'title' (its label for plots)")
+            rep.check(bool(f.get("description")), f"{tag}: {f['name']} has no 'description'")
             col, kind = df[f["name"]], _PANDAS_KIND.get(f["type"])
             if kind and col.notna().any():
                 ok = col.dtype.kind in kind or (f["type"] == "string" and pd.api.types.is_string_dtype(col))
@@ -162,7 +170,28 @@ def validate_dataset(dataset: str) -> Report:
         first, last = res["geo:period"]
         rep.check(df["year"].between(first, last).all(), f"{tag}: years outside geo:period {first}-{last}")
         rep.check(df["year"].min() == first and df["year"].max() == last, f"{tag}: geo:period does not match the data")
+    if "geo:map" in pkg:
+        _check_map(rep, dataset, pkg["geo:map"])
     return rep
+
+
+def _check_map(rep: Report, dataset: str, spec: dict) -> None:
+    """The headline map (``geo:map``) must name a variable and a year that has data."""
+    try:
+        res = metadata.resource(dataset, spec.get("scale"))
+    except KeyError as exc:
+        rep.check(False, f"geo:map: {exc}")
+        return
+    variable, year = spec.get("variable"), spec.get("year")
+    if not rep.check(variable in metadata.variables(dataset, res["geo:scale"]),
+                     f"geo:map: {variable!r} is not a variable of {dataset}"):
+        return
+    df = pd.read_parquet(store.repo_root() / res["geo:parquet"], columns=["year", variable])
+    values = df.loc[df["year"] == year, variable].dropna()
+    rep.check(not values.empty, f"geo:map: {variable} has no values in {year}")
+    if rep.check(spec.get("classify", "log") == "log", f"geo:map: classify must be 'log' or absent"):
+        rep.check(spec.get("classify") != "log" or (values > 0).all(),
+                  f"geo:map: {variable} has values <= 0, so it cannot be classified on a log scale")
 
 
 def run(dataset: str | None = None) -> list[Report]:

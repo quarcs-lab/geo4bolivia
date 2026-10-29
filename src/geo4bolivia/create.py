@@ -283,8 +283,10 @@ def save(df: pd.DataFrame, name: str, scale: str, directory=".", title: str | No
 
     Writes ``<directory>/data/<scale>/<name>.csv`` and ``.parquet`` and
     ``<directory>/metadata/<name>.datapackage.json`` (Frictionless). Describe each
-    variable in ``variables``: ``{"pop": {"description": "Population",
-    "unit": "people", "aggregation": "sum", "source": "WorldPop"}}``. The
+    variable in ``variables``: ``{"pop": {"label": "Population", "description":
+    "Sum of WorldPop 100 m population over the unit", "unit": "people",
+    "aggregation": "sum", "source": "WorldPop"}}``. The ``label`` is a readable
+    name for plots; the description says how the variable was built. The
     aggregation rule (``sum``, ``mean``, ``weighted_mean:<field>``, ``none``, ...)
     tells ``geo.aggregate()`` how to move the variable to coarser scales.
 
@@ -300,14 +302,17 @@ def save(df: pd.DataFrame, name: str, scale: str, directory=".", title: str | No
     df = df.drop(columns="geometry", errors="ignore")
     df = df[keys + [c for c in df.columns if c not in keys]].sort_values(keys).reset_index(drop=True)
     sc = get_scale(scale)
-    fields = [{"name": "geo_id", "type": "string", "description": f"{sc.label} ID", "geo:role": "id",
+    fields = [{"name": "geo_id", "title": f"{sc.label} ID", "type": "string",
+               "description": f"{sc.label} geo ID", "geo:role": "id",
                "constraints": {"required": True, "pattern": sc.id_pattern}}]
     if "year" in df.columns:
-        fields.append({"name": "year", "type": "integer", "description": "Year", "geo:role": "time",
+        fields.append({"name": "year", "title": "Year", "type": "integer", "description": "Year",
+                       "geo:role": "time",
                        "constraints": {"required": True}})
     for col in df.columns[len(keys):]:
         info = variables.get(col, {})
-        fields.append({"name": col, "type": _TYPES.get(df[col].dtype.kind, "string"),
+        fields.append({"name": col, "title": info.get("label", col),
+                       "type": _TYPES.get(df[col].dtype.kind, "string"),
                        "description": info.get("description", ""), "geo:unit": info.get("unit", ""),
                        "geo:aggregation": info.get("aggregation", "none"), "geo:source": info.get("source", "")})
     root = Path(directory)

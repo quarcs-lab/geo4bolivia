@@ -27,8 +27,11 @@ def datasets() -> pd.DataFrame:
 
 
 def dictionary(dataset: str, scale: str | None = None) -> pd.DataFrame:
-    """The variable dictionary of a dataset: name, description, unit, aggregation rule, source."""
-    return pd.DataFrame([{"variable": f["name"], "description": f.get("description", ""),
+    """The variable dictionary of a dataset: name, label, description, unit, aggregation rule, source.
+
+    ``label`` (the field's ``title``) is a readable name for plot axes and legends."""
+    return pd.DataFrame([{"variable": f["name"], "label": f.get("title", f["name"]),
+                          "description": f.get("description", ""),
                           "unit": f.get("geo:unit", ""), "role": f.get("geo:role", "variable"),
                           "aggregation": f.get("geo:aggregation", ""), "source": f.get("geo:source", "")}
                          for f in metadata.fields(dataset, scale)])

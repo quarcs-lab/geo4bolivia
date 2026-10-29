@@ -3,12 +3,21 @@
 Each package lists one resource per spatial scale the dataset is published at.
 GDO-specific information lives in ``geo:``-prefixed properties:
 
-- package: ``geo:categories``, ``geo:citation``, ``geo:notes``, ``geo:notebooks``
+- package: ``geo:categories``, ``geo:citation``, ``geo:notes``, ``geo:notebooks``,
+  ``geo:map`` (the headline map: ``{"variable", "year"[, "scale", "classify": "log"]}``),
+  ``geo:updated``
+- source: ``geo:role`` (``original`` | ``intermediary``), ``geo:creator``,
+  ``geo:homepage``, ``geo:license`` (``{"name", "title", "path"}``, the license of
+  the source itself) and ``geo:attribution`` (the credit text the source asks for)
 - resource: ``geo:scale``, ``geo:period`` ([first, last] year), ``geo:path``
   (CSV path in the repo), ``geo:parquet``, ``geo:source_geometry``
 - field: ``geo:unit``, ``geo:source``, ``geo:role`` (``id`` | ``time`` |
   ``source_key`` | ``variable``) and ``geo:aggregation`` (``sum`` | ``mean`` |
   ``min`` | ``max`` | ``weighted_mean:<field>`` | ``none``)
+
+Standard Frictionless properties carry the rest: each field's ``title`` is its
+label for plots and its ``description`` says how it was built; the package's
+``licenses`` is the license of the published files.
 """
 
 from __future__ import annotations
