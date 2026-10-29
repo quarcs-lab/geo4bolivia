@@ -56,12 +56,16 @@ SEQ_PALETTE = ["#0f3a3f", "#13605f", "#1f8a80", "#5fb7a6", "#a8dccf", "#f4f1e8"]
 TILE_URL = "https://tiles.maps.eox.at/wmts/1.0.0/{layer}/default/WGS84/{z}/{row}/{col}.jpg"
 CACHE = Path(tempfile.gettempdir()) / "gdo_s2cloudless_2016"
 
-CITIES = [  # hero cities: id, name, lat, lng
+CITIES = [  # hero cities, the nine department capitals by 2020 population (pop dataset): id, name, lat, lng
+    ("santa-cruz", "Santa Cruz", -17.7833, -63.1821),
     ("la-paz", "La Paz", -16.4955, -68.1336),
     ("cochabamba", "Cochabamba", -17.3895, -66.1568),
-    ("santa-cruz", "Santa Cruz", -17.7833, -63.1821),
+    ("oruro", "Oruro", -17.9667, -67.1125),
     ("sucre", "Sucre", -19.0476, -65.2596),
+    ("tarija", "Tarija", -21.5345, -64.7296),
     ("potosi", "Potosí", -19.5891, -65.7535),
+    ("trinidad", "Trinidad", -14.8337, -64.9040),
+    ("cobija", "Cobija", -11.0275, -68.7680),
 ]
 
 BANDS = [  # section bands: key, place, lat, lng, tile level[, mosaic year]

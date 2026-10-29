@@ -1468,13 +1468,19 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
         const BOLIVIA_PATCH = { url: 'images/hero-bolivia-s2.webp', lat: -16.171875, lng: -63.28125, width: 14.0625, height: 15.46875, altitude: 0.00004, curvature: 0.25 };
         const cityPatch = (id, lat, lng) => ({ url: `images/hero-city-${id}.webp`, lat, lng, width: 0.791016, height: 0.615234, altitude: 0.00008, curvature: 0.05 });
         const cityDetailPatch = (id, lat, lng) => ({ url: `images/hero-city-${id}-z13.webp`, lat, lng, width: 0.153809, height: 0.109863, altitude: 0.00012, curvature: 0.01 });
+        // The nine department capitals by 2020 population; their imagery loads only when a city is hovered or picked
         const HERO_CITIES = [
+          { id: 'santa-cruz', name: 'Santa Cruz', lat: -17.7833, lng: -63.1821, patch: cityPatch('santa-cruz', -17.797852, -63.149414), detail: cityDetailPatch('santa-cruz', -17.786865, -63.182373) },
           { id: 'la-paz', name: 'La Paz', lat: -16.4955, lng: -68.1336, patch: cityPatch('la-paz', -16.479492, -68.15918), detail: cityDetailPatch('la-paz', -16.490479, -68.126221) },
           { id: 'cochabamba', name: 'Cochabamba', lat: -17.3895, lng: -66.1568, patch: cityPatch('cochabamba', -17.358398, -66.137695), detail: cityDetailPatch('cochabamba', -17.391357, -66.148682) },
-          { id: 'santa-cruz', name: 'Santa Cruz', lat: -17.7833, lng: -63.1821, patch: cityPatch('santa-cruz', -17.797852, -63.149414), detail: cityDetailPatch('santa-cruz', -17.786865, -63.182373) },
+          { id: 'oruro', name: 'Oruro', lat: -17.9667, lng: -67.1125, patch: cityPatch('oruro', -17.973633, -67.104492), detail: cityDetailPatch('oruro', -17.962646, -67.115479) },
           { id: 'sucre', name: 'Sucre', lat: -19.0476, lng: -65.2596, patch: cityPatch('sucre', -19.02832, -65.258789), detail: cityDetailPatch('sucre', -19.039307, -65.269775) },
+          { id: 'tarija', name: 'Tarija', lat: -21.5345, lng: -64.7296, patch: cityPatch('tarija', -21.577148, -64.731445), detail: cityDetailPatch('tarija', -21.544189, -64.720459) },
           { id: 'potosi', name: 'Potosí', lat: -19.5891, lng: -65.7535, patch: cityPatch('potosi', -19.555664, -65.786133), detail: cityDetailPatch('potosi', -19.588623, -65.753174) },
+          { id: 'trinidad', name: 'Trinidad', lat: -14.8337, lng: -64.904, patch: cityPatch('trinidad', -14.80957, -64.907227), detail: cityDetailPatch('trinidad', -14.842529, -64.89624) },
+          { id: 'cobija', name: 'Cobija', lat: -11.0275, lng: -68.768, patch: cityPatch('cobija', -11.030273, -68.774414), detail: cityDetailPatch('cobija', -11.019287, -68.763428) },
         ];
+        const INTRO_CITY = HERO_CITIES.find((c) => c.id === 'la-paz');   // the intro flies to the seat of government
         const HERO_THEMES = ['Measure regional development', 'Explore with open tools', 'Turn evidence into insight'];
         // Altitudes in globe radii; city views sit low enough to match the ~10 m/px close-ups (0.0013 shows ~8 km of ground)
         const GLOBE_ALT = { intro: 2.6, overview: 0.9, city: 0.0013, min: 0.0008, max: 2.6, detail: 0.08 };
@@ -1613,10 +1619,10 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
           const target = useRef(null); // camera destination, so zooming mid-flight keeps the course
           const [ready, setReady] = useState(false);
           const [playing, setPlaying] = useState(false);
-          const [activeId, setActiveId] = useState(HERO_CITIES[0].id);
+          const [activeId, setActiveId] = useState(INTRO_CITY.id);
           const [motionPaused, setMotionPaused] = useState(false);   // the user paused: stop the orbit, rings and marquee
           const [announcement, setAnnouncement] = useState('');      // read out only when the user picks a city
-          const [view, setView] = useState({ lat: HERO_CITIES[0].lat, lng: HERO_CITIES[0].lng });
+          const [view, setView] = useState({ lat: INTRO_CITY.lat, lng: INTRO_CITY.lng });
 
           const worldRef = useSatelliteGlobe(containerRef, globeEnabled, {
             onReady: () => setReady(true),
@@ -1628,7 +1634,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
           // Intro: fly in from space to La Paz, then start a slow orbit on larger screens
           useEffect(() => {
             if (!ready || !worldRef.current) return undefined;
-            const pp = HERO_CITIES[0];
+            const pp = INTRO_CITY;
             target.current = { lat: pp.lat, lng: pp.lng, altitude: GLOBE_ALT.overview };
             worldRef.current.pointOfView(target.current, 3500);
             if (isSmallScreen()) return undefined;
