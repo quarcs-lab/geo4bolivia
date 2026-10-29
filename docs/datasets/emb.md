@@ -138,4 +138,4 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 - These files: [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/)
 - Google and Google DeepMind: [Creative Commons Attribution 4.0 International License](https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL#terms-of-use). Required credit: “The AlphaEarth Foundations Satellite Embedding dataset is produced by Google and Google DeepMind.”
 - geoBoundaries, William & Mary geoLab: [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). Required credit: “Boundaries: geoBoundaries (www.geoboundaries.org).”
-- Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta: [MIT License](https://github.com/quarcs-lab/ds4bolivia/blob/main/LICENSE)
+- Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta: [MIT License](https://github.com/quarcs-lab/ds4bolivia/blob/master/LICENSE)

@@ -144,4 +144,4 @@ df = pd.read_csv("https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/
 
 - These files: [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/)
 - Lykke E. Andersen, Stefano Canelas, Alejandra Gonzales and Lily Peñaranda (SDSN Bolivia, Universidad Privada Boliviana): [No open license stated (© Universidad Privada Boliviana); used and shared with the permission of SDSN Bolivia](https://www.sdsnbolivia.org/Atlas). Required credit: “Please cite the report and the data as: Andersen, L. E., Canelas, S., Gonzales, A., Peñaranda, L. (2020) Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia.”
-- Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta: [MIT License](https://github.com/quarcs-lab/ds4bolivia/blob/main/LICENSE)
+- Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta: [MIT License](https://github.com/quarcs-lab/ds4bolivia/blob/master/LICENSE)
