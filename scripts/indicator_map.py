@@ -10,6 +10,9 @@ basemap attribution are part of the image. Writes two WebP images:
 - ``images/indicators/<name>-map.webp``: the indicator page's map (1600 x 1000)
 - ``images/indicators/<name>.webp``: the indicator card (1600 x 900)
 
+The units are drawn on the public-domain geoBoundaries polygons of ``site/data/<scale>.geojson``
+(scripts/web_boundaries.py) when they exist, else on the package's GADM boundaries.
+
 ``<name>`` defaults to the dataset id. Basemap tiles and colours come from the ``site`` block
 of project.yaml (defaults below). Tiles are downloaded once per run, never by the website.
 """
@@ -19,6 +22,7 @@ from __future__ import annotations
 import argparse
 import io
 import math
+import re
 from pathlib import Path
 
 import numpy as np
@@ -46,6 +50,19 @@ def settings() -> dict:
     return {key: {**DEFAULTS[key], **site.get(key, {})} for key in DEFAULTS}
 
 
+def map_boundaries(sid: str):
+    """The units to draw: the public-domain web boundaries of scripts/web_boundaries.py
+    (site/data/<scale>.geojson) when they exist, else the package's (GADM) boundaries."""
+    import geopandas as gpd
+    web = ROOT / f"site/data/{sid}.geojson"
+    return gpd.read_file(web) if web.exists() else geo.boundaries(sid)
+
+
+def boundary_credit(sid: str) -> str:
+    web = ROOT / f"site/data/{sid}.geojson"
+    return "Boundaries: geoBoundaries (GeoBolivia, public domain)" if web.exists() else "Boundaries: GADM 4.1"
+
+
 def number(lo: float, hi: float):
     """A formatter with as many decimals as the range of the data needs."""
     span = max(abs(lo), abs(hi))
@@ -64,7 +81,7 @@ def headline(dataset: str, variable: str | None, year: int | None, scale: str | 
     sid = res["geo:scale"]
     field = next(f for f in res["schema"]["fields"] if f["name"] == variable)
     data = geo.load(dataset, scale=sid, years=int(year), variables=[variable])
-    gdf = geo.boundaries(sid).merge(data[["geo_id", variable]], on="geo_id", how="left")
+    gdf = map_boundaries(sid).merge(data[["geo_id", variable]], on="geo_id", how="left")
     values = gdf[variable].dropna()
     if values.nunique() < 3:
         raise SystemExit(f"{dataset}: {variable} has fewer than 3 distinct values in {year}")
@@ -166,6 +183,8 @@ def style_legend(leg, cfg, has_title: bool) -> None:
 
 def texts(field, dataset, sid, year, cfg):
     scale_label = geo.scales().loc[sid, "label"]
+    if (ROOT / f"site/data/{sid}.geojson").exists():   # drawn on geoBoundaries: drop the label's GADM source
+        scale_label = re.sub(r",\s*GADM[^)]*", "", scale_label)
     source = field.get("geo:source")
     return {
         "code": f'geo.load("{dataset}")',
@@ -174,7 +193,7 @@ def texts(field, dataset, sid, year, cfg):
         "units": f"units: {scale_label}",
         "method": "Fisher–Jenks natural breaks" + (", log scale" if cfg.get("log") else ""),
         "source": f"Data: {source}" if source else "",
-        "credit": cfg["basemap"]["attribution"],
+        "credit": f"{boundary_credit(sid)}. {cfg['basemap']['attribution']}",
         "site": f"{geo.config()['short_name']} · {geo.config().get('website', '')}",
         "unit": field.get("geo:unit") or None,
     }
