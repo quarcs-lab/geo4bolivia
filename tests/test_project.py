@@ -134,23 +134,36 @@ def test_ntl_logs_are_not_aggregable():
         geo.aggregate(df, to="department", dataset="ntl", variables="ln_NTLpc")
 
 
+SDG_GOALS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 16, 17]
+
+
+def test_sdg_goal_datasets_hold_index_components_and_context():
+    names = set()
+    for g in SDG_GOALS:
+        fields = [f["name"] for f in geo.metadata.fields(f"sdg{g:02d}") if not f.get("geo:role")]
+        assert fields[0] == f"index_sdg{g}" and fields[-2:] == ["population_2020", "urbano_2012"]
+        assert all(f.startswith(f"sdg{g}_") for f in fields[1:-2])
+        names |= set(fields)
+    assert len(names) == 62 + 15 + 2
+
+
 def test_sdg_indicators_are_stored_at_their_reference_years():
-    mpi = geo.load("sdg", variables="sdg1_2_mpi").dropna()
+    mpi = geo.load("sdg01", variables="sdg1_2_mpi").dropna()
     assert len(mpi) == 339 and set(mpi["year"]) == {2012}
-    malaria = geo.load("sdg", variables="sdg3_3_imr").dropna()           # average 2014-17 -> 2015
+    malaria = geo.load("sdg03", variables="sdg3_3_imr").dropna()         # average 2014-17 -> 2015
     assert set(malaria["year"]) == {2015}
-    years = {f["name"]: f["geo:year"] for f in geo.metadata.fields("sdg") if "geo:year" in f}
-    assert len(years) == 64
+    index = geo.load("sdg03", variables="index_sdg3").dropna()           # latest component: dengue 2018
+    assert len(index) == 339 and set(index["year"]) == {2018}
 
 
 def test_sdg_rows_follow_ine_codes_for_homonyms():
-    pop = geo.load("sdg", variables="population_2020", years=2020).set_index("geo_id")["population_2020"]
+    pop = geo.load("sdg01", variables="population_2020", years=2020).set_index("geo_id")["population_2020"]
     assert pop["BO-08-10-04"] == 16027          # San Javier, Santa Cruz
     assert pop["BO-03-01-01"] == 5906           # San Javier, Beni
 
 
 def test_population_weighted_sdg_by_department():
-    df = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
+    df = geo.load("sdg01", variables="sdg1_2_mpi", years=2012)
     out = geo.aggregate(df, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop"))
     assert len(out) == 9 and out["sdg1_2_mpi"].between(0, 1).all()
 

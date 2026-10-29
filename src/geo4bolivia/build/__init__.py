@@ -7,7 +7,7 @@ Register each new dataset builder in DATASETS (see CONTRIBUTING_DATA.md).
 from . import emb, geo, ntl, pop, sdg
 from .common import write_catalog
 
-DATASETS = {"pop": pop.build, "ntl": ntl.build, "sdg": sdg.build, "emb": emb.build, "embpw": emb.build_pw}
+DATASETS = {"pop": pop.build, "ntl": ntl.build, **sdg.BUILDERS, "emb": emb.build, "embpw": emb.build_pw}
 
 
 def build(target: str = "all") -> None:
