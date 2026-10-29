@@ -1,0 +1,34 @@
+Data license of the GeoDevelopment Observatory of Bolivia (GDO-Bolivia)
+
+The code in this repository (src/, scripts/, tests/, notebooks/, index.html) is released
+under the MIT License (see LICENSE). This file covers the data.
+
+The observatory's data files are licensed under the Creative Commons Attribution 4.0
+International License (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/:
+
+  - data/            the published panels (CSV and Parquet)
+  - metadata/        the dataset metadata (Frictionless datapackages)
+  - docs/datasets/   the generated dataset documentation
+  - the variable catalog named in project.yaml (definitions_gdo-bolivia.csv)
+  - geo/units.*      the unit list (geo IDs, names, codes, areas)
+  - geo/crosswalks/  the crosswalks between scales
+
+You may share and adapt them for any purpose, including commercially, provided you give
+appropriate credit to the GeoDevelopment Observatory of Bolivia and to the original
+sources, provide a link to the license, and indicate if changes were made.
+
+Exceptions
+
+  - Boundaries. geo/boundaries/ and raw/boundaries/gadm41_BOL_3.json are derived from GADM
+    4.1 (https://gadm.org). GADM data are freely available for academic and other
+    non-commercial use; redistribution or commercial use is not allowed without prior
+    permission from GADM (https://gadm.org/license.html). These files are NOT covered by
+    CC BY 4.0.
+  - Original sources. Each dataset is derived from third-party data whose own terms and
+    required credits are listed in its metadata (metadata/<dataset>.datapackage.json,
+    "sources") and on its page of the website. Where a source requires otherwise, its
+    terms prevail. The Municipal Atlas of the SDGs in Bolivia 2020 (dataset sdg) states no
+    open license (© Universidad Privada Boliviana); it is used and shared with the
+    permission of SDSN Bolivia, and its authors ask to be cited.
+  - raw/ holds the original inputs as received; they keep their sources' terms.
+  - Website images (images/, media/) keep the terms stated in the website's credits.

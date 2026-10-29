@@ -6,7 +6,7 @@
 [![PyPI](https://img.shields.io/pypi/v/geo4bolivia?label=PyPI&color=2f56c4)](https://pypi.org/project/geo4bolivia/)
 [![Python](https://img.shields.io/pypi/pyversions/geo4bolivia?color=2f56c4)](https://pypi.org/project/geo4bolivia/)
 [![Release](https://github.com/quarcs-lab/geo4bolivia/actions/workflows/release.yml/badge.svg)](https://github.com/quarcs-lab/geo4bolivia/actions/workflows/release.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-7cc4ff)](LICENSE)
+[![Code: MIT](https://img.shields.io/badge/code-MIT-7cc4ff)](LICENSE) [![Data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-7cc4ff)](LICENSE-DATA)
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/geo4bolivia_quickstart.ipynb)
 
 **[Website](https://quarcs-lab.github.io/geo4bolivia/)** · **[Python package](https://pypi.org/project/geo4bolivia/)** · **[How the database works](docs/data-infrastructure.md)** · **[Quickstart notebook](https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/geo4bolivia_quickstart.ipynb)** · **[Cite](#-citation)**
@@ -189,7 +189,7 @@ geo4bolivia/
 ├── CONTRIBUTING_DATA.md          # How to add a dataset, a scale or a municipality map of another vintage
 ├── TEMPLATE.md                   # How the geo4<country> template works
 ├── pyproject.toml, uv.lock       # Python package and environment (uv)
-└── CITATION.cff, LICENSE, CLAUDE.md
+└── CITATION.cff, LICENSE (code), LICENSE-DATA (data), CLAUDE.md
 ```
 
 ### Run locally
@@ -247,4 +247,4 @@ Please also cite the original source of each dataset you use. The citations are 
 
 **Disclaimer.** The indicators, tools and insights are the responsibility of the individual researchers and do not necessarily represent the views of their affiliated institutions or related organizations. Maps are for geo-statistical use only. They have a referential, informational character and do not represent an official definition of Bolivia's territorial boundaries.
 
-**License.** Code and data in this repository: [MIT](LICENSE). Original data sources are credited on each dataset's page in `docs/datasets/`. Section illustrations come from the geo4cambodia template (generated with OpenAI image generation via Codex); satellite imagery in the hero and the section backgrounds is Sentinel-2 cloudless 2016 by EOX IT Services GmbH (CC BY 4.0), except the Laguna Verde background from Sentinel-2 cloudless 2024 (CC BY-NC-SA 4.0), and NASA Blue Marble (public domain).
+**License.** Code: [MIT](LICENSE). Data: [CC BY 4.0](LICENSE-DATA), except the GADM-derived boundary files (`geo/boundaries/`, free for non-commercial use; redistribution needs GADM's permission) and where an original source requires otherwise. Each dataset's sources, their licenses and the credits they ask for are listed in its metadata, its page in `docs/datasets/` and its page on the website. The indicator maps use Esri's World Dark Gray Canvas basemap (Esri, HERE, Garmin, © OpenStreetMap contributors). Section illustrations come from the geo4cambodia template (generated with OpenAI image generation via Codex); satellite imagery in the hero and the section backgrounds is Sentinel-2 cloudless 2016 by EOX IT Services GmbH (CC BY 4.0), except the Laguna Verde background from Sentinel-2 cloudless 2024 (CC BY-NC-SA 4.0), and NASA Blue Marble (public domain).

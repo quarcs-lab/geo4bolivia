@@ -5,19 +5,70 @@
   "version": "1.0.0",
   "licenses": [
     {
-      "name": "MIT",
-      "path": "https://github.com/quarcs-lab/geo4bolivia/blob/main/LICENSE",
-      "title": "MIT License"
+      "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0 International License",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
     }
   ],
   "sources": [
     {
-      "title": "WorldPop (2018). Global High Resolution Population Denominators Project (100 m, 2000–2020). University of Southampton.",
-      "path": "https://doi.org/10.5258/SOTON/WP00645"
+      "title": "WorldPop & CIESIN (2018). Global High Resolution Population Denominators Project (1 km aggregated, 2000–2020). University of Southampton and Columbia University. Funded by the Bill and Melinda Gates Foundation (OPP1134076).",
+      "path": "https://doi.org/10.5258/SOTON/WP00647",
+      "geo:role": "original",
+      "geo:creator": "WorldPop (University of Southampton, University of Louisville, Université de Namur) and CIESIN, Columbia University",
+      "geo:homepage": "https://www.worldpop.org",
+      "geo:license": {
+        "name": "CC-BY-4.0",
+        "title": "Creative Commons Attribution 4.0 International License",
+        "path": "https://hub.worldpop.org/doi/10.5258/SOTON/WP00647"
+      }
     },
     {
-      "title": "Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.",
-      "path": "https://github.com/quarcs-lab/ds4bolivia"
+      "title": "Goodman, S., BenYishay, A., Lv, Z., & Runfola, D. (2019). GeoQuery: Integrating HPC systems and public web-based geospatial data tools. Computers & Geosciences, 122, 103–112.",
+      "path": "https://doi.org/10.1016/j.cageo.2018.10.009",
+      "geo:role": "intermediary",
+      "geo:creator": "AidData, William & Mary",
+      "geo:homepage": "https://geo.aiddata.org",
+      "geo:license": {
+        "name": "ODC-By-1.0",
+        "title": "Open Data Commons Attribution License 1.0",
+        "path": "https://opendatacommons.org/licenses/by/1-0/"
+      }
+    },
+    {
+      "title": "Runfola, D., Anderson, A., Baier, H., et al. (2020). geoBoundaries: A global database of political administrative boundaries. PLoS ONE, 15(4), e0231866.",
+      "path": "https://doi.org/10.1371/journal.pone.0231866",
+      "geo:role": "intermediary",
+      "geo:creator": "geoBoundaries, William & Mary geoLab",
+      "geo:homepage": "https://www.geoboundaries.org",
+      "geo:license": {
+        "name": "CC-BY-4.0",
+        "title": "Creative Commons Attribution 4.0 International License",
+        "path": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "geo:attribution": "Boundaries: geoBoundaries (www.geoboundaries.org)."
+    },
+    {
+      "title": "GADM (2022). Database of Global Administrative Areas, version 4.1.",
+      "path": "https://gadm.org",
+      "geo:role": "intermediary",
+      "geo:creator": "GADM project",
+      "geo:license": {
+        "name": "LicenseRef-GADM",
+        "title": "GADM license: free for academic and other non-commercial use; redistribution and commercial use require permission",
+        "path": "https://gadm.org/license.html"
+      }
+    },
+    {
+      "title": "Mendez, C., Gonzales, E., Leoni, P., Andersen, L., & Peralta, H. (2026). DS4Bolivia: A Data Science Repository to Study GeoSpatial Development in Bolivia [Data set]. GitHub.",
+      "path": "https://github.com/quarcs-lab/ds4bolivia",
+      "geo:role": "intermediary",
+      "geo:creator": "Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta",
+      "geo:license": {
+        "name": "MIT",
+        "title": "MIT License",
+        "path": "https://github.com/quarcs-lab/ds4bolivia/blob/main/LICENSE"
+      }
     }
   ],
   "geo:categories": [
@@ -62,8 +113,9 @@
         "fields": [
           {
             "name": "geo_id",
+            "title": "Municipality ID",
             "type": "string",
-            "description": "Municipality geo ID",
+            "description": "Municipality geo ID (BO-DD-PP-MM) in the GADM 4.1 hierarchy of the 339-unit municipality map. It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes.",
             "geo:role": "id",
             "constraints": {
               "required": true,
@@ -72,8 +124,9 @@
           },
           {
             "name": "year",
+            "title": "Year",
             "type": "integer",
-            "description": "Year",
+            "description": "Calendar year of the estimate (2001–2020).",
             "geo:role": "time",
             "constraints": {
               "required": true
@@ -81,8 +134,9 @@
           },
           {
             "name": "asdf_id",
+            "title": "DS4Bolivia polygon ID",
             "type": "integer",
-            "description": "DS4Bolivia polygon ID",
+            "description": "ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the GADM municipality by area overlap.",
             "geo:role": "source_key",
             "geo:units_column": "asdf_id",
             "geo:source": "DS4Bolivia",
@@ -92,11 +146,24 @@
           },
           {
             "name": "pop",
+            "title": "Population",
             "type": "number",
-            "description": "Estimated population",
+            "description": "Estimated number of people living in the municipality: the sum over its polygon of the WorldPop unconstrained global population mosaic at 1 km (aggregated from 100 m random-forest dasymetric estimates; not UN-adjusted), extracted with AidData GeoQuery. Gridded estimates, not INE's official projections.",
             "geo:unit": "people",
             "geo:aggregation": "sum",
             "geo:source": "WorldPop via DS4Bolivia",
+            "constraints": {
+              "minimum": 0
+            }
+          },
+          {
+            "name": "pop_density",
+            "title": "Population density (people per km²)",
+            "type": "number",
+            "description": "Population (pop) divided by the municipality's area in km², measured on its GADM 4.1 boundary in the project's equal-area projection (an Albers projection fitted to Bolivia).",
+            "geo:unit": "people per km²",
+            "geo:aggregation": "none",
+            "geo:source": "WorldPop via DS4Bolivia; areas from GADM 4.1 boundaries",
             "constraints": {
               "minimum": 0
             }
@@ -104,5 +171,11 @@
         ]
       }
     }
-  ]
+  ],
+  "geo:updated": "2026-10-29",
+  "geo:map": {
+    "variable": "pop_density",
+    "year": 2020,
+    "classify": "log"
+  }
 }

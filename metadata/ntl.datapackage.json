@@ -5,23 +5,72 @@
   "version": "1.0.0",
   "licenses": [
     {
-      "name": "MIT",
-      "path": "https://github.com/quarcs-lab/geo4bolivia/blob/main/LICENSE",
-      "title": "MIT License"
+      "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0 International License",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
     }
   ],
   "sources": [
     {
       "title": "Elvidge, C. D., Zhizhin, M., Ghosh, T., Hsu, F.-C., & Taneja, J. (2021). Annual time series of global VIIRS nighttime lights derived from monthly averages: 2012 to 2019. Remote Sensing, 13(5), 922.",
-      "path": "https://doi.org/10.3390/rs13050922"
+      "path": "https://doi.org/10.3390/rs13050922",
+      "geo:role": "original",
+      "geo:creator": "Earth Observation Group, Payne Institute for Public Policy, Colorado School of Mines",
+      "geo:homepage": "https://eogdata.mines.edu/products/vnl/",
+      "geo:license": {
+        "name": "CC-BY-4.0",
+        "title": "Creative Commons Attribution 4.0 International License",
+        "path": "https://eogdata.mines.edu/files/EOG_products_CC_License.pdf"
+      },
+      "geo:attribution": "This product was made utilizing VIIRS Nighttime Lights (Annual VNL V2) data produced by the Earth Observation Group, Payne Institute for Public Policy, Colorado School of Mines."
     },
     {
-      "title": "WorldPop (2018). Global High Resolution Population Denominators Project (100 m, 2000–2020). University of Southampton.",
-      "path": "https://doi.org/10.5258/SOTON/WP00645"
+      "title": "WorldPop & CIESIN (2018). Global High Resolution Population Denominators Project (1 km aggregated, 2000–2020). University of Southampton and Columbia University. Funded by the Bill and Melinda Gates Foundation (OPP1134076).",
+      "path": "https://doi.org/10.5258/SOTON/WP00647",
+      "geo:role": "original",
+      "geo:creator": "WorldPop (University of Southampton, University of Louisville, Université de Namur) and CIESIN, Columbia University",
+      "geo:homepage": "https://www.worldpop.org",
+      "geo:license": {
+        "name": "CC-BY-4.0",
+        "title": "Creative Commons Attribution 4.0 International License",
+        "path": "https://hub.worldpop.org/doi/10.5258/SOTON/WP00647"
+      }
     },
     {
-      "title": "Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.",
-      "path": "https://github.com/quarcs-lab/ds4bolivia"
+      "title": "Goodman, S., BenYishay, A., Lv, Z., & Runfola, D. (2019). GeoQuery: Integrating HPC systems and public web-based geospatial data tools. Computers & Geosciences, 122, 103–112.",
+      "path": "https://doi.org/10.1016/j.cageo.2018.10.009",
+      "geo:role": "intermediary",
+      "geo:creator": "AidData, William & Mary",
+      "geo:homepage": "https://geo.aiddata.org",
+      "geo:license": {
+        "name": "ODC-By-1.0",
+        "title": "Open Data Commons Attribution License 1.0",
+        "path": "https://opendatacommons.org/licenses/by/1-0/"
+      }
+    },
+    {
+      "title": "Runfola, D., Anderson, A., Baier, H., et al. (2020). geoBoundaries: A global database of political administrative boundaries. PLoS ONE, 15(4), e0231866.",
+      "path": "https://doi.org/10.1371/journal.pone.0231866",
+      "geo:role": "intermediary",
+      "geo:creator": "geoBoundaries, William & Mary geoLab",
+      "geo:homepage": "https://www.geoboundaries.org",
+      "geo:license": {
+        "name": "CC-BY-4.0",
+        "title": "Creative Commons Attribution 4.0 International License",
+        "path": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "geo:attribution": "Boundaries: geoBoundaries (www.geoboundaries.org)."
+    },
+    {
+      "title": "Mendez, C., Gonzales, E., Leoni, P., Andersen, L., & Peralta, H. (2026). DS4Bolivia: A Data Science Repository to Study GeoSpatial Development in Bolivia [Data set]. GitHub.",
+      "path": "https://github.com/quarcs-lab/ds4bolivia",
+      "geo:role": "intermediary",
+      "geo:creator": "Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta",
+      "geo:license": {
+        "name": "MIT",
+        "title": "MIT License",
+        "path": "https://github.com/quarcs-lab/ds4bolivia/blob/main/LICENSE"
+      }
     }
   ],
   "geo:categories": [
@@ -74,8 +123,9 @@
         "fields": [
           {
             "name": "geo_id",
+            "title": "Municipality ID",
             "type": "string",
-            "description": "Municipality geo ID",
+            "description": "Municipality geo ID (BO-DD-PP-MM) in the GADM 4.1 hierarchy of the 339-unit municipality map. It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes.",
             "geo:role": "id",
             "constraints": {
               "required": true,
@@ -84,8 +134,9 @@
           },
           {
             "name": "year",
+            "title": "Year",
             "type": "integer",
-            "description": "Year",
+            "description": "Calendar year of the observation (2012–2020). The 2012 lights composite covers April 2012 to March 2013.",
             "geo:role": "time",
             "constraints": {
               "required": true
@@ -93,8 +144,9 @@
           },
           {
             "name": "asdf_id",
+            "title": "DS4Bolivia polygon ID",
             "type": "integer",
-            "description": "DS4Bolivia polygon ID",
+            "description": "ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the GADM municipality by area overlap.",
             "geo:role": "source_key",
             "geo:units_column": "asdf_id",
             "geo:source": "DS4Bolivia",
@@ -104,22 +156,29 @@
           },
           {
             "name": "ln_NTLpc",
+            "title": "Log night-time lights per capita",
             "type": "number",
-            "description": "Natural log of night-time lights per capita",
-            "geo:unit": "log(radiance per person)",
+            "description": "Natural log of night-time radiance per person, ln(10⁸ × NTL / population). NTL is the sum over the municipality of the EOG Annual VIIRS Nighttime Lights V2 average radiance (background masked, 15 arc-seconds, nW/cm²/sr), extracted with AidData GeoQuery; population is the same year's WorldPop 1 km sum. Missing where no pixel remained lit after masking (2–15 municipalities a year).",
+            "geo:unit": "log(10⁸ × nW/cm²/sr per person)",
             "geo:aggregation": "none",
-            "geo:source": "VIIRS DNB via DS4Bolivia"
+            "geo:source": "EOG VIIRS nighttime lights and WorldPop, via DS4Bolivia"
           },
           {
             "name": "ln_t400NTLpc",
+            "title": "Log night-time lights per capita (trend)",
             "type": "number",
-            "description": "Hodrick–Prescott trend (λ = 400) of the log of night-time lights per capita",
-            "geo:unit": "log(radiance per person)",
+            "description": "Hodrick–Prescott trend (λ = 400) of the log of night-time lights per capita. The log of lights, gap-filled within each municipality by linear interpolation and extrapolation (and a fixed-effects prediction where needed), and the log of population are each HP-filtered and combined as ln(10⁸ × trend NTL / trend population). Complete for every municipality and year, including years where ln_NTLpc is missing.",
+            "geo:unit": "log(10⁸ × nW/cm²/sr per person)",
             "geo:aggregation": "none",
-            "geo:source": "VIIRS DNB via DS4Bolivia"
+            "geo:source": "EOG VIIRS nighttime lights and WorldPop, via DS4Bolivia"
           }
         ]
       }
     }
-  ]
+  ],
+  "geo:updated": "2026-10-29",
+  "geo:map": {
+    "variable": "ln_NTLpc",
+    "year": 2020
+  }
 }

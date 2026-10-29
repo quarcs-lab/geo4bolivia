@@ -8,7 +8,10 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
 
 1. **Put the originals in `raw/<dataset>/`** and list them in `raw/README.md`. Never edit them. If something must be fixed, fix it in the builder, so the fix is documented and reproducible.
 2. **Describe it in `metadata/<dataset>.datapackage.json`.** Copy an existing package (e.g. `metadata/pop.datapackage.json`), or the one `geo.save()` writes, and edit:
-   - `name`, `title`, `description`, `licenses`, `sources`, `geo:categories`, `geo:citation`, `geo:notes`
+   - `name`, `title`, `description`, `geo:categories`, `geo:citation`, `geo:notes`, `geo:updated`
+   - `licenses`: the license of the published files. CC BY 4.0 (`LICENSE-DATA`), unless a source requires otherwise
+   - `sources`: one entry per source with its full citation (`title`, `path`) and `geo:role` (`original` or `intermediary`). Add `geo:creator`, `geo:homepage`, `geo:license` (`{name, title, path}`, the source's own license) and `geo:attribution` (the credit sentence it asks for)
+   - `geo:map`: the headline map of the website, `{"variable": ..., "year": ...}` (add `"classify": "log"` for very skewed variables)
    - one resource per scale with:
      - `path`: the public URL, `https://raw.githubusercontent.com/<repository>/main/<geo:path>`
      - `geo:scale` and `geo:period` (`[first, last]` year)
@@ -17,7 +20,8 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
      - `geo_id`, with role `id` and the scale's ID pattern
      - `year`, with role `time`
      - optionally the original key, with role `source_key` and `geo:units_column` naming the matching column of `geo/units.csv`
-     - the variables, each with `description`, `geo:unit`, `geo:source` and `geo:aggregation`
+     - every field, keys included, with a `title` (a readable label for plots) and a `description` that says how it was built (definition, unit, source, year)
+     - the variables, also with `geo:unit`, `geo:source` and `geo:aggregation`
      - for a variable observed in one year only, `geo:year` (see `metadata/sdg.datapackage.json`)
 
    Then add the dataset id to `metadata/index.json`.
@@ -33,7 +37,12 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
    uv run pytest
    ```
    `publish()` writes the columns in schema order with schema types. `write_docs()` generates `docs/datasets/<dataset>.md`. `validate` reports any mismatch between the data, the metadata and `geo/`.
-5. **Optional: add it to the website.** Add an `indicator` entry to `CONTENT_REGISTRY` in `index.html` (copy an existing one), a `Dataset` entry to the JSON-LD block, and an image in `images/indicators/`.
+5. **Optional: add it to the website.** The `create-indicator-website` skill (`.claude/skills/`) does this end to end. By hand:
+   - render the headline map and the card with `uv run python scripts/indicator_map.py <dataset>`
+   - add an `indicator` entry to `CONTENT_REGISTRY` in `index.html` (copy an existing one)
+   - add a `Dataset` entry, without download URLs, to the JSON-LD block
+
+   The page reads the variables, sources and licenses from the metadata.
 
 ### Aggregation rules (`geo:aggregation`)
 

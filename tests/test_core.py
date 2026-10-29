@@ -167,7 +167,7 @@ def test_save_writes_a_valid_dataset(tmp_path):
     saved = json.loads((tmp_path / "metadata/mydata.datapackage.json").read_text())
     assert saved == pkg and saved["resources"][0]["geo:period"] == [2020, 2021]
     field = saved["resources"][0]["schema"]["fields"][2]
-    assert field["geo:aggregation"] == "sum"
+    assert field["geo:aggregation"] == "sum" and field["title"] == "pop"
 
 
 @needs_data
@@ -200,29 +200,57 @@ def test_everything_validates():
     assert all(r.ok for r in reports), "\n".join(str(r) for r in reports if not r.ok)
 
 
-@needs_data
-def test_validator_catches_broken_data(tmp_path, monkeypatch):
+@pytest.fixture
+def repo_copy(tmp_path, monkeypatch):
+    """A copy of geo/, metadata/ and data/ that the package reads instead of the checkout."""
     root = store.repo_root()
     for part in ("geo", "metadata", "data"):
         shutil.copytree(root / part, tmp_path / part)
     shutil.copy(root / "project.yaml", tmp_path / "project.yaml")
+    caches = (project.local_root, project.config, metadata.package, metadata.dataset_ids)
+    monkeypatch.setenv(f"{project.ENV_PREFIX}_DATA_DIR", str(tmp_path))
+    for f in caches:
+        f.cache_clear()
+    yield tmp_path
+    monkeypatch.delenv(f"{project.ENV_PREFIX}_DATA_DIR")
+    for f in caches:
+        f.cache_clear()
+
+
+@needs_data
+def test_validator_catches_broken_data(repo_copy):
     dataset = DATASETS[0]
     res = metadata.resource(dataset)
-    broken = pd.read_parquet(tmp_path / res["geo:parquet"])
+    broken = pd.read_parquet(repo_copy / res["geo:parquet"])
     broken.loc[0, "geo_id"] = "XX-99"                      # unknown unit
     broken = pd.concat([broken, broken.iloc[[2]]])         # duplicate unit-year
-    broken.to_parquet(tmp_path / res["geo:parquet"], index=False)
-    monkeypatch.setenv(f"{project.ENV_PREFIX}_DATA_DIR", str(tmp_path))
-    project.local_root.cache_clear()
-    project.config.cache_clear()
-    try:
-        errors = " | ".join(validate.validate_dataset(dataset).errors)
-    finally:
-        monkeypatch.delenv(f"{project.ENV_PREFIX}_DATA_DIR")
-        project.local_root.cache_clear()
-        project.config.cache_clear()
+    broken.to_parquet(repo_copy / res["geo:parquet"], index=False)
+    errors = " | ".join(validate.validate_dataset(dataset).errors)
     for expected in ("CSV and Parquet differ", "duplicate", "not in geo/units"):
         assert expected in errors
+
+
+@needs_data
+def test_validator_catches_incomplete_metadata(repo_copy):
+    dataset = DATASETS[0]
+    path = repo_copy / f"metadata/{dataset}.datapackage.json"
+    pkg = json.loads(path.read_text())
+    field = pkg["resources"][0]["schema"]["fields"][-1]
+    del field["title"]                                     # no label
+    pkg["licenses"] = [{"path": "https://example.org"}]    # license without a name
+    pkg["geo:map"] = {"variable": "not_a_variable", "year": 2000}
+    path.write_text(json.dumps(pkg))
+    errors = " | ".join(validate.validate_dataset(dataset).errors)
+    for expected in (f"{field['name']} has no 'title'", "licenses", "geo:map"):
+        assert expected in errors
+
+
+@needs_data
+@pytest.mark.parametrize("dataset", DATASETS)
+def test_dictionary_has_a_label_for_every_column(dataset):
+    d = geo.dictionary(dataset)
+    assert list(d.columns[:3]) == ["variable", "label", "description"]
+    assert d["label"].str.len().gt(0).all() and d["description"].str.len().gt(0).all()
 
 
 @needs_data

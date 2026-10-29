@@ -140,13 +140,19 @@ A cross-sectional source fits the same shape: each variable is stored at its ref
 
 | Level | Property | Meaning |
 | --- | --- | --- |
-| package | `name`, `title`, `description`, `licenses`, `sources` | standard Frictionless fields |
+| package | `name`, `title`, `description`, `licenses`, `sources` | standard Frictionless fields; `licenses` is the license of the published files (CC BY 4.0 unless a source requires otherwise) |
 | package | `geo:categories`, `geo:citation`, `geo:notes`, `geo:notebooks` | shown on the dataset page |
+| package | `geo:map` | the website's headline map: `{"variable", "year"}`, optionally `"scale"` and `"classify": "log"` (checked by `validate`) |
+| package | `geo:updated` | date of the last update, shown in the page's License section |
+| source | `title`, `path` | full citation and its DOI or URL |
+| source | `geo:role`, `geo:creator`, `geo:homepage` | `original` (produced the data) or `intermediary` (a tool, repository or boundary set it passed through); who made it; the data's home page |
+| source | `geo:license`, `geo:attribution` | the source's own license (`{name, title, path}`) and the credit sentence it asks for |
 | resource | `path` | public URL of the CSV (checked by `validate`) |
 | resource | `geo:scale`, `geo:period` | the scale and `[first, last]` year |
 | resource | `geo:path`, `geo:parquet` | file paths inside the repository |
 | resource | `geo:source_geometry` | polygons the values were computed on, if different from `geo/boundaries` |
-| field | `type`, `description`, `constraints` | standard Table Schema (`pattern`, `minimum`, `maximum`, `required`) |
+| field | `type`, `constraints` | standard Table Schema (`pattern`, `minimum`, `maximum`, `required`) |
+| field | `title`, `description` | the label for plots and how the variable was built; required for every field (checked by `validate`) |
 | field | `geo:role` | `id`, `time`, `source_key` (with `geo:units_column`) or `variable` (default) |
 | field | `geo:unit`, `geo:source` | unit of measure and source of the variable |
 | field | `geo:aggregation` | how the variable moves to coarser scales (below) |
@@ -203,7 +209,7 @@ xw = pd.read_csv(BASE + "geo/crosswalks/municipality__department.csv")  # munici
 import geo4bolivia as geo
 
 geo.datasets()                                     # datasets x scales x years
-geo.dictionary("ntl")                              # variables, units, aggregation rules
+geo.dictionary("ntl")                              # variables, labels, units, aggregation rules
 df  = geo.load("ntl")                              # panel: geo_id, year, variables
 gdf = geo.load("ntl", years=2020, geometry=True)   # GeoDataFrame, ready to map
 w   = geo.load("pop", wide="pop")                  # one row per municipality, pop2001 ... pop2020
@@ -418,7 +424,7 @@ To publish a dataset in the repository, it must be reproducible from its origina
 | Function | Purpose |
 | --- | --- |
 | `datasets()` | Table of datasets, scales, years and file paths |
-| `dictionary(dataset)` | Variable dictionary: description, unit, role, aggregation, source |
+| `dictionary(dataset)` | Variable dictionary: label, description, unit, role, aggregation, source |
 | `load(dataset, scale=None, years=None, variables=None, wide=None, geometry=False, ref=None)` | Load a panel |
 | `units(scale=None)` | Units with names, parents, `<scale>_id` columns and source keys |
 | `boundaries(scale)` | GeoDataFrame of a scale's polygons |

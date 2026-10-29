@@ -117,7 +117,7 @@ sdg_long = geo.load("sdg")
 sdg = sdg_long.groupby("geo_id").first()
 sdg_dict = geo.dictionary("sdg").set_index("variable")
 ref_year = {v: int(sdg_long.loc[sdg_long[v].notna(), "year"].min()) for v in sdg.columns if v != "year"}
-labels = sdg_dict["description"].to_dict()
+labels = sdg_dict["label"].to_dict()
 labels.update({"sdg1_2_mpi": "Multidimensional poverty (MPI)", "ln_t400NTLpc": "Log NTL per capita (trend)",
                "ln_pop": "Log population"})
 print(sdg.shape)

@@ -5,19 +5,48 @@
   "version": "1.0.0",
   "licenses": [
     {
-      "name": "MIT",
-      "path": "https://github.com/quarcs-lab/geo4bolivia/blob/main/LICENSE",
-      "title": "MIT License"
+      "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0 International License",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
     }
   ],
   "sources": [
     {
-      "title": "Brown, C. F., et al. (2025). AlphaEarth Foundations: An embedding field model for accurate and efficient global mapping from sparse label data. Google DeepMind. Earth Engine collection GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL.",
-      "path": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL"
+      "title": "Brown, C. F., Kazmierski, M. R., Pasquarella, V. J., Rucklidge, W. J., Samsikova, M., Zhang, C., et al. (2025). AlphaEarth Foundations: An embedding field model for accurate and efficient global mapping from sparse label data. arXiv:2507.22291.",
+      "path": "https://arxiv.org/abs/2507.22291",
+      "geo:role": "original",
+      "geo:creator": "Google and Google DeepMind",
+      "geo:homepage": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL",
+      "geo:license": {
+        "name": "CC-BY-4.0",
+        "title": "Creative Commons Attribution 4.0 International License",
+        "path": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL#terms-of-use"
+      },
+      "geo:attribution": "The AlphaEarth Foundations Satellite Embedding dataset is produced by Google and Google DeepMind."
     },
     {
-      "title": "Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.",
-      "path": "https://github.com/quarcs-lab/ds4bolivia"
+      "title": "Runfola, D., Anderson, A., Baier, H., et al. (2020). geoBoundaries: A global database of political administrative boundaries. PLoS ONE, 15(4), e0231866.",
+      "path": "https://doi.org/10.1371/journal.pone.0231866",
+      "geo:role": "intermediary",
+      "geo:creator": "geoBoundaries, William & Mary geoLab",
+      "geo:homepage": "https://www.geoboundaries.org",
+      "geo:license": {
+        "name": "CC-BY-4.0",
+        "title": "Creative Commons Attribution 4.0 International License",
+        "path": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "geo:attribution": "Boundaries: geoBoundaries (www.geoboundaries.org)."
+    },
+    {
+      "title": "Mendez, C., Gonzales, E., Leoni, P., Andersen, L., & Peralta, H. (2026). DS4Bolivia: A Data Science Repository to Study GeoSpatial Development in Bolivia [Data set]. GitHub.",
+      "path": "https://github.com/quarcs-lab/ds4bolivia",
+      "geo:role": "intermediary",
+      "geo:creator": "Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta",
+      "geo:license": {
+        "name": "MIT",
+        "title": "MIT License",
+        "path": "https://github.com/quarcs-lab/ds4bolivia/blob/main/LICENSE"
+      }
     }
   ],
   "geo:categories": [
@@ -59,8 +88,9 @@
         "fields": [
           {
             "name": "geo_id",
+            "title": "Municipality ID",
             "type": "string",
-            "description": "Municipality geo ID",
+            "description": "Municipality geo ID (BO-DD-PP-MM) in the GADM 4.1 hierarchy of the 339-unit municipality map. It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes.",
             "geo:role": "id",
             "constraints": {
               "required": true,
@@ -69,8 +99,9 @@
           },
           {
             "name": "year",
+            "title": "Year",
             "type": "integer",
-            "description": "Year",
+            "description": "Year of the satellite embeddings (2017).",
             "geo:role": "time",
             "constraints": {
               "required": true
@@ -78,8 +109,9 @@
           },
           {
             "name": "asdf_id",
+            "title": "DS4Bolivia polygon ID",
             "type": "integer",
-            "description": "DS4Bolivia polygon ID",
+            "description": "ID (AidData asdf_id) of the geoBoundaries v4 ADM3 polygon on which DS4Bolivia computed the data, matched one-to-one to the GADM municipality by area overlap.",
             "geo:role": "source_key",
             "geo:units_column": "asdf_id",
             "geo:source": "DS4Bolivia",
@@ -89,512 +121,576 @@
           },
           {
             "name": "A00",
+            "title": "Embedding A00 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 0",
+            "description": "Dimension 0 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A01",
+            "title": "Embedding A01 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 1",
+            "description": "Dimension 1 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A02",
+            "title": "Embedding A02 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 2",
+            "description": "Dimension 2 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A03",
+            "title": "Embedding A03 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 3",
+            "description": "Dimension 3 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A04",
+            "title": "Embedding A04 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 4",
+            "description": "Dimension 4 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A05",
+            "title": "Embedding A05 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 5",
+            "description": "Dimension 5 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A06",
+            "title": "Embedding A06 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 6",
+            "description": "Dimension 6 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A07",
+            "title": "Embedding A07 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 7",
+            "description": "Dimension 7 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A08",
+            "title": "Embedding A08 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 8",
+            "description": "Dimension 8 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A09",
+            "title": "Embedding A09 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 9",
+            "description": "Dimension 9 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A10",
+            "title": "Embedding A10 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 10",
+            "description": "Dimension 10 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A11",
+            "title": "Embedding A11 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 11",
+            "description": "Dimension 11 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A12",
+            "title": "Embedding A12 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 12",
+            "description": "Dimension 12 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A13",
+            "title": "Embedding A13 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 13",
+            "description": "Dimension 13 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A14",
+            "title": "Embedding A14 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 14",
+            "description": "Dimension 14 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A15",
+            "title": "Embedding A15 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 15",
+            "description": "Dimension 15 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A16",
+            "title": "Embedding A16 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 16",
+            "description": "Dimension 16 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A17",
+            "title": "Embedding A17 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 17",
+            "description": "Dimension 17 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A18",
+            "title": "Embedding A18 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 18",
+            "description": "Dimension 18 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A19",
+            "title": "Embedding A19 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 19",
+            "description": "Dimension 19 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A20",
+            "title": "Embedding A20 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 20",
+            "description": "Dimension 20 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A21",
+            "title": "Embedding A21 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 21",
+            "description": "Dimension 21 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A22",
+            "title": "Embedding A22 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 22",
+            "description": "Dimension 22 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A23",
+            "title": "Embedding A23 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 23",
+            "description": "Dimension 23 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A24",
+            "title": "Embedding A24 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 24",
+            "description": "Dimension 24 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A25",
+            "title": "Embedding A25 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 25",
+            "description": "Dimension 25 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A26",
+            "title": "Embedding A26 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 26",
+            "description": "Dimension 26 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A27",
+            "title": "Embedding A27 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 27",
+            "description": "Dimension 27 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A28",
+            "title": "Embedding A28 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 28",
+            "description": "Dimension 28 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A29",
+            "title": "Embedding A29 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 29",
+            "description": "Dimension 29 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A30",
+            "title": "Embedding A30 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 30",
+            "description": "Dimension 30 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A31",
+            "title": "Embedding A31 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 31",
+            "description": "Dimension 31 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A32",
+            "title": "Embedding A32 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 32",
+            "description": "Dimension 32 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A33",
+            "title": "Embedding A33 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 33",
+            "description": "Dimension 33 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A34",
+            "title": "Embedding A34 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 34",
+            "description": "Dimension 34 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A35",
+            "title": "Embedding A35 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 35",
+            "description": "Dimension 35 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A36",
+            "title": "Embedding A36 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 36",
+            "description": "Dimension 36 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A37",
+            "title": "Embedding A37 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 37",
+            "description": "Dimension 37 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A38",
+            "title": "Embedding A38 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 38",
+            "description": "Dimension 38 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A39",
+            "title": "Embedding A39 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 39",
+            "description": "Dimension 39 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A40",
+            "title": "Embedding A40 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 40",
+            "description": "Dimension 40 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A41",
+            "title": "Embedding A41 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 41",
+            "description": "Dimension 41 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A42",
+            "title": "Embedding A42 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 42",
+            "description": "Dimension 42 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A43",
+            "title": "Embedding A43 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 43",
+            "description": "Dimension 43 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A44",
+            "title": "Embedding A44 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 44",
+            "description": "Dimension 44 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A45",
+            "title": "Embedding A45 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 45",
+            "description": "Dimension 45 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A46",
+            "title": "Embedding A46 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 46",
+            "description": "Dimension 46 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A47",
+            "title": "Embedding A47 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 47",
+            "description": "Dimension 47 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A48",
+            "title": "Embedding A48 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 48",
+            "description": "Dimension 48 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A49",
+            "title": "Embedding A49 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 49",
+            "description": "Dimension 49 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A50",
+            "title": "Embedding A50 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 50",
+            "description": "Dimension 50 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A51",
+            "title": "Embedding A51 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 51",
+            "description": "Dimension 51 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A52",
+            "title": "Embedding A52 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 52",
+            "description": "Dimension 52 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A53",
+            "title": "Embedding A53 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 53",
+            "description": "Dimension 53 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A54",
+            "title": "Embedding A54 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 54",
+            "description": "Dimension 54 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A55",
+            "title": "Embedding A55 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 55",
+            "description": "Dimension 55 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A56",
+            "title": "Embedding A56 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 56",
+            "description": "Dimension 56 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A57",
+            "title": "Embedding A57 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 57",
+            "description": "Dimension 57 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A58",
+            "title": "Embedding A58 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 58",
+            "description": "Dimension 58 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A59",
+            "title": "Embedding A59 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 59",
+            "description": "Dimension 59 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A60",
+            "title": "Embedding A60 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 60",
+            "description": "Dimension 60 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A61",
+            "title": "Embedding A61 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 61",
+            "description": "Dimension 61 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A62",
+            "title": "Embedding A62 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 62",
+            "description": "Dimension 62 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
           },
           {
             "name": "A63",
+            "title": "Embedding A63 (area-weighted)",
             "type": "number",
-            "description": "Satellite embedding dimension 63",
+            "description": "Dimension 63 of the 64-dimensional Google Satellite Embedding V1 (AlphaEarth Foundations), annual 10 m embeddings for 2017, averaged over the municipality with Earth Engine's mean reducer at 10 m, which weights each pixel by its area of overlap. An abstract feature without a physical unit: together the 64 dimensions summarise the year's multi-sensor appearance of the land surface (Sentinel-2, Landsat, radar and other inputs).",
             "geo:unit": "embedding value",
             "geo:aggregation": "none",
             "geo:source": "Google Satellite Embedding V1 via DS4Bolivia"
@@ -602,5 +698,10 @@
         ]
       }
     }
-  ]
+  ],
+  "geo:updated": "2026-10-29",
+  "geo:map": {
+    "variable": "A00",
+    "year": 2017
+  }
 }
