@@ -28,12 +28,14 @@ It builds on [DS4Bolivia](https://github.com/quarcs-lab/ds4bolivia), whose munic
 ## 🚀 Quickstart
 
 ```python
-!pip install -q geo4bolivia mapclassify              # every snippet runs in Google Colab
+!pip install -q geo4bolivia                          # every snippet runs in Google Colab
 import geo4bolivia as geo
+import plotly.express as px                          # interactive maps and charts (preinstalled in Colab)
 
 geo.datasets()                                       # what is available, at which scale and years
 gdf = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)   # 339 municipalities with boundaries
-gdf.plot(column="sdg1_2_mpi", cmap="magma_r", scheme="quantiles", k=5, legend=True)
+px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_mpi",
+                  hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4)
 ```
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/notebooks/empty.ipynb)

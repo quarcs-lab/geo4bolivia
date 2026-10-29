@@ -173,11 +173,12 @@ All code below assumes **Google Colab**: each block starts with the line that in
 
 ### A. Without the package
 
-Every file is a plain URL: `https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/<path>`. Use `main` for the latest data, or a release tag (e.g. `v0.3.0`) for a frozen version. pandas and geopandas are preinstalled in Colab, so nothing needs installing:
+Every file is a plain URL: `https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/<path>`. Use `main` for the latest data, or a release tag (e.g. `v0.3.0`) for a frozen version. pandas, geopandas and plotly are preinstalled in Colab, so nothing needs installing:
 
 ```python
 import pandas as pd
 import geopandas as gpd
+import plotly.express as px
 
 BASE = "https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/"
 
@@ -185,8 +186,10 @@ df = pd.read_csv(BASE + "data/municipality/ntl.csv")                   # panel: 
 units = pd.read_csv(BASE + "geo/units.csv")                             # names, parents, source keys
 df = df.merge(units[["geo_id", "name", "department_id"]], on="geo_id")
 
-gdf = gpd.read_file(BASE + "geo/boundaries/municipality.geojson")       # polygons with geo_id
-gdf.merge(df[df.year == 2020], on="geo_id").plot(column="ln_NTLpc", legend=True)
+gdf = gpd.read_file(BASE + "geo/boundaries/municipality.geojson")       # polygons with geo_id, name
+gdf = gdf.merge(df.loc[df.year == 2020, ["geo_id", "ln_NTLpc"]], on="geo_id")
+px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="ln_NTLpc",
+                  hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4).show()
 
 xw = pd.read_csv(BASE + "geo/crosswalks/municipality__department.csv")  # municipality -> department
 ```

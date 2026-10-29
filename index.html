@@ -433,7 +433,8 @@
         // ====================================================================
         // Every code box runs as-is in Google Colab: the first line installs what Colab lacks.
         const PYTHON_SETUP = `!pip install -q geo4bolivia
-import geo4bolivia as geo`;
+import geo4bolivia as geo
+import plotly.express as px`;
 
         const CONTENT_REGISTRY = [
           // ---------------------------------------------------------------- Indicators
@@ -470,20 +471,23 @@ import geo4bolivia as geo`;
               { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/sdg.datapackage.json' },
             ],
             code: {
-              python: `!pip install -q geo4bolivia mapclassify
-import geo4bolivia as geo
+              python: `${PYTHON_SETUP}
 
 # Multidimensional poverty in its census year, with municipal boundaries
 gdf = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
-gdf.plot(column="sdg1_2_mpi", cmap="YlOrRd", scheme="quantiles", k=5,
-         legend=True, edgecolor="white", linewidth=0.1)
+px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_mpi",
+                  hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4,
+                  labels={"sdg1_2_mpi": "MPI"}, title="Multidimensional poverty, 2012").show()
 
 # Population-weighted poverty by department
-geo.aggregate(gdf, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"},
-              weights=geo.load("pop"))`,
-              pandas: `!pip install -q mapclassify
-import pandas as pd
+dep = geo.aggregate(gdf, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"},
+                    weights=geo.load("pop"))
+dep["department"] = dep["geo_id"].map(geo.units("department").set_index("geo_id")["name"])
+px.bar(dep.sort_values("sdg1_2_mpi"), x="sdg1_2_mpi", y="department",
+       labels={"sdg1_2_mpi": "MPI (population-weighted)"}, title="Poverty by department, 2012").show()`,
+              pandas: `import pandas as pd
 import geopandas as gpd
+import plotly.express as px
 
 # No geo4bolivia needed: every file is a plain URL
 BASE = "${RAW_URL}"
@@ -492,7 +496,9 @@ municipalities = gpd.read_file(BASE + "geo/boundaries/municipality.geojson")
 
 mpi = df.loc[df["year"] == 2012, ["geo_id", "sdg1_2_mpi"]]
 gdf = municipalities.merge(mpi, on="geo_id")
-gdf.plot(column="sdg1_2_mpi", cmap="YlOrRd", scheme="quantiles", k=5, legend=True)`,
+px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_mpi",
+                  hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4,
+                  labels={"sdg1_2_mpi": "MPI"}, title="Multidimensional poverty, 2012")`,
             },
             references: [
               { text: 'Andersen, L. E., Canelas, S., Gonzales, A., & Peñaranda, L. (2020). Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia.', url: 'https://unsdsn.org/resources/municipal-atlas-of-the-sdgs-in-bolivia-2020' },
@@ -529,21 +535,26 @@ gdf.plot(column="sdg1_2_mpi", cmap="YlOrRd", scheme="quantiles", k=5, legend=Tru
               python: `${PYTHON_SETUP}
 
 df = geo.load("ntl")
-df = df.merge(geo.units("municipality")[["geo_id", "name", "department_id"]], on="geo_id")
+df = df.merge(geo.units("municipality")[["geo_id", "department_id"]], on="geo_id")
 
 # Long-run trend of lights per capita: mean by department
-deps = geo.units("department").set_index("geo_id")["name"]
-trend = df.groupby(["year", "department_id"])["ln_t400NTLpc"].mean().unstack()
-trend.rename(columns=deps).plot()`,
+trend = df.groupby(["year", "department_id"], as_index=False)["ln_t400NTLpc"].mean()
+trend["department"] = trend["department_id"].map(geo.units("department").set_index("geo_id")["name"])
+px.line(trend, x="year", y="ln_t400NTLpc", color="department",
+        labels={"ln_t400NTLpc": "Log lights per capita (trend)"}, title="Night-time lights by department")`,
               pandas: `import pandas as pd
+import plotly.express as px
 
 BASE = "${RAW_URL}"
 df = pd.read_csv(BASE + "data/municipality/ntl.csv")
-units = pd.read_csv(BASE + "geo/units.csv")[["geo_id", "name", "department_id"]]
-df = df.merge(units, on="geo_id")
+units = pd.read_csv(BASE + "geo/units.csv")
+df = df.merge(units[["geo_id", "department_id"]], on="geo_id")
 
 # Long-run trend of lights per capita: mean by department
-df.groupby(["year", "department_id"])["ln_t400NTLpc"].mean().unstack().plot()`,
+trend = df.groupby(["year", "department_id"], as_index=False)["ln_t400NTLpc"].mean()
+trend["department"] = trend["department_id"].map(units.set_index("geo_id")["name"])
+px.line(trend, x="year", y="ln_t400NTLpc", color="department",
+        labels={"ln_t400NTLpc": "Log lights per capita (trend)"}, title="Night-time lights by department")`,
             },
             references: [
               { text: 'Elvidge, C. D., Zhizhin, M., Ghosh, T., Hsu, F.-C., & Taneja, J. (2021). Annual time series of global VIIRS nighttime lights derived from monthly averages: 2012 to 2019. Remote Sensing, 13(5), 922.', url: 'https://doi.org/10.3390/rs13050922' },
@@ -582,16 +593,22 @@ pop = geo.load("pop")
 
 # Totals by department, 2001-2020 (population sums up the hierarchy)
 dep = geo.aggregate(pop, to="department", dataset="pop")
-names = geo.units("department").set_index("geo_id")["name"]
-dep.pivot(index="year", columns="geo_id", values="pop").rename(columns=names).plot()`,
+dep["department"] = dep["geo_id"].map(geo.units("department").set_index("geo_id")["name"])
+px.line(dep, x="year", y="pop", color="department",
+        labels={"pop": "Population"}, title="Population by department, 2001-2020")`,
               pandas: `import pandas as pd
+import plotly.express as px
 
 BASE = "${RAW_URL}"
 pop = pd.read_csv(BASE + "data/municipality/pop.csv")
-units = pd.read_csv(BASE + "geo/units.csv")[["geo_id", "department_id"]]
+units = pd.read_csv(BASE + "geo/units.csv")
+pop = pop.merge(units[["geo_id", "department_id"]], on="geo_id")
 
 # Totals by department, 2001-2020
-pop.merge(units, on="geo_id").groupby(["year", "department_id"])["pop"].sum().unstack().plot()`,
+dep = pop.groupby(["year", "department_id"], as_index=False)["pop"].sum()
+dep["department"] = dep["department_id"].map(units.set_index("geo_id")["name"])
+px.line(dep, x="year", y="pop", color="department",
+        labels={"pop": "Population"}, title="Population by department, 2001-2020")`,
             },
             references: [
               { text: 'WorldPop (2018). Global High Resolution Population Denominators Project (100 m, 2000–2020). University of Southampton.', url: 'https://doi.org/10.5258/SOTON/WP00645' },
@@ -634,12 +651,20 @@ emb["pc1"] = PCA(1).fit_transform(X)[:, 0]
 
 # How the first component relates to multidimensional poverty (2012)
 mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
-emb[["geo_id", "pc1"]].merge(mpi, on="geo_id").plot.scatter(x="pc1", y="sdg1_2_mpi")`,
+names = geo.units("municipality")[["geo_id", "name"]]
+df = emb[["geo_id", "pc1"]].merge(mpi, on="geo_id").merge(names, on="geo_id")
+px.scatter(df, x="pc1", y="sdg1_2_mpi", hover_name="name", trendline="ols",
+           labels={"pc1": "First principal component", "sdg1_2_mpi": "MPI, 2012"},
+           title="Satellite embeddings and poverty")`,
               pandas: `import pandas as pd
+import plotly.express as px
 
 BASE = "${RAW_URL}"
 emb = pd.read_csv(BASE + "data/municipality/embpw.csv")   # geo_id, year, asdf_id, A00-A63
-emb.filter(regex=r"^A\\d{2}$").describe()`,
+
+# Distribution of each of the 64 dimensions across municipalities
+px.box(emb.filter(regex=r"^A\\d{2}$"), labels={"variable": "Dimension", "value": "Value"},
+       title="Satellite embeddings, 2017")`,
             },
             references: [
               { text: 'Brown, C. F., et al. (2025). AlphaEarth Foundations: An embedding field model for accurate and efficient global mapping from sparse label data. Google DeepMind. Earth Engine collection GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL.', url: 'https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL' },
@@ -664,27 +689,37 @@ emb.filter(regex=r"^A\\d{2}$").describe()`,
             install: `!pip install -q geo4bolivia
 !pip install -q "geo4bolivia[raster]"      # + rasterio, for zonal statistics from rasters (geo.zonal)`,
             quickstart: {
-              python: `!pip install -q geo4bolivia mapclassify
-import geo4bolivia as geo
+              python: `${PYTHON_SETUP}
 
 geo.datasets()                                        # datasets x scales x years
 geo.dictionary("sdg")                                 # variables, units, reference years
 gdf = geo.load("ntl", years=2020, geometry=True)      # 339 municipalities with boundaries
-gdf.plot(column="ln_t400NTLpc", scheme="quantiles", k=5, legend=True)
+px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="ln_t400NTLpc",
+                  hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4,
+                  labels={"ln_t400NTLpc": "Log lights per capita"}, title="Night-time lights, 2020").show()
 
 # Across scales: municipalities -> provinces -> departments -> Bolivia
-geo.aggregate(geo.load("pop"), to="department", dataset="pop")
-panel = geo.combine(["ntl", "pop"], scale="municipality")   # two datasets, one panel`,
+panel = geo.combine(["ntl", "pop"], scale="municipality")   # two datasets, one panel
+dep = geo.aggregate(geo.load("pop", years=2020), to="department", dataset="pop")
+dep["department"] = dep["geo_id"].map(geo.units("department").set_index("geo_id")["name"])
+px.bar(dep, x="department", y="pop", labels={"pop": "Population"}, title="Population by department, 2020").show()`,
               pandas: `import pandas as pd
+import plotly.express as px
 
 # The same files without the package: plain URLs
 BASE = "${RAW_URL}"
 df = pd.read_csv(BASE + "data/municipality/ntl.csv")
 units = pd.read_csv(BASE + "geo/units.csv")           # names, parents, INE and DS4Bolivia codes
-df = df.merge(units[["geo_id", "name", "department_id"]], on="geo_id")`,
+df = df.merge(units[["geo_id", "name", "department_id"]], on="geo_id")
+df["department"] = df["department_id"].map(units.set_index("geo_id")["name"])
+
+# One line per municipality, coloured by department
+px.line(df, x="year", y="ln_t400NTLpc", color="department", line_group="geo_id", hover_name="name",
+        labels={"ln_t400NTLpc": "Log lights per capita (trend)"}, title="Night-time lights, 339 municipalities")`,
             },
             build: `!pip install -q "geo4bolivia[raster]"
 import geo4bolivia as geo
+import plotly.express as px
 
 # 1. Your table, with INE municipality codes (or names) -> geo IDs
 mine = geo.link(my_table, scale="municipality", on="mun_id", key="mun_id")   # 20101 -> BO-04-17-04
@@ -700,7 +735,13 @@ geo.save(panel, "clinics", scale="municipality", directory="my_data")
 
 # 4. Hand it to expdpy (panel econometrics) or geometrics (spatial analysis)
 df, df_def = geo.for_expdpy(panel)
-gdf, df, df_dict = geo.for_geometrics(panel)`,
+gdf, df, df_dict = geo.for_geometrics(panel)
+
+# 5. Map your indicator
+gdf = geo.boundaries("municipality").merge(panel.query("year == 2020"), on="geo_id")
+px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="clinics_per_10k",
+                  hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4,
+                  labels={"clinics_per_10k": "Clinics per 10,000 people"}, title="Clinics, 2020")`,
             features: [
               { title: 'Load', fns: ['datasets', 'dictionary', 'load', 'units', 'boundaries', 'crosswalk'], text: 'Panels with filters, wide reshaping and boundaries; names, parents and INE, GADM and DS4Bolivia codes of every unit.' },
               { title: 'Link', fns: ['link', 'check'], text: 'Attach geo IDs to any table by names or codes, ignoring accents, case and spacing, with spelling suggestions; shared names are reported, never guessed.' },
