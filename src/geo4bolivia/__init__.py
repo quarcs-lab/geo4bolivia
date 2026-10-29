@@ -23,4 +23,4 @@ from .scales import table as scales
 
 __all__ = ["aggregate", "ancestors", "boundaries", "check", "combine", "config", "crosswalk", "datasets", "dictionary",
            "for_expdpy", "for_geometrics", "link", "load", "overlay", "overlay_weights", "save", "scale_of", "scales", "units", "zonal"]
-__version__ = "0.1.0"
+__version__ = "0.2.0"
