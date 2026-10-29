@@ -89,13 +89,13 @@ geo.datasets()
 ```
 
 ```{code-cell} ipython3
-geo.dictionary("sdg").head(8)      # every variable: description, unit, aggregation rule, source
+geo.dictionary("sdg01").head(8)     # every variable: description, unit, aggregation rule, source
 ```
 
-The SDG indicators come from the Municipal Atlas of the SDGs 2020, and each was measured in its own year (poverty in the 2012 census, infant mortality in 2016, ...). The `sdg` dataset stores each indicator **at its reference year**, so load one indicator with its year:
+The SDG indicators come from the Municipal Atlas of the SDGs 2020, and each was measured in its own year (poverty in the 2012 census, infant mortality in 2016, ...). They are published as one dataset per goal (`sdg01` to `sdg17`: the goal's index and its indicators), and each indicator is stored **at its reference year**, so load one indicator with its year:
 
 ```{code-cell} ipython3
-gdf = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)   # a GeoDataFrame, ready to map
+gdf = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)   # a GeoDataFrame, ready to map
 ax = gdf.plot(column="sdg1_2_mpi", cmap="YlOrRd", scheme="quantiles", k=5, legend=True,
               legend_kwds={"title": "MPI, 2012", "loc": "lower left"}, edgecolor="white", linewidth=0.1, figsize=(8, 8))
 ax.set_axis_off()
@@ -131,7 +131,7 @@ by_department.merge(geo.units("department")[["geo_id", "name"]], on="geo_id").so
 Poverty is a rate, so its departmental value is a **population-weighted** mean. `weights=` brings the population of the same year:
 
 ```{code-cell} ipython3
-mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012)
 mpi_dep = geo.aggregate(mpi, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop"))
 mpi_dep = geo.boundaries("department").merge(mpi_dep, on="geo_id")
 

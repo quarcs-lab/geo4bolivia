@@ -21,6 +21,9 @@ Variables, sources, license and references come from the metadata; do not repeat
   dataset: 'ntl',                                            // or datasets: ['emb', 'embpw']
   notice: 'Optional warning shown under the description.',
   code: { python: `...`, pandas: `...` },
+  examples: [                                                // optional: short recipes under the code tabs
+    { title: 'Compute the index from its indicators', text: 'One sentence on what it shows.', code: `${PYTHON_SETUP}\n...` },
+  ],
 },
 ```
 
@@ -40,6 +43,9 @@ download links: the page no longer uses them.
   - Use long tables (`groupby(..., as_index=False)`, names via `.map()`).
   - Add `.show()` to every figure except the last expression.
 - **Lines of about 84 characters at most.**
+- **Examples** (optional): 2–4 recipes of 8–20 lines that show how to use the dataset's
+  variables (e.g. rebuild a composite index from its components, rank departments, relate two
+  variables). Each starts with `${PYTHON_SETUP}` and ends with one Plotly Express figure.
 - `CodeTabs` adds the "Open in Colab" button.
 
 ## JSON-LD

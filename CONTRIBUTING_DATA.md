@@ -22,7 +22,7 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
      - optionally the original key, with role `source_key` and `geo:units_column` naming the matching column of `geo/units.csv`
      - every field, keys included, with a `title` (a readable label for plots) and a `description` that says how it was built (definition, unit, source, year)
      - the variables, also with `geo:unit`, `geo:source` and `geo:aggregation`
-     - for a variable observed in one year only, `geo:year` (see `metadata/sdg.datapackage.json`)
+     - for a variable observed in one year only, `geo:year` (see `metadata/sdg01.datapackage.json`)
 
    Then add the dataset id to `metadata/index.json`.
 3. **Write a builder.** Copy `src/geo4bolivia/build/_template.py` to `src/geo4bolivia/build/<dataset>.py`. It reads the raw file, maps its key to `geo_id`, and calls `publish()` and `write_docs()`:

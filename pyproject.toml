@@ -1,6 +1,6 @@
 [project]
 name = "geo4bolivia"
-version = "0.2.0"
+version = "0.3.0"
 description = "Subnational development data for Bolivia across spatial scales (GeoDevelopment Observatory of Bolivia)"
 readme = "docs/python-package.md"
 license = {text = "MIT"}

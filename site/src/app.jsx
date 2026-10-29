@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { createRoot } from 'react-dom/client';
 import {
   SITE_URL, REPO_URL, RAW_URL, COLAB_URL, COLAB_EMPTY, DEFAULT_TITLE, SITE_NAME, SHORT_NAME, CITE_AUTHORS,
-  CONTENT_REGISTRY, PEOPLE, CONTACTS, CITATION_APA, CITATION_BIB,
+  CONTENT_REGISTRY, REDIRECTS, PEOPLE, CONTACTS, CITATION_APA, CITATION_BIB,
 } from './content.js';
 
 // ====================================================================
@@ -134,6 +134,8 @@ const parseLocation = () => {
   const { pathname, hash } = window.location;
   const rest = pathname.startsWith(BASE_PATH) ? pathname.slice(BASE_PATH.length) : pathname.replace(/^\//, '');
   const [section, id] = rest.split('/').filter((p) => p && p !== 'index.html');
+  const moved = REDIRECTS[`${section}/${id}`];
+  if (moved) { window.history.replaceState(null, '', `${BASE_PATH}${moved}/${hash}`); return parseLocation(); }
   if (section && id) return { view: 'detail', section, id: decodeURIComponent(id) };
   if (section) return { view: 'detail', section, id: '' };   // a section alone, e.g. "indicators/"
   return { view: 'home', anchor: hash.replace(/^#/, '') };
@@ -1274,7 +1276,7 @@ const IndicatorsSection = () => {
             Start coding in seconds
           </h3>
           <p className="text-salt-400 max-w-2xl mb-6">Two ways in. With the <a className="text-brand-turquoise underline decoration-brand-turquoise/50 underline-offset-2" href="tools/geo4bolivia-package/">geo4bolivia</a> package, one line gives you a panel with names and boundaries. Without it, every file is a plain URL that pandas reads directly. Every snippet runs as-is in a blank Google Colab notebook: its first line installs what Colab lacks.</p>
-          <CodeTabs code={REGISTRY_BY_ID['municipalities339-sdg'].code} idPrefix="home-code" />
+          <CodeTabs code={REGISTRY_BY_ID['municipalities339-sdg01'].code} idPrefix="home-code" />
         </AnimateIn>
       </div>
     </section>
@@ -1604,6 +1606,20 @@ const DetailShell = ({ item, children, aside, lead }) => {
   );
 };
 
+// Short recipes under an indicator's main example: a heading, one sentence and a Python snippet each
+const CodeExamples = ({ examples }) => (
+  <div className="mt-10 space-y-8">
+    <h3 className="text-xl font-bold tracking-tight text-white">More examples</h3>
+    {examples.map((ex) => (
+      <div key={ex.title}>
+        <h4 className="text-lg font-semibold text-white mb-1">{ex.title}</h4>
+        {ex.text && <p className="text-salt-300 leading-relaxed mb-3">{ex.text}</p>}
+        <CodeBlock code={ex.code} language="python" title={CODE_TITLE.python} colab />
+      </div>
+    ))}
+  </div>
+);
+
 const Block = ({ title, children, id }) => (
   <section aria-labelledby={id} className="pt-10 border-t border-white/10 first:pt-0 first:border-t-0">
     <h2 id={id} className="text-2xl md:text-3xl font-bold tracking-tight text-white mb-5">{title}</h2>
@@ -1886,7 +1902,10 @@ const IndicatorDetail = ({ item }) => {
           ? <div className="space-y-8">{meta.packages.map((p) => <VariableTable key={p.name} pkg={p} heading={meta.packages.length > 1} />)}</div>
           : <MetadataStatus state={meta} ids={ids} />}
       </Block>
-      <Block title="Use it in your code" id="d-code"><CodeTabs code={item.code} idPrefix={`code-${item.id}`} /></Block>
+      <Block title="Use it in your code" id="d-code">
+        <CodeTabs code={item.code} idPrefix={`code-${item.id}`} />
+        {item.examples?.length > 0 && <CodeExamples examples={item.examples} />}
+      </Block>
       <Block title="License" id="d-license">
         {ready ? <LicenseBlock packages={meta.packages} /> : <MetadataStatus state={meta} ids={ids} />}
       </Block>

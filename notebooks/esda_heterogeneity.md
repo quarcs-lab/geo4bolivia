@@ -63,7 +63,7 @@ warnings.filterwarnings("ignore")
 Poverty comes from the SDG Atlas at its reference year (2012) and lights from the `ntl` dataset in the same year. All 339 municipalities have both values. The GWR kernels need one point per municipality: we use the centroids in the observatory's equal-area projection, in kilometres.
 
 ```{code-cell} ipython3
-mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)
 ntl = geo.load("ntl", variables="ln_t400NTLpc", years=2012)
 
 units = geo.units("municipality")

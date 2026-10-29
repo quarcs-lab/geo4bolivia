@@ -12,7 +12,8 @@ The untouched originals behind every published file. Never edit them: `uv run ge
 | `lookups/department_names.csv`, `lookups/province_names.csv` | Hand-checked names (GADM writes them without spaces) and INE codes | `build/geo.py` |
 | `pop/pop.csv` | DS4Bolivia `pop/`: gridded population 2001–2020 by DS4Bolivia polygon, wide (`pop2001`…) | `build/pop.py` |
 | `ntl/ln_NTLpc.csv` | DS4Bolivia `ntl/`: log night-time lights per capita and its HP trend, 2012–2020, wide | `build/ntl.py` |
-| `sdg/sdgVariables.csv` | DS4Bolivia `sdgVariables/`: the 64 indicators of the Municipal Atlas of the SDGs 2020, by DS4Bolivia attribute row | `build/sdg.py` |
+| `sdg/sdgVariables.csv` | DS4Bolivia `sdgVariables/`: the 62 indicators of the Municipal Atlas of the SDGs 2020 plus population and urbanization, by DS4Bolivia attribute row | `build/sdg.py` |
+| `sdg/sdgIndices.csv` | DS4Bolivia `sdg/sdg.csv`: the Atlas's goal indices `index_sdg1`…`index_sdg17` (no 12, 14) and the overall `imds` (not published), by DS4Bolivia attribute row (the same rows as `sdgVariables.csv`) | `build/sdg.py` |
 | `emb/satelliteEmbeddings2017.csv` | DS4Bolivia `satelliteEmbeddings/`: 64 embedding dimensions, area-weighted mean, 2017 | `build/emb.py` |
 | `embpw/satelliteEmbeddings2017popWeighted.csv` | DS4Bolivia `satelliteEmbeddings/`: the same, population-weighted (its `pop_sum` weights are not published) | `build/emb.py` |
 

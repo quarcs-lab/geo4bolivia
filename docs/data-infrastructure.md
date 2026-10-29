@@ -128,11 +128,11 @@ Each table is a **long panel**: one row per unit and year, sorted by `geo_id` an
 | --- | --- | --- | --- |
 | `pop` | municipality (339) | 2001–2020 | gridded population |
 | `ntl` | municipality (339) | 2012–2020 | log night-time lights per capita and its HP trend |
-| `sdg` | municipality (339) | 2010–2020 | 64 indicators of the Municipal Atlas of the SDGs 2020, each at its reference year |
+| `sdg01` … `sdg17` | municipality (339) | 2010–2020 | Municipal Atlas of the SDGs 2020, one dataset per goal: the goal index and its indicators, each at its reference year |
 | `emb` | municipality (339) | 2017 | 64 satellite embedding dimensions, area-weighted |
 | `embpw` | municipality (339) | 2017 | the same, population-weighted |
 
-A cross-sectional source fits the same shape: each variable is stored at its reference year. The SDG Atlas indicators come from different years (e.g. poverty from the 2012 census, infant mortality from 2016), so `sdg` has one row per municipality and reference year, and a variable has values only in its year (`geo:year` in the metadata says which).
+A cross-sectional source fits the same shape: each variable is stored at its reference year. The SDG Atlas indicators come from different years (e.g. poverty from the 2012 census, infant mortality from 2016), so each SDG goal dataset (`sdg01` … `sdg17`) has one row per municipality and reference year, and a variable has values only in its year (`geo:year` in the metadata says which).
 
 ### Metadata
 
@@ -213,7 +213,7 @@ geo.dictionary("ntl")                              # variables, labels, units, a
 df  = geo.load("ntl")                              # panel: geo_id, year, variables
 gdf = geo.load("ntl", years=2020, geometry=True)   # GeoDataFrame, ready to map
 w   = geo.load("pop", wide="pop")                  # one row per municipality, pop2001 ... pop2020
-mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)   # one SDG indicator at its year
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012)   # one SDG indicator at its year
 names = geo.units("municipality")                  # names, parents, source keys
 shapes = geo.boundaries("department")
 xw = geo.crosswalk("municipality", "department")
@@ -320,7 +320,7 @@ geo.aggregate(pop, to="department", dataset="pop")
 geo.aggregate(pop, to="country", dataset="pop", variables=["pop"])
 
 # your own rules: municipal poverty (2012) as a population-weighted mean by department
-mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012)
 geo.aggregate(mpi, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop"))
 
 # onto units that do not nest: a grid, watersheds, a newer municipality map
@@ -459,7 +459,7 @@ Every function has a docstring: `help(geo.link)`.
 uv sync                              # environment + the package (editable)
 uv run geo4bolivia build            # everything: geo, every dataset, catalog
 uv run geo4bolivia build geo        # only the geography layer
-uv run geo4bolivia build sdg        # one dataset
+uv run geo4bolivia build sdg01      # one dataset
 uv run geo4bolivia validate         # all checks; non-zero exit on failure
 uv run geo4bolivia list             # datasets x scales x years
 uv run pytest                        # tests/test_core.py (generic) + tests/test_project.py

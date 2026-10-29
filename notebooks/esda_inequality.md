@@ -66,7 +66,7 @@ warnings.filterwarnings("ignore")
 Each municipality has one `geo_id` (e.g. `BO-04-17-04`, La Paz). Poverty comes from the SDG Atlas at its reference year (2012), lights from the `ntl` dataset in the same year. `geometry=True` attaches the boundaries; `geo.units()` gives each municipality its department.
 
 ```{code-cell} ipython3
-mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)
 ntl = geo.load("ntl", variables="ln_t400NTLpc", years=2012)
 pop = geo.load("pop", years=2012)
 

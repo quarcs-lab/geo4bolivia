@@ -2,7 +2,7 @@
 
 **Subnational development data for Bolivia, ready to analyse, at every spatial scale.**
 
-`geo4bolivia` is the Python package of the [GeoDevelopment Observatory of Bolivia](https://quarcs-lab.github.io/geo4bolivia/). It loads the observatory's indicators (population, night-time lights, 64 indicators of the Municipal Atlas of the SDGs, satellite embeddings...) as tidy panels, with boundaries for every scale. It also lets you **build your own indicators**: link your tables to the same unit IDs, summarise rasters over units, move data across scales and combine datasets. It works out of the box in Google Colab: every example below runs in a new Colab notebook (replace the placeholder files, such as your own table or raster, with yours).
+`geo4bolivia` is the Python package of the [GeoDevelopment Observatory of Bolivia](https://quarcs-lab.github.io/geo4bolivia/). It loads the observatory's indicators (population, night-time lights, the Municipal Atlas of the SDGs by goal, with each goal's index and indicators, satellite embeddings...) as tidy panels, with boundaries for every scale. It also lets you **build your own indicators**: link your tables to the same unit IDs, summarise rasters over units, move data across scales and combine datasets. It works out of the box in Google Colab: every example below runs in a new Colab notebook (replace the placeholder files, such as your own table or raster, with yours).
 
 ```python
 !pip install -q geo4bolivia
@@ -10,7 +10,7 @@ import geo4bolivia as geo
 import plotly.express as px                         # interactive maps and charts (preinstalled in Colab)
 
 geo.datasets()                                       # what is available, at which scale and years
-gdf = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)   # 339 municipalities
+gdf = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)   # 339 municipalities
 px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_mpi",
                   hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4)
 ```

@@ -260,6 +260,16 @@ for (const item of C.CONTENT_REGISTRY) {
     preload: (item.map || item.image) ? `<link rel="preload" as="image" href="${esc(item.map || item.image)}" fetchpriority="high">` : '',
   }));
 }
+// Retired pages send visitors and search engines to the page that replaced them
+for (const [from, to] of Object.entries(C.REDIRECTS || {})) {
+  write(`${from}/index.html`, `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Moved</title>
+<meta name="robots" content="noindex"><link rel="canonical" href="${esc(SITE_URL + to)}/">
+<meta http-equiv="refresh" content="0; url=${esc(BASE + to)}/">
+<script>location.replace(${JSON.stringify(BASE + to + '/')} + location.hash)</script>
+</head><body><p><a href="${esc(BASE + to)}/">This page has moved.</a></p></body></html>
+`);
+}
 // Unknown paths: GitHub Pages serves 404.html, and the app shows its "not found" page there
 write('404.html', page({
   title: `Page not found | ${C.SHORT_NAME}`, description: C.SITE_DESCRIPTION, url: SITE_URL, image: 'images/og-image.jpg',

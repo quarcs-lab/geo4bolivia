@@ -1,0 +1,178 @@
+{
+  "name": "sdg13",
+  "title": "SDG 13: Climate action (Municipal Atlas of the SDGs 2020)",
+  "description": "The SDG 13 (Climate action) index of the Municipal Atlas of the Sustainable Development Goals in Bolivia 2020 (SDSN Bolivia) and the 3 indicators behind it, for Bolivia's 339 municipalities, with the Atlas population and urbanization rate as context. Each variable is stored at its own reference year, so the panel is sparse: a variable has values only in its year. The index is stored at 2017, the latest reference year of its indicators.",
+  "version": "1.0.0",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0 International License",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Andersen, L. E., Canelas, S., Gonzales, A., & Peñaranda, L. (2020). Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia.",
+      "path": "https://unsdsn.org/resources/municipal-atlas-of-the-sdgs-in-bolivia-2020",
+      "geo:role": "original",
+      "geo:creator": "Lykke E. Andersen, Stefano Canelas, Alejandra Gonzales and Lily Peñaranda (SDSN Bolivia, Universidad Privada Boliviana)",
+      "geo:homepage": "https://www.sdsnbolivia.org/Atlas",
+      "geo:license": {
+        "name": "LicenseRef-SDSN-Bolivia-permission",
+        "title": "No open license stated (© Universidad Privada Boliviana); used and shared with the permission of SDSN Bolivia",
+        "path": "https://www.sdsnbolivia.org/Atlas"
+      },
+      "geo:attribution": "Please cite the report and the data as: Andersen, L. E., Canelas, S., Gonzales, A., Peñaranda, L. (2020) Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia."
+    },
+    {
+      "title": "Mendez, C., Gonzales, E., Leoni, P., Andersen, L., & Peralta, H. (2026). DS4Bolivia: A Data Science Repository to Study GeoSpatial Development in Bolivia [Data set]. GitHub.",
+      "path": "https://github.com/quarcs-lab/ds4bolivia",
+      "geo:role": "intermediary",
+      "geo:creator": "Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta",
+      "geo:license": {
+        "name": "MIT",
+        "title": "MIT License",
+        "path": "https://github.com/quarcs-lab/ds4bolivia/blob/master/LICENSE"
+      }
+    }
+  ],
+  "geo:categories": [
+    "Environment"
+  ],
+  "geo:citation": "GeoDevelopment Observatory of Bolivia (2026). SDG 13: Climate action, from the Municipal Atlas of the SDGs 2020 (339 municipalities). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/sdg13.md",
+  "geo:notes": [
+    "Reference years come from the variable labels. Indicators averaged over a period are stored at its midpoint, rounded down (e.g. average 2014–17 at 2015); the period is given in the description and `geo:year` holds the year used.",
+    "The SDG 13 index (`index_sdg13`) summarises indicators from different years; it is stored at 2017, the latest of them.",
+    "Load one indicator with its year, e.g. `geo.load(\"sdg13\", variables=\"index_sdg13\", years=2017)`, or every variable as a cross-section with `geo.load(\"sdg13\").groupby(\"geo_id\").first()`.",
+    "Most indicators are rates, shares or indices, so their aggregation rule is `none`. Population-weighted averages can be built with the `pop` dataset, which covers every reference year: `geo.aggregate(df, to=\"department\", rules={\"index_sdg13\": \"weighted_mean:pop\"}, weights=geo.load(\"pop\"))`.",
+    "In DS4Bolivia the rows of three homonym pairs (San Javier in Beni and Santa Cruz, El Puente in Tarija and Santa Cruz, Santa Rosa in Beni and Pando) are attached to the other polygon of the pair. Here the indicators are linked by INE code (`mun_id`), so each lies in its correct municipality; see raw/README.md.",
+    "`population_2020` is the Atlas (INE-based) population and differs from the gridded `pop` dataset."
+  ],
+  "resources": [
+    {
+      "name": "sdg13-municipality",
+      "path": "https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/data/municipality/sdg13.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "geo:scale": "municipality",
+      "geo:period": [
+        2012,
+        2020
+      ],
+      "geo:path": "data/municipality/sdg13.csv",
+      "geo:parquet": "data/municipality/sdg13.parquet",
+      "geo:source_geometry": "Municipal statistics of the Atlas, linked by INE municipality code",
+      "schema": {
+        "fields": [
+          {
+            "name": "geo_id",
+            "title": "Municipality ID",
+            "type": "string",
+            "description": "GDO-Bolivia municipality geo ID (BO-DD-PP-MM) of the 339-unit municipality map, numbered as in GADM 4.1; its boundary in geo/boundaries/ comes from geoBoundaries (GeoBolivia, public domain). It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes.",
+            "geo:role": "id",
+            "constraints": {
+              "required": true,
+              "pattern": "^BO-\\d{2}-\\d{2}-\\d{2}$"
+            }
+          },
+          {
+            "name": "year",
+            "title": "Year",
+            "type": "integer",
+            "description": "Reference year of the values in the row. Each SDG Atlas variable is stored only at its own reference year (geo:year); indicators averaged over a period are stored at the period's midpoint, rounded down, and the goal index at the latest reference year of its indicators, so the panel is sparse.",
+            "geo:role": "time",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "mun_id",
+            "title": "INE municipality code",
+            "type": "integer",
+            "description": "Official municipality code of the National Statistics Institute (INE), DDPPMM (department, province, municipality) stored as an integer without the leading zero (e.g. 20101 = La Paz). The Atlas indicators are linked to geo_id through this code, which places DS4Bolivia's three swapped homonym pairs in their correct municipality.",
+            "geo:role": "source_key",
+            "geo:units_column": "mun_id",
+            "geo:source": "INE via DS4Bolivia",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "index_sdg13",
+            "title": "Climate action index (0-100)",
+            "type": "number",
+            "description": "SDG 13 (Climate action) index of the Municipal Atlas of the SDGs in Bolivia 2020, on a 0-100 scale where 100 means the goal's targets are met (best value) and 0 the worst situation. Following the global SDG Index method (Lafortune et al., 2018), each of its 3 indicators is rescaled linearly to 0-100 between a worst value (generally the 2.5th-percentile tail of the municipal distribution) and a best value (the SDG target where one exists, otherwise the average of the five best municipalities, or expert judgement), with the direction set so that higher is always better and values beyond the bounds capped at 0 or 100; the index is the simple (equal-weight) mean of the available rescaled indicators. Components: Climate change vulnerability index; Total CO2 emissions (t per person); Deforestation rate (% of forest). The components refer to different years; the observatory stores the index at 2017, the latest reference year among them. Small residuals come from the rounding of the published vulnerability index (one decimal).",
+            "geo:unit": "index (0-100)",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 13
+          },
+          {
+            "name": "sdg13_1_ccvi",
+            "title": "Climate change vulnerability index",
+            "type": "number",
+            "description": "Municipal climate change vulnerability index (2015) from Conservación Internacional Bolivia's Climate Change Atlas of Bolivia: vulnerability to changes in the water balance under the IPCC Fourth Assessment Report climate scenarios, combined with each municipality's socio-economic and environmental capacity to respond. Higher is more vulnerable (range about 0-3; published with one decimal). In the SDG 13 index it is normalised linearly between 2.97 (worst; 2.5th-percentile tail) and 0 (best; average of the top 5), values beyond the bounds capped.",
+            "geo:unit": "index (0-3)",
+            "geo:year": 2015,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 13
+          },
+          {
+            "name": "sdg13_2_tco2e",
+            "title": "Total CO2 emissions (t per person)",
+            "type": "number",
+            "description": "Total CO2 emissions per capita in 2016 (tCO2 per person per year): emissions from deforestation (biomass burning, from Conservación Internacional Bolivia) plus emissions from burning natural gas, gasoline and diesel (Andersen, Branisa & Calderón, 2019), divided by population. In the SDG 13 index it is normalised linearly between 23.7 (worst; 2.5th-percentile tail) and 0.02 (best; average of the top 5), values beyond the bounds capped.",
+            "geo:unit": "tCO2 per person per year",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 13
+          },
+          {
+            "name": "sdg13_2_dra",
+            "title": "Deforestation rate (% of forest)",
+            "type": "number",
+            "description": "Annual deforestation rate, average of 2016-2018, as a percentage of the forest area in 2015, computed by Conservación Internacional Bolivia from satellite data (Hansen et al. 2013, Global Forest Change v1.5). Stored at 2017, the period midpoint. In the SDG 13 index it is normalised linearly between 5.44 (worst; 2.5th-percentile tail) and 0 (best; average of the top 5), values beyond the bounds capped.",
+            "geo:unit": "% of 2015 forest area per year",
+            "geo:year": 2017,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 13
+          },
+          {
+            "name": "population_2020",
+            "title": "Population (persons)",
+            "type": "number",
+            "description": "Estimated municipal population in 2020 (persons), as printed in the Atlas municipal profiles (\"Población estimada, 2020\"). The Atlas does not name the source; the 339 values sum to 11,633,371, exactly INE's 2020 national population projection (Revisión 2020 series), so they are presumably INE's municipal projections. Not an input of any goal index. Differs from the gridded WorldPop-based pop dataset.",
+            "geo:unit": "persons",
+            "geo:year": 2020,
+            "geo:aggregation": "sum",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020"
+          },
+          {
+            "name": "urbano_2012",
+            "title": "Urbanization rate (%)",
+            "type": "number",
+            "description": "Share of the municipal population living in urban areas in 2012 (%), as printed in the Atlas municipal profiles (\"Tasa de urbanización, 2012\"), from the 2012 Population and Housing Census (INE). INE counts as urban the localities with 2,000 or more inhabitants, which is why 175 municipalities have a rate of 0. Not an input of any goal index (the Atlas treats 15 almost fully urban municipalities as having no applicable farm indicators for SDG 2; 11 of them are 95% or more urban by this rate, while Sucre, Tiquipaya and Potosí are 91–92% and Yunguyo de Litoral 0%).",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020"
+          }
+        ],
+        "primaryKey": [
+          "geo_id",
+          "year"
+        ]
+      }
+    }
+  ],
+  "geo:updated": "2026-10-30",
+  "geo:map": {
+    "variable": "index_sdg13",
+    "year": 2017
+  }
+}

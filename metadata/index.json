@@ -2,7 +2,21 @@
   "datasets": [
     "pop",
     "ntl",
-    "sdg",
+    "sdg01",
+    "sdg02",
+    "sdg03",
+    "sdg04",
+    "sdg05",
+    "sdg06",
+    "sdg07",
+    "sdg08",
+    "sdg09",
+    "sdg10",
+    "sdg11",
+    "sdg13",
+    "sdg15",
+    "sdg16",
+    "sdg17",
     "emb",
     "embpw"
   ]

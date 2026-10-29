@@ -272,7 +272,7 @@ def compose_emblem(size: int, tile: bool) -> Image.Image:
     # a logo reads better solid: fill the salt flats and lakes that lie outside every unit
     from shapely.geometry import MultiPolygon, Polygon
     deps["geometry"] = [MultiPolygon([Polygon(p.exterior) for p in getattr(g, "geoms", [g])]) for g in deps.geometry]
-    mpi = geo.aggregate(geo.load("sdg", variables="sdg1_2_mpi", years=2012), to="department",
+    mpi = geo.aggregate(geo.load("sdg01", variables="sdg1_2_mpi", years=2012), to="department",
                         rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop", years=2012))
     deps = deps.merge(mpi[["geo_id", "sdg1_2_mpi"]], on="geo_id")
     rank = deps["sdg1_2_mpi"].rank(method="first").to_numpy() - 1
@@ -421,10 +421,10 @@ def package_card(geo, plt):
     import mapclassify
     fig = plt.figure(figsize=(16, 9))
     ax = fig.add_axes([0.02, 0.03, 0.4, 0.94]); ax.set_axis_off()
-    mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
+    mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012)
     pop = geo.load("pop", years=2012)
     layers = [("department", "9 departments", "pop · BO-04", site_cmap()),
-              ("province", "112 provinces", "sdg · BO-04-17", seq_cmap()),
+              ("province", "112 provinces", "sdg01 · BO-04-17", seq_cmap()),
               ("municipality", "339 municipalities", "ntl · BO-04-17-04", site_cmap().reversed())]
     for i, (scale, label, sub, cmap) in enumerate(layers):
         b = geo.boundaries(scale)
@@ -519,7 +519,10 @@ def expdpy_card(geo, plt):
 
 
 def insight_card(geo, plt):
-    sdg = geo.load("sdg").groupby("geo_id").first().reset_index()
+    import pandas as pd
+
+    goals = ["sdg02", "sdg04", "sdg10"]
+    sdg = pd.concat([geo.load(d) for d in goals]).groupby("geo_id").first().reset_index()
     g = geo.boundaries("municipality").merge(sdg, on="geo_id")
     panels = [("sdg2_2_cmc", "Chronic child\nmalnutrition (2016)"), ("sdg10_2_nssp", "Non-Spanish\nspeakers (2012)"),
               ("sdg4_1_ssdrm", "Secondary dropout,\nmales (2017)"), ("sdg4_1_ssdrf", "Secondary dropout,\nfemales (2017)"),
@@ -586,7 +589,7 @@ def notebook_cards(geo, plt) -> None:
     crs = geo.config()["equal_area_crs"]
     units = geo.units("municipality")
     deps = geo.boundaries("department").to_crs(crs)
-    mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
+    mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)
     ntl = geo.load("ntl", variables="ln_t400NTLpc", years=2012)
     gdf = (mpi.merge(ntl[["geo_id", "ln_t400NTLpc"]], on="geo_id")
               .merge(units[["geo_id", "department_id"]], on="geo_id").to_crs(crs))
@@ -596,7 +599,7 @@ def notebook_cards(geo, plt) -> None:
     tools = IMG / "tools"
 
     # quickstart: population-weighted poverty by department
-    dep_mpi = geo.aggregate(geo.load("sdg", variables="sdg1_2_mpi", years=2012), to="department",
+    dep_mpi = geo.aggregate(geo.load("sdg01", variables="sdg1_2_mpi", years=2012), to="department",
                             rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop"))
     d = deps.merge(dep_mpi[["geo_id", "sdg1_2_mpi"]], on="geo_id")
     fig = plt.figure(figsize=(16, 9)); ax = map_axes(fig)
@@ -735,7 +738,7 @@ def pillars() -> None:
     print("pillars")
     mun = geo.boundaries("municipality")
     outline_geom = country()
-    mpi = mun.merge(geo.load("sdg", variables="sdg1_2_mpi", years=2012), on="geo_id")
+    mpi = mun.merge(geo.load("sdg01", variables="sdg1_2_mpi", years=2012), on="geo_id")
     ntl = mun.merge(geo.load("ntl", years=2020), on="geo_id")
 
     # Indicators: three stacked layers (imagery, a choropleth, night lights)

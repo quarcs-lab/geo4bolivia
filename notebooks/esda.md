@@ -65,7 +65,7 @@ SEED = 12345
 `geo.load(..., geometry=True)` returns the poverty index with the municipal boundaries and names. The MPI runs from 0 to 1, and **higher values mean more poverty**. We add the department of each municipality and a poverty rank (1 = poorest), and project the map to the observatory's equal-area projection, so that distances and areas are in metres.
 
 ```{code-cell} ipython3
-gdf = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
+gdf = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)
 
 units = geo.units("municipality")[["geo_id", "department_id"]]
 dep_names = geo.units("department").set_index("geo_id")["name"]

@@ -83,15 +83,15 @@ Four pieces, all at the municipality scale and keyed by `geo_id`:
 
 | Variable | Dataset | Year | Meaning |
 | --- | --- | --- | --- |
-| `sdg1_2_mpi` | `sdg` | 2012 | Multidimensional Poverty Index (0–1, higher = poorer) |
+| `sdg1_2_mpi` | `sdg01` | 2012 | Multidimensional Poverty Index (0–1, higher = poorer) |
 | `ln_t400NTLpc` | `ntl` | 2012 | Hodrick–Prescott trend of the log of night-time lights per capita |
 | `pop` | `pop` | 2012 | Gridded population (WorldPop) |
-| infrastructure and connectivity | `sdg` | own year | see section 2.5 |
+| infrastructure and connectivity | `sdg06`, `sdg07`, `sdg09`, ... | own year | see section 2.5 |
 
 `geo.load(..., geometry=True)` returns a GeoDataFrame with names and boundaries; `geo.combine` puts night-time lights and population on one panel.
 
 ```{code-cell} ipython3
-gdf = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
+gdf = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)
 ntl_pop = geo.combine(["ntl", "pop"], scale="municipality", years=2012)
 gdf = gdf.merge(ntl_pop[["geo_id", "ln_t400NTLpc", "pop"]], on="geo_id")
 
@@ -110,12 +110,13 @@ print(gdf.shape)
 gdf[["geo_id", "name", "department", "sdg1_2_mpi", "ln_t400NTLpc", "pop"]].head()
 ```
 
-The SDG Atlas indicators each refer to their own year. A cross-section of all 64 is one line:
+The SDG Atlas is published as one dataset per goal (`sdg01` to `sdg17`), and each indicator refers to its own year. A cross-section of every indicator stacks the goals and keeps each municipality's value:
 
 ```{code-cell} ipython3
-sdg_long = geo.load("sdg")
+goals = [d for d in geo.datasets()["dataset"] if d.startswith("sdg")]
+sdg_long = pd.concat([geo.load(d) for d in goals])
 sdg = sdg_long.groupby("geo_id").first()
-sdg_dict = geo.dictionary("sdg").set_index("variable")
+sdg_dict = pd.concat([geo.dictionary(d) for d in goals]).drop_duplicates("variable").set_index("variable")
 ref_year = {v: int(sdg_long.loc[sdg_long[v].notna(), "year"].min()) for v in sdg.columns if v != "year"}
 labels = sdg_dict["label"].to_dict()
 labels.update({"sdg1_2_mpi": "Multidimensional poverty (MPI)", "ln_t400NTLpc": "Log NTL per capita (trend)",
@@ -152,7 +153,7 @@ How do departments compare? The table gives the simple mean over municipalities 
 by_dep = gdf.groupby("department")["sdg1_2_mpi"].describe().round(3)
 
 # Population-weighted department means with geo.aggregate
-mpi_panel = geo.load("sdg", variables="sdg1_2_mpi", years=2012)
+mpi_panel = geo.load("sdg01", variables="sdg1_2_mpi", years=2012)
 dep_w = geo.aggregate(mpi_panel, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"},
                       weights=geo.load("pop"))
 dep_w["department"] = dep_w["geo_id"].map(departments)

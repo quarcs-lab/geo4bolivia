@@ -66,7 +66,7 @@ Three indicators, all for 2012:
 
 | Variable | Dataset | Meaning |
 | --- | --- | --- |
-| `sdg1_2_mpi` | `sdg` | Multidimensional Poverty Index (0–1; **higher = poorer**) |
+| `sdg1_2_mpi` | `sdg01` | Multidimensional Poverty Index (0–1; **higher = poorer**) |
 | `pop` | `pop` | Estimated population (WorldPop) |
 | `ln_t400NTLpc` | `ntl` | Long-run trend (HP filter) of the log of night-time lights per capita |
 
@@ -75,7 +75,7 @@ Three indicators, all for 2012:
 ```{code-cell} ipython3
 YEAR = 2012
 
-mpi = geo.load("sdg", variables="sdg1_2_mpi", years=YEAR, geometry=True)
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=YEAR, geometry=True)
 covariates = geo.combine(["ntl", "pop"], scale="municipality", years=YEAR)[["geo_id", "ln_t400NTLpc", "pop"]]
 
 # department and province of each municipality, from the units table

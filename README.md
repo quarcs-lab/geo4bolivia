@@ -33,7 +33,7 @@ import geo4bolivia as geo
 import plotly.express as px                          # interactive maps and charts (preinstalled in Colab)
 
 geo.datasets()                                       # what is available, at which scale and years
-gdf = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)   # 339 municipalities with boundaries
+gdf = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)   # 339 municipalities with boundaries
 px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_mpi",
                   hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4)
 ```
@@ -50,7 +50,7 @@ All data share one spatial backbone. Every unit at every scale has a **geo ID** 
 | --- | --- | --- | --- | --- |
 | [`pop`](docs/datasets/pop.md) | Population (gridded estimates) | 339 municipalities | 2001–2020 | [`data/municipality/`](data/municipality/) |
 | [`ntl`](docs/datasets/ntl.md) | Night-time lights per capita (log) and its long-run trend | 339 municipalities | 2012–2020 | [`data/municipality/`](data/municipality/) |
-| [`sdg`](docs/datasets/sdg.md) | 64 indicators of the Municipal Atlas of the SDGs 2020, each at its reference year | 339 municipalities | 2010–2020 | [`data/municipality/`](data/municipality/) |
+| [`sdg01`](docs/datasets/sdg01.md) … [`sdg17`](docs/datasets/sdg17.md) | Municipal Atlas of the SDGs 2020, one dataset per goal: the goal index and its indicators, each at its reference year | 339 municipalities | 2010–2020 | [`data/municipality/`](data/municipality/) |
 | [`emb`](docs/datasets/emb.md) | Satellite embeddings, 64 dimensions, area-weighted | 339 municipalities | 2017 | [`data/municipality/`](data/municipality/) |
 | [`embpw`](docs/datasets/embpw.md) | Satellite embeddings, 64 dimensions, population-weighted | 339 municipalities | 2017 | [`data/municipality/`](data/municipality/) |
 | [`geo`](geo/) | Units, names, codes, boundaries and crosswalks for every scale | 461 units | — | [`geo/`](geo/) |
@@ -70,8 +70,8 @@ New municipalities keep being created in Bolivia. The 339 municipalities here ar
 !pip install -q geo4bolivia
 import geo4bolivia as geo
 
-geo.dictionary("sdg")                                      # variables, units, reference years
-mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012)  # one SDG indicator at its year
+geo.dictionary("sdg01")                                    # variables, units, reference years
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012)  # one SDG indicator at its year
 wide = geo.load("pop", wide="pop")                         # one column per year
 geo.units("municipality")                                  # names, parents, INE and DS4Bolivia codes
 

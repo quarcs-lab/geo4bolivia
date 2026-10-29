@@ -1,0 +1,178 @@
+{
+  "name": "sdg10",
+  "title": "SDG 10: Reduced inequalities (Municipal Atlas of the SDGs 2020)",
+  "description": "The SDG 10 (Reduced inequalities) index of the Municipal Atlas of the Sustainable Development Goals in Bolivia 2020 (SDSN Bolivia) and the 3 indicators behind it, for Bolivia's 339 municipalities, with the Atlas population and urbanization rate as context. Each variable is stored at its own reference year, so the panel is sparse: a variable has values only in its year. The index is stored at 2016, the latest reference year of its indicators.",
+  "version": "1.0.0",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0 International License",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Andersen, L. E., Canelas, S., Gonzales, A., & Peñaranda, L. (2020). Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia.",
+      "path": "https://unsdsn.org/resources/municipal-atlas-of-the-sdgs-in-bolivia-2020",
+      "geo:role": "original",
+      "geo:creator": "Lykke E. Andersen, Stefano Canelas, Alejandra Gonzales and Lily Peñaranda (SDSN Bolivia, Universidad Privada Boliviana)",
+      "geo:homepage": "https://www.sdsnbolivia.org/Atlas",
+      "geo:license": {
+        "name": "LicenseRef-SDSN-Bolivia-permission",
+        "title": "No open license stated (© Universidad Privada Boliviana); used and shared with the permission of SDSN Bolivia",
+        "path": "https://www.sdsnbolivia.org/Atlas"
+      },
+      "geo:attribution": "Please cite the report and the data as: Andersen, L. E., Canelas, S., Gonzales, A., Peñaranda, L. (2020) Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia."
+    },
+    {
+      "title": "Mendez, C., Gonzales, E., Leoni, P., Andersen, L., & Peralta, H. (2026). DS4Bolivia: A Data Science Repository to Study GeoSpatial Development in Bolivia [Data set]. GitHub.",
+      "path": "https://github.com/quarcs-lab/ds4bolivia",
+      "geo:role": "intermediary",
+      "geo:creator": "Carlos Mendez, Erick Gonzales, Pedro Leoni, Lykke Andersen and Hernán Peralta",
+      "geo:license": {
+        "name": "MIT",
+        "title": "MIT License",
+        "path": "https://github.com/quarcs-lab/ds4bolivia/blob/master/LICENSE"
+      }
+    }
+  ],
+  "geo:categories": [
+    "Social"
+  ],
+  "geo:citation": "GeoDevelopment Observatory of Bolivia (2026). SDG 10: Reduced inequalities, from the Municipal Atlas of the SDGs 2020 (339 municipalities). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/sdg10.md",
+  "geo:notes": [
+    "Reference years come from the variable labels. Indicators averaged over a period are stored at its midpoint, rounded down (e.g. average 2014–17 at 2015); the period is given in the description and `geo:year` holds the year used.",
+    "The SDG 10 index (`index_sdg10`) summarises indicators from different years; it is stored at 2016, the latest of them.",
+    "Load one indicator with its year, e.g. `geo.load(\"sdg10\", variables=\"index_sdg10\", years=2016)`, or every variable as a cross-section with `geo.load(\"sdg10\").groupby(\"geo_id\").first()`.",
+    "Most indicators are rates, shares or indices, so their aggregation rule is `none`. Population-weighted averages can be built with the `pop` dataset, which covers every reference year: `geo.aggregate(df, to=\"department\", rules={\"index_sdg10\": \"weighted_mean:pop\"}, weights=geo.load(\"pop\"))`.",
+    "In DS4Bolivia the rows of three homonym pairs (San Javier in Beni and Santa Cruz, El Puente in Tarija and Santa Cruz, Santa Rosa in Beni and Pando) are attached to the other polygon of the pair. Here the indicators are linked by INE code (`mun_id`), so each lies in its correct municipality; see raw/README.md.",
+    "`population_2020` is the Atlas (INE-based) population and differs from the gridded `pop` dataset."
+  ],
+  "resources": [
+    {
+      "name": "sdg10-municipality",
+      "path": "https://raw.githubusercontent.com/quarcs-lab/geo4bolivia/main/data/municipality/sdg10.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "geo:scale": "municipality",
+      "geo:period": [
+        2012,
+        2020
+      ],
+      "geo:path": "data/municipality/sdg10.csv",
+      "geo:parquet": "data/municipality/sdg10.parquet",
+      "geo:source_geometry": "Municipal statistics of the Atlas, linked by INE municipality code",
+      "schema": {
+        "fields": [
+          {
+            "name": "geo_id",
+            "title": "Municipality ID",
+            "type": "string",
+            "description": "GDO-Bolivia municipality geo ID (BO-DD-PP-MM) of the 339-unit municipality map, numbered as in GADM 4.1; its boundary in geo/boundaries/ comes from geoBoundaries (GeoBolivia, public domain). It nests by prefix into the department (BO-DD) and province (BO-DD-PP) IDs; department and province numbers follow GADM order and differ from INE codes.",
+            "geo:role": "id",
+            "constraints": {
+              "required": true,
+              "pattern": "^BO-\\d{2}-\\d{2}-\\d{2}$"
+            }
+          },
+          {
+            "name": "year",
+            "title": "Year",
+            "type": "integer",
+            "description": "Reference year of the values in the row. Each SDG Atlas variable is stored only at its own reference year (geo:year); indicators averaged over a period are stored at the period's midpoint, rounded down, and the goal index at the latest reference year of its indicators, so the panel is sparse.",
+            "geo:role": "time",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "mun_id",
+            "title": "INE municipality code",
+            "type": "integer",
+            "description": "Official municipality code of the National Statistics Institute (INE), DDPPMM (department, province, municipality) stored as an integer without the leading zero (e.g. 20101 = La Paz). The Atlas indicators are linked to geo_id through this code, which places DS4Bolivia's three swapped homonym pairs in their correct municipality.",
+            "geo:role": "source_key",
+            "geo:units_column": "mun_id",
+            "geo:source": "INE via DS4Bolivia",
+            "constraints": {
+              "required": true
+            }
+          },
+          {
+            "name": "index_sdg10",
+            "title": "Reduced inequalities index (0-100)",
+            "type": "number",
+            "description": "SDG 10 (Reduced inequalities) index of the Municipal Atlas of the SDGs in Bolivia 2020, on a 0-100 scale where 100 means the goal's targets are met (best value) and 0 the worst situation. Following the global SDG Index method (Lafortune et al., 2018), each of its 3 indicators is rescaled linearly to 0-100 between a worst value (generally the 2.5th-percentile tail of the municipal distribution) and a best value (the SDG target where one exists, otherwise the average of the five best municipalities, or expert judgement), with the direction set so that higher is always better and values beyond the bounds capped at 0 or 100; the index is the simple (equal-weight) mean of the available rescaled indicators. Components: Gini of years of schooling; Inequality in electricity use; Non-Spanish speakers, age 3+ (%). The components refer to different years; the observatory stores the index at 2016, the latest reference year among them. Small residuals come from the rounding of the published Gini (two decimals).",
+            "geo:unit": "index (0-100)",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 10
+          },
+          {
+            "name": "sdg10_2_gcye",
+            "title": "Gini of years of schooling",
+            "type": "number",
+            "description": "Gini coefficient of years of education of the population aged 25-65, 2012, from the 2012 Population and Housing Census (INE) (0 = perfect equality). Published with two decimals. In the SDG 10 index it is normalised linearly between 0.578 (worst; 2.5th-percentile tail) and 0.214 (best; average of the top 5), values beyond the bounds capped.",
+            "geo:unit": "Gini (0-1)",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 10
+          },
+          {
+            "name": "sdg10_2_iec",
+            "title": "Inequality in electricity use",
+            "type": "number",
+            "description": "Generalised entropy index GE(-1), which stresses the bottom of the distribution, of residential electricity consumption per household, 2016. From Andersen, Branisa & Calderón (2019), based on electricity-meter records. Values (10-304) are on the Atlas's scale (bounds 11-228), apparently GE(-1) multiplied by 100; the scaling is not stated. Missing for 24 municipalities. In the SDG 10 index it is normalised linearly between 228 (worst; 2.5th-percentile tail) and 11 (best; average of the top 5), values beyond the bounds capped.",
+            "geo:unit": "index (GE(-1), scaled)",
+            "geo:year": 2016,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 10
+          },
+          {
+            "name": "sdg10_2_nssp",
+            "title": "Non-Spanish speakers, age 3+ (%)",
+            "type": "number",
+            "description": "Percentage of the population aged 3 or older that does not speak Spanish at all (neither as mother tongue nor as first or second language), 2012, from the 2012 Population and Housing Census (INE). In the SDG 10 index it is normalised linearly between 51.8 (worst; 2.5th-percentile tail) and 1.1 (best; average of the top 5), values beyond the bounds capped.",
+            "geo:unit": "% of population 3+",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020",
+            "geo:sdg": 10
+          },
+          {
+            "name": "population_2020",
+            "title": "Population (persons)",
+            "type": "number",
+            "description": "Estimated municipal population in 2020 (persons), as printed in the Atlas municipal profiles (\"Población estimada, 2020\"). The Atlas does not name the source; the 339 values sum to 11,633,371, exactly INE's 2020 national population projection (Revisión 2020 series), so they are presumably INE's municipal projections. Not an input of any goal index. Differs from the gridded WorldPop-based pop dataset.",
+            "geo:unit": "persons",
+            "geo:year": 2020,
+            "geo:aggregation": "sum",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020"
+          },
+          {
+            "name": "urbano_2012",
+            "title": "Urbanization rate (%)",
+            "type": "number",
+            "description": "Share of the municipal population living in urban areas in 2012 (%), as printed in the Atlas municipal profiles (\"Tasa de urbanización, 2012\"), from the 2012 Population and Housing Census (INE). INE counts as urban the localities with 2,000 or more inhabitants, which is why 175 municipalities have a rate of 0. Not an input of any goal index (the Atlas treats 15 almost fully urban municipalities as having no applicable farm indicators for SDG 2; 11 of them are 95% or more urban by this rate, while Sucre, Tiquipaya and Potosí are 91–92% and Yunguyo de Litoral 0%).",
+            "geo:unit": "%",
+            "geo:year": 2012,
+            "geo:aggregation": "none",
+            "geo:source": "Municipal Atlas of the SDGs in Bolivia 2020"
+          }
+        ],
+        "primaryKey": [
+          "geo_id",
+          "year"
+        ]
+      }
+    }
+  ],
+  "geo:updated": "2026-10-30",
+  "geo:map": {
+    "variable": "index_sdg10",
+    "year": 2016
+  }
+}

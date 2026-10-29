@@ -77,7 +77,7 @@ Everything is keyed by `geo_id`. The two embedding datasets have the same column
 - **`embpw`**: each dimension averaged with population weights, so it describes the places where people live
 
 ```{code-cell} ipython3
-mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)
 ntl = geo.load("ntl", variables="ln_t400NTLpc", years=2012)
 pop = geo.load("pop", years=2012)
 emb = geo.load("emb", years=2017).set_index("geo_id")

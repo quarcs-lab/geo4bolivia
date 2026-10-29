@@ -67,7 +67,7 @@ The MPI with municipal boundaries and names, plus the department of each municip
 INDICATOR = "sdg1_2_mpi"           # Multidimensional Poverty Index, 2012 (0-1, higher = poorer)
 LABEL = "Multidimensional poverty index (2012)"
 
-gdf = geo.load("sdg", variables=INDICATOR, years=2012, geometry=True)
+gdf = geo.load("sdg01", variables=INDICATOR, years=2012, geometry=True)
 units = geo.units("municipality")[["geo_id", "department_id"]]
 gdf = gdf.merge(units, on="geo_id")
 gdf["department"] = gdf["department_id"].map(geo.units("department").set_index("geo_id")["name"])

@@ -112,7 +112,7 @@ Every unit has one **geo ID** (`geo_id`). Administrative IDs are numbered as in 
 | `country` | 1 | `BO` | `gid` | — |
 | `department` | 9 | `BO-04` (La Paz) | `gid` (GADM), `ine_code` (`02`) | — |
 | `province` | 112 | `BO-04-17` (Murillo) | `gid`, `ine_code` (`0201`) | — |
-| `municipality` | 339 | `BO-04-17-04` (La Paz) | `gid` (`GID_3`), `ine_code` (`020101`), `asdf_id` (DS4Bolivia polygon), `mun_id` (INE code as integer), `gb_id` (geoBoundaries `shapeID`) | `pop`, `ntl`, `sdg`, `emb`, `embpw` |
+| `municipality` | 339 | `BO-04-17-04` (La Paz) | `gid` (`GID_3`), `ine_code` (`020101`), `asdf_id` (DS4Bolivia polygon), `mun_id` (INE code as integer), `gb_id` (geoBoundaries `shapeID`) | `pop`, `ntl`, `sdg01`…`sdg17`, `emb`, `embpw` |
 | `municipality_ine`, `grid10k` | planned | `BO-INE-020101`, `BO-G10K-r012c034` | — | — |
 
 - Every unit row carries `<scale>_id` columns for each scale it lies in (`department_id`, `province_id`, ...).
@@ -129,17 +129,17 @@ Every unit has one **geo ID** (`geo_id`). Administrative IDs are numbered as in 
 | --- | --- | --- |
 | `pop` | 2001–2020 | gridded population (WorldPop 1 km, via DS4Bolivia); `sum`. `pop_density` (people per km² of the geoBoundaries area); `none` |
 | `ntl` | 2012–2020 | `ln_NTLpc` = ln(10⁸ × EOG VIIRS radiance / WorldPop) and its HP trend `ln_t400NTLpc`; logs, so `none` |
-| `sdg` | 2010–2020 | 64 SDG Atlas indicators, **each at its own reference year** (`geo:year`); period averages at the midpoint, rounded down. The composite indices (IMDS, `index_sdg*`) are deliberately not included |
+| `sdg01`…`sdg17` | 2010–2020 | Municipal Atlas of the SDGs 2020, one dataset per goal (15; the Atlas has no index for SDG 12 or 14): the goal index `index_sdgN` (0–100), its 2–9 indicators `sdgN_*` and the context variables `population_2020`, `urbano_2012`, **each at its own reference year** (`geo:year`); period averages at the midpoint, rounded down; the index at the latest year of its indicators. The overall IMDS is deliberately not included |
 | `emb`, `embpw` | 2017 | 64 satellite embedding dimensions (A00–A63), area- and population-weighted; `none` |
 
-Load one SDG indicator at its year: `geo.load("sdg", variables="sdg1_2_mpi", years=2012)`. Population-weighted SDG averages: `geo.aggregate(df, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop"))`.
+Load one SDG indicator at its year: `geo.load("sdg01", variables="sdg1_2_mpi", years=2012)`; a goal index: `geo.load("sdg03", variables="index_sdg3", years=2018)`. Population-weighted SDG averages: `geo.aggregate(df, to="department", rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop"))`.
 
 ## Loading data and building indicators
 
 ```python
 !pip install -q "geo4bolivia[raster]"              # Google Colab ([raster] for geo.zonal)
 import geo4bolivia as geo
-geo.datasets(); geo.dictionary("sdg")               # catalog; variables with label and description
+geo.datasets(); geo.dictionary("sdg01")             # catalog; variables with label and description
 df  = geo.load("ntl")                               # panel: geo_id, year, variables
 gdf = geo.load("ntl", years=2020, geometry=True)    # with boundaries
 wide = geo.load("pop", wide="pop")                  # one column per year
