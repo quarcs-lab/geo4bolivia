@@ -1,0 +1,44 @@
+# Brief for a new indicator page. Save as raw/<dataset>/indicator.yaml next to the data.
+# Fill in what you know; leave the rest empty and the skill will ask. Never guess.
+
+dataset: mydataset            # id: lowercase letters, digits, "_" (becomes file names)
+scale: municipality           # an active scale in geo/scales.yaml
+files:                        # the raw files in raw/<dataset>/, as received
+  - original-file.csv
+unit_key:                     # how rows identify units
+  column: ine_code            # column in the raw file
+  units_column: ine_code      # matching column of geo/units.csv (gid, ine_code, asdf_id, ...)
+                              # or: by_name: true  (linked with geo.link, ambiguous names refused)
+
+title: Night-time lights per capita
+summary: One sentence for the card and the page header.
+description: >
+  A paragraph for "About the dataset": what is measured, for which units and years,
+  how it was produced, what it is useful for, and its main caveats.
+notice:                       # optional warning shown under the description
+categories: [Economy]         # Social, Economy, Environment, Institutions, ...
+tags: [night-time lights, remote sensing]
+
+sources:
+  - role: original            # original | intermediary
+    creator: Earth Observation Group, Colorado School of Mines
+    citation: "Elvidge, C. D., et al. (2021). Annual time series ... Remote Sensing, 13(5), 922."
+    url: https://doi.org/10.3390/rs13050922      # DOI or landing page of the citation
+    homepage: https://eogdata.mines.edu/products/vnl/
+    license:                  # if known: name and URL of the statement
+    credit:                   # the attribution sentence the provider asks for, verbatim
+    permission:               # e.g. "permission from the authors, 2024", if no open license
+
+variables:                    # optional; the skill drafts what is missing and asks
+  - name: ln_NTLpc
+    label: Log night-time lights per capita
+    description: How it was built (definition, unit, source, year).
+    unit: log(nW/cm²/sr per person)
+    aggregation: none         # sum | mean | min | max | weighted_mean:<field> | none
+
+map:                          # the headline map
+  variable: ln_NTLpc
+  year: 2020
+  classify:                   # "log" for very skewed, positive variables
+
+related: []                   # ids of notebooks, apps or packages in CONTENT_REGISTRY

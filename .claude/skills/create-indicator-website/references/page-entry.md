@@ -1,0 +1,61 @@
+# The CONTENT_REGISTRY entry
+
+Copy an existing indicator entry in `index.html` (search for `type: 'indicator'`) and edit it.
+Variables, sources, license and references come from the metadata; do not repeat them here.
+
+```js
+{
+  id: 'municipalities339-ntl', type: 'indicator', section: 'indicators',
+  title: 'Night-time lights per capita',
+  scope: '339 municipalities · 2012–2020',                  // shown above the title
+  summary: 'One sentence for the card and the header.',
+  description: 'The About paragraph: what, where, when, how, why, caveats.',
+  geography: 'Municipality', units: 339, period: '2012–2020', frequency: 'Annual',
+  key: 'geo_id', idExample: 'XX-01-02-03',                   // a real geo_id of the scale
+  categories: ['Economy'], tags: ['night-time lights', 'VIIRS'],
+  image: 'images/indicators/ntl.webp',                       // the 16:9 card (indicator_map.py)
+  imageAlt: 'Map of ... in three natural-break classes: high in ..., low in ...',
+  map: 'images/indicators/ntl-map.webp',                     // the page's map
+  mapAlt: '<imageAlt>. Legend: High a to b (n units), Middle ..., Low ..., no data k.',
+  date: '2026-10-29', pinned: false,
+  dataset: 'ntl',                                            // or datasets: ['emb', 'embpw']
+  notice: 'Optional warning shown under the description.',
+  code: { python: `...`, pandas: `...` },
+},
+```
+
+Do not add `files`, `folder`, `docs`, `variables`, `references`, `citation`, `related` or
+download links: the page no longer uses them.
+
+## Code snippets (rules from CLAUDE.md)
+
+- **Two tabs.** `python` (the package) starts with `${PYTHON_SETUP}`, which holds the
+  `!pip install -q <pkg>`, the import and `import plotly.express as px`. `pandas` (plain URLs)
+  reads `BASE = "${RAW_URL}"` and needs no install line.
+- **Runs in Colab as is.** Use `"<pkg>[raster]"` when it calls `geo.zonal()`; add `expdpy` or
+  `geometrics` to the install line when used.
+- **A Plotly Express figure** with the simplest syntax: data, `x`/`y`/`color`, and only
+  `hover_name`, `labels={...}` and `title`. Use the variable's **label** in `labels`.
+  - Maps: `px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color=..., hover_name="name", center=..., zoom=...)` with a continuous scale.
+  - Use long tables (`groupby(..., as_index=False)`, names via `.map()`).
+  - Add `.show()` to every figure except the last expression.
+- **Lines of about 84 characters at most.**
+- `CodeTabs` adds the "Open in Colab" button.
+
+## JSON-LD
+
+Add a `Dataset` to the `<script type="application/ld+json">` block in `<head>`:
+`name`, `description`, `url` (the page), `license` (the CC BY 4.0 URL or the source's),
+`temporalCoverage`, `spatialCoverage`, `keywords` and `creator`. **No `distribution`** (no
+download URLs). Check that the block still parses as JSON.
+
+## QA checklist
+
+- [ ] The page shows, in order: map, About (with the original source), Variables (every
+      column), code, License, References, and the At-a-glance sidebar.
+- [ ] No download links, and no links to `data/`, `geo/` or the GitHub folders.
+- [ ] The metadata loads (no "could not be loaded" notice) and the console has no errors.
+- [ ] No horizontal scroll at 390 px width.
+- [ ] The card image appears in the Indicators section, and the Database architecture
+      table lists the dataset.
+- [ ] `build`, `validate` and `pytest` pass.

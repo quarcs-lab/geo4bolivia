@@ -56,75 +56,55 @@
           "name": "SDG indicators of the Municipal Atlas of the SDGs in Bolivia 2020 (339 municipalities)",
           "description": "Sixty-four municipal indicators of poverty, health, education, gender, water, energy, work, infrastructure, inequality, environment and institutions for Bolivia's 339 municipalities, each at its reference year (2010–2020).",
           "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-sdg",
-          "license": "https://opensource.org/licenses/MIT",
+          "license": "https://creativecommons.org/licenses/by/4.0/",
           "temporalCoverage": "2010/2020",
           "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
           "keywords": ["SDGs", "multidimensional poverty", "municipalities", "Bolivia"],
-          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
-          "distribution": [
-            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/sdg.csv" },
-            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
-          ]
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" }
         },
         {
           "@type": "Dataset",
           "name": "Night-time lights per capita in Bolivia (339 municipalities, 2012–2020)",
           "description": "Annual log VIIRS night-time lights per capita and its Hodrick–Prescott trend for Bolivia's 339 municipalities, 2012–2020.",
           "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-ntl",
-          "license": "https://opensource.org/licenses/MIT",
+          "license": "https://creativecommons.org/licenses/by/4.0/",
           "temporalCoverage": "2012/2020",
           "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
           "keywords": ["night-time lights", "VIIRS", "Bolivia", "remote sensing"],
-          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
-          "distribution": [
-            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/ntl.csv" },
-            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
-          ]
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" }
         },
         {
           "@type": "Dataset",
           "name": "Population of Bolivia's municipalities (339 municipalities, 2001–2020)",
           "description": "Annual gridded population estimates (WorldPop) summed over Bolivia's 339 municipalities, 2001–2020.",
           "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-pop",
-          "license": "https://opensource.org/licenses/MIT",
+          "license": "https://creativecommons.org/licenses/by/4.0/",
           "temporalCoverage": "2001/2020",
           "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
           "keywords": ["population", "WorldPop", "Bolivia"],
-          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
-          "distribution": [
-            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/pop.csv" },
-            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
-          ]
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" }
         },
         {
           "@type": "Dataset",
           "name": "Satellite embeddings of Bolivia's municipalities, area-weighted (339 municipalities, 2017)",
           "description": "Sixty-four Google Satellite Embedding dimensions (AlphaEarth Foundations) averaged over each of Bolivia's 339 municipalities in 2017.",
           "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-emb",
-          "license": "https://opensource.org/licenses/MIT",
+          "license": "https://creativecommons.org/licenses/by/4.0/",
           "temporalCoverage": "2017",
           "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
           "keywords": ["satellite embeddings", "machine learning", "Bolivia"],
-          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
-          "distribution": [
-            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/emb.csv" },
-            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
-          ]
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" }
         },
         {
           "@type": "Dataset",
           "name": "Satellite embeddings of Bolivia's municipalities, population-weighted (339 municipalities, 2017)",
           "description": "Sixty-four Google Satellite Embedding dimensions (AlphaEarth Foundations) averaged over each of Bolivia's 339 municipalities in 2017, weighted by WorldPop population.",
           "url": "https://quarcs-lab.github.io/geo4bolivia/#/indicators/municipalities339-emb",
-          "license": "https://opensource.org/licenses/MIT",
+          "license": "https://creativecommons.org/licenses/by/4.0/",
           "temporalCoverage": "2017",
           "spatialCoverage": { "@type": "Place", "name": "Bolivia" },
           "keywords": ["satellite embeddings", "machine learning", "Bolivia"],
-          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" },
-          "distribution": [
-            { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/data/municipality/embpw.csv" },
-            { "@type": "DataDownload", "encodingFormat": "application/geo+json", "contentUrl": "https://quarcs-lab.github.io/geo4bolivia/geo/boundaries/municipality.geojson" }
-          ]
+          "creator": { "@id": "https://quarcs-lab.github.io/geo4bolivia/#org" }
         },
         {
           "@type": "SoftwareSourceCode",
@@ -471,29 +451,11 @@ import plotly.express as px`;
             geography: 'Municipality', units: 339, period: '2010–2020', frequency: 'One reference year per indicator', key: 'geo_id', idExample: 'BO-04-17-04',
             categories: ['Social', 'Economy', 'Environment', 'Institutions'], tags: ['SDGs', 'poverty', 'municipalities', 'census'],
             image: 'images/indicators/sdg.webp',
-            imageAlt: 'Quantile map of the Multidimensional Poverty Index across 339 Bolivian municipalities in 2012, highest in Pando and the Chuquisaca and Potosí valleys, lowest around Santa Cruz, Cochabamba, La Paz and Tarija',
-            date: '2026-10-28', pinned: true, dataset: 'sdg', folder: 'data/municipality', docs: 'docs/datasets/sdg.md',
-            variables: [
-              ['geo_id', 'Municipality geo ID (e.g. BO-04-17-04); names, parents and INE codes in geo/units.csv', 'GDO'],
-              ['year', 'Reference year of the indicators in the row (2010–2020)', '—'],
-              ['mun_id', 'INE municipality code (e.g. 20101 for La Paz)', 'INE'],
-              ['sdg1_2_mpi', 'Multidimensional Poverty Index, 2012', 'Atlas 2020'],
-              ['sdg1_1_ubn', 'Unsatisfied basic needs, 2012 (% of population)', 'Atlas 2020'],
-              ['sdg2_2_cmc', 'Chronic malnutrition in children under 5, 2016 (%)', 'Atlas 2020'],
-              ['sdg3_2_imr', 'Infant mortality rate, 2016 (per 1,000 live births)', 'Atlas 2020'],
-              ['sdg4_6_lr', 'Literacy rate (15 years and over), 2012 (%)', 'Atlas 2020'],
-              ['sdg6_1_dwc', 'Drinking water coverage, 2017 (% of population)', 'Atlas 2020'],
-              ['sdg7_1_ec', 'Electricity coverage, 2012 (% of population)', 'Atlas 2020'],
-              ['sdg13_2_dra', 'Deforestation rate, average 2016–2018 (stored at 2017)', 'Atlas 2020'],
-              ['… 54 more', 'All 64 indicators, units and years: docs/datasets/sdg.md', 'Atlas 2020'],
-            ],
+            imageAlt: 'Map of the Multidimensional Poverty Index in 2012 across 339 Bolivian municipalities in three natural-break classes: high in Pando, northern La Paz and the Chuquisaca and Potosí valleys, low around Santa Cruz, the Chaco and the southern altiplano',
+            map: 'images/indicators/sdg-map.webp',
+            mapAlt: 'Map of the Multidimensional Poverty Index in 2012 across 339 Bolivian municipalities in three natural-break classes: high in Pando, northern La Paz and the Chuquisaca and Potosí valleys, low around Santa Cruz, the Chaco and the southern altiplano. Legend: High 0.283 to 0.520 (45 municipalities), Middle 0.150 to 0.283 (148), Low 0.007 to 0.150 (146).',
+            date: '2026-10-28', pinned: true, dataset: 'sdg',
             notice: 'Each indicator has values only in its reference year: load one with its year, e.g. geo.load("sdg", variables="sdg1_2_mpi", years=2012). In DS4Bolivia the rows of three pairs of homonym municipalities (San Javier, El Puente, Santa Rosa) were attached to the wrong polygon of each pair; here every row is linked by INE code to its own municipality.',
-            files: [
-              { format: 'CSV', form: 'Panel · 3,036 rows (municipality × reference year)', path: 'data/municipality/sdg.csv' },
-              { format: 'Parquet', form: 'Panel · typed, compact', path: 'data/municipality/sdg.parquet' },
-              { format: 'GeoJSON', form: 'Municipality boundaries', path: 'geo/boundaries/municipality.geojson' },
-              { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/sdg.datapackage.json' },
-            ],
             code: {
               python: `${PYTHON_SETUP}
 
@@ -530,37 +492,20 @@ px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index,
                   labels={"sdg1_2_mpi": "MPI"},
                   title="Multidimensional poverty, 2012")`,
             },
-            references: [
-              { text: 'Andersen, L. E., Canelas, S., Gonzales, A., & Peñaranda, L. (2020). Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020. La Paz: Universidad Privada Boliviana, SDSN Bolivia.', url: 'https://unsdsn.org/resources/municipal-atlas-of-the-sdgs-in-bolivia-2020' },
-              { text: 'Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.', url: 'https://github.com/quarcs-lab/ds4bolivia' },
-            ],
-            citation: 'GeoDevelopment Observatory of Bolivia (2026). SDG indicators of the Municipal Atlas of the SDGs 2020 (339 municipalities). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/sdg.md',
-            related: ['mpi-esda', 'mpi-eda', 'embeddings-mpi-ml', 'human-capital-paper'],
           },
           {
             id: 'municipalities339-ntl', type: 'indicator', section: 'indicators',
             title: 'Night-time lights per capita',
             scope: '339 municipalities · 2012–2020',
             summary: 'Nine years of VIIRS night-time lights per person for every municipality, with a long-run trend: a satellite proxy for local economic activity.',
-            description: 'Annual night-time lights per capita for Bolivia’s 339 municipalities from 2012 to 2020: the total VIIRS Day/Night Band radiance of each municipality divided by its population, in natural logs. A Hodrick–Prescott trend (λ = 400) of the same series separates the long-run path from year-to-year noise; it is complete for every municipality, while the raw log is missing where a municipality had no measurable light. Night-time lights track electrification and economic activity where official local statistics are scarce.',
+            description: 'Annual night-time lights per capita for Bolivia’s 339 municipalities from 2012 to 2020: the summed radiance of the Earth Observation Group’s annual VIIRS night-time lights (version 2, background masked) over each municipality, divided by its WorldPop population, in natural logs. A Hodrick–Prescott trend (λ = 400) of the same series separates the long-run path from year-to-year noise; it is complete for every municipality, while the raw log is missing where a municipality had no measurable light. Night-time lights track electrification and economic activity where official local statistics are scarce.',
             geography: 'Municipality', units: 339, period: '2012–2020', frequency: 'Annual', key: 'geo_id', idExample: 'BO-04-17-04',
             categories: ['Economy'], tags: ['night-time lights', 'VIIRS', 'remote sensing', 'panel data'],
             image: 'images/indicators/ntl.webp',
-            imageAlt: 'Quantile map of log night-time lights per capita across 339 Bolivian municipalities in 2020, brightest along the La Paz–Cochabamba–Santa Cruz axis',
-            date: '2026-10-28', pinned: false, dataset: 'ntl', folder: 'data/municipality', docs: 'docs/datasets/ntl.md',
-            variables: [
-              ['geo_id', 'Municipality geo ID (e.g. BO-04-17-04)', 'GDO'],
-              ['year', 'Year (2012–2020)', '—'],
-              ['asdf_id', 'DS4Bolivia polygon ID of the source data', 'DS4Bolivia'],
-              ['ln_NTLpc', 'Natural log of night-time lights per capita', 'VIIRS DNB via DS4Bolivia'],
-              ['ln_t400NTLpc', 'Hodrick–Prescott trend (λ = 400) of the log of lights per capita', 'Derived'],
-            ],
-            files: [
-              { format: 'CSV', form: 'Panel · 3,051 rows', path: 'data/municipality/ntl.csv' },
-              { format: 'Parquet', form: 'Panel · typed, compact', path: 'data/municipality/ntl.parquet' },
-              { format: 'GeoJSON', form: 'Municipality boundaries', path: 'geo/boundaries/municipality.geojson' },
-              { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/ntl.datapackage.json' },
-            ],
+            imageAlt: 'Map of log night-time lights per capita in 2020 across 339 Bolivian municipalities in three natural-break classes: highest across Santa Cruz, the Chaco and the southern altiplano, lowest in northern La Paz, parts of Pando and clusters in the Potosí and Chuquisaca valleys',
+            map: 'images/indicators/ntl-map.webp',
+            mapAlt: 'Map of log night-time lights per capita in 2020 across 339 Bolivian municipalities in three natural-break classes: highest across Santa Cruz, the Chaco and the southern altiplano, lowest in northern La Paz, parts of Pando and clusters in the Potosí and Chuquisaca valleys. Legend: High 14.5 to 17.9 (109 municipalities), Middle 13.0 to 14.5 (147), Low 10.5 to 13.0 (78), no data 5.',
+            date: '2026-10-28', pinned: false, dataset: 'ntl',
             code: {
               python: `${PYTHON_SETUP}
 
@@ -589,36 +534,20 @@ px.line(trend, x="year", y="ln_t400NTLpc", color="department",
         labels={"ln_t400NTLpc": "Log lights per capita (trend)"},
         title="Night-time lights by department")`,
             },
-            references: [
-              { text: 'Elvidge, C. D., Zhizhin, M., Ghosh, T., Hsu, F.-C., & Taneja, J. (2021). Annual time series of global VIIRS nighttime lights derived from monthly averages: 2012 to 2019. Remote Sensing, 13(5), 922.', url: 'https://doi.org/10.3390/rs13050922' },
-              { text: 'Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.', url: 'https://github.com/quarcs-lab/ds4bolivia' },
-            ],
-            citation: 'GeoDevelopment Observatory of Bolivia (2026). Night-time lights per capita (339 municipalities, 2012–2020). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/ntl.md',
-            related: ['geoexplorer', 'mpi-esda-heterogeneity', 'geometrics-package'],
           },
           {
             id: 'municipalities339-pop', type: 'indicator', section: 'indicators',
             title: 'Population',
             scope: '339 municipalities · 2001–2020',
-            summary: 'Two decades of gridded population estimates for every municipality: the denominator for per-capita indicators and population-weighted averages.',
-            description: 'Annual population estimates for Bolivia’s 339 municipalities from 2001 to 2020, computed by summing a gridded population product (WorldPop, 100 m) over each municipality. Population sums up the hierarchy, so it gives provincial, departmental and national totals directly, and it is the weight for population-weighted averages of rates such as poverty. These are gridded estimates, not INE’s official projections.',
+            summary: 'Two decades of gridded population estimates and population density for every municipality: the denominator for per-capita indicators and population-weighted averages.',
+            description: 'Annual population estimates for Bolivia’s 339 municipalities from 2001 to 2020, computed by summing WorldPop’s 1 km gridded population over each municipality, and the population density (people per km²) of each municipality. Population sums up the hierarchy, so it gives provincial, departmental and national totals directly, and it is the weight for population-weighted averages of rates such as poverty. These are gridded estimates, not INE’s official projections.',
             geography: 'Municipality', units: 339, period: '2001–2020', frequency: 'Annual', key: 'geo_id', idExample: 'BO-04-17-04',
             categories: ['Social'], tags: ['population', 'WorldPop', 'demography', 'panel data'],
             image: 'images/indicators/pop.webp',
-            imageAlt: 'Two maps of Bolivian municipalities: population density in 2020 and annual population growth from 2001 to 2020',
-            date: '2026-10-28', pinned: false, dataset: 'pop', folder: 'data/municipality', docs: 'docs/datasets/pop.md',
-            variables: [
-              ['geo_id', 'Municipality geo ID (e.g. BO-04-17-04)', 'GDO'],
-              ['year', 'Year (2001–2020)', '—'],
-              ['asdf_id', 'DS4Bolivia polygon ID of the source data', 'DS4Bolivia'],
-              ['pop', 'Estimated population (people)', 'WorldPop via DS4Bolivia'],
-            ],
-            files: [
-              { format: 'CSV', form: 'Panel · 6,780 rows', path: 'data/municipality/pop.csv' },
-              { format: 'Parquet', form: 'Panel · typed, compact', path: 'data/municipality/pop.parquet' },
-              { format: 'GeoJSON', form: 'Municipality boundaries', path: 'geo/boundaries/municipality.geojson' },
-              { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/pop.datapackage.json' },
-            ],
+            imageAlt: 'Map of population density in 2020 across 339 Bolivian municipalities in three natural-break classes on a log scale: densest in the La Paz–El Alto, Cochabamba, Santa Cruz, Sucre and Tarija urban areas, intermediate across the altiplano and valleys, sparsest in the northern and eastern lowlands',
+            map: 'images/indicators/pop-map.webp',
+            mapAlt: 'Map of population density in 2020 across 339 Bolivian municipalities in three natural-break classes on a log scale: densest in the La Paz–El Alto, Cochabamba, Santa Cruz, Sucre and Tarija urban areas, intermediate across the altiplano and valleys, sparsest in the northern and eastern lowlands. Legend: High 42 to 2,861 people per km² (55 municipalities), Middle 4 to 42 (200), Low 0 to 4 (84).',
+            date: '2026-10-28', pinned: false, dataset: 'pop',
             code: {
               python: `${PYTHON_SETUP}
 
@@ -644,12 +573,6 @@ dep["department"] = dep["department_id"].map(units.set_index("geo_id")["name"])
 px.line(dep, x="year", y="pop", color="department",
         labels={"pop": "Population"}, title="Population by department, 2001-2020")`,
             },
-            references: [
-              { text: 'WorldPop (2018). Global High Resolution Population Denominators Project (100 m, 2000–2020). University of Southampton.', url: 'https://doi.org/10.5258/SOTON/WP00645' },
-              { text: 'Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.', url: 'https://github.com/quarcs-lab/ds4bolivia' },
-            ],
-            citation: 'GeoDevelopment Observatory of Bolivia (2026). Population (339 municipalities, 2001–2020). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/pop.md',
-            related: ['geoexplorer', 'mpi-eda', 'expdpy-package'],
           },
           {
             id: 'municipalities339-emb', type: 'indicator', section: 'indicators',
@@ -660,21 +583,10 @@ px.line(dep, x="year", y="pop", color="department",
             geography: 'Municipality', units: 339, period: '2017', frequency: 'One year', key: 'geo_id', idExample: 'BO-04-17-04',
             categories: ['Environment', 'Economy'], tags: ['satellite embeddings', 'AlphaEarth', 'machine learning', 'remote sensing'],
             image: 'images/indicators/emb.webp',
-            imageAlt: 'Map of Bolivian municipalities coloured by the first three principal components of their satellite embeddings',
-            date: '2026-10-28', pinned: false, dataset: 'emb', datasets: ['emb', 'embpw'], folder: 'data/municipality', docs: 'docs/datasets/emb.md',
-            variables: [
-              ['geo_id', 'Municipality geo ID (e.g. BO-04-17-04)', 'GDO'],
-              ['year', 'Year (2017)', '—'],
-              ['asdf_id', 'DS4Bolivia polygon ID of the source data', 'DS4Bolivia'],
-              ['A00 … A63', 'Embedding dimensions 0–63: area-weighted in emb, population-weighted in embpw', 'Google Satellite Embedding V1 via DS4Bolivia'],
-            ],
-            files: [
-              { format: 'CSV', form: 'Area-weighted · 339 rows', path: 'data/municipality/emb.csv' },
-              { format: 'CSV', form: 'Population-weighted · 339 rows', path: 'data/municipality/embpw.csv' },
-              { format: 'Parquet', form: 'Area-weighted · typed, compact', path: 'data/municipality/emb.parquet' },
-              { format: 'Parquet', form: 'Population-weighted · typed, compact', path: 'data/municipality/embpw.parquet' },
-              { format: 'JSON', form: 'Metadata · datapackage', path: 'metadata/emb.datapackage.json' },
-            ],
+            imageAlt: 'Map of satellite embedding dimension A00 (area-weighted) in 2017 across 339 Bolivian municipalities in three natural-break classes: low across the altiplano and western valleys, middle across Beni and Pando, high across Santa Cruz and the Chaco',
+            map: 'images/indicators/emb-map.webp',
+            mapAlt: 'Map of satellite embedding dimension A00 (area-weighted) in 2017 across 339 Bolivian municipalities in three natural-break classes: low across the altiplano and western valleys, middle across Beni and Pando, high across Santa Cruz and the Chaco. Legend: High 0.046 to 0.164 (49 municipalities), Middle −0.055 to 0.046 (97), Low −0.165 to −0.055 (193).',
+            date: '2026-10-28', pinned: false, dataset: 'emb', datasets: ['emb', 'embpw'],
             code: {
               python: `${PYTHON_SETUP}
 from sklearn.decomposition import PCA
@@ -701,12 +613,6 @@ px.box(emb.filter(regex=r"^A\\d{2}$"),
        labels={"variable": "Dimension", "value": "Value"},
        title="Satellite embeddings, 2017")`,
             },
-            references: [
-              { text: 'Brown, C. F., et al. (2025). AlphaEarth Foundations: An embedding field model for accurate and efficient global mapping from sparse label data. Google DeepMind. Earth Engine collection GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL.', url: 'https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL' },
-              { text: 'Mendez, C. (2026). DS4Bolivia: A Data Science Repository to Study Regional Development in Bolivia [Data set]. GitHub.', url: 'https://github.com/quarcs-lab/ds4bolivia' },
-            ],
-            citation: 'GeoDevelopment Observatory of Bolivia (2026). Satellite embeddings 2017, area- and population-weighted (339 municipalities). https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/datasets/emb.md',
-            related: ['embeddings-mpi-ml', 'municipalities339-sdg'],
           },
 
           // ---------------------------------------------------------------- Tools: packages
@@ -1791,7 +1697,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
 
         const PILLARS = [
           { title: 'GeoDevelopment Indicators', href: '#indicators', image: 'images/pillar-indicators.webp', icon: Database, accent: 'text-teal-300', border: 'hover:border-teal-400/40',
-            text: 'Harmonized municipal panels on poverty, health, education, infrastructure, night-time lights, population and satellite embeddings, ready to download as CSV, Parquet, and GeoJSON.' },
+            text: 'Harmonized municipal panels on poverty, health, education, infrastructure, night-time lights, population and satellite embeddings, ready to load in Python with one line of code.' },
           { title: 'GeoDevelopment Tools', href: '#tools', image: 'images/pillar-tools.webp', icon: Terminal, accent: 'text-sand-300', border: 'hover:border-sand-400/40',
             text: 'AI-enhanced Colab notebooks and Earth Engine apps to explore, map, and model the indicators, with no installation required.' },
           { title: 'GeoDevelopment Insights', href: HAS_SECTION.insights ? '#insights' : '#tools', image: 'images/pillar-insights.webp', icon: Lightbulb, accent: 'text-rose-300', border: 'hover:border-rose-400/40',
@@ -1917,7 +1823,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             <section id="indicators" aria-labelledby="indicators-title" className="relative border-t border-white/10">
               <SatelliteHeader band={SECTION_BANDS.indicators}>
                 <SectionHeading index={sectionIndex('indicators')} eyebrow="GeoDevelopment Indicators" title="Subnational data," emphasis="ready to analyze" id="indicators-title">
-                  Social, economic, and environmental indicators for Bolivia’s departments, provinces, municipalities and other regional units, from satellite imagery, censuses, and administrative records, documented variable by variable and free to download.
+                  Social, economic, and environmental indicators for Bolivia’s departments, provinces, municipalities and other regional units, from satellite imagery, censuses, and administrative records, documented variable by variable, with their sources and licenses.
                 </SectionHeading>
               </SatelliteHeader>
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
@@ -1948,18 +1854,18 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
                           {items.map((it) => (
                             <tr key={it.id} className="hover:bg-teal-400/[0.04] transition-colors">
                               <td className="px-4 py-4 md:px-6">
-                                <a href={`${REPO_URL}/blob/main/${it.docs}`} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-brand-turquoise hover:underline">{it.folder}/{it.dataset}<span className="sr-only"> (opens in a new tab)</span></a>
+                                <a href={itemHref(it)} className="font-mono text-xs text-brand-turquoise hover:underline">{(it.datasets || [it.dataset]).join(' · ')}</a>
                                 <div className="text-salt-300 mt-1">{it.title}</div>
                               </td>
                               <td className="px-4 py-4 md:px-6 text-salt-300 whitespace-nowrap">{it.units} · {it.geography}</td>
                               <td className="px-4 py-4 md:px-6 text-salt-300 whitespace-nowrap">{it.period}</td>
                               <td className="px-4 py-4 md:px-6"><code className="font-mono text-brand-turquoise bg-teal-400/10 px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap">{it.idExample}</code></td>
-                              <td className="px-4 py-4 md:px-6 text-salt-400 whitespace-nowrap">{[...new Set(it.files.map((f) => f.format))].join(' · ')}</td>
+                              <td className="px-4 py-4 md:px-6 text-salt-400 whitespace-nowrap">CSV · Parquet</td>
                             </tr>
                           ))}
                           <tr className="hover:bg-teal-400/[0.04] transition-colors">
                             <td className="px-4 py-4 md:px-6">
-                              <a href={`${REPO_URL}/tree/main/geo`} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-brand-turquoise hover:underline">geo<span className="sr-only"> (opens in a new tab)</span></a>
+                              <span className="font-mono text-xs text-brand-turquoise">geo</span>
                               <div className="text-salt-300 mt-1">Units, boundaries and crosswalks</div>
                             </td>
                             <td className="px-4 py-4 md:px-6 text-salt-300 whitespace-nowrap">All scales · 461 units</td>
@@ -2260,7 +2166,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
               <div className="border-t border-white/10 pt-8 space-y-3 text-xs text-salt-400 leading-relaxed">
                 <p><strong className="text-salt-400">Disclaimer.</strong> The indicators, tools, and insights are the responsibility of the individual researchers and do not necessarily represent the views of their affiliated institutions or related organizations. Maps on this website are for geo-statistical use only and have a referential, informational character. They represent indicators spatially and do not constitute an official definition of Bolivia’s territorial boundaries.</p>
-                <p><strong className="text-salt-400">Credits.</strong> The section illustrations and map cards are rendered from the observatory’s data (scripts/site_images.py). The hero globe uses <a href="https://s2maps.eu" target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">Sentinel-2 cloudless<span className="sr-only"> (opens in a new tab)</span></a> by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016), licensed under CC BY 4.0, over NASA's Blue Marble Next Generation (public domain), and is rendered with globe.gl; the section and footer backgrounds are Sentinel-2 cloudless crops of Bolivia from the same source, except Laguna Verde, from the 2024 mosaic (contains modified Copernicus Sentinel data 2024, CC BY-NC-SA 4.0). The emblem adapts the geo4cambodia emblem. App screenshots, figures, and photos belong to their respective authors. Code and data are released under the <a href={`${REPO_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">MIT License<span className="sr-only"> (opens in a new tab)</span></a>; the original data sources are credited on each dataset page.</p>
+                <p><strong className="text-salt-400">Credits.</strong> The section illustrations and cards are rendered from the observatory’s data (scripts/site_images.py); the indicator maps (scripts/indicator_map.py) are drawn over Esri’s World Dark Gray Canvas basemap (Esri, HERE, Garmin, © OpenStreetMap contributors, and the GIS user community). The hero globe uses <a href="https://s2maps.eu" target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">Sentinel-2 cloudless<span className="sr-only"> (opens in a new tab)</span></a> by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016), licensed under CC BY 4.0, over NASA's Blue Marble Next Generation (public domain), and is rendered with globe.gl; the section and footer backgrounds are Sentinel-2 cloudless crops of Bolivia from the same source, except Laguna Verde, from the 2024 mosaic (contains modified Copernicus Sentinel data 2024, CC BY-NC-SA 4.0). The emblem adapts the geo4cambodia emblem. App screenshots, figures, and photos belong to their respective authors. Code is released under the <a href={`${REPO_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">MIT License<span className="sr-only"> (opens in a new tab)</span></a> and data under <a href={`${REPO_URL}/blob/main/LICENSE-DATA`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">CC BY 4.0<span className="sr-only"> (opens in a new tab)</span></a>, except the GADM boundary files and where a source requires otherwise; each dataset page credits the original sources and their licenses.</p>
                 <p>Found an error? <a href={`${REPO_URL}/issues`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">Open an issue<span className="sr-only"> (opens in a new tab)</span></a> or start a thread in <a href={`${REPO_URL}/discussions`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">GitHub Discussions<span className="sr-only"> (opens in a new tab)</span></a>.</p>
               </div>
             </div>
@@ -2273,7 +2179,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
         // ====================================================================
         const SECTION_LABEL = { indicators: 'Indicators', tools: 'Tools', insights: 'Insights', events: 'Events' };
 
-        const DetailShell = ({ item, children, aside }) => {
+        const DetailShell = ({ item, children, aside, lead }) => {
           const headingRef = useRef(null);
           const imgRef = useParallax(0.05, 1.3);
           useEffect(() => { if (headingRef.current) headingRef.current.focus({ preventScroll: true }); }, [item.id]);
@@ -2303,6 +2209,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
                 </div>
               </header>
               <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                {lead && <div className="mb-12">{lead}</div>}
                 <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-10">
                   <div className="min-w-0 space-y-12">{children}</div>
                   <div className="space-y-6 lg:sticky lg:top-24 self-start">{aside}</div>
@@ -2361,82 +2268,191 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
           </div>
         );
 
-        const FORMAT_STYLE = { CSV: 'text-emerald-300 bg-emerald-400/10', Parquet: 'text-amber-300 bg-amber-400/10', GeoJSON: 'text-orange-300 bg-orange-400/10', JSON: 'text-violet-300 bg-violet-400/10' };
+        // Indicator pages read the variable dictionary, sources and licenses from the
+        // dataset's metadata (metadata/<dataset>.datapackage.json), the single source of truth.
+        const PACKAGES = {};
+        const fetchPackage = (id) => {
+          if (!PACKAGES[id]) {
+            PACKAGES[id] = fetch(`metadata/${id}.datapackage.json`).then((r) => {
+              if (!r.ok) throw new Error(`${r.status}`);
+              return r.json();
+            }).catch((err) => { delete PACKAGES[id]; throw err; });
+          }
+          return PACKAGES[id];
+        };
+        const useDatapackages = (ids) => {
+          const key = ids.join(',');
+          const [state, setState] = useState({ status: 'loading', packages: [] });
+          useEffect(() => {
+            let live = true;
+            setState({ status: 'loading', packages: [] });
+            Promise.all(ids.map(fetchPackage))
+              .then((packages) => { if (live) setState({ status: 'ready', packages }); })
+              .catch(() => { if (live) setState({ status: 'error', packages: [] }); });
+            return () => { live = false; };
+          }, [key]);
+          return state;
+        };
+        // Sources of several datasets, each listed once
+        const uniqueSources = (packages, role) => {
+          const seen = new Set();
+          return packages.flatMap((p) => p.sources || []).filter((s) => {
+            if ((role && s['geo:role'] !== role) || seen.has(s.title)) return false;
+            seen.add(s.title);
+            return true;
+          });
+        };
+        // Boundary files are not covered by the observatory's data license (LICENSE-DATA)
+        const BOUNDARY_NOTE = 'The unit boundaries behind the maps and the geometry=True option come from GADM 4.1, which is free for academic and other non-commercial use; redistributing them or using them commercially requires GADM’s permission (gadm.org/license.html). They are not covered by the license above.';
 
-        const IndicatorDetail = ({ item }) => (
-          <DetailShell item={item} aside={<>
-            <AsideCard title="At a glance">
-              <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                <dt className="text-salt-400">Geography</dt><dd className="text-salt-200">{item.geography}</dd>
-                <dt className="text-salt-400">Units</dt><dd className="text-salt-200">{item.units}</dd>
-                <dt className="text-salt-400">Period</dt><dd className="text-salt-200">{item.period}</dd>
-                <dt className="text-salt-400">Frequency</dt><dd className="text-salt-200">{item.frequency}</dd>
-                <dt className="text-salt-400">Join key</dt><dd><code className="text-brand-turquoise text-xs font-bold">{item.key}</code> <span className="text-salt-400 text-xs">e.g. {item.idExample}</span></dd>
-                <dt className="text-salt-400">Dataset id</dt><dd><code className="text-brand-turquoise text-xs font-bold">{item.dataset}</code></dd>
-                <dt className="text-salt-400">Categories</dt><dd className="text-salt-200">{item.categories.join(', ')}</dd>
-              </dl>
-            </AsideCard>
-            <AsideCard title="Documentation">
-              <div className="flex flex-col gap-2">
-                <LinkButton link={{ label: 'Data folder on GitHub', url: `${REPO_URL}/tree/main/${item.folder}`, kind: 'github' }} />
-                <LinkButton link={{ label: 'Dictionary & docs', url: `${REPO_URL}/blob/main/${item.docs}`, kind: 'external' }} />
-                {(item.extraLinks || []).map((l) => <LinkButton key={l.url} link={l} />)}
-              </div>
-            </AsideCard>
-            <CitationBox text={item.citation} />
-            <RelatedList ids={item.related} />
-          </>}>
-            <figure className="rounded-xl overflow-hidden border border-white/10 bg-lagoon-900">
-              <img src={item.image} alt={item.imageAlt} className="w-full h-auto" />
-            </figure>
-            <Block title="About this dataset" id="d-about"><p className="text-salt-300 leading-relaxed">{item.description}</p>
-              {item.notice && (
-                <p className="mt-5 flex gap-3 text-sm text-amber-100/90 bg-amber-950/30 border border-amber-900/40 rounded-xl p-4"><AlertTriangle size={18} className="text-amber-400 flex-shrink-0 mt-0.5" /> {item.notice}</p>
-              )}
-            </Block>
-            <Block title="Download the data" id="d-download">
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {item.files.map((f) => (
-                  <li key={f.path} className="min-w-0">
-                    <a href={f.path} download className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-brand-turquoise/40 hover:bg-white/[0.06] transition-all h-full">
-                      <span className={`text-[11px] font-bold px-2 py-1 rounded ${FORMAT_STYLE[f.format]}`}>{f.format}</span>
-                      <span className="min-w-0 flex-grow">
-                        <span className="block text-sm text-salt-200">{f.form}</span>
-                        <span className="block text-xs text-salt-400 font-mono truncate">{f.path.split('/').pop()}</span>
-                      </span>
-                      <Download size={16} className="text-salt-400 flex-shrink-0" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </Block>
-            <Block title="Variables" id="d-variables">
-              <div className="rounded-xl overflow-hidden border border-white/10">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
-                    <caption className="sr-only">Variable dictionary</caption>
-                    <thead className="bg-white/5 text-salt-300 text-xs uppercase tracking-wider">
-                      <tr><th scope="col" className="px-4 py-3">Variable</th><th scope="col" className="px-4 py-3">Description</th><th scope="col" className="px-4 py-3">Source</th></tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                      {item.variables.map(([v, d, s]) => (
-                        <tr key={v}><td className="px-4 py-3 align-top"><code className="text-brand-turquoise text-xs font-bold whitespace-nowrap">{v}</code></td><td className="px-4 py-3 text-salt-300">{d}</td><td className="px-4 py-3 text-salt-400 whitespace-nowrap">{s}</td></tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </Block>
-            <Block title="Use it in your code" id="d-code"><CodeTabs code={item.code} idPrefix={`code-${item.id}`} /></Block>
-            <Block title="References" id="d-refs">
-              <ul className="space-y-3 text-sm text-salt-300">
-                {item.references.map((r) => (
-                  <li key={r.url} className="pl-4 border-l-2 border-white/10">{r.text} <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-brand-turquoise underline decoration-brand-turquoise/50 underline-offset-2 hover:decoration-brand-turquoise break-all">{r.url}<span className="sr-only"> (opens in a new tab)</span></a></li>
-                ))}
-              </ul>
-            </Block>
-          </DetailShell>
+        const ExternalA = ({ href, children, className = '' }) => (
+          <a href={href} target="_blank" rel="noopener noreferrer"
+             className={`text-brand-turquoise underline decoration-brand-turquoise/50 underline-offset-2 hover:decoration-brand-turquoise break-words ${className}`}>
+            {children}<span className="sr-only"> (opens in a new tab)</span>
+          </a>
         );
+
+        const MetadataStatus = ({ state, ids }) => state.status === 'loading'
+          ? <p className="text-sm text-salt-400" role="status">Loading the metadata…</p>
+          : <p className="text-sm text-amber-100/90 bg-amber-950/30 border border-amber-900/40 rounded-xl p-4" role="alert">
+              The metadata could not be loaded. It is in {ids.map((id, i) => <React.Fragment key={id}>{i > 0 && ', '}<code className="text-xs">metadata/{id}.datapackage.json</code></React.Fragment>)}.
+            </p>;
+
+        const SourceCard = ({ source }) => (
+          <li className="rounded-xl bg-white/[0.03] border border-white/10 p-5">
+            <div className="flex justify-between items-start gap-4 mb-2">
+              <p className="text-sm font-semibold text-white">{source['geo:creator'] || 'Original source'}</p>
+              <CopyButton text={source.title} label="Copy citation" />
+            </div>
+            <p className="text-sm text-salt-300 leading-relaxed">{source.title} {source.path && <ExternalA href={source.path}>{source.path}</ExternalA>}</p>
+            {source['geo:homepage'] && (
+              <p className="text-sm text-salt-400 mt-2">Data provider: <ExternalA href={source['geo:homepage']}>{source['geo:homepage'].replace(/^https?:\/\//, '').replace(/\/$/, '')}</ExternalA></p>
+            )}
+          </li>
+        );
+
+        const VariableTable = ({ pkg, heading }) => (
+          <div>
+            {heading && <h3 className="text-lg font-semibold text-white mb-3"><code className="text-brand-turquoise text-base">{pkg.name}</code> · {pkg.title}</h3>}
+            <div className="rounded-xl overflow-hidden border border-white/10">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <caption className="sr-only">Variables of {pkg.title}</caption>
+                  <thead className="bg-white/5 text-salt-300 text-xs uppercase tracking-wider">
+                    <tr><th scope="col" className="px-4 py-3">Name</th><th scope="col" className="px-4 py-3">Label</th><th scope="col" className="px-4 py-3">Description</th></tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {pkg.resources[0].schema.fields.map((f) => (
+                      <tr key={f.name}>
+                        <td className="px-4 py-3 align-top"><code className="text-brand-turquoise text-xs font-bold whitespace-nowrap">{f.name}</code></td>
+                        <td className="px-4 py-3 align-top text-salt-100 min-w-[10rem]">{f.title}</td>
+                        <td className="px-4 py-3 align-top text-salt-300 min-w-[18rem]">{f.description}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+
+        const LicenseBlock = ({ packages }) => {
+          const own = packages[0].licenses[0];
+          const sources = uniqueSources(packages);
+          const creators = uniqueSources(packages, 'original').map((s) => s['geo:creator']).filter(Boolean);
+          const updated = packages.map((p) => p['geo:updated']).filter(Boolean).sort().pop();
+          return (
+            <div className="space-y-5">
+              <div className="rounded-xl bg-white/[0.03] border border-white/10 p-5">
+                <p className="text-salt-200 leading-relaxed">
+                  The observatory’s files of this dataset are licensed under the {own.path ? <ExternalA href={own.path}>{own.title || own.name}</ExternalA> : (own.title || own.name)}{own.name === 'CC-BY-4.0' && ' (CC BY 4.0)'}.
+                  {own.name === 'CC-BY-4.0' && ' You may share and adapt them for any purpose, including commercially, as long as you give appropriate credit to the observatory and to the original sources below, link to the license, and indicate if changes were made.'}
+                </p>
+                <dl className="grid grid-cols-1 sm:grid-cols-[9rem_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm mt-4">
+                  {creators.length > 0 && <><dt className="text-salt-400">Created by</dt><dd className="text-salt-200">{creators.join('; ')}</dd></>}
+                  <dt className="text-salt-400">Curated by</dt><dd className="text-salt-200">GeoDevelopment Observatory of Bolivia (GDO-Bolivia)</dd>
+                  {updated && <><dt className="text-salt-400">Last updated</dt><dd className="text-salt-200">{updated}</dd></>}
+                </dl>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Licenses of the sources</h3>
+                <ul className="space-y-3 text-sm">
+                  {sources.map((s) => {
+                    const lic = s['geo:license'];
+                    return (
+                      <li key={s.title} className="pl-4 border-l-2 border-white/10">
+                        <span className="text-salt-100 font-semibold">{s['geo:creator'] || s.title}</span>
+                        {lic && <span className="text-salt-300">: {lic.path ? <ExternalA href={lic.path}>{lic.title || lic.name}</ExternalA> : (lic.title || lic.name)}</span>}
+                        {s['geo:attribution'] && <span className="block text-salt-400 mt-1">Required credit: “{s['geo:attribution']}”</span>}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <p className="text-sm text-salt-400 leading-relaxed">{BOUNDARY_NOTE}</p>
+            </div>
+          );
+        };
+
+        const IndicatorDetail = ({ item }) => {
+          const ids = item.datasets || [item.dataset];
+          const meta = useDatapackages(ids);
+          const ready = meta.status === 'ready';
+          return (
+            <DetailShell item={item} lead={
+              <figure>
+                <a href={item.map || item.image} target="_blank" rel="noopener noreferrer" className="block rounded-xl overflow-hidden border border-white/10 bg-lagoon-900 hover:border-brand-turquoise/40 transition-colors">
+                  <img src={item.map || item.image} alt={item.mapAlt || item.imageAlt} className="w-full h-auto" />
+                  <span className="sr-only">Open the full-size map (new tab)</span>
+                </a>
+                <figcaption className="text-xs text-salt-400 mt-2">Select the map to open it at full size.</figcaption>
+              </figure>
+            } aside={<>
+              <AsideCard title="At a glance">
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                  <dt className="text-salt-400">Geography</dt><dd className="text-salt-200">{item.geography}</dd>
+                  <dt className="text-salt-400">Units</dt><dd className="text-salt-200">{item.units}</dd>
+                  <dt className="text-salt-400">Period</dt><dd className="text-salt-200">{item.period}</dd>
+                  <dt className="text-salt-400">Frequency</dt><dd className="text-salt-200">{item.frequency}</dd>
+                  <dt className="text-salt-400">Join key</dt><dd><code className="text-brand-turquoise text-xs font-bold">{item.key}</code> <span className="text-salt-400 text-xs">e.g. {item.idExample}</span></dd>
+                  <dt className="text-salt-400">Dataset id</dt><dd>{ids.map((id) => <code key={id} className="text-brand-turquoise text-xs font-bold mr-2">{id}</code>)}</dd>
+                  <dt className="text-salt-400">Categories</dt><dd className="text-salt-200">{item.categories.join(', ')}</dd>
+                  {ready && <><dt className="text-salt-400">License</dt><dd className="text-salt-200">{meta.packages[0].licenses[0].name.replace(/-/g, ' ')}</dd></>}
+                </dl>
+              </AsideCard>
+            </>}>
+              <Block title="About the dataset" id="d-about">
+                <p className="text-salt-300 leading-relaxed">{item.description}</p>
+                {item.notice && (
+                  <p className="mt-5 flex gap-3 text-sm text-amber-100/90 bg-amber-950/30 border border-amber-900/40 rounded-xl p-4"><AlertTriangle size={18} className="text-amber-400 flex-shrink-0 mt-0.5" /> {item.notice}</p>
+                )}
+                <h3 className="text-lg font-semibold text-white mt-8 mb-3">Original source</h3>
+                {ready
+                  ? <ul className="space-y-3">{uniqueSources(meta.packages, 'original').map((s) => <SourceCard key={s.title} source={s} />)}</ul>
+                  : <MetadataStatus state={meta} ids={ids} />}
+              </Block>
+              <Block title="Variables" id="d-variables">
+                <p className="text-salt-300 leading-relaxed mb-5">Every column of the data. Use the label to name the variable in plots; the description says how it was built.</p>
+                {ready
+                  ? <div className="space-y-8">{meta.packages.map((p) => <VariableTable key={p.name} pkg={p} heading={meta.packages.length > 1} />)}</div>
+                  : <MetadataStatus state={meta} ids={ids} />}
+              </Block>
+              <Block title="Use it in your code" id="d-code"><CodeTabs code={item.code} idPrefix={`code-${item.id}`} /></Block>
+              <Block title="License" id="d-license">
+                {ready ? <LicenseBlock packages={meta.packages} /> : <MetadataStatus state={meta} ids={ids} />}
+              </Block>
+              <Block title="References" id="d-refs">
+                {ready ? (
+                  <ul className="space-y-3 text-sm text-salt-300">
+                    {uniqueSources(meta.packages).map((s) => (
+                      <li key={s.title} className="pl-4 border-l-2 border-white/10">{s.title} {s.path && <ExternalA href={s.path} className="break-all">{s.path}</ExternalA>}</li>
+                    ))}
+                  </ul>
+                ) : <MetadataStatus state={meta} ids={ids} />}
+              </Block>
+            </DetailShell>
+          );
+        };
 
         const PackageDetail = ({ item }) => (
           <DetailShell item={item} aside={<>

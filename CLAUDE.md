@@ -42,7 +42,7 @@ CONTRIBUTING_DATA.md, and register it on the website."
   - `scales.yaml`: the scale registry, edited by hand.
   - `units.csv/.parquet`, `boundaries/<scale>.geojson/.parquet`, `crosswalks/<from>__<to>.csv`: generated.
 - **`data/<scale>/<dataset>.csv/.parquet`**: published panels, one row per `geo_id` × `year`. Generated.
-- **`metadata/<dataset>.datapackage.json`** + `metadata/index.json`: Frictionless metadata, the source of truth for variables, units, sources, reference years and aggregation rules (`geo:` properties).
+- **`metadata/<dataset>.datapackage.json`** + `metadata/index.json`: Frictionless metadata, the source of truth for variables (each field's `title` is its plot label, its `description` how it was built), units, sources (with their licenses and required credits), licenses, reference years, aggregation rules and the headline map (`geo:` properties). The website's indicator pages read it directly.
 - **`docs/datasets/*.md`**, **`data/README.md`**, **`definitions_gdo-bolivia.csv`**: generated from the metadata.
 - **`src/geo4bolivia/`**: the Python package.
 
@@ -63,7 +63,7 @@ CONTRIBUTING_DATA.md, and register it on the website."
   | `build/_template.py`, `build/_geo_template.py` | templates | starting points for new builders |
 
 - **`tests/test_core.py`**: generic tests, driven by the registry and metadata. **`tests/test_project.py`**: Bolivia facts.
-- **`scripts/match_municipalities.py`**: one-off matching of GADM municipalities to DS4Bolivia (`raw/lookups/municipalities339_gadm.csv`). **`scripts/site_images.py`**: renders the website's map images. **`scripts/new_project.py`** + `scripts/template/*.tpl`: the template generator.
+- **`scripts/match_municipalities.py`**: one-off matching of GADM municipalities to DS4Bolivia (`raw/lookups/municipalities339_gadm.csv`). **`scripts/indicator_map.py`** (generic): the indicator pages' headline maps and cards, three Fisher–Jenks classes over Esri's keyless World Dark Gray Canvas (settings in `project.yaml` `site:`). **`scripts/site_images.py`**: renders the website's other images. **`scripts/new_project.py`** + `scripts/template/*.tpl`: the template generator.
 - **`notebooks/`**: Colab notebooks paired with MyST `.md` files through jupytext.
   - `geo4bolivia_quickstart`: load, link and build indicators.
   - `eda`, `esda`, `esda_dependence`, `esda_inequality`, `esda_heterogeneity`, `eda_esda`: ported from DS4Bolivia, on multidimensional poverty (`sdg1_2_mpi`, 2012) and night-time lights.
@@ -71,6 +71,8 @@ CONTRIBUTING_DATA.md, and register it on the website."
 - **`apps/`**: Google Earth Engine app source (`.js`).
 - **`code/`**: pointers to data-preparation code.
 - **`media/`**, **`images/`**: site assets.
+- **`.claude/skills/create-indicator-website/`**: the skill that turns a dataset and its information into an indicator page (generic; port it with the template).
+- **Licenses**: code MIT (`LICENSE`), data CC BY 4.0 (`LICENSE-DATA`), except the GADM-derived `geo/boundaries/` (GADM: non-commercial, no redistribution without permission; a rebuild on geoBoundaries is planned) and where a source requires otherwise. The SDG Atlas states no open license and is used with SDSN Bolivia's permission.
 - `geo4cambodia/` and `ds4bolivia/` at the root, if present, are local reference clones. They are ignored by git and pytest; never edit or commit them.
 
 ## Environment setup (uv)
@@ -119,8 +121,8 @@ Every unit has one **geo ID** (`geo_id`). Administrative IDs follow the GADM 4.1
 
 | Dataset | Years | Notes |
 | --- | --- | --- |
-| `pop` | 2001–2020 | gridded population (WorldPop, via DS4Bolivia); `sum` |
-| `ntl` | 2012–2020 | `ln_NTLpc` and its HP trend `ln_t400NTLpc`; logs, so `none` |
+| `pop` | 2001–2020 | gridded population (WorldPop 1 km, via DS4Bolivia); `sum`. `pop_density` (people per km² of the GADM area); `none` |
+| `ntl` | 2012–2020 | `ln_NTLpc` = ln(10⁸ × EOG VIIRS radiance / WorldPop) and its HP trend `ln_t400NTLpc`; logs, so `none` |
 | `sdg` | 2010–2020 | 64 SDG Atlas indicators, **each at its own reference year** (`geo:year`); period averages at the midpoint, rounded down. The composite indices (IMDS, `index_sdg*`) are deliberately not included |
 | `emb`, `embpw` | 2017 | 64 satellite embedding dimensions (A00–A63), area- and population-weighted; `none` |
 
@@ -131,7 +133,7 @@ Load one SDG indicator at its year: `geo.load("sdg", variables="sdg1_2_mpi", yea
 ```python
 !pip install -q "geo4bolivia[raster]"              # Google Colab ([raster] for geo.zonal)
 import geo4bolivia as geo
-geo.datasets(); geo.dictionary("sdg")               # catalog and variables
+geo.datasets(); geo.dictionary("sdg")               # catalog; variables with label and description
 df  = geo.load("ntl")                               # panel: geo_id, year, variables
 gdf = geo.load("ntl", years=2020, geometry=True)    # with boundaries
 wide = geo.load("pop", wide="pop")                  # one column per year
@@ -159,10 +161,11 @@ All content is data in the `CONTENT_REGISTRY` array in `index.html`. To add an i
    - `title`, `summary`, `description`, `tags`
    - `image`, `imageAlt`
    - `date`, `pinned`
-2. Put images in `images/<section>/` as WebP, at most 1600 px wide. Map images are rendered by `uv run python scripts/site_images.py`.
+2. Put images in `images/<section>/` as WebP, at most 1600 px wide. Indicator maps and cards are rendered by `uv run python scripts/indicator_map.py <dataset>`; the other cards by `uv run python scripts/site_images.py`.
 3. The item automatically gets a card and a shareable detail page at `#/<section>/<id>`.
 4. Type-specific fields:
-   - **New indicator:** first add the data (see `CONTRIBUTING_DATA.md`). Then set `dataset`, `folder` (`data/<scale>`), `docs`, `key: 'geo_id'` and `idExample`. Add `code` with the tabs `python` (package) and `pandas` (plain URL). Add a `Dataset` entry to the JSON-LD block in `<head>`.
+   - **New indicator:** use the **`create-indicator-website` skill** (`.claude/skills/`), which runs the whole workflow: data, metadata, approved dictionary and licenses, map, page, checks, commit. By hand: add the data (see `CONTRIBUTING_DATA.md`) with a `title` (plot label) and a construction `description` for every column, the sources' licenses and a `geo:map` (headline variable and year). Run `scripts/indicator_map.py`. Then set `dataset` (or `datasets`), `key: 'geo_id'`, `idExample`, `map` and `mapAlt` (the page's map), `image` and `imageAlt` (the card), and `code` with the tabs `python` (package) and `pandas` (plain URL). Add a `Dataset` entry, without `distribution`, to the JSON-LD block in `<head>`.
+   - **Indicator pages** (`IndicatorDetail`) show the map, About (with the original source), Variables (name, label, description), the code, License and References. Variables, sources, licenses and references are fetched from `metadata/<dataset>.datapackage.json`, so edit the metadata, not the page. There is deliberately no download section and no link to the data folders: redistribution rights are being cleared.
    - **Package:** `scope` (the pip command), `install`, `quickstart` (code tabs), optionally `build`, `features` (`{title, fns, text}`) and `links` (kinds `colab`, `docs`, `pypi`, `github`).
    - **Insight:** add only published work whose DOI and abstract you have checked, with its full citation. The Insights and Events sections (and their nav links) appear automatically once they have at least one item.
 

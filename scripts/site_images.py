@@ -11,7 +11,8 @@
   multidimensional poverty inside a satellite's orbit, on a lagoon tile (icons) or transparent
   (emblem-dark-192.png, for the dark site header).
 - og: images/og-image.jpg, the social preview.
-- cards, pillars: maps and charts of the published data, in the site's colours.
+- cards, pillars: maps and charts of the published data, in the site's colours (tools, notebooks,
+  insights; the indicator cards and maps come from scripts/indicator_map.py).
 
 Card images for the notebooks redraw one key result of each notebook in the site's colours,
 recomputed from the data with the notebook's own settings (`notebook_cards`, run with `cards`).
@@ -406,53 +407,10 @@ def quantile_map(ax, gdf, column, k, cmap, label, fmt="{:,.2f}", cax=None, rever
 
 
 def cards() -> None:
+    # the indicator cards and maps are drawn by scripts/indicator_map.py
     import geo4bolivia as geo
-    from sklearn.decomposition import PCA
     plt = mpl()
     print("cards")
-    mun = geo.boundaries("municipality")
-
-    # SDG indicators: multidimensional poverty
-    gdf = mun.merge(geo.load("sdg", variables="sdg1_2_mpi", years=2012), on="geo_id")
-    fig = plt.figure(figsize=(16, 9))
-    ax = fig.add_axes([0.18, 0.04, 0.6, 0.92]); cax = fig.add_axes([0.82, 0.2, 0.018, 0.6])
-    quantile_map(ax, gdf, "sdg1_2_mpi", 7, site_cmap(), "Multidimensional Poverty Index 2012, quantiles", "{:.3f}", cax)
-    save_fig(fig, IMG / "indicators/sdg.webp")
-
-    # Night-time lights per capita (trend), 2020
-    gdf = mun.merge(geo.load("ntl", years=2020), on="geo_id")
-    fig = plt.figure(figsize=(16, 9))
-    ax = fig.add_axes([0.18, 0.04, 0.6, 0.92]); cax = fig.add_axes([0.82, 0.2, 0.018, 0.6])
-    quantile_map(ax, gdf, "ln_t400NTLpc", 7, plt.get_cmap("magma"), "Log night-time lights per capita (trend) 2020, quantiles", "{:.2f}", cax)
-    save_fig(fig, IMG / "indicators/ntl.webp")
-
-    # Population: density 2020 and growth 2001-2020
-    pop = geo.load("pop", wide="pop")
-    gdf = mun.merge(pop, on="geo_id").merge(geo.units("municipality")[["geo_id", "area_km2"]], on="geo_id")
-    gdf["density"] = gdf["pop2020"] / gdf["area_km2"].astype(float)
-    gdf["growth"] = 100 * ((gdf["pop2020"] / gdf["pop2001"]) ** (1 / 19) - 1)
-    fig, axes = plt.subplots(1, 2, figsize=(16, 9))
-    fig.subplots_adjust(left=0.02, right=0.98, top=0.9, bottom=0.08, wspace=0.05)
-    for ax, col, title, cmap in [(axes[0], "density", "People per km², 2020", seq_cmap()),
-                                 (axes[1], "growth", "Annual population growth 2001–2020 (%)", site_cmap())]:
-        quantile_map(ax, gdf, col, 7, cmap, title)
-        ax.set_title(title, fontsize=20, color=TEXT)
-    save_fig(fig, IMG / "indicators/pop.webp")
-
-    # Satellite embeddings: the first three principal components as colours
-    emb = geo.load("emb")
-    X = emb.filter(regex=r"^A\d{2}$").to_numpy()
-    pcs = PCA(3, random_state=0).fit_transform((X - X.mean(0)) / X.std(0))
-    rgb = (pcs - np.percentile(pcs, 2, 0)) / (np.percentile(pcs, 98, 0) - np.percentile(pcs, 2, 0))
-    gdf = mun.merge(emb[["geo_id"]].assign(_i=np.arange(len(emb))), on="geo_id")
-    fig = plt.figure(figsize=(16, 9))
-    ax = fig.add_axes([0.05, 0.04, 0.55, 0.92])
-    gdf.plot(color=np.clip(rgb[gdf["_i"]], 0, 1), ax=ax, edgecolor=BG, linewidth=0.25); ax.set_axis_off()
-    fig.text(0.6, 0.62, "Satellite embeddings, 2017", fontsize=27, weight="bold", color="white")
-    fig.text(0.6, 0.55, "64 dimensions per municipality,\nshown as the first three principal\ncomponents in red, green and blue", fontsize=19, color=MUTED, va="top")
-    fig.text(0.6, 0.3, 'geo.load("emb")   geo.load("embpw")', fontsize=17, color=TURQUOISE, family="DejaVu Sans Mono")
-    save_fig(fig, IMG / "indicators/emb.webp")
-
     package_card(geo, plt)
     geometrics_card(geo, plt)
     expdpy_card(geo, plt)

@@ -26,3 +26,18 @@ equal_area_crs: "+proj=aea +lat_0=-16.5 +lon_0=-64.5 +lat_1=-11 +lat_2=-21 +datu
 
 # Generated table listing every variable of every dataset.
 catalog: definitions_gdo-bolivia.csv
+
+# Website maps drawn by scripts/indicator_map.py: a keyless basemap (tiles below the units,
+# labels above them) and the colours of the three natural-break classes (Low, Middle, High).
+site:
+  basemap:
+    base: https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}
+    labels: https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}
+    attribution: "Basemap: Esri, HERE, Garmin, © OpenStreetMap contributors, and the GIS user community"
+  colors:
+    background: "#071417"
+    text: "#e6efee"
+    muted: "#a9bebb"
+    accent: "#5ad6c6"
+    no_data: "#5c6b6a"
+    classes: ["#1f8a80", "#ec8f99", "#ffd9de"]
