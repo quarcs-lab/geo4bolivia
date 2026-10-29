@@ -200,18 +200,42 @@
       details > summary::-webkit-details-marker { display: none; }
       details[open] .chev { transform: rotate(90deg); }
       .static-fallback a { color: #5ad6c6; }
+      /* Until React mounts, show the hero's first frame instead of the crawlable fallback, which stays in the DOM */
+      .static-fallback { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+      .boot-hero {
+        position: fixed; inset: 0;
+        background:
+          linear-gradient(to bottom, rgba(7,20,23,.8), rgba(7,20,23,0)) top / 100% 8rem no-repeat,
+          linear-gradient(to top, #071417, rgba(7,20,23,0)) bottom / 100% 12rem no-repeat,
+          linear-gradient(rgba(7,20,23,.6), rgba(7,20,23,.6)),
+          #071417 url(images/hero-day.webp) center / cover no-repeat;
+      }
+      @media (min-width: 1024px) {
+        .boot-hero {
+          background:
+            linear-gradient(to bottom, rgba(7,20,23,.8), rgba(7,20,23,0)) top / 100% 8rem no-repeat,
+            linear-gradient(to top, #071417, rgba(7,20,23,0)) bottom / 100% 12rem no-repeat,
+            linear-gradient(to right, rgba(7,20,23,.95), rgba(7,20,23,.5) 35%, rgba(7,20,23,0) 60%),
+            #071417 url(images/hero-day.webp) center / cover no-repeat;
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
         .marquee-track, .cue-bounce { animation: none !important; }
       }
     </style>
+    <noscript><style>
+      .static-fallback { position: static !important; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; }
+      .boot-hero { display: none; }
+    </style></noscript>
 </head>
 <body class="bg-lagoon-950 text-salt-200">
     <a href="#main" onclick="event.preventDefault(); var m = document.getElementById('main'); if (m) { m.focus(); m.scrollIntoView(); }" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-brand-rose focus:text-white">Skip to content</a>
 
     <div id="root">
       <!-- Static, crawlable fallback. React replaces this on load. -->
+      <div class="boot-hero" aria-hidden="true"></div>
       <main class="static-fallback" style="max-width:56rem;margin:0 auto;padding:6rem 1.5rem;font-family:Inter,system-ui,sans-serif;color:#e3ecea;background:#071417">
         <img src="images/logo/emblem-192.png" alt="GDO-Bolivia emblem" width="72" height="72">
         <h1 style="font-size:2.25rem;font-weight:800;margin:1rem 0">GeoDevelopment Observatory of Bolivia</h1>
