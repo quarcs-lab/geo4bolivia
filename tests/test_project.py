@@ -43,6 +43,23 @@ def test_lakes_are_not_units():
     assert not names.str.contains("Lago").any()
 
 
+def test_boundaries_come_from_geoboundaries():
+    m = geo.units("municipality")
+    assert m["gb_id"].notna().all() and m["gb_id"].is_unique       # one geoBoundaries shapeID each
+    lk = pd.read_csv(store.repo_root() / "raw/lookups/municipalities339_geoboundaries.csv", dtype={"shapeID": str})
+    assert dict(zip(lk["geo_id"], lk["shapeID"])) == dict(zip(m["geo_id"], m["gb_id"]))
+    assert not (store.repo_root() / "raw/boundaries/gadm41_BOL_3.json").exists()   # no GADM geometry
+
+
+def test_salt_flats_and_lakes_are_outside_every_unit():
+    u = geo.units().set_index("geo_id")
+    area = u.groupby("scale")["area_km2"].sum()
+    # the scales are exact unions of the municipalities, holes included
+    assert np.allclose(area[["country", "department", "province"]], area["municipality"], rtol=1e-6)
+    assert 1.06e6 < area["country"] < 1.075e6       # ~13,000 km² of salt flats and lakes left out
+    assert u.loc["BO-05-10-02", "area_km2"] < 400   # Coipasa: most of the Salar de Coipasa is a hole
+
+
 def test_ine_codes_nest_like_the_gadm_hierarchy():
     u = geo.units().set_index("geo_id")
     m = u[u["scale"] == "municipality"]
