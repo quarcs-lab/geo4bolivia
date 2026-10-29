@@ -843,7 +843,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             description: 'This Colab notebook asks whether poverty in one municipality resembles poverty in its neighbours. It maps the Multidimensional Poverty Index of 2012, builds six-nearest-neighbour weights and spatial lags, and tests global and local spatial dependence. Poverty is strongly clustered (Moran’s I = 0.46, p = 0.001). The LISA map finds poverty hot spots in Pando and the Chuquisaca and Potosí valleys, low-poverty clusters around Santa Cruz, the Cochabamba valley, La Paz–El Alto and Tarija, and less poor capitals such as Sucre and Cobija surrounded by poorer municipalities.',
             tags: ['ESDA', 'spatial autocorrelation', 'LISA', 'PySAL'],
             image: 'images/tools/esda.webp',
-            imageAlt: 'Moran scatterplot of multidimensional poverty next to a LISA cluster map of Bolivian municipalities',
+            imageAlt: 'LISA cluster map of multidimensional poverty in 2012: high-poverty clusters in Pando and the Chuquisaca and Potosí valleys, low-poverty clusters around Santa Cruz, Cochabamba, La Paz and Tarija',
             date: '2026-10-28', pinned: true,
             links: [
               { label: 'Open in Colab', url: COLAB_URL + 'esda.ipynb', kind: 'colab' },
@@ -873,7 +873,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             description: 'This Colab notebook measures inequality across the 339 municipalities in multidimensional poverty and in night-time lights per capita (2012). Poverty has a Gini of 0.31; the Theil index shows that only about a quarter of it lies between the nine departments, and the rest within them. The spatial Gini confirms that neighbouring municipalities are more alike than distant ones. A department table compares simple and population-weighted poverty.',
             tags: ['inequality', 'Theil', 'Gini', 'spatial Gini'],
             image: 'images/tools/esda-inequality.webp',
-            imageAlt: 'Map of multidimensional poverty in 2012 next to the nine departments used to decompose inequality',
+            imageAlt: 'Quintile map of multidimensional poverty in 2012 across Bolivian municipalities, with the borders of the nine departments used to decompose inequality',
             date: '2026-10-28', pinned: false,
             links: [
               { label: 'Open in Colab', url: COLAB_URL + 'esda_inequality.ipynb', kind: 'colab' },
@@ -888,7 +888,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             description: 'This Colab notebook regresses multidimensional poverty on night-time lights per capita (2012) across the 339 municipalities. A single national regression explains 29% of the variation. A geographically weighted regression, with a bandwidth of 46 neighbours, raises that to 62%: every local slope is negative, but it is steepest in Cochabamba, Chuquisaca and Potosí and weakest in La Paz, Beni and Pando. A multiscale GWR lets the intercept and the slope vary at different scales and fits best of the three.',
             tags: ['GWR', 'MGWR', 'spatial heterogeneity', 'night-time lights'],
             image: 'images/tools/esda-heterogeneity.webp',
-            imageAlt: 'Three maps of local GWR slopes of poverty on night-time lights across Bolivian municipalities',
+            imageAlt: 'Map of significant local GWR slopes of poverty on night-time lights across Bolivian municipalities, steepest in Cochabamba, Chuquisaca and Potosí',
             date: '2026-10-28', pinned: false,
             links: [
               { label: 'Open in Colab', url: COLAB_URL + 'esda_heterogeneity.ipynb', kind: 'colab' },
@@ -903,7 +903,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             description: 'This Colab notebook combines exploratory and spatial data analysis of multidimensional poverty (2012). Electricity and network coverage are its strongest correlates (Spearman −0.91 and −0.89), ahead of clean cooking energy, child malnutrition and night-time lights. Poverty clusters strongly in space (Moran’s I = 0.46), and a bivariate LISA relates each municipality’s poverty to its neighbours’ lights: less poor places in bright neighbourhoods around Santa Cruz, Cochabamba and Tarija, and poor places in dark ones in La Paz, Potosí, Pando and Beni. It closes with inequality measures and a geographically weighted regression.',
             tags: ['EDA', 'ESDA', 'bivariate LISA', 'infrastructure'],
             image: 'images/tools/eda-esda.webp',
-            imageAlt: 'Bivariate Moran scatterplot of poverty against neighbours’ night-time lights and the matching bivariate LISA map',
+            imageAlt: 'Bivariate LISA map of Bolivian municipalities relating each one’s poverty to its neighbours’ night-time lights',
             date: '2026-10-28', pinned: false,
             links: [
               { label: 'Open in Colab', url: COLAB_URL + 'eda_esda.ipynb', kind: 'colab' },
@@ -918,7 +918,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             description: 'This Colab notebook trains random forests and XGBoost to predict the Multidimensional Poverty Index of 2012 from the 64 satellite embedding dimensions of 2017, and compares them with a baseline of night-time lights and population. Population-weighted embeddings beat area-weighted ones, and adding lights helps: the best models reach an out-of-fold R² of about 0.55–0.58 with random 5-fold cross-validation. When whole departments are held out, R² falls to about 0.2, a reminder that models struggle to extrapolate to new regions. A map of residuals shows where they fail: Pando is under-predicted. The text discusses the 2017/2012 timing mismatch.',
             tags: ['machine learning', 'satellite embeddings', 'random forest', 'XGBoost'],
             image: 'images/tools/embeddings-mpi-ml.webp',
-            imageAlt: 'Out-of-fold predicted against observed multidimensional poverty, for random and spatial cross-validation',
+            imageAlt: 'Scatter plot of out-of-fold predicted against observed multidimensional poverty from XGBoost on satellite embeddings, random 5-fold cross-validation, R² 0.58',
             date: '2026-10-28', pinned: true,
             links: [
               { label: 'Open in Colab', url: COLAB_URL + 'embeddings_mpi_ml.ipynb', kind: 'colab' },
@@ -1090,9 +1090,10 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
           );
         };
 
-        // Sentinel-2 cloudless 2016 crops of Bolivia (EOX, CC BY 4.0) behind the main section headers and the footer
+        // Sentinel-2 cloudless crops of Bolivia (EOX) behind the main section headers and the footer: the 2016 mosaic
+        // (CC BY 4.0), except Laguna Verde from the 2024 mosaic (CC BY-NC-SA 4.0), where 2016 has cloud over the lagoon
         const SECTION_BANDS = {
-          about: { image: 'images/bands/salar-de-uyuni.webp', place: 'Salar de Uyuni', lat: -20.13, lng: -67.49 },
+          about: { image: 'images/bands/laguna-verde-licancabur.webp', place: 'Laguna Verde · Licancabur', lat: -22.8, lng: -67.87, year: 2024 },
           indicators: { image: 'images/bands/lake-titicaca.webp', place: 'Lake Titicaca', lat: -16.05, lng: -69.05 },
           tools: { image: 'images/bands/la-paz-el-alto.webp', place: 'La Paz · El Alto', lat: -16.51, lng: -68.15 },
           insights: { image: 'images/bands/santa-cruz-de-la-sierra.webp', place: 'Santa Cruz de la Sierra', lat: -17.78, lng: -63.18 },
@@ -1104,7 +1105,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
           <p className={`font-mono text-[11px] uppercase tracking-[0.2em] text-salt-300 ${className}`}>
             <span className="block text-xs sm:text-sm tracking-[0.15em] text-white whitespace-pre">{formatCoord(band.lat, band.lng)}</span>
             <span className="block mt-1 text-brand-turquoise">{band.place}</span>
-            <span className="block mt-1 text-salt-400">Sentinel-2 cloudless 2016</span>
+            <span className="block mt-1 text-salt-400">Sentinel-2 cloudless {band.year || 2016}</span>
           </p>
         );
 
@@ -1377,19 +1378,22 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
         // ====================================================================
         // Satellite globe (globe.gl), loaded on demand so it never blocks first paint
         // Sentinel-2 cloudless 2016 (EOX, CC BY 4.0) patches draped over the globe, made by scripts/site_images.py:
-        // Bolivia from level-7 tiles (~600 m/px), each city from a 9 x 7 block of level-11 tiles (~38 m/px)
-        const BOLIVIA_PATCH = { url: 'images/hero-bolivia-s2.webp', lat: -16.171875, lng: -63.28125, width: 14.0625, height: 15.46875, altitude: 0.0004, curvature: 0.25 };
-        const cityPatch = (id, lat, lng) => ({ url: `images/hero-city-${id}.webp`, lat, lng, width: 0.791016, height: 0.615234, altitude: 0.0008, curvature: 0.05 });
+        // Bolivia from level-7 tiles (~600 m/px), each city from a 9 x 7 block of level-11 tiles (~38 m/px) and its
+        // centre from a 7 x 5 block of level-13 tiles (~10 m/px). The patches float just above the ground (in globe radii),
+        // stacked from coarse to fine, low enough that the close-up camera never passes through them.
+        const BOLIVIA_PATCH = { url: 'images/hero-bolivia-s2.webp', lat: -16.171875, lng: -63.28125, width: 14.0625, height: 15.46875, altitude: 0.00004, curvature: 0.25 };
+        const cityPatch = (id, lat, lng) => ({ url: `images/hero-city-${id}.webp`, lat, lng, width: 0.791016, height: 0.615234, altitude: 0.00008, curvature: 0.05 });
+        const cityDetailPatch = (id, lat, lng) => ({ url: `images/hero-city-${id}-z13.webp`, lat, lng, width: 0.153809, height: 0.109863, altitude: 0.00012, curvature: 0.01 });
         const HERO_CITIES = [
-          { id: 'la-paz', name: 'La Paz', lat: -16.4955, lng: -68.1336, patch: cityPatch('la-paz', -16.479492, -68.15918) },
-          { id: 'cochabamba', name: 'Cochabamba', lat: -17.3895, lng: -66.1568, patch: cityPatch('cochabamba', -17.358398, -66.137695) },
-          { id: 'santa-cruz', name: 'Santa Cruz', lat: -17.7833, lng: -63.1821, patch: cityPatch('santa-cruz', -17.797852, -63.149414) },
-          { id: 'sucre', name: 'Sucre', lat: -19.0196, lng: -65.2619, patch: cityPatch('sucre', -19.02832, -65.258789) },
-          { id: 'potosi', name: 'Potosí', lat: -19.5836, lng: -65.7531, patch: cityPatch('potosi', -19.555664, -65.786133) },
+          { id: 'la-paz', name: 'La Paz', lat: -16.4955, lng: -68.1336, patch: cityPatch('la-paz', -16.479492, -68.15918), detail: cityDetailPatch('la-paz', -16.490479, -68.126221) },
+          { id: 'cochabamba', name: 'Cochabamba', lat: -17.3895, lng: -66.1568, patch: cityPatch('cochabamba', -17.358398, -66.137695), detail: cityDetailPatch('cochabamba', -17.391357, -66.148682) },
+          { id: 'santa-cruz', name: 'Santa Cruz', lat: -17.7833, lng: -63.1821, patch: cityPatch('santa-cruz', -17.797852, -63.149414), detail: cityDetailPatch('santa-cruz', -17.786865, -63.182373) },
+          { id: 'sucre', name: 'Sucre', lat: -19.0476, lng: -65.2596, patch: cityPatch('sucre', -19.02832, -65.258789), detail: cityDetailPatch('sucre', -19.039307, -65.269775) },
+          { id: 'potosi', name: 'Potosí', lat: -19.5891, lng: -65.7535, patch: cityPatch('potosi', -19.555664, -65.786133), detail: cityDetailPatch('potosi', -19.588623, -65.753174) },
         ];
         const HERO_THEMES = ['Measure regional development', 'Explore with open tools', 'Turn evidence into insight'];
-        // Altitudes in globe radii; city views sit low enough to match the ~38 m/px city imagery
-        const GLOBE_ALT = { intro: 2.6, overview: 0.9, city: 0.007, min: 0.005, max: 2.6, detail: 0.08 };
+        // Altitudes in globe radii; city views sit low enough to match the ~10 m/px close-ups (0.0013 shows ~8 km of ground)
+        const GLOBE_ALT = { intro: 2.6, overview: 0.9, city: 0.0013, min: 0.0008, max: 2.6, detail: 0.08 };
 
         const loadScript = (() => {
           const cache = {};
@@ -1483,6 +1487,8 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
                 // An invisible cap that doesn't hide the Bolivia patch underneath
                 const capMaterial = new (world.globeMaterial().constructor)({ transparent: true, opacity: 0, depthWrite: false });
                 world.polygonCapMaterial(() => capMaterial);
+                world.camera().near = 0.005; // the close-ups put the camera ~0.1 globe units above the ground
+                world.camera().updateProjectionMatrix();
                 world.lights().forEach((light) => { light.intensity *= light.isDirectionalLight ? 1.6 : 1.15; });
                 const controls = world.controls();
                 controls.enableZoom = false; // the mouse wheel keeps scrolling the page
@@ -1555,7 +1561,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             if (worldRef.current) worldRef.current.ringsData(motionPaused ? [] : HERO_CITIES);
           }, [motionPaused, ready]);
 
-          const preloadCity = (city) => { if (worldRef.current) addGlobePatch(worldRef.current, city.patch); };
+          const preloadCity = (city) => { if (worldRef.current) { addGlobePatch(worldRef.current, city.patch); addGlobePatch(worldRef.current, city.detail); } };
           const flyTo = (city) => {
             const world = worldRef.current;
             if (!world) return;
@@ -1565,6 +1571,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             setAnnouncement(`Flying to ${city.name}`);
             setView({ lat: city.lat, lng: city.lng });
             addGlobePatch(world, city.patch);
+            addGlobePatch(world, city.detail);
             setGlobeDetail(world, true);
             target.current = { lat: city.lat, lng: city.lng, altitude: GLOBE_ALT.city };
             world.pointOfView(target.current, 2600);
@@ -2163,7 +2170,7 @@ print(ex.analyze_hausman_test(panel, "ln_NTLpc", ["ln_pop"]).interpret())`,
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
               <div className="border-t border-white/10 pt-8 space-y-3 text-xs text-salt-400 leading-relaxed">
                 <p><strong className="text-salt-400">Disclaimer.</strong> The indicators, tools, and insights are the responsibility of the individual researchers and do not necessarily represent the views of their affiliated institutions or related organizations. Maps on this website are for geo-statistical use only and have a referential, informational character. They represent indicators spatially and do not constitute an official definition of Bolivia’s territorial boundaries.</p>
-                <p><strong className="text-salt-400">Credits.</strong> The section illustrations and map cards are rendered from the observatory’s data (scripts/site_images.py). The hero globe uses <a href="https://s2maps.eu" target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">Sentinel-2 cloudless<span className="sr-only"> (opens in a new tab)</span></a> by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016), licensed under CC BY 4.0, over NASA's Blue Marble Next Generation (public domain), and is rendered with globe.gl; the section and footer backgrounds are Sentinel-2 cloudless crops of Bolivia from the same source. The emblem adapts the geo4cambodia emblem. App screenshots, figures, and photos belong to their respective authors. Code and data are released under the <a href={`${REPO_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">MIT License<span className="sr-only"> (opens in a new tab)</span></a>; the original data sources are credited on each dataset page.</p>
+                <p><strong className="text-salt-400">Credits.</strong> The section illustrations and map cards are rendered from the observatory’s data (scripts/site_images.py). The hero globe uses <a href="https://s2maps.eu" target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">Sentinel-2 cloudless<span className="sr-only"> (opens in a new tab)</span></a> by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016), licensed under CC BY 4.0, over NASA's Blue Marble Next Generation (public domain), and is rendered with globe.gl; the section and footer backgrounds are Sentinel-2 cloudless crops of Bolivia from the same source, except Laguna Verde, from the 2024 mosaic (contains modified Copernicus Sentinel data 2024, CC BY-NC-SA 4.0). The emblem adapts the geo4cambodia emblem. App screenshots, figures, and photos belong to their respective authors. Code and data are released under the <a href={`${REPO_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">MIT License<span className="sr-only"> (opens in a new tab)</span></a>; the original data sources are credited on each dataset page.</p>
                 <p>Found an error? <a href={`${REPO_URL}/issues`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">Open an issue<span className="sr-only"> (opens in a new tab)</span></a> or start a thread in <a href={`${REPO_URL}/discussions`} target="_blank" rel="noopener noreferrer" className="underline hover:text-salt-300">GitHub Discussions<span className="sr-only"> (opens in a new tab)</span></a>.</p>
               </div>
             </div>

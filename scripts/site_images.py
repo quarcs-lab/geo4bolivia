@@ -2,9 +2,10 @@
 
     uv run python scripts/site_images.py [all | hero | bands | outline | emblem | og | cards | pillars]
 
-- hero, bands: Sentinel-2 cloudless 2016 by EOX IT Services GmbH (CC BY 4.0), read
-  as WGS84 WMTS tiles and cached in the system temp folder. `hero` prints the
-  patch settings to paste into index.html (BOLIVIA_PATCH, HERO_CITIES).
+- hero, bands: Sentinel-2 cloudless by EOX IT Services GmbH, read as WGS84 WMTS tiles and cached
+  in the system temp folder: the 2016 mosaic (CC BY 4.0), except the Laguna Verde band from the
+  2024 mosaic (CC BY-NC-SA 4.0). `hero` prints the patch settings to paste into index.html
+  (BOLIVIA_PATCH, HERO_CITIES): a level-11 patch around each city and a level-13 close-up of its centre.
 - outline: geo/boundaries/country_outline_web.geojson, a light outline for the globe.
 - emblem: images/logo/emblem-*.png, the GDO-Bolivia emblem: the nine departments shaded by
   multidimensional poverty inside a satellite's orbit, on a lagoon tile (icons) or transparent
@@ -12,8 +13,8 @@
 - og: images/og-image.jpg, the social preview.
 - cards, pillars: maps and charts of the published data, in the site's colours.
 
-Card images for the notebooks are figures taken from the executed notebooks
-(`notebook_cards`, run with `cards`).
+Card images for the notebooks redraw one key result of each notebook in the site's colours,
+recomputed from the data with the notebook's own settings (`notebook_cards`, run with `cards`).
 """
 
 from __future__ import annotations
@@ -51,19 +52,20 @@ SITE_PALETTE = ["#0f3a3f", "#13605f", "#1f8a80", "#5fb7a6", "#c9e2d6", "#f3c7c1"
 # Sequential palette for densities: deep lagoon -> turquoise -> salt
 SEQ_PALETTE = ["#0f3a3f", "#13605f", "#1f8a80", "#5fb7a6", "#a8dccf", "#f4f1e8"]
 
-TILE_URL = "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless/default/WGS84/{z}/{row}/{col}.jpg"
+# 2016 is CC BY 4.0; the later yearly mosaics (s2cloudless-<year>) are CC BY-NC-SA 4.0
+TILE_URL = "https://tiles.maps.eox.at/wmts/1.0.0/{layer}/default/WGS84/{z}/{row}/{col}.jpg"
 CACHE = Path(tempfile.gettempdir()) / "gdo_s2cloudless_2016"
 
 CITIES = [  # hero cities: id, name, lat, lng
     ("la-paz", "La Paz", -16.4955, -68.1336),
     ("cochabamba", "Cochabamba", -17.3895, -66.1568),
     ("santa-cruz", "Santa Cruz", -17.7833, -63.1821),
-    ("sucre", "Sucre", -19.0196, -65.2619),
-    ("potosi", "Potosí", -19.5836, -65.7531),
+    ("sucre", "Sucre", -19.0476, -65.2596),
+    ("potosi", "Potosí", -19.5891, -65.7535),
 ]
 
-BANDS = [  # section bands: key, place, lat, lng, tile level
-    ("about", "Salar de Uyuni", -20.13, -67.49, 9),
+BANDS = [  # section bands: key, place, lat, lng, tile level[, mosaic year]
+    ("about", "Laguna Verde · Licancabur", -22.80, -67.87, 12, 2024),   # the 2016 mosaic has cloud over the lagoon
     ("indicators", "Lake Titicaca", -16.05, -69.05, 9),
     ("tools", "La Paz · El Alto", -16.51, -68.15, 11),
     ("insights", "Santa Cruz de la Sierra", -17.78, -63.18, 11),
@@ -83,12 +85,13 @@ def tile_index(lat: float, lng: float, z: int) -> tuple[int, int]:
     return math.floor((90 - lat) / d), math.floor((lng + 180) / d)   # row, col
 
 
-def tile(z: int, row: int, col: int) -> Image.Image:
-    path = CACHE / f"{z}_{row}_{col}.jpg"
+def tile(z: int, row: int, col: int, year: int = 2016) -> Image.Image:
+    layer = "s2cloudless" if year == 2016 else f"s2cloudless-{year}"
+    path = CACHE / (f"{z}_{row}_{col}.jpg" if year == 2016 else f"{year}_{z}_{row}_{col}.jpg")
     if not path.exists():
         CACHE.mkdir(parents=True, exist_ok=True)
         for attempt in range(4):
-            r = requests.get(TILE_URL.format(z=z, row=row, col=col), timeout=60)
+            r = requests.get(TILE_URL.format(layer=layer, z=z, row=row, col=col), timeout=60)
             if r.ok:
                 path.write_bytes(r.content)
                 break
@@ -98,11 +101,11 @@ def tile(z: int, row: int, col: int) -> Image.Image:
     return Image.open(path).convert("RGB")
 
 
-def mosaic(z: int, row0: int, col0: int, nrows: int, ncols: int) -> Image.Image:
+def mosaic(z: int, row0: int, col0: int, nrows: int, ncols: int, year: int = 2016) -> Image.Image:
     out = Image.new("RGB", (256 * ncols, 256 * nrows))
     for i in range(nrows):
         for j in range(ncols):
-            out.paste(tile(z, row0 + i, col0 + j), (256 * j, 256 * i))
+            out.paste(tile(z, row0 + i, col0 + j, year), (256 * j, 256 * i))
     return out
 
 
@@ -173,23 +176,35 @@ def hero() -> None:
         img.putalpha(fade.filter(ImageFilter.GaussianBlur(24)))
         save_webp(img, IMG / f"hero-city-{cid}.webp", quality=78)
         specs[cid] = patch_spec(z, row - 3, col - 4, 7, 9)
+        # close-up of the centre: a 7 x 5 block of level-13 tiles (~10 m/px, Sentinel-2's own resolution)
+        row, col = tile_index(lat, lng, 13)
+        img = mosaic(13, row - 2, col - 3, 5, 7).convert("RGBA")
+        fade = Image.new("L", img.size, 0)
+        ImageDraw.Draw(fade).rectangle([60, 60, img.size[0] - 60, img.size[1] - 60], fill=255)
+        img.putalpha(fade.filter(ImageFilter.GaussianBlur(30)))
+        save_webp(img, IMG / f"hero-city-{cid}-z13.webp", quality=78)
+        specs[cid + "-z13"] = patch_spec(13, row - 2, col - 3, 5, 7)
     print("\n  Patch settings for index.html:")
     c = specs.pop("country")
     print(f"  BOLIVIA_PATCH = {{ lat: {c['lat']}, lng: {c['lng']}, width: {c['width']}, height: {c['height']} }}")
     for (cid, name, lat, lng) in CITIES:
         s = specs[cid]
-        print(f"  {{ id: '{cid}', name: '{name}', lat: {lat}, lng: {lng}, patch: cityPatch('{cid}', {s['lat']}, {s['lng']}) }},")
-    print(f"  city patch width {s['width']}, height {s['height']}")
+        t = specs[cid + "-z13"]
+        print(f"  {{ id: '{cid}', name: '{name}', lat: {lat}, lng: {lng}, patch: cityPatch('{cid}', {s['lat']}, {s['lng']}), "
+              f"detail: cityDetailPatch('{cid}', {t['lat']}, {t['lng']}) }},")
+    print(f"  city patch width {s['width']}, height {s['height']}; detail width {t['width']}, height {t['height']}")
 
 
 def bands() -> None:
     print("bands")
-    for key, place, lat, lng, z in BANDS:
+    for key, place, lat, lng, z, *year in BANDS:
+        year = year[0] if year else 2016
         row, col = tile_index(lat, lng, z)
-        img = mosaic(z, row - 1, col - 3, 3, 7)               # 1792 x 768
+        img = mosaic(z, row - 1, col - 3, 3, 7, year)         # 1792 x 768
         left, top = (img.size[0] - 1600) // 2, (img.size[1] - 640) // 2
         save_webp(img.crop((left, top, left + 1600, top + 640)), IMG / "bands" / f"{slug(place)}.webp", quality=76)
-        print(f"    {key}: {{ image: 'images/bands/{slug(place)}.webp', place: '{place}', lat: {lat}, lng: {lng} }}")
+        extra = f", year: {year}" if year != 2016 else ""
+        print(f"    {key}: {{ image: 'images/bands/{slug(place)}.webp', place: '{place}', lat: {lat}, lng: {lng}{extra} }}")
 
 
 def slug(text: str) -> str:
@@ -438,7 +453,7 @@ def cards() -> None:
     geometrics_card(geo, plt)
     expdpy_card(geo, plt)
     insight_card(geo, plt)
-    notebook_cards()
+    notebook_cards(geo, plt)
 
 
 def squash(gdf, y_scale=0.42, dy=0.0):
@@ -566,27 +581,178 @@ def insight_card(geo, plt):
     save_fig(fig, IMG / "insights/human-capital-paper.webp")
 
 
-NOTEBOOK_FIGURES = {  # notebook -> index of the figure (among its image outputs) to use as its card
-    "geo4bolivia_quickstart": 2, "eda": 6, "esda": 4, "esda_dependence": 1, "esda_inequality": 1,
-    "esda_heterogeneity": 1, "eda_esda": 10, "embeddings_mpi_ml": 2,
-}
+LISA_COLORS = {"High-high": FLAMINGO, "Low-low": TURQUOISE, "High-low": "#f3c7c1", "Low-high": "#a8dccf",
+               "Not significant": EDGE}
 
 
-def notebook_cards() -> None:
-    """Card images taken from the executed notebooks' own figures."""
-    import base64
-    for path in sorted((ROOT / "notebooks").glob("*.ipynb")):
-        nb = json.loads(path.read_text())
-        figs = [o["data"]["image/png"] for c in nb["cells"] if c["cell_type"] == "code"
-                for o in c.get("outputs", []) if "image/png" in o.get("data", {})]
-        if not figs:
-            continue
-        pick = NOTEBOOK_FIGURES.get(path.stem, 0)
-        img = Image.open(io.BytesIO(base64.b64decode(figs[min(pick, len(figs) - 1)]))).convert("RGBA")
-        canvas = Image.new("RGBA", (1600, 900), (255, 255, 255, 255))
-        img.thumbnail((1520, 840), Image.LANCZOS)
-        canvas.alpha_composite(img, ((1600 - img.size[0]) // 2, (900 - img.size[1]) // 2))
-        save_webp(canvas.convert("RGB"), IMG / "tools" / f"{path.stem.replace('_', '-')}.webp", quality=85)
+def card_text(fig, title, subtitle, code=None, x=0.6):
+    fig.text(x, 0.66, title, fontsize=27, weight="bold", color="white", va="bottom")
+    fig.text(x, 0.63, subtitle, fontsize=18, color=MUTED, va="top", linespacing=1.4)
+    if code:
+        fig.text(x, 0.2, code, fontsize=15, color=TURQUOISE, family="DejaVu Sans Mono")
+
+
+def map_axes(fig):
+    return fig.add_axes([0.04, 0.04, 0.52, 0.92])
+
+
+def swatches(fig, items, x=0.6, y=0.38, dy=0.045):
+    """A legend of coloured squares: [(label, colour)]."""
+    for i, (label, color) in enumerate(items):
+        fig.patches.append(__import__("matplotlib").patches.Rectangle(
+            (x, y - i * dy), 0.016, 0.028, transform=fig.transFigure, facecolor=color, edgecolor=MUTED, linewidth=0.5))
+        fig.text(x + 0.026, y - i * dy + 0.014, label, fontsize=15, color=TEXT, va="center")
+
+
+def lisa_map(ax, gdf, column, deps):
+    for label, color in LISA_COLORS.items():
+        part = gdf[gdf[column] == label]
+        if len(part):
+            part.plot(ax=ax, color=color, edgecolor=BG, linewidth=0.25)
+    deps.boundary.plot(ax=ax, color=SALT, linewidth=0.8, alpha=0.7)
+    ax.set_axis_off()
+
+
+def scatter_axes(fig, rect=(0.08, 0.13, 0.86, 0.72)):
+    ax = fig.add_axes(rect)
+    ax.grid(color=EDGE, linewidth=0.8); ax.set_axisbelow(True)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    return ax
+
+
+def notebook_cards(geo, plt) -> None:
+    """One dark panel per notebook, recomputed from the data with each notebook's own settings."""
+    import pandas as pd
+    from esda.moran import Moran_Local, Moran_Local_BV
+    from libpysal import weights
+    from mgwr.gwr import GWR
+    from mgwr.sel_bw import Sel_BW
+
+    crs = geo.config()["equal_area_crs"]
+    units = geo.units("municipality")
+    deps = geo.boundaries("department").to_crs(crs)
+    mpi = geo.load("sdg", variables="sdg1_2_mpi", years=2012, geometry=True)
+    ntl = geo.load("ntl", variables="ln_t400NTLpc", years=2012)
+    gdf = (mpi.merge(ntl[["geo_id", "ln_t400NTLpc"]], on="geo_id")
+              .merge(units[["geo_id", "department_id"]], on="geo_id").to_crs(crs))
+    W = weights.KNN.from_dataframe(gdf, k=6)
+    W.transform = "r"
+    quad = {1: "High-high", 2: "Low-high", 3: "Low-low", 4: "High-low"}
+    tools = IMG / "tools"
+
+    # quickstart: population-weighted poverty by department
+    dep_mpi = geo.aggregate(geo.load("sdg", variables="sdg1_2_mpi", years=2012), to="department",
+                            rules={"sdg1_2_mpi": "weighted_mean:pop"}, weights=geo.load("pop"))
+    d = deps.merge(dep_mpi[["geo_id", "sdg1_2_mpi"]], on="geo_id")
+    fig = plt.figure(figsize=(16, 9)); ax = map_axes(fig)
+    d.plot(column="sdg1_2_mpi", cmap=site_cmap(), ax=ax, edgecolor=BG, linewidth=1.5); ax.set_axis_off()
+    for _, r in d.iterrows():
+        p = r.geometry.representative_point()
+        ax.annotate(r["name"], (p.x, p.y), ha="center", va="center", fontsize=12, color="white",
+                    path_effects=[__import__("matplotlib.patheffects", fromlist=["x"]).withStroke(linewidth=3, foreground=BG)])
+    cax = fig.add_axes([0.6, 0.3, 0.3, 0.025])
+    cb = fig.colorbar(plt.cm.ScalarMappable(norm=plt.Normalize(d["sdg1_2_mpi"].min(), d["sdg1_2_mpi"].max()), cmap=site_cmap()),
+                      cax=cax, orientation="horizontal")
+    cb.outline.set_edgecolor(MUTED); cb.ax.tick_params(colors=TEXT, labelsize=13)
+    card_text(fig, "Poverty by department, 2012", "Multidimensional Poverty Index,\npopulation-weighted from 339 municipalities",
+              'geo.aggregate(mpi, to="department")')
+    save_fig(fig, tools / "geo4bolivia-quickstart.webp")
+
+    # eda: lights and poverty
+    x, y = gdf["ln_t400NTLpc"].to_numpy(), gdf["sdg1_2_mpi"].to_numpy()
+    fig = plt.figure(figsize=(16, 9)); ax = scatter_axes(fig, (0.08, 0.13, 0.5, 0.72))
+    ax.scatter(x, y, s=46, color=TURQUOISE, alpha=0.6, edgecolor="none")
+    b, a = np.polyfit(x, y, 1); xs = np.linspace(x.min(), x.max(), 50)
+    ax.plot(xs, a + b * xs, color=FLAMINGO, linewidth=3)
+    ax.set_xlabel("Log night-time lights per capita (trend)", fontsize=16)
+    ax.set_ylabel("Multidimensional Poverty Index", fontsize=16)
+    card_text(fig, "Lights and poverty, 2012", f"Brighter municipalities are less poor:\n339 municipalities, r = {np.corrcoef(x, y)[0, 1]:.2f}",
+              x=0.64)
+    save_fig(fig, tools / "eda.webp")
+
+    # esda: LISA clusters of poverty (p < 0.05)
+    lisa = Moran_Local(gdf["sdg1_2_mpi"], W, permutations=999, seed=12345)
+    gdf["lisa"] = np.where(lisa.p_sim < 0.05, pd.Series(lisa.q).map(quad), "Not significant")
+    fig = plt.figure(figsize=(16, 9)); ax = map_axes(fig)
+    lisa_map(ax, gdf, "lisa", deps)
+    card_text(fig, "Poverty clusters, 2012", "Local Moran's I of multidimensional\npoverty, 6 nearest neighbours, p < 0.05")
+    swatches(fig, [(f"{k} ({(gdf['lisa'] == k).sum()})", c) for k, c in LISA_COLORS.items()])
+    save_fig(fig, tools / "esda.webp")
+
+    # esda_dependence: box-plot breaks
+    import mapclassify
+    bp = mapclassify.BoxPlot(gdf["sdg1_2_mpi"])
+    colors = site_cmap(6).colors
+    fig = plt.figure(figsize=(16, 9)); ax = map_axes(fig)
+    gdf.assign(_c=bp.yb).plot(column="_c", cmap=site_cmap(6), vmin=0, vmax=5, ax=ax, edgecolor=BG, linewidth=0.25)
+    deps.boundary.plot(ax=ax, color=SALT, linewidth=0.8, alpha=0.7); ax.set_axis_off()
+    lo = [gdf["sdg1_2_mpi"].min(), *bp.bins[:-1]]
+    names = ["Low outliers", "Below Q1", "Q1 to median", "Median to Q3", "Above Q3", "High outliers"]
+    card_text(fig, "Poverty, box-plot breaks", "Multidimensional Poverty Index, 2012:\nquartiles and outliers")
+    swatches(fig, [(f"{n} ({(bp.yb == i).sum()})", colors[i]) for i, n in enumerate(names)], y=0.42)
+    save_fig(fig, tools / "esda-dependence.webp")
+
+    # esda_inequality: quintiles within departments
+    q = mapclassify.Quantiles(gdf["sdg1_2_mpi"], k=5)
+    fig = plt.figure(figsize=(16, 9)); ax = map_axes(fig)
+    gdf.assign(_c=q.yb).plot(column="_c", cmap=site_cmap(5), ax=ax, edgecolor=BG, linewidth=0.25)
+    deps.boundary.plot(ax=ax, color=SALT, linewidth=1.4); ax.set_axis_off()
+    card_text(fig, "Inequality within and\nbetween departments", "Poverty quintiles, 2012, with the nine\ndepartments of the Theil decomposition")
+    lo = [gdf["sdg1_2_mpi"].min(), *q.bins[:-1]]
+    swatches(fig, [(f"{a:.2f} – {b:.2f}", c) for a, b, c in zip(lo, q.bins, site_cmap(5).colors)], y=0.38)
+    save_fig(fig, tools / "esda-inequality.webp")
+
+    # esda_heterogeneity: significant GWR slopes
+    cent = gdf.geometry.centroid
+    coords = np.column_stack([cent.x, cent.y]) / 1000
+    yv, Xv = gdf[["sdg1_2_mpi"]].values, gdf[["ln_t400NTLpc"]].values
+    bw = Sel_BW(coords, yv, Xv).search(criterion="AICc")
+    res = GWR(coords, yv, Xv, bw).fit()
+    sig = res.filter_tvals(alpha=0.05)[:, 1] != 0
+    gdf["slope"] = res.params[:, 1]
+    fj = mapclassify.FisherJenks(gdf.loc[sig, "slope"], k=5)
+    cm = site_cmap(5).reversed()
+    fig = plt.figure(figsize=(16, 9)); ax = map_axes(fig)
+    gdf[~sig].plot(ax=ax, color=EDGE, edgecolor=BG, linewidth=0.25)
+    gdf[sig].assign(_c=fj.yb).plot(column="_c", cmap=cm, ax=ax, edgecolor=BG, linewidth=0.25)
+    deps.boundary.plot(ax=ax, color=SALT, linewidth=0.8, alpha=0.7); ax.set_axis_off()
+    card_text(fig, "Where lights track poverty", f"Local GWR slope of poverty on night-time\nlights, 2012 (bandwidth {int(bw)}, significant at 5%)")
+    lo = [gdf.loc[sig, "slope"].min(), *fj.bins[:-1]]
+    swatches(fig, [(f"{a:.3f} to {b:.3f}", c) for a, b, c in zip(lo, fj.bins, cm.colors)] + [("Not significant", EDGE)], y=0.4)
+    save_fig(fig, tools / "esda-heterogeneity.webp")
+
+    # eda_esda: bivariate LISA, own poverty vs neighbours' lights (p < 0.10)
+    bv = Moran_Local_BV(gdf["sdg1_2_mpi"].values, gdf["ln_t400NTLpc"].values, W, permutations=999, seed=12345)
+    gdf["lisa_bv"] = np.where(bv.p_sim < 0.10, pd.Series(bv.q).map(quad), "Not significant")
+    fig = plt.figure(figsize=(16, 9)); ax = map_axes(fig)
+    lisa_map(ax, gdf, "lisa_bv", deps)
+    card_text(fig, "Poverty and the lights\nnext door", "Bivariate LISA: own poverty against\nneighbours' night-time lights, p < 0.10")
+    swatches(fig, [(f"{k} ({(gdf['lisa_bv'] == k).sum()})", c) for k, c in LISA_COLORS.items()])
+    save_fig(fig, tools / "eda-esda.webp")
+
+    # embeddings_mpi_ml: out-of-fold predictions, random 5-fold CV, XGBoost on embeddings + lights
+    from sklearn.metrics import r2_score
+    from sklearn.model_selection import KFold, cross_val_predict
+    from xgboost import XGBRegressor
+    df = (gdf[["geo_id", "sdg1_2_mpi", "ln_t400NTLpc"]]
+          .merge(geo.load("pop", years=2012)[["geo_id", "pop"]], on="geo_id"))
+    embpw = geo.load("embpw", years=2017).set_index("geo_id")
+    dims = [f"A{i:02d}" for i in range(64)]
+    X = np.column_stack([embpw.loc[df["geo_id"], dims].to_numpy(), df["ln_t400NTLpc"], np.log(df["pop"])])
+    yv = df["sdg1_2_mpi"].to_numpy()
+    model = XGBRegressor(n_estimators=400, learning_rate=0.03, max_depth=4, min_child_weight=3, subsample=0.8,
+                         colsample_bytree=0.8, reg_lambda=1.0, random_state=42, n_jobs=4, verbosity=0)
+    pred = cross_val_predict(model, X, yv, cv=KFold(n_splits=5, shuffle=True, random_state=42))
+    fig = plt.figure(figsize=(16, 9)); ax = scatter_axes(fig, (0.08, 0.13, 0.5, 0.72))
+    lim = (0, max(yv.max(), pred.max()) * 1.05)
+    ax.plot(lim, lim, color=MUTED, linestyle="--", linewidth=1.2)
+    ax.scatter(yv, pred, s=46, color=TURQUOISE, alpha=0.6, edgecolor="none")
+    ax.set(xlim=lim, ylim=lim)
+    ax.set_xlabel("Observed MPI (2012)", fontsize=16); ax.set_ylabel("Out-of-fold predicted MPI", fontsize=16)
+    card_text(fig, "Poverty seen from space", f"XGBoost on 64 satellite embedding\ndimensions plus lights and population\n\nRandom 5-fold CV: R² = {r2_score(yv, pred):.2f}",
+              'geo.load("embpw")', x=0.64)
+    save_fig(fig, tools / "embeddings-mpi-ml.webp")
 
 
 # --- pillars -------------------------------------------------------------------------------
