@@ -5,16 +5,19 @@ description: Turn a new dataset plus its information (source, citation, license,
 
 # Create an indicator page
 
-One run takes a dataset from `raw/` to a published page at `#/indicators/<id>`. The project is
+One run takes a dataset from `raw/` to a published page at `<website>indicators/<id>/`. The project is
 a geo4<country> repository: read `project.yaml` first (name, `package`, repository, country,
 `site` map settings) and `CLAUDE.md`; never hard-code the country, the repository or the package.
 Below, `<pkg>` is the `package` in `project.yaml` (the CLI and the import name).
 
-The page is drawn by `IndicatorDetail` in `index.html` and has, in order: title and summary,
+The page is drawn by `IndicatorDetail` in `site/src/app.jsx` and has, in order: title and summary,
 the headline map, **About the dataset** (description, notice, original source with its
-citation), **Variables** (name, label, description of every column), **Use it in your code**
-(package and plain-URL tabs), **License**, **References**, plus an *At a glance* sidebar.
-Variables, original source, license and references are read at runtime from
+citation), **Explore the map** (interactive: any variable and year, from the published data),
+**Variables** (name, label, description of every column), **Use it in your code**
+(package and plain-URL tabs), **License**, **Cite this dataset**, **References**, plus an
+*At a glance* sidebar. `site/build.mjs` pre-renders it at `indicators/<id>/` with its own
+preview image and JSON-LD, and adds it to the sitemap and the search.
+Variables, original source, license, citations and references are read at runtime from
 `metadata/<dataset>.datapackage.json`, so the metadata is the single source of truth.
 There is no download section, and the page links to no data files.
 
@@ -130,17 +133,20 @@ keyless basemap whose labels sit above the units, and writes two images:
 
 ### 8. Page entry
 
-Add the `CONTENT_REGISTRY` entry and the JSON-LD `Dataset` in `index.html`; the fields
-and the snippet rules are in [references/page-entry.md](references/page-entry.md). Do not add
-download links or links to the data folders. Then preview:
+Add the `CONTENT_REGISTRY` entry in `site/src/content.js`; the fields and the snippet rules
+are in [references/page-entry.md](references/page-entry.md). The build writes the JSON-LD
+`Dataset` and the map data. Do not add download links or links to the data folders. Then preview:
 
 ```bash
-python3 -m http.server 8000         # open http://127.0.0.1:8000/#/indicators/<id>
+npm ci --prefix site                # once
+npm run --prefix site preview       # open http://localhost:8765/indicators/<id>/
 ```
 
 Check in the browser (claude-in-chrome):
 - the section order
 - every variable row
+- the interactive map (every variable and year draws; the legend and highest/lowest lists make sense)
+- the search finds the page and its variables
 - the License text
 - no console errors
 - no horizontal scroll at 390 px (measure inside a 390 px iframe if the window cannot be resized)
@@ -154,7 +160,7 @@ catalog, images) with the attribution lines, and push to the default branch. If 
 asked for a branch and PR instead, do that.
 
 Report back:
-- the page URL (`<website>#/indicators/<id>`)
+- the page URL (`<website>indicators/<id>/`)
 - the license verdicts and any blockers
 - the ⚠ rows the user approved
 - anything left to do

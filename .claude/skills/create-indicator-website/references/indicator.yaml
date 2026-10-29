@@ -41,4 +41,4 @@ map:                          # the headline map
   year: 2020
   classify:                   # "log" for very skewed, positive variables
 
-related: []                   # ids of notebooks, apps or packages in CONTENT_REGISTRY
+related: []                   # ids of notebooks, apps or packages in CONTENT_REGISTRY (site/src/content.js)

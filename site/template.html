@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Every page is pre-rendered by site/build.mjs from this template; {{...}} are filled per route -->
+    <base href="{{BASE}}">
+    <title>{{TITLE}}</title>
+    <meta name="description" content="{{DESCRIPTION}}">
+    {{ROBOTS}}
+    <meta name="theme-color" content="#071417">
+    <link rel="canonical" href="{{URL}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/logo/emblem-32.png">
+    <link rel="apple-touch-icon" href="images/logo/emblem-180.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="{{OG_TYPE}}">
+    <meta property="og:site_name" content="{{SHORT_NAME}}">
+    <meta property="og:title" content="{{OG_TITLE}}">
+    <meta property="og:description" content="{{OG_DESCRIPTION}}">
+    <meta property="og:url" content="{{URL}}">
+    <meta property="og:image" content="{{OG_IMAGE}}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{OG_IMAGE_ALT}}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{OG_TITLE}}">
+    <meta name="twitter:description" content="{{OG_DESCRIPTION}}">
+    <meta name="twitter:image" content="{{OG_IMAGE}}">
+
+    <!-- Structured data -->
+    <script type="application/ld+json">{{JSONLD}}</script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    {{PRELOAD}}
+    <link rel="stylesheet" href="{{APP_CSS}}">
+    <script type="module" src="{{APP_JS}}"></script>
+    <style>
+      /* Until React mounts, show the hero's first frame (landing page) instead of the crawlable fallback, which stays in the DOM */
+      .static-fallback { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+      .boot-hero {
+        position: fixed; inset: 0;
+        background:
+          linear-gradient(to bottom, rgba(7,20,23,.8), rgba(7,20,23,0)) top / 100% 8rem no-repeat,
+          linear-gradient(to top, #071417, rgba(7,20,23,0)) bottom / 100% 12rem no-repeat,
+          linear-gradient(rgba(7,20,23,.6), rgba(7,20,23,.6)),
+          #071417 url(images/hero-day.webp) center / cover no-repeat;
+      }
+      @media (min-width: 1024px) {
+        .boot-hero {
+          background:
+            linear-gradient(to bottom, rgba(7,20,23,.8), rgba(7,20,23,0)) top / 100% 8rem no-repeat,
+            linear-gradient(to top, #071417, rgba(7,20,23,0)) bottom / 100% 12rem no-repeat,
+            linear-gradient(to right, rgba(7,20,23,.95), rgba(7,20,23,.5) 35%, rgba(7,20,23,0) 60%),
+            #071417 url(images/hero-day.webp) center / cover no-repeat;
+        }
+      }
+    </style>
+    <noscript><style>
+      .static-fallback { position: static !important; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; }
+      .boot-hero { display: none; }
+    </style></noscript>
+</head>
+<body class="bg-lagoon-950 text-salt-200">
+    <a href="#main" onclick="event.preventDefault(); var m = document.getElementById('main'); if (m) { m.focus(); m.scrollIntoView(); }" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-brand-rose focus:text-white">Skip to content</a>
+
+    <div id="root">
+      <!-- Static, crawlable fallback. React replaces this on load. -->
+      {{BOOT}}
+      <main class="static-fallback" style="max-width:56rem;margin:0 auto;padding:6rem 1.5rem;font-family:Inter,system-ui,sans-serif;color:#e3ecea;background:#071417">
+{{FALLBACK}}
+        <noscript><p><strong>This site works best with JavaScript enabled.</strong> All data and documentation are also available in the <a href="{{REPO_URL}}">GitHub repository</a>.</p></noscript>
+      </main>
+    </div>
+</body>
+</html>

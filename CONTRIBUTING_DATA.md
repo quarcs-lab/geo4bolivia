@@ -39,10 +39,10 @@ Every dataset is a **panel**: one row per spatial unit (`geo_id`) and `year`, wi
    `publish()` writes the columns in schema order with schema types. `write_docs()` generates `docs/datasets/<dataset>.md`. `validate` reports any mismatch between the data, the metadata and `geo/`.
 5. **Optional: add it to the website.** The `create-indicator-website` skill (`.claude/skills/`) does this end to end. By hand:
    - render the headline map and the card with `uv run python scripts/indicator_map.py <dataset>`
-   - add an `indicator` entry to `CONTENT_REGISTRY` in `index.html` (copy an existing one)
-   - add a `Dataset` entry, without download URLs, to the JSON-LD block
+   - add an `indicator` entry to `CONTENT_REGISTRY` in `site/src/content.js` (copy an existing one)
+   - preview it with `npm run --prefix site preview`
 
-   The page reads the variables, sources and licenses from the metadata.
+   The page reads the variables, sources and licenses from the metadata; the build writes its JSON-LD `Dataset` (without download URLs), its interactive-map data and its search entry.
 
 ### Aggregation rules (`geo:aggregation`)
 

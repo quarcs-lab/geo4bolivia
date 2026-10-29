@@ -45,8 +45,9 @@ The page composes it from the metadata, so all that's needed is accurate fields:
 - **Last updated:** `geo:updated`.
 - **Licenses of the sources:** each source's `geo:license` link and its `geo:attribution`
   ("Required credit").
-- **Boundary note:** a fixed sentence in `index.html` (`BOUNDARY_NOTE`) saying the unit
-  boundaries keep their own terms.
+- **Boundary note:** a fixed sentence in `site/src/app.jsx` (`BOUNDARY_NOTE`): the maps draw
+  geoBoundaries' public-domain polygons, while `geometry=True` and `geo/boundaries/` keep
+  GADM's terms.
 
 Show the user the table of verdicts before writing, and say plainly when something blocks
 publication.

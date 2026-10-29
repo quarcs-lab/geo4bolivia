@@ -41,3 +41,5 @@ site:
     accent: "#5ad6c6"
     no_data: "#5c6b6a"
     classes: ["#1f8a80", "#ec8f99", "#ffd9de"]
+    # The five classes of the interactive maps (low to high), from the site's lagoon-to-flamingo ramp
+    ramp: ["#13605f", "#5fb7a6", "#c9e2d6", "#ec8f99", "#d84a64"]

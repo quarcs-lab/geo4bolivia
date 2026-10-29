@@ -169,8 +169,8 @@ Research that uses the municipal data will be summarised on the [website](https:
 
 ```text
 geo4bolivia/
-├── index.html                    # The website (React 18 + Tailwind, no build step)
-├── 404.html, robots.txt, sitemap.xml, site.webmanifest, .nojekyll
+├── site/                         # The website: React + Tailwind sources, build.mjs, map boundaries (data/)
+├── robots.txt, site.webmanifest
 ├── project.yaml                  # Project identity: name, package, repository, country codes
 ├── raw/                          # Original inputs, never edited (see raw/README.md)
 ├── geo/                          # Spatial backbone: scales.yaml, units, boundaries/, crosswalks/
@@ -183,9 +183,9 @@ geo4bolivia/
 ├── notebooks/                    # Colab notebooks (.ipynb) paired with MyST markdown (.md)
 ├── apps/                         # Earth Engine app source code
 ├── code/                         # Pointers to data-preparation code
-├── scripts/                      # match_municipalities.py, site images, new_project.py (template)
+├── scripts/                      # web_boundaries.py, indicator maps, site images, new_project.py (template)
 ├── media/, images/               # Site assets
-├── .github/workflows/release.yml # Publishes the package to PyPI on version tags
+├── .github/workflows/            # release.yml (PyPI on version tags), pages.yml (builds and deploys the website)
 ├── CONTRIBUTING_DATA.md          # How to add a dataset, a scale or a municipality map of another vintage
 ├── TEMPLATE.md                   # How the geo4<country> template works
 ├── pyproject.toml, uv.lock       # Python package and environment (uv)
@@ -200,7 +200,8 @@ uv run geo4bolivia build         # regenerate geo/, data/, docs/ from raw/
 uv run geo4bolivia validate      # check IDs, schemas, nesting and file consistency
 uv run pytest                    # run the test suite
 uv run jupyter lab notebooks/    # open the notebooks
-python3 -m http.server 8000      # preview the website at http://localhost:8000
+npm ci --prefix site             # website build tools (Node 20+), once
+npm run --prefix site preview    # build the website and serve it at http://localhost:8765/
 ```
 
 ### Releasing the package
@@ -213,7 +214,7 @@ GDO-Bolivia was created from [geo4cambodia](https://github.com/quarcs-lab/geo4ca
 
 ### The website
 
-The site is a single `index.html` with no build step. Every item (indicator, package, notebook, app, insight, event) is an entry in the `CONTENT_REGISTRY` array, and each entry gets a shareable detail page at `#/<section>/<id>`. GitHub Pages publishes the `main` branch directly.
+The site's sources are in `site/`: a React app (`site/src/app.jsx`) whose items (indicators, packages, notebooks, apps, insights, events) are entries of the `CONTENT_REGISTRY` array in `site/src/content.js`. `site/build.mjs` bundles it with esbuild and Tailwind and pre-renders a page for every item at `<section>/<id>/`, with its own preview card and structured data, plus the sitemap, the search index and the data of the interactive maps. The [website workflow](.github/workflows/pages.yml) builds and deploys it to GitHub Pages on every push to `main`. The maps draw geoBoundaries' public-domain municipal boundaries (GeoBolivia), prepared by `scripts/web_boundaries.py`.
 
 ---
 

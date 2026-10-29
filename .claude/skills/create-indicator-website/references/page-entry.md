@@ -1,6 +1,6 @@
 # The CONTENT_REGISTRY entry
 
-Copy an existing indicator entry in `index.html` (search for `type: 'indicator'`) and edit it.
+Copy an existing indicator entry in `site/src/content.js` (search for `type: 'indicator'`) and edit it.
 Variables, sources, license and references come from the metadata; do not repeat them here.
 
 ```js
@@ -44,15 +44,16 @@ download links: the page no longer uses them.
 
 ## JSON-LD
 
-Add a `Dataset` to the `<script type="application/ld+json">` block in `<head>`:
-`name`, `description`, `url` (the page), `license` (the CC BY 4.0 URL or the source's),
-`temporalCoverage`, `spatialCoverage`, `keywords` and `creator`. **No `distribution`** (no
-download URLs). Check that the block still parses as JSON.
+`site/build.mjs` writes the page's `Dataset` from the entry and the metadata: `name`,
+`description`, `url` (the page), `license`, `temporalCoverage` (from `period`),
+`spatialCoverage`, `keywords` (`tags`), `variableMeasured` (field titles) and `creator`.
+**No `distribution`** (no download URLs). Check it in `_site/indicators/<id>/index.html`.
 
 ## QA checklist
 
-- [ ] The page shows, in order: map, About (with the original source), Variables (every
-      column), code, License, References, and the At-a-glance sidebar.
+- [ ] The page shows, in order: map, About (with the original source), Explore the map,
+      Variables (every column), code, License, Cite this dataset, References, and the
+      At-a-glance sidebar.
 - [ ] No download links, and no links to `data/`, `geo/` or the GitHub folders.
 - [ ] The metadata loads (no "could not be loaded" notice) and the console has no errors.
 - [ ] No horizontal scroll at 390 px width.

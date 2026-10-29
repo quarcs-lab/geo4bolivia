@@ -4,7 +4,7 @@
 
 - hero, bands: Sentinel-2 cloudless by EOX IT Services GmbH, read as WGS84 WMTS tiles and cached
   in the system temp folder: the 2016 mosaic (CC BY 4.0), except the Laguna Verde band from the
-  2024 mosaic (CC BY-NC-SA 4.0). `hero` prints the patch settings to paste into index.html
+  2024 mosaic (CC BY-NC-SA 4.0). `hero` prints the patch settings to paste into site/src/app.jsx
   (BOLIVIA_PATCH, HERO_CITIES): a level-11 patch around each city and a level-13 close-up of its centre.
 - outline: geo/boundaries/country_outline_web.geojson, a light outline for the globe.
 - emblem: images/logo/emblem-*.png, the GDO-Bolivia emblem: the nine departments shaded by
@@ -34,7 +34,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 IMG = ROOT / "images"
-# The site's Altiplano palette (index.html, tailwind.config): the night over the Salar de Uyuni,
+# The site's Altiplano palette (site/tailwind.config.cjs): the night over the Salar de Uyuni,
 # Laguna Verde's turquoise, Laguna Colorada's flamingos, salt and sand
 BG = "#071417"           # lagoon-950
 SURFACE = "#0b1e22"      # lagoon-900
@@ -189,7 +189,7 @@ def hero() -> None:
         img.putalpha(fade.filter(ImageFilter.GaussianBlur(30)))
         save_webp(img, IMG / f"hero-city-{cid}-z13.webp", quality=78)
         specs[cid + "-z13"] = patch_spec(13, row - 2, col - 3, 5, 7)
-    print("\n  Patch settings for index.html:")
+    print("\n  Patch settings for site/src/app.jsx:")
     c = specs.pop("country")
     print(f"  BOLIVIA_PATCH = {{ lat: {c['lat']}, lng: {c['lng']}, width: {c['width']}, height: {c['height']} }}")
     for (cid, name, lat, lng) in CITIES:

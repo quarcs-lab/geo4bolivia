@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html { scroll-behavior: smooth; scroll-padding-top: 80px; color-scheme: dark; }
+body { -webkit-font-smoothing: antialiased; background: #071417; color: #e3ecea; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+.gradient-text {
+  background: linear-gradient(135deg, #5ad6c6 0%, #f4f1e8 55%, #ff8597 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.nav-link-underline { position: relative; }
+.nav-link-underline::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+  background: linear-gradient(90deg, #5ad6c6, #ff8597); transition: width .3s ease;
+}
+.nav-link-underline:hover::after, .nav-link-underline.active::after { width: 100%; }
+.contributor-avatar { transition: transform .3s ease, box-shadow .3s ease; }
+.contributor-avatar:hover { transform: scale(1.05); box-shadow: 0 10px 25px -5px rgba(0,0,0,.5); }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { width: max-content; animation: marquee 60s linear infinite; }
+.marquee:hover .marquee-track, .marquee:focus-within .marquee-track, .marquee.paused .marquee-track { animation-play-state: paused; }
+@keyframes cue { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+.cue-bounce { animation: cue 2.2s ease-in-out infinite; }
+.hero-globe canvas { outline: none; }
+:focus-visible { outline: 2px solid #5ad6c6; outline-offset: 2px; border-radius: 4px; }
+.prose-gdo p { margin-bottom: 1rem; line-height: 1.75; }
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] .chev { transform: rotate(90deg); }
+.static-fallback a { color: #5ad6c6; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .marquee-track, .cue-bounce { animation: none !important; }
+}
+    
+
+/* Interactive indicator maps (Leaflet, site/src/map.jsx) */
+.leaflet-container { background: #0b1e22; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+.leaflet-container .leaflet-control-attribution { background: rgba(7,20,23,.8); color: #a9bebb; font-size: 10px; }
+.leaflet-container .leaflet-control-attribution a { color: #5ad6c6; }
+.leaflet-bar a { background: #122b30; color: #e3ecea; border-color: rgba(255,255,255,.15); }
+.leaflet-bar a:hover, .leaflet-bar a:focus { background: #1b3c42; color: #fff; }
+.gdo-tooltip { background: #071417; color: #e3ecea; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.4); font-size: 12px; }
+.gdo-tooltip::before { display: none; }
