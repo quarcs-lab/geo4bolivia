@@ -28,3 +28,8 @@ __pycache__/
 # Files written by running the notebooks
 /notebooks/my_data/
 /notebooks/*.tif
+
+# Website build (site/)
+/site/node_modules/
+/_site/
+/raw/boundaries/geoboundaries/*.geojson
