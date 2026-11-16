@@ -2,7 +2,7 @@
 
 **Subnational development data for Bolivia, ready to analyse, at every spatial scale.**
 
-`geo4bolivia` is the Python package of the [GeoDevelopment Observatory of Bolivia](https://quarcs-lab.github.io/geo4bolivia/). It loads the observatory's indicators (population, night-time lights, the Municipal Atlas of the SDGs by goal, with each goal's index and indicators, satellite embeddings...) as tidy panels, with boundaries for every scale. It also lets you **build your own indicators**: link your tables to the same unit IDs, summarise rasters over units, move data across scales and combine datasets. It works out of the box in Google Colab: every example below runs in a new Colab notebook (replace the placeholder files, such as your own table or raster, with yours).
+`geo4bolivia` is the Python package of the [GeoDevelopment Observatory of Bolivia](https://quarcs-lab.github.io/geo4bolivia/). It loads the observatory's indicators (the SDG Atlas 2026 of SDSN Bolivia, with the Sustainable Development Index and each goal's index and indicators near 2012 and near 2024, population, night-time lights, satellite embeddings...) as tidy panels, with boundaries for every scale. It also lets you **build your own indicators**: link your tables to the same unit IDs, summarise rasters over units, move data across scales and combine datasets. It works out of the box in Google Colab: every example below runs in a new Colab notebook (replace the placeholder files, such as your own table or raster, with yours).
 
 ```python
 !pip install -q geo4bolivia
@@ -10,8 +10,8 @@ import geo4bolivia as geo
 import plotly.express as px                         # interactive maps and charts (preinstalled in Colab)
 
 geo.datasets()                                       # what is available, at which scale and years
-gdf = geo.load("sdg01", variables="sdg1_2_mpi", years=2012, geometry=True)   # 339 municipalities
-px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_mpi",
+gdf = geo.load("sdg", years=2024, geometry=True)    # 343 municipalities
+px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="index_sdg",
                   hover_name="name", center={"lat": -16.3, "lon": -64}, zoom=4)
 ```
 
@@ -30,14 +30,14 @@ px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color="sdg1_2_
 
 ## One ID for every unit, at every scale
 
-Every unit has a **geo ID** that nests by prefix (numbered as in GADM 4.1): municipality `BO-04-17-04` (La Paz) lies in province `BO-04-17` (Murillo), which lies in department `BO-04` (La Paz), which lies in Bolivia `BO`. INE codes and DS4Bolivia's `asdf_id` are kept as columns of `geo.units()`. The boundaries (`geometry=True`, `geo.boundaries()`) are geoBoundaries' public-domain municipalities from GeoBolivia. Each dataset is a long panel keyed by `geo_id` and `year`.
+Every unit has a **geo ID** that nests by prefix (numbered as in GADM 4.1): municipality `BO-04-17-04` (Nuestra Señora de La Paz) lies in province `BO-04-17` (Murillo), which lies in department `BO-04` (La Paz), which lies in Bolivia `BO`. INE codes and DS4Bolivia's `asdf_id` are kept as columns of `geo.units()`. The municipalities (`geometry=True`, `geo.boundaries()`) are the 343 municipalities and indigenous autonomies of SDSN Bolivia's municipal map of 2025, used with SDSN Bolivia's permission. Each dataset is a long panel keyed by `geo_id` and `year`.
 
 | Scale | Units | Example |
 | --- | --- | --- |
 | `country` | 1 | `BO` |
 | `department` | 9 | `BO-04` |
-| `province` | 112 | `BO-04-17` |
-| `municipality` | 339 | `BO-04-17-04` |
+| `province` | 113 | `BO-04-17` |
+| `municipality` | 343 | `BO-04-17-04` |
 
 ## Build your own indicator in five lines
 
