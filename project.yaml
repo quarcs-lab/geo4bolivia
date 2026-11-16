@@ -30,6 +30,8 @@ catalog: definitions_gdo-bolivia.csv
 # Website maps drawn by scripts/indicator_map.py: a keyless basemap (tiles below the units,
 # labels above them) and the colours of the three natural-break classes (Low, Middle, High).
 site:
+  # Credit printed under every map drawn from geo/boundaries/ or site/data/
+  boundary_credit: "SDSN Bolivia (2025), Límites Municipales Bolivia 2025"
   basemap:
     base: https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}
     labels: https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}
