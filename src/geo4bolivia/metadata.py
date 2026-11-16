@@ -4,7 +4,8 @@ Each package lists one resource per spatial scale the dataset is published at.
 GDO-specific information lives in ``geo:``-prefixed properties:
 
 - package: ``geo:categories``, ``geo:citation``, ``geo:notes``, ``geo:notebooks``,
-  ``geo:map`` (the headline map: ``{"variable", "year"[, "scale", "classify": "log"]}``),
+  ``geo:map`` (the headline map: ``{"variable", "year"[, "scale", "classify": "log",
+  "panels": [first, last]]}``; ``panels`` draws the page map as one panel per year),
   ``geo:updated``
 - source: ``geo:role`` (``original`` | ``intermediary``), ``geo:creator``,
   ``geo:homepage``, ``geo:license`` (``{"name", "title", "path"}``, the license of
@@ -12,8 +13,10 @@ GDO-specific information lives in ``geo:``-prefixed properties:
 - resource: ``geo:scale``, ``geo:period`` ([first, last] year), ``geo:path``
   (CSV path in the repo), ``geo:parquet``, ``geo:source_geometry``
 - field: ``geo:unit``, ``geo:source``, ``geo:role`` (``id`` | ``time`` |
-  ``source_key`` | ``variable``) and ``geo:aggregation`` (``sum`` | ``mean`` |
-  ``min`` | ``max`` | ``weighted_mean:<field>`` | ``none``)
+  ``source_key`` | ``variable``), ``geo:aggregation`` (``sum`` | ``mean`` |
+  ``min`` | ``max`` | ``weighted_mean:<field>`` | ``none``) and, when a panel stores
+  values at nominal years, ``geo:reference_years`` (``{"2012": "2008", "2024":
+  "average 2022–2024"}``: the actual years behind each stored year)
 
 Standard Frictionless properties carry the rest: each field's ``title`` is its
 label for plots and its ``description`` says how it was built; the package's

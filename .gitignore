@@ -34,3 +34,6 @@ __pycache__/
 /_site/
 /raw/boundaries/geoboundaries/geoBoundaries-BOL-ADM1.geojson
 /raw/boundaries/gadm41_*.json
+
+# The SDG Atlas 2026 as delivered (its workbook and shapefiles are copied to raw/)
+/SDG-atlas-20261110*/

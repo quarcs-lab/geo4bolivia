@@ -3,7 +3,8 @@
 import pandas as pd
 
 from .. import store
-from .common import ids_from_units, publish, write_docs
+from .common import publish, write_docs
+from .geo import link_ds4bolivia_polygons
 
 SCALE, YEAR = "municipality", 2017
 RAW = {"emb": "raw/emb/satelliteEmbeddings2017.csv",
@@ -12,7 +13,7 @@ RAW = {"emb": "raw/emb/satelliteEmbeddings2017.csv",
 
 def _build(dataset: str) -> None:
     df = pd.read_csv(store.repo_root() / RAW[dataset]).assign(year=YEAR)
-    df["geo_id"] = df["asdf_id"].astype(str).map(ids_from_units(SCALE, "asdf_id"))   # DS4Bolivia polygon
+    df = link_ds4bolivia_polygons(df)   # DS4Bolivia polygons; none for the 10 changed or new units
     publish(dataset, SCALE, df)
     write_docs(dataset)
 

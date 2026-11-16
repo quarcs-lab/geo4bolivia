@@ -60,9 +60,20 @@ def publish(dataset: str, scale: str, df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def years_text(years) -> str:
+    """'2001–2020' for consecutive years, '2012, 2024' otherwise."""
+    years = sorted(set(int(y) for y in years))
+    if not years:
+        return "—"
+    if len(years) == 1:
+        return str(years[0])
+    if years == list(range(years[0], years[-1] + 1)):
+        return f"{years[0]}–{years[-1]}"
+    return ", ".join(map(str, years))
+
+
 def coverage(df: pd.DataFrame, column: str) -> str:
-    years = df.loc[df[column].notna(), "year"]
-    return "—" if years.empty else f"{years.min()}–{years.max()}"
+    return years_text(df.loc[df[column].notna(), "year"])
 
 
 def write_docs(dataset: str) -> None:
@@ -83,7 +94,9 @@ def write_docs(dataset: str) -> None:
         first, last = res["geo:period"]
         lines += ["", f"## Scale: {sid}", "",
                   f"- **Units:** {df['geo_id'].nunique()} of {n_units} {sid} units",
-                  f"- **Period:** {first}–{last}, annual ({len(df):,} rows: one per unit and year)",
+                  f"- **Period:** {first}–{last}, "
+                  + ("annual" if years_text(df["year"]) == f"{first}–{last}" else f"years {years_text(df['year'])}")
+                  + f" ({len(df):,} rows: one per unit and year)",
                   f"- **Source geometry:** {res.get('geo:source_geometry', '—')}",
                   "", "| File | Format |", "| --- | --- |",
                   f"| [`{res['geo:path']}`]({store.raw_url(res['geo:path'])}) | CSV |",
@@ -92,7 +105,10 @@ def write_docs(dataset: str) -> None:
                   "| --- | --- | --- | --- | --- | --- | --- |"]
         for f in res["schema"]["fields"]:
             agg = f.get("geo:aggregation", "—" if f.get("geo:role", "variable") != "variable" else "none")
-            lines.append(f"| `{f['name']}` | {f.get('title', '')} | {f.get('description', '')} | {f.get('geo:unit', '')} | "
+            desc = f.get("description", "")
+            if f.get("geo:reference_years"):
+                desc += " Reference years: " + "; ".join(f"{k}: {v}" for k, v in f["geo:reference_years"].items()) + "."
+            lines.append(f"| `{f['name']}` | {f.get('title', '')} | {desc} | {f.get('geo:unit', '')} | "
                          f"{coverage(df, f['name'])} | {agg} | {f.get('geo:source', '')} |")
     native = pkg["resources"][0]
     lines += ["", "## Load it", "", "```python",

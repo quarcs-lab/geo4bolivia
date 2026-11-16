@@ -1,4 +1,8 @@
-"""Generic boundaries from geoBoundaries, keyed by a project's own geo IDs.
+"""Generic boundaries from a polygon file of the finest scale, keyed by a project's own geo IDs.
+
+``from_polygons`` takes any polygon layer of the finest scale (a national statistics office's or
+an observatory's municipal map, geoBoundaries, ...) with a key column and a lookup ``key ->
+geo_id``; ``from_geoboundaries`` is the same for geoBoundaries files (key ``shapeID``).
 
 geoBoundaries (https://www.geoboundaries.org; Runfola et al. 2020, PLoS ONE 15(4): e0231866)
 publishes the administrative units of every country, each with a ``shapeID``. Its gbOpen
@@ -8,8 +12,9 @@ release only holds boundaries whose sources allow redistribution; check each cou
 geoBoundaries has no hierarchical codes, so the geo IDs come from elsewhere (e.g. GADM's
 numbering, ``gadm.gadm_units``) and a lookup ``shapeID -> geo_id`` of the finest scale, made
 once by area overlap (see a project's ``scripts/match_geoboundaries.py``), attaches them.
-``from_geoboundaries`` then simplifies the finest units as a coverage (shared borders stay
-shared, so no slivers or gaps appear) and builds every coarser scale as the exact union of
+``from_polygons`` then cleans the finest units as a coverage (small overlaps between neighbours
+are given to one of them and shared edges made identical; shapely >= 2.2), simplifies them
+(shared borders stay shared, so no slivers or gaps appear) and builds every coarser scale as the exact union of
 its units, so the scales nest exactly and keep the holes the source leaves (lakes, salt
 flats that belong to no unit).
 """
@@ -24,12 +29,19 @@ from ..scales import scales as registry
 
 def from_geoboundaries(path, lookup: pd.DataFrame, units: pd.DataFrame, key: str = "shapeID",
                        tolerance_m: float | None = 100) -> dict:
-    """Boundary layers of every active scale from a geoBoundaries file of the finest scale.
+    """Boundary layers of every active scale from a geoBoundaries file of the finest scale
+    (see ``from_polygons``; the key is geoBoundaries' ``shapeID``)."""
+    return from_polygons(path, lookup, units, key=key, tolerance_m=tolerance_m)
+
+
+def from_polygons(path, lookup: pd.DataFrame, units: pd.DataFrame, key: str,
+                  tolerance_m: float | None = 100) -> dict:
+    """Boundary layers of every active scale from a polygon file of the finest scale.
 
     Parameters
     ----------
-    path : the unedited geoBoundaries GeoJSON (e.g. ``raw/boundaries/geoboundaries/
-        geoBoundaries-BOL-ADM3.geojson``) or a GeoDataFrame read from one
+    path : the unedited polygon file (GeoJSON, shapefile, GeoPackage) or a GeoDataFrame read
+        from one, with one polygon per unit of the finest scale and a ``key`` column
     lookup : one row per polygon, with ``key`` and ``geo_id`` (units of the finest scale)
     units : the units of every scale (``geo_id``, ``scale``, ``parent_id``), as passed to
         ``publish_geo``; ``parent_id`` chains each unit to the coarser scales
@@ -45,21 +57,25 @@ def from_geoboundaries(path, lookup: pd.DataFrame, units: pd.DataFrame, key: str
     shapes = path.copy() if isinstance(path, gpd.GeoDataFrame) else gpd.read_file(path)
     ids = lookup.set_index(key)["geo_id"]
     if ids.index.duplicated().any() or ids.duplicated().any():
-        raise ValueError("the geoBoundaries lookup must match polygons and units one to one")
+        raise ValueError("the lookup must match polygons and units one to one")
     shapes["geo_id"] = shapes[key].map(ids)
     unmatched = shapes.loc[shapes["geo_id"].isna(), key]
     if not unmatched.empty:
-        raise ValueError(f"{len(unmatched)} geoBoundaries polygons are not in the lookup, e.g. {list(unmatched[:3])}")
+        raise ValueError(f"{len(unmatched)} polygons are not in the lookup, e.g. {list(unmatched[:3])}")
     finest = units.loc[units["geo_id"].isin(ids), "scale"].unique()
     if len(finest) != 1:
         raise ValueError(f"the lookup's geo_ids must all be units of one scale, got {list(finest)}")
     finest = finest[0]
     missing = set(units.loc[units["scale"] == finest, "geo_id"]) - set(shapes["geo_id"])
     if missing:
-        raise ValueError(f"{len(missing)} {finest} units have no geoBoundaries polygon, e.g. {sorted(missing)[:3]}")
+        raise ValueError(f"{len(missing)} {finest} units have no polygon, e.g. {sorted(missing)[:3]}")
 
+    if shapes["geo_id"].duplicated().any():
+        raise ValueError("the polygon file has several rows for one unit; dissolve it first")
     shapes = shapes[["geo_id", "geometry"]].to_crs(project.equal_area_crs())
     shapes["geometry"] = shapes.make_valid()
+    if hasattr(shapely, "coverage_clean"):   # shapely >= 2.2: remove overlaps and match shared edges first
+        shapes["geometry"] = shapely.coverage_clean(shapes.geometry.to_numpy())
     if tolerance_m:
         shapes["geometry"] = shapely.coverage_simplify(shapes.geometry.to_numpy(), tolerance_m)
     shapes = shapes.sort_values("geo_id").reset_index(drop=True)

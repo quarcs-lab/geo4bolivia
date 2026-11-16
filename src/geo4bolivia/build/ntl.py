@@ -3,7 +3,8 @@
 import pandas as pd
 
 from .. import store
-from .common import ids_from_units, publish, write_docs
+from .common import publish, write_docs
+from .geo import link_ds4bolivia_polygons
 
 DATASET, SCALE = "ntl", "municipality"
 RAW = "raw/ntl/ln_NTLpc.csv"
@@ -16,6 +17,6 @@ def build() -> None:
     df.columns = pd.MultiIndex.from_frame(df.columns.str.extract(r"^(\w+?)(\d{4})$"), names=["variable", "year"])
     df = df.stack("year", future_stack=True).reset_index()
     df["year"] = df["year"].astype(int)
-    df["geo_id"] = df["asdf_id"].astype(str).map(ids_from_units(SCALE, "asdf_id"))   # DS4Bolivia polygon
+    df = link_ds4bolivia_polygons(df)   # DS4Bolivia polygons; none for the 10 changed or new units
     publish(DATASET, SCALE, df)
     write_docs(DATASET)

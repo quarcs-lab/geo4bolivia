@@ -170,6 +170,12 @@ def validate_dataset(dataset: str) -> Report:
         first, last = res["geo:period"]
         rep.check(df["year"].between(first, last).all(), f"{tag}: years outside geo:period {first}-{last}")
         rep.check(df["year"].min() == first and df["year"].max() == last, f"{tag}: geo:period does not match the data")
+        stored = {str(y) for y in df["year"].unique()}
+        for f in schema["fields"]:
+            ref = f.get("geo:reference_years")
+            if ref is not None:
+                rep.check(isinstance(ref, dict) and set(ref) <= stored,
+                          f"{tag}: {f['name']} geo:reference_years must map stored years to their reference years")
     if "geo:map" in pkg:
         _check_map(rep, dataset, pkg["geo:map"])
     return rep
@@ -189,6 +195,8 @@ def _check_map(rep: Report, dataset: str, spec: dict) -> None:
     df = pd.read_parquet(store.repo_root() / res["geo:parquet"], columns=["year", variable])
     values = df.loc[df["year"] == year, variable].dropna()
     rep.check(not values.empty, f"geo:map: {variable} has no values in {year}")
+    for panel in spec.get("panels", []):
+        rep.check(df.loc[df["year"] == panel, variable].notna().any(), f"geo:map: panel {panel} of {variable} has no values")
     if rep.check(spec.get("classify", "log") == "log", f"geo:map: classify must be 'log' or absent"):
         rep.check(spec.get("classify") != "log" or (values > 0).all(),
                   f"geo:map: {variable} has values <= 0, so it cannot be classified on a log scale")

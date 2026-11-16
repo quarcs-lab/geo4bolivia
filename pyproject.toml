@@ -68,6 +68,7 @@ analysis = [
     "expdpy>=0.5.2",
 ]
 dev = [
+    "openpyxl>=3.1.5",
     "pytest>=8.0",
 ]
 
