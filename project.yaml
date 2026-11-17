@@ -24,6 +24,11 @@ country:
 # An Albers equal-area projection fitted to Bolivia (standard parallels 11°S and 21°S).
 equal_area_crs: "+proj=aea +lat_0=-16.5 +lon_0=-64.5 +lat_1=-11 +lat_2=-21 +datum=WGS84 +units=m +no_defs"
 
+# Default view of geo.map() (the package's quick interactive maps).
+map:
+  center: {lat: -16.3, lon: -64.0}
+  zoom: 4
+
 # Generated table listing every variable of every dataset.
 catalog: definitions_gdo-bolivia.csv
 

@@ -275,3 +275,165 @@ def test_for_expdpy_returns_a_labelled_panel_with_groups():
         assert df[g].notna().all() and types[g] == "factor"
     with pytest.raises(ValueError, match="do not nest"):
         geo.for_expdpy(dataset, groups=[scale])
+
+
+# --- understanding the data ---------------------------------------------------------------
+
+@needs_data
+def test_datasets_catalog_reports_years_and_units():
+    cat = geo.datasets()
+    for col in ("dataset", "scale", "years", "units", "variables", "license"):
+        assert col in cat.columns
+    for _, row in cat.iterrows():
+        res = metadata.resource(row["dataset"], row["scale"])
+        df = geo.load(row["dataset"], scale=row["scale"])
+        assert row["units"] == df["geo_id"].nunique()
+        assert metadata.resource_years(res) == sorted(int(y) for y in df["year"].unique())
+
+
+@needs_data
+def test_search_finds_a_variable_by_its_label_ignoring_case_and_accents():
+    field = next(f for f in metadata.fields(DATASETS[0]) if f.get("geo:role", "variable") == "variable")
+    word = field["title"].split()[0]
+    hits = geo.search(word.upper())
+    assert ((hits["dataset"] == DATASETS[0]) & (hits["variable"] == field["name"])).any()
+    assert geo.search("zzzz no such words").empty
+    with pytest.raises(ValueError):
+        geo.search("  ")
+
+
+@needs_data
+@pytest.mark.parametrize("dataset", DATASETS)
+def test_info_and_cite_describe_every_dataset(dataset):
+    i = geo.info(dataset)
+    text, page = repr(i), i._repr_html_()
+    assert i.title in text and "Coverage" in text and "<h3>" in page
+    apa, bib = geo.cite(dataset), geo.cite(dataset, style="bibtex")
+    assert apa and bib.startswith("@misc{") and dataset in bib
+    with pytest.raises(ValueError):
+        geo.cite(dataset, style="mla")
+
+
+@needs_data
+@pytest.mark.parametrize("dataset", DATASETS)
+def test_reference_years_cover_every_variable_and_stored_year(dataset):
+    ry = geo.reference_years(dataset)
+    years = metadata.resource_years(metadata.resource(dataset))
+    variables = metadata.variables(dataset)
+    assert set(ry["variable"]) == set(variables)
+    assert set(ry["year"]) <= set(years)
+
+
+@needs_data
+def test_labels_and_describe_use_the_metadata():
+    dataset = DATASETS[0]
+    variable = metadata.variables(dataset)[0]
+    df = geo.load(dataset, variables=variable, names=True)
+    names = geo.labels(df)
+    assert names[variable] == geo.dictionary(dataset).set_index("variable").loc[variable, "label"]
+    summary = geo.describe(df)
+    assert set(summary["year"]) == set(df["year"]) and (summary["label"] == names[variable]).all()
+    assert summary["count"].sum() == df[variable].notna().sum()
+
+
+# --- working with panels ------------------------------------------------------------------
+
+@needs_data
+def test_load_adds_names_and_group_names():
+    dataset = DATASETS[0]
+    scale = metadata.resource(dataset)["geo:scale"]
+    groups = [s for s in geo.ancestors(scale) if s in ACTIVE and s != "country"][:1]
+    df = geo.load(dataset, groups=groups)
+    assert list(df.columns[:3]) == ["geo_id", "name", "year"] and df["name"].notna().all()
+    for g in groups:
+        assert df[g].notna().all()
+    with pytest.raises(ValueError, match="no rows"):
+        geo.load(dataset, years=1800)
+
+
+def test_change_compares_two_years_per_unit():
+    df = pd.DataFrame({"geo_id": ["a", "a", "b", "b"], "year": [2000, 2010] * 2, "x": [1.0, 3.0, 4.0, 2.0],
+                       "name": ["A", "A", "B", "B"]})
+    out = geo.change(df, "x").set_index("geo_id")
+    assert out.loc["a", "x_change"] == 2 and out.loc["a", "x_pct_change"] == 200
+    assert out.loc["a", "x_annual_change"] == pytest.approx(0.2) and out.loc["b", "x_2010"] == 2
+    assert out.loc["a", "x_rank_change"] == 1 and out.loc["b", "x_rank_change"] == -1   # a overtook b
+    assert out.loc["a", "name"] == "A"
+    with pytest.raises(ValueError):
+        geo.change(df[df["year"] == 2000], "x")
+
+
+# --- aggregation with weights from another dataset -------------------------------------------
+
+def _borrowed_weight(dataset):
+    """A variable whose weighted_mean weight lives in another dataset (via geo:weights), or None."""
+    own = [f["name"] for f in metadata.fields(dataset)]
+    return next((v for v, r in metadata.aggregation_rules(dataset).items()
+                 if r.startswith("weighted_mean:") and r.split(":", 1)[1] not in own), None)
+
+
+@needs_data
+@pytest.mark.parametrize("dataset", [d for d in DATASETS if _borrowed_weight(d)] or [None])
+def test_weighted_means_fetch_their_weights_from_the_metadata(dataset):
+    if dataset is None:
+        pytest.skip("no dataset borrows its weights")
+    variable = _borrowed_weight(dataset)
+    df = geo.load(dataset, variables=variable)            # without its weight
+    scale = metadata.resource(dataset)["geo:scale"]
+    target = next(t for t in geo.ancestors(scale) if t in ACTIVE)
+    up = geo.aggregate(df, to=target, dataset=dataset)
+    assert up[variable].notna().any() and up["coverage"].between(0, 1).all()
+    lo, hi = df[variable].min(), df[variable].max()
+    assert up[variable].dropna().between(lo - 1e-9, hi + 1e-9).all()       # means stay within the range
+
+
+@needs_data
+def test_aggregate_to_several_scales_reports_coverage():
+    dataset = next(d for d in DATASETS if any(r == "sum" for r in metadata.aggregation_rules(d).values()))
+    sums = [v for v, r in metadata.aggregation_rules(dataset).items() if r == "sum"]
+    scale = metadata.resource(dataset)["geo:scale"]
+    targets = [t for t in geo.ancestors(scale) if t in ACTIVE]
+    out = geo.aggregate(geo.load(dataset, variables=sums), to=targets, dataset=dataset)
+    assert set(out["scale"]) == set(targets)
+    assert (out["coverage"] <= 1).all() and (out["n_units"] >= 1).all()
+
+
+@needs_data
+def test_validator_catches_stale_coverage_metadata(repo_copy):
+    dataset = DATASETS[0]
+    path = repo_copy / f"metadata/{dataset}.datapackage.json"
+    pkg = json.loads(path.read_text())
+    pkg["resources"][0]["geo:units"] = 1
+    pkg["resources"][0]["geo:years"] = [1900]
+    path.write_text(json.dumps(pkg))
+    errors = " | ".join(validate.validate_dataset(dataset).errors)
+    assert "geo:units" in errors and "geo:years" in errors
+
+
+# --- maps ---------------------------------------------------------------------------------
+
+@needs_data
+def test_map_draws_a_variable():
+    pytest.importorskip("plotly")
+    dataset = DATASETS[0]
+    variable = metadata.variables(dataset)[0]
+    fig = geo.map(dataset, variable)
+    assert fig.data and geo.labels(dataset)[variable] in fig.layout.title.text
+
+
+# --- the website's function reference ------------------------------------------------------
+
+def test_function_reference_is_current_and_every_function_has_an_example():
+    import re
+    import subprocess
+    import sys
+    root = store.repo_root()
+    if not (root / "scripts/api_reference.py").exists():
+        pytest.skip("no function reference in this project")
+    check = subprocess.run([sys.executable, "scripts/api_reference.py", "--check"], cwd=root,
+                           capture_output=True, text=True)
+    assert check.returncode == 0, check.stdout + check.stderr
+    content = (root / "site/src/content.js").read_text()
+    block = content.split("export const API_EXAMPLES = {", 1)[1].split("\n};", 1)[0]
+    examples = set(re.findall(r"^  (\w+): `", block, flags=re.M))
+    assert set(geo.__all__) <= examples, f"no example for {sorted(set(geo.__all__) - examples)}"

@@ -7,16 +7,16 @@ a long panel ``df`` and a data dictionary (one row per column with ``var_name``,
 - `geometrics <https://quarcs-lab.github.io/geometrics/>`_: regional growth,
   convergence and inequality with spatial methods; also needs geometries (``gdf``)::
 
-      gdf, df, df_dict = geo.for_geometrics("gdppc")
+      gdf, df, df_dict = geo.for_geometrics("<dataset>", variables="<variable>")
       df = gm.set_labels(df, df_dict, set_panel=True)
-      gm.analyze_beta_convergence(df, "y", gdf=gdf, w=gm.make_weights(gdf))  # levels
+      gm.analyze_beta_convergence(df, "<variable>", gdf=gdf, w=gm.make_weights(gdf))  # levels
 
 - `expdpy <https://cmg777.github.io/expdpy/>`_: panel exploration and panel
   econometrics (within/between, fixed and random effects, Hausman, clustered SEs)::
 
-      df, df_def = geo.for_expdpy("env", groups=["gdl"])
+      df, df_def = geo.for_expdpy("<dataset>", groups=["<coarser scale>"])
       df = ex.set_labels(df, df_def, set_panel=True)
-      ex.analyze_panel_table(df, "total_EGDP", ["total_VNL"])
+      ex.analyze_panel_table(df, "<y>", ["<x>"])
 """
 
 from __future__ import annotations
@@ -38,8 +38,8 @@ def _describe(fields) -> dict:
     return out
 
 
-def _group_label(scale: str) -> tuple[str, str]:
-    label = get_scale(scale).label
+def _group_label(scale: str, ref=None) -> tuple[str, str]:
+    label = get_scale(scale, ref).label
     return f"{label} name", f"Name of the {label} the unit lies in"
 
 
@@ -47,38 +47,25 @@ def _panel_inputs(data, scale, years, variables, labels, groups, ref):
     """The shared work: panel with names (and group names), data dictionary, and the scale."""
     if isinstance(data, str):
         df = io.load(data, scale=scale, years=years, variables=variables, ref=ref)
-        scale = metadata.resource(data, scale)["geo:scale"]
-        described = _describe(metadata.fields(data, scale))
+        scale = metadata.resource(data, scale, ref)["geo:scale"]
+        described = _describe(metadata.fields(data, scale, ref))
     else:
         # your own panel: columns named like published variables keep their metadata labels
-        described = {}
-        for ds in metadata.dataset_ids():
-            for res in metadata.package(ds)["resources"]:
-                described.update({k: v for k, v in _describe(res["schema"]["fields"]).items() if k not in described})
+        described = {k: v for k, v in _describe(metadata.field_index(ref).values()).items()}
         df = data.drop(columns="geometry", errors="ignore").copy()
         if scale is None:
-            found = {scale_of(i) for i in df["geo_id"].dropna().drop_duplicates()}
+            found = {scale_of(i, ref) for i in df["geo_id"].dropna().drop_duplicates()}
             if len(found) != 1:
                 raise ValueError(f"Rows mix units from several scales: {sorted(found)}")
             scale = found.pop()
     for name, text in (labels or {}).items():
         described[name] = (text, text)
 
-    units = io.units(scale, ref=ref)
-    df = df.drop(columns="name", errors="ignore").merge(units[["geo_id", "name"]], on="geo_id", how="left")
-    group_cols = []
-    for col in df.columns:            # group columns already present (e.g. from an earlier call)
-        if col in ancestors(scale) and col not in (groups or []):
-            described[col] = _group_label(col)
-    for group in groups or []:
-        if group not in ancestors(scale):
-            raise ValueError(f"{scale!r} units do not nest in {group!r}; groups must be among {ancestors(scale)}")
-        names = io.units(group, ref=ref).set_index("geo_id")["name"]
-        df[group] = df["geo_id"].map(units.set_index("geo_id")[f"{group}_id"]).map(names)
-        described[group] = _group_label(group)
-        group_cols.append(group)
-    first = ["geo_id", "name"] + (["year"] if "year" in df.columns else []) + group_cols
-    df = df[first + [c for c in df.columns if c not in first]].reset_index(drop=True)
+    groups = [groups] if isinstance(groups, str) else list(groups or [])
+    present = [c for c in df.columns if c in ancestors(scale, ref) and c not in groups]  # from an earlier call
+    df = io.add_names(df, groups=present + groups, scale=scale, ref=ref).reset_index(drop=True)
+    for col in present + groups:
+        described[col] = _group_label(col, ref)
 
     rows = []
     for col in df.columns:
@@ -102,7 +89,7 @@ def for_geometrics(data, scale: str | None = None, years=None, variables=None, l
 
     Parameters
     ----------
-    data : a dataset id (e.g. ``"gdppc"``) or your own panel with ``geo_id`` and ``year``
+    data : a dataset id (see ``geo.datasets()``) or your own panel with ``geo_id`` and ``year``
         (from ``geo.link``, ``geo.combine``, ``geo.zonal``...)
     scale, years, variables : as in ``geo.load`` (for a dataset id)
     labels : ``{variable: description}`` for your own columns (dataset variables are
@@ -126,9 +113,16 @@ def for_expdpy(data, scale: str | None = None, years=None, variables=None, label
                groups=None, ref: str | None = None):
     """``(df, df_def)`` in the format expdpy expects.
 
-    Same parameters as ``for_geometrics``. ``groups`` is handy for expdpy's
-    by-group views, e.g. ``geo.for_expdpy("gdppc", groups=["province"])`` adds a
-    ``province`` column for ``ex.explore_trend_plot_by_group``.
+    Parameters
+    ----------
+    data : a dataset id or your own panel with ``geo_id`` and ``year``
+    scale, years, variables : as in ``geo.load`` (for a dataset id)
+    labels : ``{variable: description}`` for your own columns
+    groups : coarser scales whose unit names to add as columns
+
+    These are the parameters of ``for_geometrics``. ``groups`` is handy for expdpy's
+    by-group views, e.g. ``groups=["department"]`` adds a ``department`` column
+    (the department's name) for ``ex.explore_trend_plot_by_group``.
 
     Returns
     -------

@@ -57,19 +57,31 @@ def publish(dataset: str, scale: str, df: pd.DataFrame) -> pd.DataFrame:
     df.to_csv(root / res["geo:path"], index=False)
     df.to_parquet(root / res["geo:parquet"], index=False)
     print(f"  wrote {res['geo:path']} and {res['geo:parquet']}  ({len(df):,} rows)")
+    _record_coverage(dataset, scale, df)
     return df
 
 
-def years_text(years) -> str:
-    """'2001–2020' for consecutive years, '2012, 2024' otherwise."""
-    years = sorted(set(int(y) for y in years))
-    if not years:
-        return "—"
-    if len(years) == 1:
-        return str(years[0])
-    if years == list(range(years[0], years[-1] + 1)):
-        return f"{years[0]}–{years[-1]}"
-    return ", ".join(map(str, years))
+def _record_coverage(dataset: str, scale: str, df: pd.DataFrame) -> None:
+    """Write the resource's ``geo:period``, ``geo:years`` and ``geo:units`` from the data."""
+    path = f"metadata/{dataset}.datapackage.json"
+    pkg = read_json(path)
+    years = sorted(int(y) for y in df["year"].unique())
+    found = {"geo:period": [years[0], years[-1]], "geo:years": years, "geo:units": int(df["geo_id"].nunique())}
+    for i, res in enumerate(pkg["resources"]):
+        if res["geo:scale"] == scale:
+            ordered = {}
+            for key, value in res.items():          # keep the three together, after geo:scale
+                if key in found:
+                    continue
+                ordered[key] = value
+                if key == "geo:scale":
+                    ordered.update(found)
+            pkg["resources"][i] = ordered
+    write_json(path, pkg)
+    metadata.clear_cache()
+
+
+years_text = metadata.years_text
 
 
 def coverage(df: pd.DataFrame, column: str) -> str:

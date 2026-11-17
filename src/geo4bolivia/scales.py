@@ -38,37 +38,42 @@ def _registry(ref: str | None = None) -> dict[str, Scale]:
     }
 
 
-def scales(active_only: bool = False) -> dict[str, Scale]:
+def scales(active_only: bool = False, ref: str | None = None) -> dict[str, Scale]:
     """All registered scales, keyed by id."""
-    reg = _registry()
+    reg = _registry(ref)
     return {k: v for k, v in reg.items() if v.status == "active" or not active_only}
 
 
-def table(active_only: bool = False) -> "pd.DataFrame":
-    """The registry as a table, one row per scale (``geo.scales()``)."""
+def table(active_only: bool = False, ref: str | None = None) -> "pd.DataFrame":
+    """The registry of spatial scales as a table, one row per scale (``geo.scales()``).
+
+    Columns: ``label``, ``kind`` (admin, grouping, grid, custom), ``parent`` (the
+    coarser scale it nests in), ``children``, ``id_pattern``, ``example`` and
+    ``status`` (active or planned). ``active_only=True`` hides planned scales.
+    """
     import pandas as pd
     rows = [{"scale": s.id, "label": s.label, "kind": s.kind, "parent": s.parent, "children": s.children,
              "id_pattern": s.id_pattern, "example": s.extra.get("example"), "status": s.status}
-            for s in scales(active_only).values()]
+            for s in scales(active_only, ref).values()]
     return pd.DataFrame(rows).set_index("scale")
 
 
-def get(scale: str) -> Scale:
-    reg = _registry()
+def get(scale: str, ref: str | None = None) -> Scale:
+    reg = _registry(ref)
     if scale not in reg:
         raise KeyError(f"Unknown scale {scale!r}; known scales: {', '.join(reg)}")
     return reg[scale]
 
 
-def ancestors(scale: str) -> list[str]:
+def ancestors(scale: str, ref: str | None = None) -> list[str]:
     """Coarser scales a unit of ``scale`` nests in, in breadth-first order.
 
     Administrative scales follow ``parent``; a scale whose units are unions of
-    ``scale`` units (a grouping such as ``gdl``) is also an ancestor. The parent
+    ``scale`` units (a grouping, such as statistical regions) is also an ancestor. The parent
     chain of each level comes before the groupings of that level, e.g.
-    ``district -> [province, country, gdl]``.
+    ``municipality -> [province, department, country]``.
     """
-    reg = _registry()
+    reg = _registry(ref)
     found: list[str] = []
     frontier = [scale]
     while frontier:
@@ -82,9 +87,9 @@ def ancestors(scale: str) -> list[str]:
     return found
 
 
-def scale_of(geo_id: str) -> str:
-    """The scale a geo ID belongs to, from the ID patterns."""
-    hits = [s.id for s in _registry().values() if s.matches(geo_id)]
+def scale_of(geo_id: str, ref: str | None = None) -> str:
+    """The scale a geo ID belongs to, from the ID patterns (e.g. a municipality ID -> ``"municipality"``)."""
+    hits = [s.id for s in _registry(ref).values() if s.matches(geo_id)]
     if len(hits) != 1:
         raise ValueError(f"{geo_id!r} matches {len(hits)} scales")
     return hits[0]

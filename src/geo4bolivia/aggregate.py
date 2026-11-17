@@ -1,7 +1,7 @@
 """Moving data between spatial scales.
 
-- ``aggregate`` goes *up* a nested hierarchy (e.g. district -> province ->
-  country) using the published crosswalks and per-variable rules.
+- ``aggregate`` goes *up* a nested hierarchy (e.g. municipality -> province
+  -> country) using the published crosswalks and per-variable rules.
 - ``overlay`` moves data between scales that do not nest (grids, custom zones,
   historical boundaries) by area-weighted interpolation.
 """
@@ -21,15 +21,15 @@ EQUAL_AREA_CRS = project.equal_area_crs()
 RULES = ("sum", "mean", "min", "max", "weighted_mean:<field>", "none")
 
 
-def _scale_of(df: pd.DataFrame) -> str:
-    found = {scale_of(i) for i in df["geo_id"].drop_duplicates()}
+def _scale_of(df: pd.DataFrame, ref: str | None = None) -> str:
+    found = {scale_of(i, ref) for i in df["geo_id"].drop_duplicates()}
     if len(found) != 1:
         raise ValueError(f"Rows mix units from several scales: {sorted(found)}")
     return found.pop()
 
 
-def _resolve_rules(variables, dataset, rules):
-    resolved = dict(metadata.aggregation_rules(dataset)) if dataset else {}
+def _resolve_rules(variables, dataset, rules, ref=None):
+    resolved = dict(metadata.aggregation_rules(dataset, ref=ref)) if dataset else {}
     resolved.update(rules or {})
     missing = [v for v in variables if resolved.get(v, "none") == "none"]
     if missing:
@@ -44,39 +44,80 @@ def _resolve_rules(variables, dataset, rules):
     return {v: resolved[v] for v in variables}
 
 
-def aggregate(df: pd.DataFrame, to: str, dataset: str | None = None, rules: dict | None = None,
-              variables=None, weights: pd.DataFrame | None = None) -> pd.DataFrame:
-    """Aggregate a panel up to a coarser, nested scale.
+def _fetch_weights(data: pd.DataFrame, rule: dict, dataset: str | None, source: str, keys: list[str],
+                   ref: str | None) -> pd.DataFrame:
+    """Join the weights of ``weighted_mean`` rules that the data lacks, from the dataset
+    named for them in the metadata's ``geo:weights`` (e.g. census population)."""
+    needed = {r.split(":", 1)[1] for r in rule.values() if r.startswith("weighted_mean:")}
+    needed -= set(data.columns)
+    if not needed or not dataset:
+        return data
+    pointers = metadata.weight_sources(dataset, ref)
+    for w in sorted(needed):
+        holder = pointers.get(w, dataset)
+        try:
+            available = [f["name"] for f in metadata.fields(holder, source, ref)]
+        except KeyError:              # the holder is not published at this scale
+            continue
+        if w not in available:
+            continue
+        extra = io.load(holder, scale=source, variables=w, ref=ref)
+        on = [k for k in keys if k in extra.columns]
+        if "year" in keys and "year" in extra.columns:
+            missing = sorted(set(data["year"]) - set(extra["year"]))
+            if missing:
+                warnings.warn(f"Weight {w!r} ({holder}) has no values for {missing}; those years get no "
+                              f"weighted means.", stacklevel=3)
+        data = data.merge(extra[on + [w]], on=on, how="left")
+    return data
+
+
+def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | None = None,
+              variables=None, weights: pd.DataFrame | None = None, ref: str | None = None) -> pd.DataFrame:
+    """Aggregate a panel up to a coarser, nested scale (or to several at once).
 
     Parameters
     ----------
     df : panel with ``geo_id``, optionally ``year``, and variable columns
-    to : target scale id (must contain the source scale, see ``geo.ancestors``)
+    to : target scale id, or a list of them (e.g. ``["department", "country"]``),
+        each containing the source scale (see ``geo.ancestors``)
     dataset : take each variable's ``geo:aggregation`` rule from this dataset's metadata
     rules : explicit rules that override the metadata, e.g. ``{"y": "weighted_mean:pop"}``
     variables : variables to aggregate (default: every numeric column except ids and year,
         leaving out, with a warning, those without a rule)
     weights : extra columns to join on ``geo_id`` (and ``year`` if present) for
-        ``weighted_mean`` rules whose weight is not already in ``df``
+        ``weighted_mean`` rules whose weight is not already in ``df``. When the dataset's
+        metadata names where a weight lives (``geo:weights``, e.g. census population),
+        it is loaded automatically.
 
-    Returns one row per target unit (and year) with an ``n_units`` column: the
-    number of source units that contributed.
+    Returns one row per target unit (and year) with ``n_units``, the number of
+    source units that contributed, and ``coverage``, their share of all the source
+    units in the target (1.0 when every unit has data). With a list of targets,
+    the results are stacked with a ``scale`` column.
     """
-    source = _scale_of(df)
+    if not isinstance(to, str):
+        parts = []
+        for target in to:
+            part = aggregate(df, target, dataset=dataset, rules=rules, variables=variables, weights=weights, ref=ref)
+            part.insert(1, "scale", target)
+            parts.append(part)
+        return pd.concat(parts, ignore_index=True)
+    source = _scale_of(df, ref)
     if to == source:
         return df.copy()
-    if to not in ancestors(source):
+    if to not in ancestors(source, ref):
         raise ValueError(f"{source!r} units do not nest in {to!r}; use geo.overlay() instead.")
 
     keys = ["geo_id", "year"] if "year" in df.columns else ["geo_id"]
     if variables is None:
         # every numeric column except ids and source keys (asdf_id, ...); variables without
         # a rule are skipped with a warning
-        not_variables = {f["name"] for f in metadata.fields(dataset)
+        not_variables = {f["name"] for f in metadata.fields(dataset, ref=ref)
                          if f.get("geo:role", "variable") != "variable"} if dataset else set()
         variables = [c for c in df.columns if c not in keys and c != "geometry" and c not in not_variables
-                     and not c.endswith("_id") and pd.api.types.is_numeric_dtype(df[c])]
-        known = dict(metadata.aggregation_rules(dataset)) if dataset else {}
+                     and not c.endswith("_id") and pd.api.types.is_numeric_dtype(df[c])
+                     and c not in ("n_units", "coverage")]
+        known = dict(metadata.aggregation_rules(dataset, ref=ref)) if dataset else {}
         known.update(rules or {})
         if dataset or rules:
             skipped = [v for v in variables if known.get(v, "none") == "none"]
@@ -86,14 +127,16 @@ def aggregate(df: pd.DataFrame, to: str, dataset: str | None = None, rules: dict
                 variables = [v for v in variables if v not in skipped]
     elif isinstance(variables, str):
         variables = [variables]
-    rule = _resolve_rules(variables, dataset, rules)
+    rule = _resolve_rules(variables, dataset, rules, ref)
 
     data = df.drop(columns="geometry", errors="ignore")
     if weights is not None:
         on = [k for k in keys if k in weights.columns]
-        data = data.merge(weights, on=on, how="left")
-    xw = io.crosswalk(source, to)[["geo_id_from", "geo_id_to"]]
-    data = data.merge(xw, left_on="geo_id", right_on="geo_id_from", how="left")
+        data = data.merge(weights[[c for c in weights.columns if c in on or c not in data.columns]], on=on, how="left")
+    data = _fetch_weights(data, rule, dataset, source, keys, ref)
+    full = io.crosswalk(source, to, ref=ref)[["geo_id_from", "geo_id_to"]]
+    totals = full.groupby("geo_id_to")["geo_id_from"].nunique()
+    data = data.merge(full, left_on="geo_id", right_on="geo_id_from", how="left")
     if data["geo_id_to"].isna().any():
         bad = data.loc[data["geo_id_to"].isna(), "geo_id"].unique()[:5]
         raise ValueError(f"Units missing from the {source}->{to} crosswalk: {list(bad)}")
@@ -109,13 +152,15 @@ def aggregate(df: pd.DataFrame, to: str, dataset: str | None = None, rules: dict
         else:
             w = r.split(":", 1)[1]
             if w not in data.columns:
-                raise ValueError(f"Weight {w!r} for {var!r} is not in the data; pass it via weights=")
+                raise ValueError(f"Weight {w!r} for {var!r} is not in the data; pass it via weights= "
+                                 f"(a table with geo_id{', year' if 'year' in keys else ''} and {w!r})")
             ok = data[var].notna() & data[w].notna()
             num = (data[var] * data[w]).where(ok).groupby([data[c] for c in group]).sum(min_count=1)
             den = data[w].where(ok).groupby([data[c] for c in group]).sum(min_count=1)
             out[var] = num / den
     out = out.reset_index().rename(columns={"geo_id_to": "geo_id"})
-    return out[["geo_id", *keys[1:], *rule, "n_units"]]
+    out["coverage"] = out["n_units"] / out["geo_id"].map(totals)
+    return out[["geo_id", *keys[1:], *rule, "n_units", "coverage"]]
 
 
 def _as_target(target, id_col: str) -> gpd.GeoDataFrame:
@@ -129,8 +174,14 @@ def _as_target(target, id_col: str) -> gpd.GeoDataFrame:
 def overlay_weights(source, target, id_col: str = "geo_id") -> pd.DataFrame:
     """Area of every source-target intersection, in an equal-area projection.
 
-    ``source`` and ``target`` are scale ids or GeoDataFrames with an id column.
-    Returns ``geo_id_from``, ``geo_id_to``, ``area_km2``, ``share_of_from`` (the
+    Parameters
+    ----------
+    source, target : scale ids, or GeoDataFrames with ``id_col`` and polygons
+    id_col : the id column of GeoDataFrame inputs
+
+    Returns
+    -------
+    Columns ``geo_id_from``, ``geo_id_to``, ``area_km2``, ``share_of_from`` (the
     part of the source unit inside the target) and ``share_of_to``.
     """
     src = _as_target(source, id_col).to_crs(EQUAL_AREA_CRS)

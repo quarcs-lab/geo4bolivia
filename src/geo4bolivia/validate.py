@@ -153,7 +153,8 @@ def validate_dataset(dataset: str) -> Report:
                 rep.check((col.dropna() <= cons["maximum"]).all(), f"{tag}: {f['name']} above {cons['maximum']}")
             agg = f.get("geo:aggregation")
             if agg and agg.startswith("weighted_mean:"):
-                rep.check(agg.split(":", 1)[1] in names, f"{tag}: weight for {f['name']} is not a field")
+                rep.check(_weight_available(pkg, agg.split(":", 1)[1], sid, names),
+                          f"{tag}: weight for {f['name']} is neither a field nor in a geo:weights dataset at {sid}")
             if f.get("geo:role") == "source_key" and "geo:units_column" in f:
                 ucol = f["geo:units_column"]
                 pairs = df[["geo_id", f["name"]]].drop_duplicates()
@@ -170,6 +171,12 @@ def validate_dataset(dataset: str) -> Report:
         first, last = res["geo:period"]
         rep.check(df["year"].between(first, last).all(), f"{tag}: years outside geo:period {first}-{last}")
         rep.check(df["year"].min() == first and df["year"].max() == last, f"{tag}: geo:period does not match the data")
+        if "geo:years" in res:
+            rep.check(sorted(int(y) for y in df["year"].unique()) == list(res["geo:years"]),
+                      f"{tag}: geo:years {res['geo:years']} does not match the data (rebuild it)")
+        if "geo:units" in res:
+            rep.check(df["geo_id"].nunique() == res["geo:units"],
+                      f"{tag}: geo:units {res['geo:units']} != {df['geo_id'].nunique()} units in the data (rebuild it)")
         stored = {str(y) for y in df["year"].unique()}
         for f in schema["fields"]:
             ref = f.get("geo:reference_years")
@@ -179,6 +186,19 @@ def validate_dataset(dataset: str) -> Report:
     if "geo:map" in pkg:
         _check_map(rep, dataset, pkg["geo:map"])
     return rep
+
+
+def _weight_available(pkg: dict, weight: str, scale: str, names: list[str]) -> bool:
+    """A ``weighted_mean`` weight is a field of the resource, or of the dataset ``geo:weights`` names."""
+    if weight in names:
+        return True
+    holder = pkg.get("geo:weights", {}).get(weight)
+    if not holder:
+        return False
+    try:
+        return weight in [f["name"] for f in metadata.fields(holder, scale)]
+    except KeyError:
+        return False
 
 
 def _check_map(rep: Report, dataset: str, spec: dict) -> None:

@@ -3,12 +3,11 @@
 These functions work anywhere, including Google Colab without a clone of the
 repository. A typical workflow::
 
-    import geo4bolivia as geo
-    mine = geo.link(my_table, scale="province", on="Province")   # names/codes -> geo_id
-    geo.check(mine, scale="province")                            # same rules as the published data
-    both = geo.combine(["env", "hdi"], scale="gdl", extra=[mine])  # one panel, one scale
-    lights = geo.zonal("viirs_2020.tif", scale="district", year=2020, name="ntl")
-    geo.save(both, "my_panel", scale="gdl", variables={...})     # CSV + Parquet + datapackage
+    mine = geo.link(my_table, scale="province", on="Province")    # names/codes -> geo_id
+    geo.check(mine, scale="province")                             # same rules as the published data
+    both = geo.combine(["<dataset>", "<dataset>"], scale="province", extra=[mine])  # one panel
+    lights = geo.zonal("viirs_2020.tif", scale="province", year=2020, name="ntl")   # raster -> units
+    geo.save(both, "my_panel", scale="province", variables={...})  # CSV + Parquet + datapackage
 """
 
 from __future__ import annotations
@@ -55,7 +54,7 @@ def link(df: pd.DataFrame, scale: str, on: str, key: str = "auto", errors: str =
     scale : scale of your units, e.g. ``"province"`` (see ``geo.scales()``)
     on : the column of ``df`` that identifies the unit
     key : the column of ``geo.units(scale)`` to match against: ``"name"``, a
-        source code such as ``"gid"`` (GADM), ``"shapeISO"`` or ``"GDLcode"``, or
+        source code column of ``geo.units(scale)`` (e.g. ``"gid"`` for GADM codes), or
         ``"auto"``: the column matching most values, with the others filling the
         gaps (so mixed spellings from different sources still link). Matching ignores
         accents, case, spaces and punctuation ("BântéayMéanchey" = "Banteay Meanchey").
@@ -127,6 +126,12 @@ def check(df: pd.DataFrame, scale: str | None = None, time: str | None = "year",
 
     Checks: a ``geo_id`` column, ids known at the scale, one row per unit (and
     year) and integer years.
+
+    Parameters
+    ----------
+    df : your panel, e.g. from ``geo.link``
+    scale : its scale (default: inferred from ``geo_id``)
+    time : the year column, or ``None`` for a cross-section
     """
     problems = []
     if "geo_id" not in df.columns:
@@ -177,28 +182,30 @@ def combine(datasets, scale: str, years=None, extra=(), rules: dict | None = Non
 
     Variables without an aggregation rule (``none``) are dropped, with a warning,
     when a dataset has to be aggregated. Clashing column names get the dataset
-    id as a prefix (``hdi_POP``).
+    id as a prefix (``<dataset>_<column>``). Weighted means fetch their weights as
+    ``geo.aggregate()`` does (``geo:weights`` in the metadata).
     """
     picks = datasets if isinstance(datasets, dict) else {d: None for d in datasets}
     frames: list[tuple[str, pd.DataFrame]] = []
     for ds, variables in picks.items():
-        native = metadata.resource(ds)["geo:scale"]
-        published = [r["geo:scale"] for r in metadata.package(ds)["resources"]]
+        native = metadata.resource(ds, ref=ref)["geo:scale"]
+        published = [r["geo:scale"] for r in metadata.package(ds, ref)["resources"]]
         at = scale if scale in published else native
         df = io.load(ds, scale=at, years=years, variables=variables, ref=ref)
         if at != scale:
-            if scale not in ancestors(at):
+            if scale not in ancestors(at, ref):
                 raise ValueError(f"{ds!r} is published at {at!r}, which does not nest in {scale!r}. "
                                  f"Use geo.overlay() to move it, then pass the result in extra=.")
-            have = dict(metadata.aggregation_rules(ds, at), **(rules or {}))
-            candidates = [v for v in metadata.variables(ds, at) if v in df.columns]
+            have = dict(metadata.aggregation_rules(ds, at, ref), **(rules or {}))
+            candidates = [v for v in metadata.variables(ds, at, ref) if v in df.columns]
             df = df[["geo_id", "year", *candidates]]
             keep = [v for v in candidates if have.get(v, "none") != "none"]
             dropped = [v for v in candidates if v not in keep]
             if dropped:
                 warnings.warn(f"{ds}: no aggregation rule for {dropped}; dropped. Pass rules= to keep them.",
                               stacklevel=2)
-            df = aggregate(df, to=scale, dataset=ds, rules=rules, variables=keep).drop(columns="n_units")
+            df = aggregate(df, to=scale, dataset=ds, rules=rules, variables=keep, ref=ref).drop(
+                columns=["n_units", "coverage"])
         frames.append((ds, df))
     frames += [(f"extra{i}", df) for i, df in enumerate(extra, 1)]
     seen: dict[str, int] = {}
@@ -281,6 +288,20 @@ def save(df: pd.DataFrame, name: str, scale: str, directory=".", title: str | No
          license: str = "CC-BY-4.0") -> dict:
     """Save a panel exactly like the published datasets, ready to share or contribute.
 
+    Parameters
+    ----------
+    df : a valid panel (see ``geo.check``)
+    name : the dataset id: lowercase letters, digits, ``-`` or ``_``
+    scale : its scale
+    directory : where to write ``data/`` and ``metadata/`` (default: the current folder)
+    title, description : what the dataset is
+    variables : ``{column: {"label", "description", "unit", "aggregation", "source"}}``
+    sources : titles or ``{"title", "path"}`` dicts of the sources
+    citation : the recommended citation
+    license : an SPDX license id (default ``CC-BY-4.0``)
+
+    Notes
+    -----
     Writes ``<directory>/data/<scale>/<name>.csv`` and ``.parquet`` and
     ``<directory>/metadata/<name>.datapackage.json`` (Frictionless). Describe each
     variable in ``variables``: ``{"pop": {"label": "Population", "description":

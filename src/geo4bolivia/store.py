@@ -27,7 +27,7 @@ def default_ref() -> str:
 
 
 def raw_url(path: str, ref: str | None = None) -> str:
-    """Public URL of a repository file, e.g. ``raw_url("data/district/gdppc.csv")``."""
+    """Public URL of a repository file, e.g. ``raw_url("geo/units.csv")``."""
     repo = project.config()["repository"]
     base = project.env("BASE_URL") or f"https://raw.githubusercontent.com/{repo}/{{ref}}/"
     return base.replace("{ref}", ref or default_ref()).rstrip("/") + "/" + path

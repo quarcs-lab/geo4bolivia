@@ -198,6 +198,35 @@ def test_population_weighted_sdg_by_department():
     assert len(out) == 9 * 2 and out["sdg1_2_mpi"].between(0, 1).all()
 
 
+def test_sdg_rollups_fetch_census_population_by_themselves():
+    df = geo.load("sdg01", variables="sdg1_2_mpi")
+    auto = geo.aggregate(df, to="department", dataset="sdg01")
+    manual = geo.aggregate(df, to="department", rules={"sdg1_2_mpi": "weighted_mean:population"},
+                           weights=geo.load("sdg", variables="population"))
+    assert np.allclose(auto["sdg1_2_mpi"], manual["sdg1_2_mpi"]) and (auto["coverage"] == 1).all()
+    both = geo.combine(["sdg01", "sdg04"], scale="department")
+    assert len(both) == 9 * 2 and both["index_sdg4"].notna().all()
+    ids = geo.aggregate(geo.load("sdg", variables="index_sdg"), to="country", dataset="sdg")
+    assert ids["n_units"].tolist() == [343, 343]
+    with pytest.warns(UserWarning, match="rank_sdg"):
+        geo.aggregate(geo.load("sdg"), to="department", dataset="sdg")
+
+
+def test_lights_cover_333_of_343_municipalities():
+    up = geo.aggregate(geo.load("ntl", years=2020), to="country", rules={"ln_NTLpc": "mean"}, variables="ln_NTLpc")
+    assert up["n_units"].item() == 333 and up["coverage"].item() == pytest.approx(333 / 343)
+    assert geo.datasets().set_index("dataset").loc["ntl", "units"] == 333
+
+
+def test_sdg_change_and_reference_years():
+    ch = geo.change(geo.load("sdg", variables="index_sdg", names=True), "index_sdg")
+    assert len(ch) == 343 and ch["index_sdg_change"].mean() > 0                 # the IDS rose on average
+    assert ch.set_index("geo_id").loc["BO-04-17-04", "index_sdg_rank_2024"] == 1
+    ry = geo.reference_years("sdg03", "sdg3_2_tmi").set_index("year")["reference"]
+    assert ry.to_dict() == {2012: "2008", 2024: "2023"}
+    assert "sdg1_2_mpi" in geo.search("multidimensional poverty")["variable"].tolist()
+
+
 @pytest.mark.parametrize("dataset", ["emb", "embpw"])
 def test_embeddings(dataset):
     df = geo.load(dataset)
