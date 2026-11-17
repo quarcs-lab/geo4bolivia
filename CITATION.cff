@@ -6,8 +6,8 @@ authors:
   - family-names: Mendez
     given-names: Carlos
     affiliation: "Nagoya University"
-version: 0.2.0
-date-released: 2026-10-29
+version: 0.4.0
+date-released: 2026-11-17
 url: "https://quarcs-lab.github.io/geo4bolivia/"
 repository-code: "https://github.com/quarcs-lab/geo4bolivia"
 license: MIT
@@ -16,6 +16,8 @@ keywords:
   - municipalities
   - regional development
   - sustainable development goals
+  - SDG Atlas
+  - convergence
   - remote sensing
   - night-time lights
   - satellite embeddings

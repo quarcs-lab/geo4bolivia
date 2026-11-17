@@ -123,7 +123,7 @@ In a Google Colab cell:
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/notebooks/empty.ipynb)
 
-Python 3.11 or later. The data are not inside the package. It reads them from the [GitHub repository](https://github.com/quarcs-lab/geo4bolivia), so installation is quick and you always get the files the website links to. For reproducible research, pin a release of the data with `geo.load(..., ref="v0.1.0")` or the environment variable `GEO4BOLIVIA_REF=v0.1.0`.
+Python 3.11 or later. The data are not inside the package. It reads them from the [GitHub repository](https://github.com/quarcs-lab/geo4bolivia), so installation is quick and you always get the files the website links to. For reproducible research, pin a release of the data with `geo.load(..., ref="v0.4.0")` or the environment variable `GEO4BOLIVIA_REF=v0.4.0`.
 
 ## Documentation
 

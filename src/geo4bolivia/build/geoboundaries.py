@@ -11,7 +11,9 @@ release only holds boundaries whose sources allow redistribution; check each cou
 
 geoBoundaries has no hierarchical codes, so the geo IDs come from elsewhere (e.g. GADM's
 numbering, ``gadm.gadm_units``) and a lookup ``shapeID -> geo_id`` of the finest scale, made
-once by area overlap (see a project's ``scripts/match_geoboundaries.py``), attaches them.
+once by area overlap, attaches them (e.g. geo4bolivia's ``scripts/match_geoboundaries.py`` of
+version 0.3; a map keyed by official codes, such as an INE code, needs only a code lookup, as
+in geo4bolivia's ``scripts/match_municipalities343.py``).
 ``from_polygons`` then cleans the finest units as a coverage (small overlaps between neighbours
 are given to one of them and shared edges made identical; shapely >= 2.2), simplifies them
 (shared borders stay shared, so no slivers or gaps appear) and builds every coarser scale as the exact union of
