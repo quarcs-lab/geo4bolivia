@@ -30,7 +30,7 @@ def weights(data, method: str = "queen", *, k: int = 6, threshold: float | None 
     method
         ``"queen"`` (units sharing a border or a corner), ``"rook"`` (a border),
         ``"knn"`` (the ``k`` nearest), ``"distance_band"`` (within ``threshold``
-        metres) or ``"inverse_distance"`` (all units, weighted by distance ** -``power``)
+        metres) or ``"inverse_distance"`` (within the same band, weighted by distance ** -``power``)
     k
         Neighbours for ``"knn"``
     threshold
@@ -82,10 +82,14 @@ def connectivity(data, w=None, *, method: str = "queen", tiles: str | None = "ca
         unit), ``.df`` (one row per unit with its number of neighbours), the weights
         ``.w`` and ``.interpret()``.
     """
+    from ._engine._mapping import _wgs84_simplified
     from ._engine.weights import explore_connectivity_map
     geo = _units(data, gdf, ref)
-    return _inputs.finish(explore_connectivity_map(geo, w=_inputs.spatial_weights(geo, w, method=method),
-                                                   entity=_inputs.ENTITY, tiles=tiles, title=title), geo)
+    w = _inputs.spatial_weights(geo, w, method=method)       # built on the boundaries in full detail
+    drawn = _wgs84_simplified(geo, _inputs.ENTITY, "auto")   # drawn lighter: the figure stays small
+    if _inputs.NAME in geo.columns:
+        drawn[_inputs.NAME] = geo[_inputs.NAME].to_numpy()
+    return _inputs.finish(explore_connectivity_map(drawn, w=w, entity=_inputs.ENTITY, tiles=tiles, title=title), geo)
 
 
 def moran(data, variable: str, year=None, *, w=None, permutations: int = 999, seed: int | None = 12345,
@@ -166,8 +170,9 @@ def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, see
     result object
         A result with ``.fig`` (the cluster map), ``.fig_scatter`` (the Moran scatterplot
         coloured by cluster), ``.df`` (one row per unit: local statistic, p-value and
-        ``cluster``: High-High, Low-Low, High-Low, Low-High or not significant), ``.counts``,
-        the global ``.moran_i`` and ``.interpret()``.
+        ``cluster``: High-High, Low-Low, High-Low, Low-High or not significant), the number
+        of units of each type (``.n_hh``, ``.n_ll``, ``.n_hl``, ``.n_lh``, ``.n_ns``), the
+        global ``.moran_i`` and ``.interpret()``.
     """
     from ._engine import dependence
     df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year=year, ref=ref)

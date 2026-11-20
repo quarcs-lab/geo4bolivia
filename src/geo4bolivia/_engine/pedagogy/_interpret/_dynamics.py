@@ -175,7 +175,7 @@ def interpret_spatial_markov(result: Any, *, lang: str = "en") -> str:
                 if not (math.isfinite(low) and math.isfinite(high))
                 or abs(low - high) < 0.02
                 else (
-                    "movement is more common in prosperous neighborhoods."
+                    "movement is more common where the neighbors have high values."
                     if low > high
                     else "movement is more common in low-value neighborhoods."
                 )

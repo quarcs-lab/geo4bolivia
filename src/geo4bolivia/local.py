@@ -36,9 +36,13 @@ def mgwr(data, y: str, x, year=None, *, kernel: str = "bisquare", criterion: str
     the bandwidths are the numbers of nearest units, found by back-fitting; and each
     term's local t-tests are corrected for multiple testing at the 5% level.
 
-    It is slow: the search fits the model again and again, which takes about half a
-    minute with several hundred units and one or two variables, and longer with more
-    of either.
+    The search has a floor: the mgwr library does not try bandwidths below about 40
+    nearest units plus two per term, so a bandwidth at that floor means "as local as
+    the search goes", not exactly that many neighbours.
+
+    It is slow: the search fits the model again and again, which takes from half a
+    minute to a minute and a half with several hundred units and one or two variables,
+    and longer with more of either.
 
     Parameters
     ----------

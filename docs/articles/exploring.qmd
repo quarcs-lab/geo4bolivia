@@ -1,5 +1,263 @@
 ---
-title: "exploring"
+title: "Exploring the data"
+description: "A question-driven exploration of multidimensional poverty in Bolivia's municipalities, and the pitfalls of these data that a newcomer should know."
+image: ../images/thumbs/exploring.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/exploring.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+The [Explore](../explore.qmd) page tours the exploration functions one by one. This article uses them the way an analysis does: it starts from questions about one indicator, **multidimensional poverty**, and picks the function that answers each. Along the way it points out six pitfalls of these data, which are collected in a table at the end.
+
+The questions:
+
+1. What exactly is the variable?
+2. Where is poverty highest and lowest?
+3. How did its distribution shift between the two periods?
+4. How does it differ by department?
+5. What is it associated with?
+6. What does the trend of night-time lights add?
+
+```{python}
+#| eval: false
+!pip install -q geo4bolivia
+```
+
+```{python}
+import textwrap
+
+import numpy as np
+import geo4bolivia as geo
+```
+
+## 1. What exactly is the variable?
+
+Exploring a variable you have not read about is how wrong conclusions start. `geo.search()` finds the candidates:
+
+```{python}
+geo.search("multidimensional poverty")[["dataset", "variable", "label", "years"]]
+```
+
+The first one, `sdg1_2_mpi` in the dataset `sdg01`, is the index itself. `geo.dictionary()` documents every variable of the dataset: its label, how it was built, its unit, how it aggregates to coarser scales and the years it really refers to.
+
+```{python}
+d = geo.dictionary("sdg01")
+d[["variable", "label", "aggregation", "reference_years"]].iloc[3:]
+```
+
+```{python}
+text = d.set_index("variable").loc["sdg1_2_mpi", "description"]
+print(textwrap.fill(text.split(" Source:")[0], 84))
+```
+
+So the index runs from 0 to 1, **higher means poorer**, and it combines how many households are deprived (H) with how deprived they are (A). The rest of the description (cut here at its source) says that it comes from the censuses of 2012 and 2024.
+
+::: {.callout-warning}
+## Pitfall 1: the two periods are nominal years
+The SDG Atlas 2026 describes two periods, "around 2012" and "around 2024", and every one of its datasets stores them as the years 2012 and 2024. The actual years differ by indicator. For multidimensional poverty they are the census years. For energy poverty (`sdg1_4_eep`), in the same dataset, the first period is 2016, so its "2012 to 2024" change covers eight years, not twelve. Check `geo.reference_years()` before computing a rate of change or comparing the changes of two indicators.
+:::
+
+```{python}
+geo.reference_years("sdg01", "sdg1_4_eep")
+```
+
+## 2. Where is poverty highest and lowest?
+
+```{python}
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", groups=["department"])
+geo.extremes(mpi, "sdg1_2_mpi", year=2024, n=5)
+```
+
+In 2024 the index ranges from 0.003 in Nuestra Señora de La Paz to 0.296 in TIOC-Raqaypampa, and the median municipality has 0.053. The lowest values are in the largest cities (La Paz, El Alto, Santa Cruz de la Sierra) and two smaller municipalities, Colcapirhua and Trigal. The highest are spread over four departments: Cochabamba, Chuquisaca, Potosí and Oruro. TIOC-Raqaypampa was also the highest in 2012 (0.563; `year=2012` shows that ranking).
+
+A ranking says nothing about where these municipalities are. The map does, and with the two periods in the same classes it also shows the size of the change:
+
+```{python}
+geo.map(mpi, "sdg1_2_mpi", year=[2012, 2024], scheme="fisher_jenks")
+```
+
+The lowest class (up to 0.084) held 20 municipalities in 2012 and holds 261 in 2024. The two highest classes (above 0.273) held 113 in 2012 and hold one in 2024.
+
+## 3. How did the distribution shift?
+
+```{python}
+geo.distribution(mpi, "sdg1_2_mpi")
+```
+
+The mean fell from 0.234 to 0.063 and the whole distribution moved towards zero. The dictionary gives two reference points: the Atlas counts the target as met at 0.066 and sees major challenges from 0.23 on. In 2012, 12 municipalities were at or below 0.066 and 164 at or above 0.23; in 2024 the numbers are 221 and 1.
+
+The shape changed as well. In 2012 the distribution was fairly symmetric (skewness 0.46). In 2024 it is squeezed against its floor of zero with a tail of high values (skewness 1.44). Did the gaps between municipalities narrow? It depends on how you measure them, and `geo.change()`, which gives one row per municipality, shows why:
+
+```{python}
+chg = geo.change(mpi, "sdg1_2_mpi")
+cols = ["sdg1_2_mpi_2012", "sdg1_2_mpi_change", "sdg1_2_mpi_pct_change"]
+print((chg["sdg1_2_mpi_change"] < 0).sum(), "of", len(chg), "municipalities fell")
+chg[cols].corr().round(2)
+```
+
+Poverty fell in all 343 municipalities. In absolute terms it fell most where it was highest: the correlation between the 2012 level and the change is −0.95. In relative terms it was the other way round: the percentage fall (76% in the median municipality) was somewhat *smaller* where poverty was higher (the correlation of the level with the percentage change is +0.38, and a less negative change is a smaller fall).
+
+::: {.callout-warning}
+## Pitfall 2: skewed variables, and what logs do
+For a variable that is bounded at zero and skewed, absolute and relative gaps can tell opposite stories. The standard deviation of the index fell from 0.106 to 0.044: absolute gaps narrowed. The standard deviation of its **logarithm**, which measures relative gaps, rose:
+:::
+
+```{python}
+mpi["ln_mpi"] = np.log(mpi["sdg1_2_mpi"])
+geo.distribution(mpi, "ln_mpi").df[["year", "mean", "sd", "skewness"]].round(2)
+```
+
+It went from 0.53 to 0.75. Municipalities are closer to each other in points of the index and further apart in proportion. Neither reading is wrong; say which one you use. Variables that are already logs (night-time lights, below) describe relative differences from the start.
+
+## 4. How does it differ by department?
+
+```{python}
+geo.distribution(mpi, "sdg1_2_mpi", by="department", kind="box")
+```
+
+In 2024 the median municipality is poorest in Potosí (0.078) and least poor in Tarija (0.023) and Santa Cruz (0.027). The spread *within* departments is large: Cochabamba holds both the second lowest municipality of the country (Colcapirhua, 0.005) and the highest (TIOC-Raqaypampa, 0.296).
+
+This figure compares municipalities, each counting the same. It does not give the poverty of a department's *population*.
+
+::: {.callout-warning}
+## Pitfall 3: the mean of the municipalities is not the department's value
+A department's value has to weight each municipality by its people. `geo.aggregate()` does that with the rule each variable declares in the metadata: for the SDG indicators, a mean weighted by census population (`weighted_mean:population`; the weights are loaded from the dataset `sdg`). The results approximate the department values; they are not the Atlas's own department figures.
+:::
+
+```{python}
+dep = geo.aggregate(mpi, to="department", dataset="sdg01", variables="sdg1_2_mpi")
+dep = geo.add_names(dep)
+simple = mpi.groupby(["department", "year"], as_index=False)["sdg1_2_mpi"].mean()
+dep = dep.merge(simple, left_on=["name", "year"], right_on=["department", "year"],
+                suffixes=("_weighted", "_simple"))
+dep.loc[dep["year"] == 2024,
+        ["name", "sdg1_2_mpi_weighted", "sdg1_2_mpi_simple", "n_units"]].round(3)
+```
+
+The two columns differ by a factor of about two in several departments. In La Paz, the simple mean of the 87 municipalities is 0.060 and the population-weighted value 0.027, because more than half of the department's people live in two municipalities with very low poverty (El Alto and Nuestra Señora de La Paz). The same holds for the country: aggregating with `to="country"` gives 0.133 in 2012 and 0.033 in 2024, against municipal means of 0.234 and 0.063. Every "mean" in the exploration functions is a mean across municipalities.
+
+## 5. What is it associated with?
+
+Start inside the dataset. With a dataset id, `geo.correlation()` uses every variable of it:
+
+```{python}
+geo.correlation("sdg01", year=2024)
+```
+
+Multidimensional poverty moves closely with unsatisfied basic needs (r = 0.82), INE's own measure of deprivation; less closely with energy poverty (0.54); and negatively with access to the three basic services (−0.69). Its correlation with the goal index `index_sdg1` (−0.82) is not a finding: the index is built from these four indicators, so it is correlated with them by construction.
+
+Other candidates live in other datasets. `geo.combine()` puts several datasets on one scale, as one panel; a dictionary picks the variables.
+
+```{python}
+both = geo.combine({"sdg01": ["sdg1_2_mpi"],
+                    "sdg": ["index_sdg", "urbanization", "population"]},
+                   scale="municipality")
+both = geo.add_names(both, groups=["department"])
+variables = ["sdg1_2_mpi", "index_sdg", "urbanization", "population"]
+res = geo.correlation(both, variables)
+res.gt
+```
+
+The table shows Pearson coefficients above the diagonal and Spearman (rank) coefficients below. Poverty is lower where the Sustainable Development Index is higher (−0.73; again partly by construction, since the index averages the goal indices and the poverty goal is one of them), where the urbanization rate is higher (−0.46) and, weakly, where the population is larger (−0.20).
+
+::: {.callout-warning}
+## Pitfall 4: correlations use complete cases
+`geo.correlation()` keeps only the rows with data for *every* variable, so that all coefficients refer to the same units. One variable with gaps therefore removes rows from all the pairs. `urbanization` exists only for 2024, so pooling both periods with `year="all"` uses half of the panel, and the result says so in `.notes`:
+:::
+
+```{python}
+pooled = geo.correlation(both, variables, year="all")
+print(pooled.n, "observations |", pooled.notes[0])
+```
+
+Population is the kind of variable for which a straight line on the raw scale is a poor summary: the largest city has about 130 times the population of the median municipality. `log_x=True` puts the horizontal axis in logarithms.
+
+```{python}
+geo.scatter(both, "population", "sdg1_2_mpi", log_x=True, color="department")
+```
+
+Even in logs the association is weak (r = −0.23): the line accounts for 5% of the variation in poverty. The 17 municipalities with more than 100,000 people mostly have very low poverty (their median is 0.014), while the 55 with fewer than 5,000 range from 0.006 to 0.177. These are associations between municipal averages in one year, and they say nothing about why some municipalities are poorer.
+
+## 6. What does the trend of night-time lights add?
+
+Poverty is observed twice, twelve years apart. Night-time lights, measured by satellite, are observed every year from 2012 to 2020; the dataset's description calls them a widely used proxy for local economic activity and electrification. The variable `ln_NTLpc` is the logarithm of radiance per person.
+
+```{python}
+ntl = geo.load("ntl", groups=["department"])
+res = geo.trend(ntl, "ln_NTLpc")
+res
+```
+
+The mean of the logarithm rose from 13.1 to 13.9. A difference of 0.81 in a logarithm is a multiplication by about 2.25 (`exp(0.81)`), and 94% of the municipalities with data in both years ended higher. Most of the rise came in the first years: the mean reached 13.9 in 2017 and has stayed near that level since. That is what an annual series adds to two census snapshots: the path between them.
+
+Two more pitfalls come with this dataset.
+
+::: {.callout-warning}
+## Pitfall 5: 333 units, not 343, and gaps within them
+`pop`, `ntl` and the satellite embeddings were computed on the municipal map of 2015. They are published for the 333 municipalities whose territory has not changed since, and not for the four units created since then or the six that lost territory to them. On top of that, `ln_NTLpc` is missing in the years in which no lit pixel remained in a municipality.
+:::
+
+```{python}
+print(res.notes[0])
+units = geo.units("municipality")
+missing = units.loc[~units["geo_id"].isin(ntl["geo_id"]), ["geo_id"]]
+missing.merge(mpi[mpi["year"] == 2024]).sort_values("sdg1_2_mpi")[
+    ["geo_id", "name", "department", "sdg1_2_mpi"]]
+```
+
+The ten units left out are not a random sample: they include TIOC-Raqaypampa, the poorest municipality in both periods. And because the number of municipalities with data grows from 318 in 2012 to 331 in 2019, part of the trend comes from dimly lit municipalities entering the sample. The dataset has a second variable for this, `ln_t400NTLpc`, a smoothed trend that is complete for all 333 units in every year; on it, the mean rises by 1.01 instead of 0.81.
+
+How do lights relate to poverty? The two datasets share one year, 2012, and `geo.scatter()` uses it when asked:
+
+```{python}
+lights = geo.combine({"sdg01": ["sdg1_2_mpi"], "ntl": ["ln_NTLpc"]},
+                     scale="municipality")
+geo.scatter(lights, "ln_NTLpc", "sdg1_2_mpi", year=2012)
+```
+
+Across the 318 municipalities with both values, poverty is lower where lights per person are higher (r = −0.58): one more unit of the logarithm (2.7 times the radiance per person) goes with an index 0.043 lower, on average. Lights account for about a third of the variation in poverty (R² = 0.34), so they are an informative but rough proxy.
+
+::: {.callout-warning}
+## Pitfall 6: not every variable can be aggregated
+A mean of logarithms is not the logarithm of the department's lights per person, so the metadata gives `ln_NTLpc` the rule `none` and `geo.aggregate()` refuses to guess:
+:::
+
+```{python}
+try:
+    geo.aggregate(ntl, to="department", dataset="ntl", variables="ln_NTLpc")
+except ValueError as error:
+    print(error)
+```
+
+To compare departments, either ask for the mean of the municipalities explicitly (`rules={"ln_NTLpc": "mean"}`) and describe it as such, or rebuild the totals (lights = exp(`ln_NTLpc`) × population), sum them and take the logarithm again, as [Building your own indicators](../articles/own-indicators.qmd) does. The result's `n_units` and `coverage` columns tell how many municipalities each department value rests on.
+
+## The pitfalls, in one table
+
+| Pitfall | Where it shows | What to do |
+| --- | --- | --- |
+| Two periods stored at nominal years | every `sdg` dataset | `geo.reference_years()` before computing rates or comparing changes |
+| Skewed variables | poverty near zero, population | look at the distribution; use logs or ranks for relative differences, and say which |
+| Municipal means are not department values | any `by="department"` summary | `geo.aggregate()` with the metadata rules; they approximate the official figures |
+| Complete cases | `geo.correlation()` with a variable that has gaps | read `.n` and `.notes`; correlate fewer variables or one year |
+| 333 versus 343 units | `pop`, `ntl`, `emb`, `embpw` | check which units are missing; they are not a random sample |
+| Variables without an aggregation rule | logs, trends, ranks | aggregate the underlying totals, or state an explicit rule |
+
+## In short
+
+- Multidimensional poverty fell in all 343 municipalities between the censuses of 2012 and 2024; the municipal mean went from 0.234 to 0.063.
+- Absolute gaps between municipalities narrowed and relative gaps widened: the distribution is now skewed, with a tail of high values.
+- Departments differ, and municipalities within a department differ more. Population-weighted department values are about half the simple municipal means in several departments.
+- Poverty is associated with unsatisfied basic needs, lower urbanization and lower night-time lights per person. None of these associations says what causes what.
+- Read the metadata first: the reference years, the units covered and the aggregation rule decide what a number means.
+
+## Where next
+
+- **[The data model](../articles/data-model.qmd)**: scales, geo IDs, the metadata and the 343-unit map.
+- **[Maps and spatial dependence](../articles/spatial-dependence.qmd)**: is poverty clustered in space, and where?
+- **[Regional inequality](../articles/inequality.qmd)**: measuring the gaps this article described by eye.
+- **[Convergence](../articles/convergence.qmd)**: did the municipalities that started worse off catch up?
+- **[Explore](../explore.qmd)**: the same functions, one by one.

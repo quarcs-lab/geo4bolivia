@@ -1,5 +1,259 @@
 ---
-title: "convergence"
+title: "Convergence: β, σ and clubs"
+description: "Three questions about catching up, and the method for each: do units that start lower grow faster, is dispersion falling, and do units head for one path or for several?"
+image: ../images/thumbs/convergence.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/convergence.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+"Convergence" is the idea that places which are behind catch up with those ahead. It is three different questions, and each has its own method:
+
+| Question | Method | Function | Years needed |
+| --- | --- | --- | --- |
+| Do units that start lower grow faster? | β-convergence | `geo.beta_convergence` | 2 |
+| Is the dispersion across units falling? | σ-convergence | `geo.sigma_convergence` | 3 or more |
+| Do units head for one common path, or for several? | Convergence clubs | `geo.convergence_clubs` | 6 or more |
+
+The answers can differ. Units that start lower can grow faster while the gaps between units stay as wide as before, and dispersion can fall across the whole country while groups of units stay apart. This article runs the three methods on the observatory's data and reads each result.
+
+```{python}
+#| eval: false
+!pip install -q geo4bolivia
+```
+
+```{python}
+import numpy as np
+import pandas as pd
+import geo4bolivia as geo
+```
+
+## β-convergence: do units that start lower grow faster?
+
+The data are the Sustainable Development Index (`index_sdg`, 0–100) of Bolivia's 343 municipalities in two periods, stored as 2012 and 2024.
+
+```{python}
+ids = geo.load("sdg", variables=["index_sdg", "population"], groups=["department"])
+```
+
+`geo.beta_convergence()` computes each unit's average yearly growth between the two years (the difference of the logarithms, divided by the number of years) and regresses it on the logarithm of the starting level:
+
+$$\frac{\ln y_{i,\text{last}} - \ln y_{i,\text{first}}}{T} = \alpha + \beta \, \ln y_{i,\text{first}} + \varepsilon_i$$
+
+A negative slope β is called **β-convergence**: the lower the start, the faster the growth.
+
+```{python}
+beta = geo.beta_convergence(ids, "index_sdg")
+beta
+```
+
+The numbers behind the reading are attributes of the result:
+
+```{python}
+print("slope:", round(beta.beta_total, 4), " std. error:", round(beta.se_total, 4))
+print("speed:", round(beta.speed, 4), " half-life, years:", round(beta.half_life, 1))
+print("R²:", round(beta.r2, 2), " units:", beta.n_obs, " years:", beta.horizon)
+```
+
+How to read them:
+
+- **The slope** is −0.0287. A municipality that started with an index 10% lower than another grew about 0.27 percentage points faster per year (0.0287 × ln 1.1). The initial level alone accounts for 44% of the differences in growth.
+- **The speed of convergence** turns the slope into a rate, λ = −ln(1 + βT) / T with T = 12 years: 0.035, so about 3.5% of a gap between two municipalities closes each year.
+- **The half-life** is the time it takes to close half of a gap at that speed, ln 2 / λ: about 20 years.
+
+Speed and half-life are a way of expressing the slope. They describe the pace seen between these two periods; they do not forecast that it will continue.
+
+`beta.df` has the regression's data, one row per municipality, and `beta.gt` the estimates as a table.
+
+```{python}
+beta.df.head()
+```
+
+### Conditional convergence
+
+The regression above compares all municipalities with each other: **absolute** convergence. **Conditional** convergence asks whether the catch-up holds among units that are alike in other respects. `controls=` adds variables measured in the first year, and `fixed_effects=` adds a dummy variable per group, here per department, so that municipalities are compared only with others of the same department.
+
+```{python}
+ids["log_population"] = np.log(ids["population"])
+cond = geo.beta_convergence(ids, "index_sdg", controls="log_population",
+                            fixed_effects="department")
+print("slope:", round(cond.beta_total, 4), " std. error:", round(cond.se_total, 4))
+print("half-life, years:", round(cond.half_life, 1), " R²:", round(cond.r2, 2))
+cond.fig_conditional
+```
+
+Among municipalities of the same department and of similar population in 2012, the slope is −0.0271, close to the −0.0287 found without conditions, and the half-life is about 21 years. So the catch-up is not only a matter of some departments, or of small or large municipalities, growing faster as a group: it shows up inside the departments too. The figure plots growth against the initial level after removing from both what the control and the departments account for.
+
+### Spatial models
+
+Ordinary least squares treats each municipality as independent of the others. Neighbouring municipalities often grow together, and a model can say so. `model=` chooses one, estimated on the queen contiguity weights (units that share a border or a corner are neighbours) unless you pass your own `w=`:
+
+| `model=` | What it adds | Parameter |
+| --- | --- | --- |
+| `"sar"` | the average growth of the neighbours (spatial lag) | `rho` |
+| `"sem"` | errors that are correlated between neighbours (spatial error) | `lam` |
+| `"sdm"` | the neighbours' growth and the neighbours' initial level (spatial Durbin) | `rho` |
+
+```{python}
+models = {m: geo.beta_convergence(ids, "index_sdg", model=m)
+          for m in ["sar", "sem", "sdm"]}
+columns = [beta.summary.set_index("metric")["ols"]]
+columns += [res.summary.set_index("metric")[m] for m, res in models.items()]
+rows = ["direct", "indirect", "total", "rho", "lambda", "half_life", "aic"]
+pd.concat(columns, axis=1).loc[rows].round(4)
+```
+
+When a model includes the neighbours' growth, one unit's starting level is linked to its neighbours' growth as well as to its own, so the slope splits in two parts:
+
+- the **direct** part: how a unit's own growth goes with its own initial level;
+- the **indirect** part, or spillover: how a unit's growth goes with the initial levels of its neighbours;
+- their sum is the **total**, which `beta_total` holds and from which speed and half-life are computed.
+
+Read the table row by row:
+
+- **The direct part is negative in every model**, between −0.027 and −0.034: whatever is assumed about space, municipalities that started lower grew faster.
+- **Growth is spatially dependent.** The spatial parameters are positive (ρ = 0.23 in the lag model, λ = 0.47 in the error model, ρ = 0.44 in the Durbin model), and all three models have a lower AIC than OLS (AIC measures fit with a penalty for extra parameters; lower is better).
+- **The indirect part depends on the model.** In the lag model it has the sign of the direct part by construction, −0.008, and the total is −0.034 (half-life about 16 years). In the Durbin model it is free, and it comes out positive, +0.013: given its own start, a municipality grew faster when its neighbours started *higher*. The total is then −0.021 (half-life about 29 years).
+- The error model has no spillover: it gives another estimate of the same slope, −0.032, with a half-life of about 17 years.
+
+The Durbin model has the lowest AIC here, with the error model close to it. The cautious summary is a range: the half-life of a gap is between about 16 and 29 years depending on how space enters, and the catch-up itself is in every model. Displaying one of the results gives its figure and reading, for example `models["sdm"]`.
+
+### Reasons for caution with two periods
+
+A negative β is a fact about these two periods. Several things other than catching up can produce one:
+
+- **Regression to the mean.** A municipality whose index was unusually low in the first period, for reasons that do not last, will tend to be closer to its usual level in the second, and so will seem to have grown fast. With two periods there is no way to separate this from lasting catch-up.
+- **Measurement error.** The initial level is on both sides of the equation: it is the regressor and it is subtracted to compute growth. Any error in the first-period value makes that unit look lower at the start *and* faster afterwards, which pushes β towards convergence.
+- **A bounded index.** The index runs from 0 to 100 and is built from indicators rescaled between a worst and a best value. A unit close to the best value of an indicator has little room left to rise.
+- **Nominal years.** The two periods are "around 2012" and "around 2024": each indicator behind the index has its own reference years (`geo.reference_years`). The 12 years used for the yearly rates are a convention.
+
+A negative β also does not mean that dispersion fell: units can swap positions without getting closer. That is a separate question.
+
+## σ-convergence: is dispersion falling?
+
+**σ-convergence** looks at the whole distribution instead of each unit's growth: it measures the dispersion across units in every year (the standard deviation of the logarithm, and two more measures) and estimates its trend. A falling dispersion means the units are becoming more alike.
+
+A trend needs at least three years, and the SDG data have two. The function says so, and says where to go instead:
+
+```{python}
+try:
+    geo.sigma_convergence(ids, "index_sdg")
+except ValueError as error:
+    print(error)
+```
+
+With two years, compare the dispersion of each directly, with `geo.inequality()`:
+
+```{python}
+geo.inequality(ids, "index_sdg", measures=("gini", "cv")).df
+```
+
+Both measures are lower in the second period: the Gini index went from 0.065 to 0.049 and the coefficient of variation (the standard deviation divided by the mean) from 0.116 to 0.088. So for this index, lower starters grew faster *and* the municipalities ended closer together. Two points do not make a trend, though, and the [inequality article](inequality.qmd) goes further.
+
+### A panel with many years
+
+Night-time lights per capita (`ntl`) have nine years, 2012 to 2020, for 333 municipalities. They are often used as a stand-in for economic activity where local accounts do not exist.
+
+::: {.callout-important}
+## Levels or logarithms?
+`beta_convergence` and `sigma_convergence` take the logarithm of the variable themselves, so they need it **in levels**. The dataset stores lights as a logarithm, `ln_NTLpc`, so convert it first with `np.exp`. `convergence_clubs` uses the variable as given, so it takes `ln_NTLpc` as it is. If you pass a logarithm to the first two, they warn you.
+:::
+
+```{python}
+ntl = geo.load("ntl")
+ntl = ntl.assign(ntl_pc=np.exp(ntl["ln_NTLpc"]))
+sigma = geo.sigma_convergence(ntl, "ntl_pc",
+                              title="σ-convergence: night-time lights per capita")
+sigma
+```
+
+```{python}
+print(sigma.notes)
+sigma.df
+```
+
+The standard deviation of log lights per capita fell from 1.41 in 2012 to 1.17 in 2020, a trend of −2.8% per year, and the Gini index and the coefficient of variation fall too. Municipalities became more alike in lights per capita over these nine years.
+
+Three things to keep in mind:
+
+- **The units.** The method uses only the units observed in every year, so that the comparison is between the same units: 316 here. The note says how many were left out. Lights are missing where no pixel stayed lit after masking, so the units left out tend to be those with very little light, not a random sample.
+- **The path.** The fall is not steady: most of it happens between 2016 and 2017, and dispersion is slightly higher in 2019 and 2020 than in 2018. A linear trend summarises a path that the table and the figure show in full.
+- **The variable.** Lights per capita are a ratio of two estimates (satellite radiance and gridded population). Changes in either one move it.
+
+The slope alone can hide the shape of the path. Population (`pop`, 2001 to 2020, gridded estimates for 333 municipalities) is a clear case:
+
+```{python}
+sigma_pop = geo.sigma_convergence("pop", "pop")
+print("trend of the log standard deviation:", round(sigma_pop.std_slope, 5))
+sigma_pop.fig
+```
+
+Over the twenty years the trend is negative, −0.2% per year: municipalities became slightly more alike in population size. But the standard deviation of log population falls only until 2015 (from 1.197 to 1.148) and rises a little afterwards (1.154 in 2020). A single slope reports convergence; the figure shows that it stopped.
+
+## Convergence clubs: one path or several?
+
+β and σ describe the country as a whole. Phillips and Sul's method asks a different question: are all units heading for **one common path**, and if not, are there **groups** of units, called clubs, that converge among themselves?
+
+It works on each unit's path relative to the average of all units in the same year. If the units converge, the dispersion of these relative paths shrinks towards zero over time, and a regression called the **log t test** checks whether it does: a t-statistic below −1.65 rejects convergence at the 5% level. When convergence is rejected for all units, the method orders the units by their final level, looks for a core group that passes the test, adds the units that pass with it, and repeats with those that are left. Units that fit nowhere are called divergent.
+
+The method follows paths over time, so it needs a real panel: at least six years with the default settings. It takes the variable as given, so pass the logarithm.
+
+```{python}
+clubs = geo.convergence_clubs("ntl", "ln_NTLpc")
+clubs
+```
+
+```{python}
+clubs.gt
+```
+
+Convergence of all 316 municipalities to one path is rejected (t = −32.2). The method finds four clubs: two large ones, of 151 and 130 municipalities, one of 30 and one of 3, and two municipalities that fit no club. For each club the table gives its own log t test: a t-statistic above −1.65 means convergence inside the club is not rejected.
+
+The mean of each club in the first and the last year shows where the clubs stand and how far apart they are:
+
+```{python}
+levels = clubs.df[clubs.df["year"].isin([2012, 2020])]
+levels.pivot_table(index="club", columns="year", values="value").round(2)
+```
+
+Here club 1 is the brightest and club 4 the darkest; club 0 holds the two divergent units, and `value` is the trend of the logarithm (see below). Clubs 1, 2 and 3 rose, and the gap between the two large clubs widened, from 1.1 log points in 2012 to 1.3 in 2020. This is the sense in which σ-convergence and clubs can both be true: dispersion across all municipalities fell over the period, yet the test does not find a single path that all of them approach.
+
+The map shows where the members of each club are, and `clubs.membership` lists them:
+
+```{python}
+clubs.fig_map
+```
+
+Read club results with these limits in mind:
+
+- **Nine years are few.** By default the test leaves out the first 30% of the years, so each log t regression rests on six points. The method was designed for longer panels.
+- **Paths are smoothed first.** By default each unit's path is replaced by its Hodrick–Prescott trend (`hp_filter=True`), which removes year-to-year noise. Clubs are about long-run paths, and with short panels the trend is itself uncertain.
+- **Membership depends on choices**: the filter, the trimming (`trim=`), the rule for merging clubs (`merge=`) and the units included. A check with the dataset's own trend variable, which is filled in for all 333 municipalities, gives a different count:
+
+```{python}
+alt = geo.convergence_clubs("ntl", "ln_t400NTLpc", hp_filter=False, map=False)
+print(alt.n_units, "units:", alt.n_clubs, "clubs,", alt.n_divergent, "divergent")
+```
+
+Three clubs instead of four. The rejection of one common path holds in both runs; the number of clubs and who belongs to which should be treated as a description that depends on the settings. A club is a group of units whose paths move together. The method does not say why.
+
+## In short
+
+- **β-convergence** (`geo.beta_convergence`, two years): the Sustainable Development Index grew faster where it started lower, with a slope of −0.029 and a half-life of about 20 years; the result holds within departments and in the spatial models, where the half-life ranges from about 16 to 29 years.
+- With two periods, regression to the mean and measurement error can produce a negative β on their own. Check dispersion as well.
+- **σ-convergence** (`geo.sigma_convergence`, three or more years): the dispersion of log night-time lights per capita fell by 2.8% per year between 2012 and 2020 among 316 municipalities. Look at the path as well as the slope.
+- **Convergence clubs** (`geo.convergence_clubs`, six or more years): one common path for lights per capita is rejected; the method finds four clubs, or three with other settings.
+- `beta_convergence` and `sigma_convergence` take levels; `convergence_clubs` takes the variable as given.
+- All of these are descriptions of how the units moved. None of them says what made them move.
+
+## Where next
+
+- **[Transitions and mobility](transitions.qmd)**: which units moved inside the distribution, and how far.
+- **[Regional inequality](inequality.qmd)**: dispersion in each year, the Lorenz curve, and inequality between and within departments.
+- **[Maps and spatial dependence](spatial-dependence.qmd)**: the weights behind the spatial models, Moran's I and LISA.
+- **[Regression, panel and spatial models](models.qmd)**: direct and indirect impacts in general, and how to choose a spatial model.
+- **[Case study: the Sustainable Development Index](case-study-sdg.qmd)**: convergence as one step of a complete analysis.

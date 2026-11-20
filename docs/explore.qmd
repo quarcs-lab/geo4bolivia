@@ -1,5 +1,151 @@
 ---
-title: "explore"
+title: "Explore"
+description: "A first pass over one indicator, the Sustainable Development Index: summaries, distributions, extremes, correlations, trends and maps, before any model."
+image: images/thumbs/exploring.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/explore.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+Before any model, look at the data. This page takes one indicator, the **Sustainable Development Index** (IDS, from 0 to 100) of Bolivia's 343 municipalities, through every exploration function of the package, in the order you would use them on a variable you have never seen: summarise it, look at its distribution, find its extremes, see what it goes with, follow it over time, and put it on a map.
+
+Each function returns a **result object**. Displayed, it shows its figure and a reading of the numbers; `.fig`, `.df`, `.gt` and `.interpret()` give the parts one by one ([Get started](get-started.qmd) explains them).
+
+```{python}
+#| eval: false
+!pip install -q geo4bolivia
+```
+
+## The data
+
+The dataset `sdg` holds the index (`index_sdg`), its national ranking, the census `population` and the `urbanization` rate, in two periods stored as the years 2012 and 2024. `groups=["department"]` adds the name of each municipality's department, which several steps below use.
+
+```{python}
+import geo4bolivia as geo
+
+sdg = geo.load("sdg", groups=["department"])
+sdg.head(4)
+```
+
+## 1. Summarise
+
+`geo.describe()` gives the usual summary statistics of each variable in each year, with the variable's label and unit taken from the metadata.
+
+```{python}
+cols = ["variable", "unit", "year", "count", "mean", "std", "min", "median", "max"]
+geo.describe(sdg, variables=["index_sdg", "population", "urbanization"])[cols]
+```
+
+Three things to take from this table before going on:
+
+- The index rose: its mean went from 50.1 to 60.1, and its range from 37.2–70.5 to 47.3–77.3.
+- `urbanization` has a `count` of 0 in 2012: it exists only for 2024. A summary table is the fastest way to find gaps like this one.
+- `population` is very **skewed** (a few very large values): its mean in 2024 (33,134) is more than two and a half times its median (12,296), because a handful of cities are far larger than the typical municipality.
+
+## 2. The distribution
+
+A mean hides the shape. `geo.distribution()` draws a histogram, and with two periods it overlays them on common bins.
+
+```{python}
+geo.distribution(sdg, "index_sdg")
+```
+
+The whole distribution moved to the right by about ten points, and its shape hardly changed: the standard deviation went from 5.82 to 5.26 and the interquartile range (the width of the middle half of the municipalities) from 7.4 to 7.3. The **skewness** (zero for a symmetric distribution, positive when the long tail is on the high side) is small in both periods, 0.51 and 0.31: a short tail of high-scoring municipalities.
+
+`by=` compares groups instead of years. A box plot (`kind="box"`) shows each department's median, its middle half and its unusual municipalities:
+
+```{python}
+geo.distribution(sdg, "index_sdg", by="department", kind="box")
+```
+
+In 2024 the median municipality of Tarija scores 66.8 and that of Potosí 57.0. The departments overlap a great deal, though. The standard deviation within Potosí (6.09) or Cochabamba (6.00) is larger than most of the gaps between department medians, so the department a municipality lies in says only a little about its index. With `by`, the function uses one year, the last with data; `year=2012` gives the other.
+
+## 3. The extremes
+
+Which municipalities sit at the two ends? `geo.extremes()` ranks one year (the last, by default) and returns the `n` highest and lowest.
+
+```{python}
+geo.extremes(sdg, "index_sdg", n=5)
+```
+
+The five highest are large cities: Nuestra Señora de La Paz (77.3), Tarija, Sucre, Cochabamba and El Alto. The five lowest have no urban population: three are in Potosí, and the other two are indigenous territories created since 2015 (TIOC-Raqaypampa, 47.3, and TIOC-Territorio Indígena Multiétnico, 49.7). Thirty points separate the two ends. The table behind the figure is `.df`, and `.gt` formats it.
+
+## 4. What goes with it
+
+`geo.correlation()` computes the correlation between every pair of variables in one year. It uses only the municipalities with data for *all* the variables (**complete cases**), so that every coefficient refers to the same units.
+
+```{python}
+geo.correlation(sdg, ["index_sdg", "urbanization", "population"])
+```
+
+The index is moderately correlated with urbanization (r = 0.56) and more weakly with population (r = 0.37). The year is 2024 because that is the last year with data, and the only one in which `urbanization` exists. Pearson's coefficient measures *linear* association, and population is far from linear: `method="spearman"` uses ranks instead, and `.gt` shows both coefficients in one table.
+
+## 5. One relationship, closely
+
+A coefficient summarises a cloud of points; `geo.scatter()` shows the cloud. Here each point is a municipality, coloured by department and sized by population. Hover over a point to see its name.
+
+```{python}
+geo.scatter(sdg, "urbanization", "index_sdg", color="department", size="population")
+```
+
+The least-squares line has a slope of 0.094: ten more percentage points of urban population go with an index about 0.9 points higher, on average. The line accounts for 31% of the variation of the index (R² = 0.31), so most of it is left unexplained. The figure also shows what the coefficient cannot: 158 of the 343 municipalities have no urban population at all and pile up at zero, with indices from 47.3 to 68.7. This is an association between two variables in one year, and many other things differ between urban and rural municipalities.
+
+For a skewed variable such as population, `log_x=True` puts the axis in logarithms; `fit="lowess"` replaces the straight line with a local smooth.
+
+## 6. Over time
+
+`geo.trend()` follows a variable over time: the mean across units with a band of one standard error, and each unit's own path as a thin grey line. `by=` draws one line per group.
+
+```{python}
+geo.trend(sdg, "index_sdg", by="department")
+```
+
+The mean rose from 50.1 to 60.1, and 342 of the 343 municipalities ended higher than they started. Every department's mean rose: Pando's the most (+11.5) and Santa Cruz's the least (+7.8), and the gap between the highest and the lowest department mean narrowed from 11.9 to 10.5 points.
+
+With two periods a trend is only two points joined by a line. The same function is more telling on datasets with many years, such as night-time lights (`geo.trend("ntl", "ln_NTLpc")`, 2012 to 2020).
+
+## 7. On the map
+
+None of the steps above used the location of the municipalities. `geo.map()` does. By default it draws the last year on a continuous colour scale:
+
+```{python}
+geo.map(sdg, "index_sdg")
+```
+
+A continuous scale shows every difference, and the eye is poor at comparing shades. A **classification scheme** groups the values into a few classes, one colour each, with the limits in the legend. `"fisher_jenks"` (natural breaks) puts similar values in the same class; `"quantiles"` puts the same number of units in each; `"equal_interval"` makes classes of the same width.
+
+```{python}
+geo.map(sdg, "index_sdg", scheme="fisher_jenks", k=5)
+```
+
+The top class (above 68) holds 24 municipalities, 8 of them in the department of Cochabamba; it includes the largest cities (Santa Cruz de la Sierra, El Alto, La Paz, Cochabamba). The bottom class (below 54.9) holds 58. Click a class in the legend to hide or show it.
+
+With a list of years, the maps are drawn side by side **in the same classes**, computed over both years, so a colour means the same on both maps:
+
+```{python}
+geo.map(sdg, "index_sdg", year=[2012, 2024], scheme="fisher_jenks")
+```
+
+In 2012, 108 municipalities were in the lowest class (below 46.9) and 4 in the highest (above 64.3). In 2024 the lowest class is empty and the highest has 72.
+
+To see *where* the index rose most, map the change itself. `change=True` computes the last year minus the first for each municipality (as `geo.change()` does) and uses a diverging scale centred at zero; with a scheme, the classes are split at zero.
+
+```{python}
+geo.map(sdg, "index_sdg", change=True, scheme="fisher_jenks")
+```
+
+The only municipality below zero is San José de Chiquitos (Santa Cruz), whose index fell by 2.7 points. The largest gains, above 13.7 points, are in 29 municipalities, most of them in Cochabamba (8), La Paz (6) and Oruro (5). Municipalities that started lower tended to gain more: the correlation between the 2012 level and the change is −0.43.
+
+## What the exploration leaves open
+
+The maps suggest that high and low values are not scattered at random, and the last number suggests that the municipalities that started lower caught up. Neither is established by looking. Is the clustering stronger than chance would produce? Did the gaps between municipalities really narrow? What remains of the link with urbanization once neighbours are taken into account?
+
+## Where next
+
+- **[Analyze](analyze.qmd)** answers those questions with the same panel: spatial dependence, convergence, transitions, inequality and regression.
+- **[Exploring the data](articles/exploring.qmd)** uses the functions of this page to answer questions about multidimensional poverty, and lists the pitfalls of these data.
+- **[Function reference](reference/index.qmd)**: every option of `describe`, `distribution`, `extremes`, `correlation`, `scatter`, `trend` and `map`.

@@ -26,7 +26,7 @@ def _term_reading(df: Any, entity: str, term: str, critical_t: float) -> str:
     # "Strongest" = largest absolute local coefficient, preferring significant units.
     pool = df.loc[sig] if n_sig else df
     strongest = pool.loc[pool[f"{term}_coef"].abs().idxmax()]
-    where = str(strongest[entity])
+    where = str(strongest["name"] if "name" in getattr(strongest, "index", ()) else strongest[entity])
     peak = float(strongest[f"{term}_coef"])
 
     sig_txt = (

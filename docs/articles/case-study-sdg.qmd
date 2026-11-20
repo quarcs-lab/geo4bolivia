@@ -1,5 +1,242 @@
 ---
-title: "case-study-sdg"
+title: "Case study: the Sustainable Development Index, ~2012 to ~2024"
+description: "One complete analysis with geo4bolivia: how the Sustainable Development Index of Bolivia's 343 municipalities changed between two periods, which goals moved, whether municipalities converged, and where."
+image: ../images/thumbs/case-study-sdg.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/case-study-sdg.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+This article is a short report written with the package from the first line to the last. It asks six questions about one indicator, and each is answered by one or two functions:
+
+1. How much did the index change, and where?
+2. Which goals moved most?
+3. Did municipalities converge?
+4. Is development clustered in space, and did the clusters move?
+5. Who moved in the ranking?
+6. What goes with a higher index?
+
+The other articles explain each method. This one shows how they fit together, and ends with what the analysis found and what it does not show.
+
+```{python}
+#| eval: false
+!pip install -q geo4bolivia
+```
+
+```{python}
+import pandas as pd
+import plotly.express as px
+import geo4bolivia as geo
+
+ids = geo.load("sdg", variables=["index_sdg", "urbanization"],
+               groups=["department"])
+```
+
+## The data
+
+The *Atlas de los ODS en Bolivia 2026* (Andersen & Argandoña, SDSN Bolivia) measures 81 indicators of 15 Sustainable Development Goals in Bolivia's 343 municipalities and indigenous autonomies, near the 2012 census and near the 2024 census. Each indicator is rescaled between a worst and a best value, a goal index is the mean of its rescaled indicators, and the **Sustainable Development Index** (`index_sdg`, 0 to 100) is the mean of the 15 goal indices. The Atlas has no index for goals 12 and 14.
+
+```{python}
+print(geo.cite("sdg"))
+geo.reference_years("sdg")
+```
+
+The two periods are stored at the **nominal years** 2012 and 2024. The `~` in the table says that the index mixes indicators of different actual years: census indicators refer to 2012 and 2024, while others come from surveys or records of nearby years (`geo.reference_years("sdg03")` lists, for instance, mortality rates of 2008 and 2023 and three-year averages). "2012" and "2024" mean "around" those years throughout this article. The Atlas states no open license; the observatory uses and shares it with the permission of SDSN Bolivia.
+
+## 1. How much did the index change, and where?
+
+```{python}
+country = geo.aggregate(ids, to="country", dataset="sdg")
+print("weighted by population:", country["index_sdg"].round(1).tolist())
+geo.describe(ids, variables="index_sdg")
+```
+
+The mean across municipalities rose from 50.1 to 60.1, about ten points, and the whole distribution moved up: the lowest value of 2024 (47.3) is close to the median of 2012 (49.6). The spread narrowed a little, with a standard deviation of 5.8 in 2012 and 5.3 in 2024. These figures count every municipality equally. Weighting each by its census population, which `geo.aggregate()` does with the rule the dataset declares, gives 57.8 and 66.8: the more populous municipalities tend to have a higher index.
+
+`geo.change()` puts both periods and their difference on one row per municipality:
+
+```{python}
+chg = geo.change(ids, "index_sdg")
+print((chg["index_sdg_change"] > 0).sum(), "of", len(chg), "municipalities rose")
+ordered = chg.sort_values("index_sdg_change", ascending=False)[
+    ["name", "department", "index_sdg_2012", "index_sdg_2024", "index_sdg_change"]]
+pd.concat([ordered.head(4), ordered.tail(4)])
+```
+
+The index rose in 342 of the 343 municipalities. The largest gains, of 17 to 20 points, are in municipalities of Oruro and Cochabamba that started near 43. San José de Chiquitos (Santa Cruz) is the only one that fell, by 2.7 points, and the two smallest gains are in Santa Cruz as well.
+
+```{python}
+geo.map(ids, "index_sdg", change=True, scheme="fisher_jenks")
+```
+
+The map classes the change by natural breaks. Gains of different sizes are not scattered at random: municipalities with large gains tend to be next to each other, and so do those with small gains. Section 4 measures that.
+
+```{python}
+geo.trend(ids, "index_sdg", by="department")
+```
+
+Every department rose. The averages of municipalities went up most in Pando (+11.5) and least in Santa Cruz (+7.8). Tarija has the highest average in both periods (59.6 and 67.7) and Potosí the lowest (47.7 and 57.3). With two periods, each "trend" is a line between two points.
+
+## 2. Which goals moved most?
+
+The 15 goal indices live in 15 datasets, `sdg01` to `sdg17`. `geo.combine()` puts them on one table, and `geo.describe()` gives their means with their labels:
+
+```{python}
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 16, 17]    # no goal 12 or 14
+goals = geo.combine({f"sdg{n:02d}": [f"index_sdg{n}"] for n in numbers},
+                    scale="municipality")
+means = geo.describe(goals).pivot(index="label", columns="year", values="mean")
+means["change"] = means[2024] - means[2012]
+means = means.sort_values("change").round(1).reset_index()
+px.bar(means, x="change", y="label", hover_data=[2012, 2024],
+       labels={"change": "Change of the mean across municipalities (points)",
+               "label": ""},
+       title="Goal indices: change between ~2012 and ~2024")
+```
+
+The ten points of the overall index are an average of very different movements:
+
+- **Twelve of the 15 goal indices rose.** The largest gains are in industry, innovation and infrastructure (goal 9: 21.9 to 52.3, +30.4), quality education (goal 4, +21.5), decent work and economic growth (goal 8, +18.8) and no poverty (goal 1, +17.8).
+- **Climate action fell** (goal 13: 79.6 to 71.8, −7.8).
+- **Zero hunger and life on land stood still** (goals 2 and 15, −0.3 each).
+
+A goal index moves with its indicators and with the bounds used to rescale them, so the size of a change is comparable within a goal across municipalities more safely than across goals. `geo.dictionary("sdg13")` lists the indicators behind a goal.
+
+## 3. Did municipalities converge?
+
+Two questions: did the municipalities that started lower grow faster (β-convergence), and did the differences between municipalities shrink?
+
+```{python}
+beta = geo.beta_convergence(ids, "index_sdg")
+beta
+```
+
+The slope is −0.029: the lower the index around 2012, the faster it grew. Read as a speed, half of a gap between two municipalities would close in about 20 years at this pace. The starting level accounts for 44% of the differences in growth.
+
+Dispersion fell too, on every measure:
+
+```{python}
+ineq = geo.inequality(ids, "index_sdg", measures=("gini", "cv"))
+theil = geo.theil_decomposition(ids, "index_sdg", by="department")
+ineq.df.merge(theil.df, on="year").round(4)
+```
+
+The Gini index went from 0.065 to 0.049 and the coefficient of variation from 0.116 to 0.088. (Both are small because an index that is an average of 15 bounded indices varies little between units; compare the two periods, not the level with other variables.) Theil's index splits into inequality **between** the nine departments and inequality **within** them. The part between departments was 20% of the total in 2012 and 15% in 2024: most of the differences are between municipalities of the same department, and more so at the end.
+
+So municipalities ended closer together, and departments did as well. The [convergence article](convergence.qmd) shows that the slope holds within departments and in spatial models, and why two periods call for caution: a unit measured unusually low in the first period looks like fast growth afterwards.
+
+## 4. Is development clustered, and did the clusters move?
+
+Global Moran's I measures whether neighbouring municipalities have similar values (positive), or whether values are placed as if at random (near zero).
+
+```{python}
+of_change = geo.moran(chg, "index_sdg_change")
+print("Moran's I of the change:", round(of_change.moran_i, 3), "p:", of_change.p_sim)
+geo.moran(ids, "index_sdg", year="all").df
+```
+
+The index is clearly clustered in both periods, and slightly more in the second: Moran's I is 0.43 and 0.47, each far from what random placement gives (pseudo p-value 0.001). The change is clustered as well, less strongly (0.22). Convergence in values did not go with a weaker spatial pattern.
+
+Local statistics (LISA) say where the clusters are:
+
+```{python}
+geo.lisa(ids, "index_sdg", year=2024).fig
+```
+
+In 2024, 60 municipalities are in **High-High** clusters (a high index among high neighbours) and 45 in **Low-Low** clusters. `geo.lisa_transitions()` compares the types of the two periods:
+
+```{python}
+lt = geo.lisa_transitions(ids, "index_sdg")
+print(lt.n_stayed, "of", lt.n_units, "kept their type")
+lt.fig
+```
+
+```{python}
+where = lt.df.merge(ids[["geo_id", "department"]].drop_duplicates())
+pd.concat({year: pd.crosstab(where["department"],
+                             where[f"cluster_{year}"].rename("type"))[
+               ["High-High", "Low-Low"]] for year in (2012, 2024)}, axis=1)
+```
+
+- **The map of clusters is mostly the same**: 275 of 343 municipalities (80%) have the same type in both periods, and none went from High-High to Low-Low or back.
+- **High-High clusters grew** from 46 to 60 municipalities, and 39 of the 46 stayed. Around 2012 they were in Santa Cruz (23), Cochabamba (10) and Tarija (10). Around 2024 La Paz has 12 where it had 2 and Cochabamba 14, while Santa Cruz has 17. Ten of Tarija's 11 municipalities are High-High in both periods.
+- **Low-Low clusters kept their size**: 44 and 45 municipalities, 30 of them the same. In both periods most are in Potosí, La Paz and Oruro (30 of 44, then 34 of 45). Santa Cruz had none around 2012 and has 4 around 2024; Pando had 3 and has none.
+
+Most changes of type are to or from "Not significant", a category that depends on a p-value threshold. They are worth a look on the map (`lt.fig_map`) before being read as change.
+
+## 5. Who moved?
+
+The index rose almost everywhere, so the ranking is the place to see who gained more than the rest.
+
+```{python}
+rm = geo.rank_mobility(ids, "index_sdg")
+print("Spearman:", round(rm.spearman, 2),
+      " same quintile:", round(rm.share_same_group, 2))
+movers = pd.concat([rm.climbers.head(5), rm.fallers.head(5)])
+movers.merge(ids[["geo_id", "department"]].drop_duplicates())[
+    ["name", "department", "index_sdg_2012", "index_sdg_2024", "rank_2012",
+     "rank_2024"]]
+```
+
+The order was broadly kept: the rank correlation between the two periods is 0.84 and 56% of the municipalities are in the same fifth of the ranking. Inside that, some moves are long. Cruz de Machacamarca (Oruro) went from position 315 to 90, and the five largest climbs are in Oruro and Cochabamba, all from the bottom fifth. San José de Chiquitos went from 42 to 283, and four of the five largest falls are in Santa Cruz. Except for San José de Chiquitos, the municipalities that fell in the ranking raised their index; the others raised theirs more.
+
+## 6. What goes with a higher index?
+
+One model, as an example of the step from description to association. The dataset has the urbanization rate of 2024 (the share of the population living in urban areas), so the model is of the level in 2024. An ordinary regression assumes that its errors are independent; with a variable this clustered, that needs checking first. `geo.spatial_diagnostics()` fits the regression and tests what is left in its residuals:
+
+```{python}
+diag = geo.spatial_diagnostics(ids, "index_sdg", "urbanization", year=2024)
+print("recommended model:", diag.recommendation)
+diag.gt
+```
+
+The residuals of the ordinary regression are as clustered as the index itself (Moran's I 0.47): urbanization does not account for the spatial pattern. Both robust tests reject, the one for spatially correlated errors by far the more strongly (23.1 against 4.5), so the tests point to the **spatial error model**, which keeps the regression and lets neighbouring errors be correlated.
+
+```{python}
+model = geo.spatial_model(ids, "index_sdg", "urbanization", year=2024,
+                          model="error")
+model.gt
+```
+
+One more percentage point of urban population goes with an index 0.08 points higher (standard error 0.007): a municipality that is 50 points more urban than another has, on average, an index about 4 points higher. The spatial parameter λ is 0.67: what the model leaves unexplained is strongly shared between neighbours.
+
+This is an association in one cross-section. Urbanization was measured in the same year as the index, several of the indicators behind the index measure access to services, which can differ between urban and rural places for many reasons, and nothing here says what would happen to a municipality if it urbanized. Urbanization is not available for 2012, so the same model cannot be estimated for the change.
+
+## What we found
+
+All of these are associations between measured quantities.
+
+- **The index rose almost everywhere**: from 50.1 to 60.1 on average across municipalities (57.8 to 66.8 weighted by population), in 342 of 343 municipalities and in every department.
+- **The goals moved very differently**: twelve of 15 goal indices rose, most of all industry, innovation and infrastructure (+30.4), education (+21.5), decent work (+18.8) and poverty (+17.8); climate action fell (−7.8), and zero hunger and life on land did not move (−0.3).
+- **Municipalities ended closer together**: the lower the start, the faster the growth (β = −0.029, a half-life of about 20 years); the Gini index fell from 0.065 to 0.049; the share of inequality that lies between departments fell from 20% to 15%.
+- **The geography persisted**: Moran's I is 0.43 and 0.47; 80% of the municipalities kept their LISA type; High-High clusters grew from 46 to 60 municipalities, and Low-Low clusters stayed at 44 and 45.
+- **The ranking was broadly kept** (Spearman 0.84), with long moves up in Oruro and Cochabamba and down in Santa Cruz.
+- **More urban municipalities have a higher index** in 2024 (0.08 points per percentage point), and the part of the index that urbanization does not account for is strongly clustered (λ = 0.67).
+
+## What this does not show
+
+- **Two periods.** Every statement about change rests on two observations per municipality. There is no trend to test, a low first value followed by a faster rise can be regression to the mean, and transitions between two dates describe one step.
+- **Nominal years.** "2012" and "2024" stand for indicators of different actual years. Yearly rates and the half-life use twelve years as a convention.
+- **An index of rescaled indicators.** Each indicator is rescaled between fixed bounds and the goals are averaged with equal weights. A different choice of bounds or weights gives a different index, and a unit near a bound has little room to move. The index says nothing about which of its 81 indicators moved in a given municipality: go to the goal datasets for that.
+- **Units.** Four of the 343 units were created after the 2012 census; the Atlas gives them values in both periods. Means across municipalities count a municipality of 900 people like one of 1.6 million.
+- **No causes.** Nothing here identifies why a municipality gained or lost. Convergence, clusters and the urbanization coefficient describe patterns in the data.
+
+## In short
+
+- One indicator, six questions, and one or two functions for each: `describe`, `change`, `map` and `trend` for the change; `combine` for the goals; `beta_convergence`, `inequality` and `theil_decomposition` for convergence; `moran`, `lisa` and `lisa_transitions` for space; `rank_mobility` for the ranking; `spatial_diagnostics` and `spatial_model` for a model.
+- Every function took the same table, `ids`, and returned its figure, its table and its numbers.
+- The findings are descriptions of two periods. The limits are part of the result.
+
+## Where next
+
+- **[Exploring the data](exploring.qmd)**: distributions, extremes, correlations and trends.
+- **[Maps and spatial dependence](spatial-dependence.qmd)**: weights, Moran's I and LISA.
+- **[Convergence: β, σ and clubs](convergence.qmd)**: conditional and spatial β-convergence, and methods for longer panels.
+- **[Transitions and mobility](transitions.qmd)**: rank mobility and LISA transitions in detail.
+- **[Regional inequality](inequality.qmd)**: Gini, Theil and the Lorenz curve.
+- **[Regression, panel and spatial models](models.qmd)**: choosing and reading a spatial model.
+- **[The data model](data-model.qmd)**: scales, geo IDs and the two nominal periods.

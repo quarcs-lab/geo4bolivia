@@ -49,11 +49,22 @@ class Interpretable:
 
     def _read(self, text: str) -> str:
         """An interpretation text that names the variables by their labels, where the tables carry them."""
+        import re
+
         frame = getattr(self, "df", None)
         labels = getattr(frame, "attrs", {}).get(_LABELS_KEY) or {}
         for name, label in labels.items():
-            if label and label != name:
-                text = text.replace(f"**{name}**", f"**{label}**")
+            if not label or label == name:
+                continue
+            text = text.replace(f"**{name}**", f"**{label}**")
+            if "_" in name or any(ch.isdigit() for ch in name):   # a column name, not an everyday word
+                text = re.sub(rf"(?<![\w*`]){re.escape(name)}(?![\w*`])", label, text)
+        text = text.replace("**const**", "**the intercept**")
+        # the engine's general words, in the package's vocabulary: units observed in years
+        for pattern, word in ((r"\bregions\b", "units"), (r"\bregion\b", "unit"),
+                              (r"\bRegions\b", "Units"), (r"\bperiods\b", "years"),
+                              (r"\bperiod\b", "year"), (r"\bPeriods\b", "Years")):
+            text = re.sub(pattern, word, text)
         return text
 
     def _frames(self) -> dict:

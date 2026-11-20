@@ -19,7 +19,7 @@ from collections.abc import Iterable
 import geopandas as gpd
 import pandas as pd
 
-from . import io
+from . import io, project
 from .scales import scale_of
 
 ENTITY, TIME, NAME = "geo_id", "year", "name"
@@ -59,6 +59,38 @@ def _with_names(df: pd.DataFrame, gdf, groups: list[str], ref: str | None) -> pd
         return df.assign(**{NAME: df[ENTITY].astype(str)})
 
 
+def _distinct_groups(df: pd.DataFrame, ref: str | None) -> pd.DataFrame:
+    """Group columns whose names repeat get the parent unit's name in brackets.
+
+    A column named after a coarser scale holds that scale's unit names, and names can
+    repeat (several provinces called the same in different departments). Grouping, fixed
+    effects and clusters would then merge different units, so each repeated name is made
+    distinct: ``"<name> (<name of the unit it lies in>)"``.
+    """
+    from .scales import ancestors
+    if df.empty:
+        return df
+    try:
+        scale = scale_of(df[ENTITY].iloc[0], ref)
+        coarser = [c for c in ancestors(scale, ref) if c in df.columns]
+        if not coarser:
+            return df
+        table = io.units(ref=ref).set_index(ENTITY)
+    except Exception:                        # data that are not in the project
+        return df
+    for group in coarser:
+        units_of_group = table[table["scale"] == group]
+        names = units_of_group[NAME]
+        repeated = names[names.duplicated(keep=False)]
+        ids = df[ENTITY].map(table.get(f"{group}_id", pd.Series(dtype=object)))
+        if repeated.empty or ids.isna().any() or not (df[group] == ids.map(names)).all():
+            continue                         # nothing to do, or a column of the user's own
+        distinct = names.copy()
+        distinct[repeated.index] = repeated + " (" + units_of_group.loc[repeated.index, "parent_id"].map(table[NAME]) + ")"
+        df = df.assign(**{group: ids.map(distinct)})
+    return df
+
+
 def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, ref: str | None = None) -> pd.DataFrame:
     """A dataset id or a frame, as a plain panel ready for the engine.
 
@@ -95,6 +127,7 @@ def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, 
         if missing:
             raise ValueError(f"No column(s) {missing} in the table; it has {[c for c in df.columns if c != ENTITY]}")
         df = _with_names(df, gdf, groups, ref)
+    df = _distinct_groups(df, ref)
     if numeric:
         text = [v for v in variables if not pd.api.types.is_numeric_dtype(df[v])]
         if text:
@@ -156,7 +189,9 @@ def shapes(df: pd.DataFrame | None, gdf=None, *, scale: str | None = None, ids: 
             if df is None or not len(df):
                 raise ValueError("Give a scale, boundaries (gdf=) or a table with units")
             scale = scale_of(df[ENTITY].iloc[0], ref)
-        gdf = io.boundaries(scale, ref=ref)
+        # in the project's equal-area projection, so distances (nearest neighbours, distance
+        # bands, kernels) are in metres without guessing a projection
+        gdf = io.boundaries(scale, ref=ref).to_crs(project.equal_area_crs())
     elif not isinstance(gdf, gpd.GeoDataFrame) or ENTITY not in gdf.columns:
         raise ValueError(f"gdf must be a GeoDataFrame with a {ENTITY!r} column")
     out = gdf[[c for c in (ENTITY, NAME) if c in gdf.columns] + [gdf.geometry.name]]

@@ -912,8 +912,10 @@ def spatial_model(data, y: str, x, year=None, *, model: str = "durbin", method: 
     Returns
     -------
     result object
-        A result with ``.df`` (tidy coefficients: ``term``, ``estimate``, ``se``, ``z``,
-        ``p``), ``.gt`` (the coefficient table), ``.impacts`` (one row per regressor:
+        A result with ``.df`` (tidy coefficients: ``variable``, the column name, with
+        ``const`` for the intercept and ``W_<column>`` for a spatial lag; ``term``, its
+        label; ``estimate``, ``se``, ``z``, ``p``), ``.gt`` (the coefficient table),
+        ``.impacts`` (one row per regressor: ``variable``, ``term``,
         ``direct``, ``indirect``, ``total`` and their standard errors; ``None`` for
         ``"ols"`` and ``"error"``), the spatial parameters ``.rho`` (lag) and ``.lam``
         (error), ``.r2``, ``.aic``, ``.log_likelihood``, ``.n_obs``, ``.model_obj`` (the
@@ -921,9 +923,37 @@ def spatial_model(data, y: str, x, year=None, *, model: str = "durbin", method: 
     """
     from ._engine.spatial_models import analyze_spatial_model
     df, geo, w, xs, effect = _cross_section(data, y, x, year, fixed_effects, gdf, w, ref, what="spatial_model")
-    return _inputs.finish(analyze_spatial_model(df, y, xs, gdf=geo, w=w, model=model, method=method,
-                                                period=_inputs.one_year(df), fixed_effects=effect, impacts=impacts,
-                                                n_draws=n_draws, seed=seed, title=title), df)
+    return _with_columns(_inputs.finish(analyze_spatial_model(
+        df, y, xs, gdf=geo, w=w, model=model, method=method, period=_inputs.one_year(df), fixed_effects=effect,
+        impacts=impacts, n_draws=n_draws, seed=seed, title=title), df), df)
+
+
+def _with_columns(result, df: pd.DataFrame):
+    """A spatial model's tables with the column name of each term (``variable``) next to its label (``term``).
+
+    The engine names terms by label, which reads well in a table; ``variable`` is the
+    stable key: the column name, ``const`` for the intercept and ``W_<column>`` for a
+    spatial lag.
+    """
+    from dataclasses import replace
+
+    back = {label: name for name, label in (df.attrs.get("geo_labels") or {}).items()}
+
+    def column(term: str) -> str:
+        if term == "CONSTANT":
+            return "const"
+        if term.startswith("W_"):
+            return "W_" + back.get(term[2:], term[2:])
+        return back.get(term, term)
+
+    changes = {}
+    for field in ("df", "impacts"):
+        frame = getattr(result, field, None)
+        if isinstance(frame, pd.DataFrame) and "term" in frame.columns and "variable" not in frame.columns:
+            frame = frame.copy()
+            frame.insert(0, "variable", frame["term"].map(column))
+            changes[field] = frame
+    return replace(result, **changes) if changes else result
 
 
 def spatial_diagnostics(data, y: str, x, year=None, *, w=None, fixed_effects: str | None = None, alpha: float = 0.05,

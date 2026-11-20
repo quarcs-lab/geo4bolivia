@@ -67,7 +67,7 @@ def interpret_connectivity_map(result: Any, *, lang: str = "en") -> str:
         shown = ", ".join(str(i) for i in islands[:5])
         lines.append(
             f"{len(islands)} unit(s) initially had **no neighbors at all** (islands: "
-            f"{shown}). Islands receive an undefined spatial lag, so geometrics "
+            f"{shown}). Islands receive an undefined spatial lag, so the weights builder "
             "attaches them to their nearest neighbor by default."
         )
     else:

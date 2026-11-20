@@ -82,7 +82,7 @@ def interpret_spatial_model(result: Any, *, lang: str = "en") -> str:
         direct/indirect/total associations.
     """
     model = str(getattr(result, "model", "durbin"))
-    method = str(getattr(result, "method", "ml")).upper()
+    method = "OLS" if str(getattr(result, "model", "")) == "ols" else str(getattr(result, "method", "ml")).upper()
     outcome = str(getattr(result, "outcome", "the outcome"))
     n_obs = int(getattr(result, "n_obs", 0))
     w_spec = str(getattr(result, "w_spec", "the spatial weights"))

@@ -1,5 +1,295 @@
 ---
-title: "heterogeneity"
+title: "Spatial heterogeneity: MGWR"
+description: "Multiscale geographically weighted regression asks whether an association differs from place to place and at what spatial scale it operates: how to run it with geo.mgwr and how to read its bandwidths, coefficient maps and diagnostics."
+image: ../images/thumbs/heterogeneity.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/heterogeneity.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+A regression gives one coefficient for the whole country. In 2024, across Bolivia's 343 municipalities, the Sustainable Development Index is 0.094 points higher for each percentage point of urbanization ([Regression, panel and spatial models](models.qmd)). That number is an average over very different places. **Spatial heterogeneity** means that an association is not the same everywhere, and it raises two questions:
+
+1. **Does the association between two variables differ from place to place?**
+2. **At what spatial scale does each association operate?** Is it about the same across the country, or does it change over short distances?
+
+`geo.mgwr()` answers both with multiscale geographically weighted regression (MGWR). It needs the mgwr library, which the `[mgwr]` extra installs.
+
+```{python}
+#| eval: false
+!pip install -q "geo4bolivia[mgwr]"
+```
+
+```{python}
+import pandas as pd
+import geo4bolivia as geo
+```
+
+## GWR and MGWR
+
+**Geographically weighted regression** (GWR) fits a separate regression at every unit, using the units around it and giving more weight to the closer ones, so each coefficient becomes a surface that can be mapped. How far "around" reaches is the **bandwidth**, and GWR uses one bandwidth for all the terms of the model.
+
+**Multiscale GWR** (MGWR; Fotheringham, Yang & Kang 2017) finds one bandwidth *per term*. This matters because the associations in one model need not vary at the same scale: one may be nearly constant across the country while another changes from one region to the next. A single bandwidth is a compromise that smooths away the local ones and adds noise to the constant ones. With a bandwidth per term, the bandwidths themselves become a result: they say at what scale each association operates. That is why the package offers MGWR and not plain GWR.
+
+## What `geo.mgwr` does
+
+The function follows the workflow of the mgwr library (Oshan et al. 2019):
+
+1. **One year, complete units.** It takes one year (by default the last with data for every variable) and the units that have all the variables. Each unit is located at the centroid of its polygon.
+2. **z-standardized variables.** The outcome and the regressors are rescaled to mean 0 and standard deviation 1. The coefficients are therefore in standard deviations (a coefficient of 0.5 means that one standard deviation more of the regressor goes with half a standard deviation more of the outcome) and can be compared between terms.
+3. **Adaptive bandwidths, counted in nearest units.** A bandwidth of 90 means that the local regression at a unit uses the 90 units nearest to it (itself included), with weights that fall with distance and reach zero at the 90th (the default `kernel="bisquare"`). Counting neighbours instead of kilometres gives every local regression the same number of units, whether the units around it are small and close together or large and far apart.
+4. **Back-fitting.** The search starts from a model with one bandwidth and then takes the terms in turn: holding the others fixed, it looks for the bandwidth of one term that gives the lowest AICc (a measure of fit that penalises complexity), and repeats the round until the estimates stop changing. This is the slow part.
+5. **Local t-tests, corrected for multiple testing.** Every unit has a coefficient and a t value for every term. With hundreds of tests per term, some would pass the usual 5% level by chance, so the library divides the 5% by the term's *effective number of parameters* (a term that varies a lot over space counts as many parameters, a constant one as about one). Units that do not pass the corrected test are **grey** on the maps.
+
+## The data
+
+The example uses the Sustainable Development Index (`index_sdg`, IDS, 0–100), the urbanization rate (`urbanization`, % of population, available for 2024 only) and multidimensional poverty (`sdg1_2_mpi`, 0–1, higher is poorer). `geo.combine()` joins the two datasets they come from.
+
+```{python}
+df = geo.combine(["sdg01", "sdg"], scale="municipality", years=2024)
+columns = ["variable", "label", "count", "mean", "std", "min", "max"]
+geo.describe(df, ["index_sdg", "urbanization", "sdg1_2_mpi"])[columns]
+```
+
+## One regressor: the index and urbanization
+
+The model has two terms: the intercept (`const`) and urbanization. Each fit on this page takes from half a minute to a minute and a half, depending on the machine.
+
+```{python}
+res = geo.mgwr(df, "index_sdg", "urbanization")
+```
+
+### Bandwidths: the scale of each association
+
+Start with the bandwidths, which are the answer to the second question.
+
+```{python}
+res.gt_bw
+```
+
+```{python}
+print(res.bw)
+print(res.bw_interval)
+```
+
+Read a bandwidth against the number of units, 343:
+
+- A bandwidth **close to the number of units** means that every local regression uses nearly all the units, so the coefficient is about the same everywhere: a **global** process.
+- A **small** bandwidth means that the coefficient is estimated from a unit's surroundings only and can change over short distances: a **local** process.
+
+Here the **intercept** has a bandwidth of 44 nearest units, about 13% of the municipalities, and **urbanization** has 90, about 26%. Both are far from 343, so neither is global. The level of the index and its association with urbanization both change across the country, and the association with urbanization changes more smoothly, over about twice as many neighbours, than the level does.
+
+`.bw_interval` says how sure the search is. It is the range of bandwidths that fit almost as well as the chosen one: the library builds it from the AICc of the bandwidths it tried, as the set that carries 95% of the evidence. For urbanization the interval is 86 to 113: the data do not pin down 90 exactly, but they exclude both a very local association and a global one. For the intercept it is 44 to 46.
+
+One limit to know: the search does not try very small bandwidths. In this fit the smallest it tried was 44, so read a bandwidth of 44 as "as local as the search goes": the true scale may be smaller.
+
+The other columns of the table come from the correction of the tests. **ENP** is the effective number of parameters of each term: about 22 for the intercept and 10 for urbanization, against 1 each in an ordinary regression. The **corrected alpha** is 0.05 divided by it, and the **critical |t|** is the t value a local coefficient must pass (3.08 and 2.83, instead of the usual 1.96). `.adj_alpha` and `.critical_t` hold the same numbers.
+
+### The coefficient maps
+
+`.figs` has one map per term, by column name. This is the answer to the first question.
+
+```{python}
+res.figs["urbanization"]
+```
+
+Every local coefficient is positive: more urban municipalities have a higher index everywhere. What changes is the strength, from 0.21 to 1.01 standard deviations of the index per standard deviation of urbanization. The single coefficient of an ordinary regression on the same standardized variables is 0.56 (computed below).
+
+The map of the intercept shows the other term:
+
+```{python}
+res.figs["const"]
+```
+
+Because the variables are standardized, the local intercept is the level of the index, in standard deviations from the national mean, that the model gives to a municipality of average urbanization at that place. It is the part of the level that urbanization does not account for. It is significant, after the correction, in fewer than a third of the municipalities; elsewhere the local level cannot be told apart from the national mean.
+
+### The table of local estimates
+
+`.df` has one row per unit. For the intercept (`const`) and each regressor it holds the local coefficient (`_coef`), its standard error (`_se`), its t value (`_t`) and whether it passes the corrected test (`_significant`); then the `residual` and `local_cn`.
+
+```{python}
+res.df.head()
+```
+
+A summary by department puts names on the map. `geo.add_names()` adds the department of each municipality.
+
+```{python}
+local = geo.add_names(res.df, groups=["department"])
+by_department = local.groupby("department", as_index=False).agg(
+    units=("geo_id", "count"),
+    urbanization=("urbanization_coef", "mean"),
+    significant=("urbanization_significant", "sum"),
+    intercept=("const_coef", "mean"),
+    intercept_significant=("const_significant", "sum"),
+)
+by_department.sort_values("urbanization").round(2)
+```
+
+- The association with urbanization is strongest in **Potosí, Cochabamba and Chuquisaca** (department means of 0.73 to 0.79) and weakest in **Pando, Beni and Santa Cruz** (0.32 to 0.38). Where it is strongest it is more than twice as strong as where it is weakest.
+- It is significant in 326 of the 343 municipalities. The 17 where it is not are all in Beni (9) and Santa Cruz (8), where the coefficients are smallest.
+- The intercept is significant in 103 municipalities. It is positive in all 11 of Tarija (mean 0.69): at the same urbanization rate, the municipalities of Tarija have an index about 0.7 standard deviations above the national mean. In Beni the department mean is −0.45.
+
+To read the coefficients in the original units, multiply them by the ratio of the two standard deviations:
+
+```{python}
+ratio = df["index_sdg"].std(ddof=0) / df["urbanization"].std(ddof=0)
+(local["urbanization_coef"].agg(["min", "mean", "max"]) * ratio).round(3)
+```
+
+The index is between 0.04 and 0.17 points higher per percentage point of urbanization, depending on the place, around the 0.094 of the global regression.
+
+**`local_cn`** is the local condition number, a check of local collinearity. In a local regression the regressors (and the intercept) can become nearly redundant with each other even when they are not in the whole sample, and then their local coefficients cannot be separated. Values above about 30 signal a problem, and `.notes` says how many units pass that mark.
+
+```{python}
+print(local["local_cn"].describe().round(2)[["min", "50%", "max"]].to_dict())
+print(res.notes)
+```
+
+The largest value is below 4, so collinearity is not a concern in this model.
+
+### Fit: `.r2` and `.aicc` against a global model
+
+Is the local model worth its complexity? Compare it with a global regression **on the same z-standardized variables**. R² does not depend on the units, but AICc does. `geo.regression` returns the fitted statsmodels object, from which the AICc follows with the formula the mgwr library uses.
+
+```{python}
+def standardized(data, columns):
+    z = data.copy()
+    z[columns] = (z[columns] - z[columns].mean()) / z[columns].std(ddof=0)
+    return z
+
+def aicc(fit):                        # AICc of a least-squares fit, as in mgwr
+    n, k = int(fit.nobs), len(fit.params)
+    return -2 * fit.llf + 2 * n * (k + 1) / (n - k - 2)
+
+z = standardized(df, ["index_sdg", "urbanization"])
+ols = geo.regression(z, "index_sdg", "urbanization")
+print("standardized coefficient:", round(ols.df["estimate"][0], 2))
+pd.DataFrame({"R²": [ols.summary["r2"][0], res.r2],
+              "AICc": [aicc(ols.models[0]), res.aicc]},
+             index=["least squares", "MGWR"]).round(3)
+```
+
+R² doubles, from 0.31 to 0.63, and AICc falls from 851 to 708. AICc penalises the roughly 32 effective parameters of the MGWR, so the improvement is not just the result of a more flexible model. Letting the level and the slope vary over space describes these data much better than one line for the country. `res.gt` puts the kernel, the criterion, AICc, R² and the number of units in one table.
+
+That does not make MGWR the only good description. A spatial error model has one slope for the whole country and lets the *unexplained part* be shared between neighbours:
+
+```{python}
+sem = geo.spatial_model(z, "index_sdg", "urbanization", model="error")
+print("AIC:", round(sem.aic, 1), "| coefficient:", round(sem.df["estimate"][1], 2),
+      "| lambda:", round(sem.lam, 2))
+```
+
+Its AIC, 711, is close to the 708 of the MGWR (the two criteria differ slightly in how they count parameters, so the comparison is approximate). A constant slope with spatially correlated errors and a slope that varies over space fit these data about equally well, and the fit alone does not say which one is right.
+
+### The residual map and `.interpret()`
+
+Displaying the result shows the map of the residuals (`.fig`) and a reading of the model (`.interpret()`):
+
+```{python}
+res
+```
+
+The residuals are in standard deviations of the index: positive where the index is higher than the model gives. Look for groups of neighbours with the same sign, which would mean that the model still misses something that varies over space. Moran's I measures it ([Maps and spatial dependence](spatial-dependence.qmd)):
+
+```{python}
+diag = geo.spatial_diagnostics(z, "index_sdg", "urbanization")
+left = geo.moran(res.df, "residual")
+print("Moran's I of the residuals. Least squares:", round(diag.moran_i_resid, 2),
+      "| MGWR:", round(left.moran_i, 2), "(p =", left.p_sim, ")")
+```
+
+The spatial pattern in the residuals falls from 0.47 to 0.15. Most of it is gone, but not all: some clustering among neighbours remains.
+
+## Two regressors: poverty, the index and urbanization
+
+With more than one regressor, each gets its own bandwidth, and they can differ a lot. The second model regresses multidimensional poverty on the index and urbanization.
+
+```{python}
+res2 = geo.mgwr(df, "sdg1_2_mpi", ["index_sdg", "urbanization"])
+res2.gt_bw
+```
+
+The three terms operate at two very different scales:
+
+- The **intercept** and the **index** have a bandwidth of 44: local processes, at the lower limit of the search. For the index, the interval is 44 to 52.
+- **Urbanization** has a bandwidth of 341 of 343 units, with an interval of 272 to 341: a **global** process. Its effective number of parameters is 1.4, hardly more than the single coefficient of an ordinary regression, so its tests are barely corrected (critical |t| of 2.11).
+
+```{python}
+res2.figs["index_sdg"]
+```
+
+```{python}
+local2 = geo.add_names(res2.df, groups=["department"])
+by_department2 = local2.groupby("department", as_index=False).agg(
+    units=("geo_id", "count"),
+    index_sdg=("index_sdg_coef", "mean"),
+    index_significant=("index_sdg_significant", "sum"),
+    urbanization=("urbanization_coef", "mean"),
+    urbanization_significant=("urbanization_significant", "sum"),
+)
+by_department2.sort_values("index_sdg").round(3)
+```
+
+- The association between poverty and the index is **negative everywhere and local**. The coefficients run from −1.35 to −0.36: where the index is one standard deviation higher, poverty is between a third of a standard deviation and well over one standard deviation lower, depending on the place. It is strongest in Chuquisaca and Oruro (department means near −0.97) and weakest in Santa Cruz and La Paz (−0.54 and −0.58), and significant in 337 of the 343 municipalities.
+- The association with **urbanization is the same everywhere, and it is nil**: the local coefficients lie between 0.00 and 0.02 and none is significant. Once the index is in the model, more urban municipalities are not less poor than others, anywhere in the country.
+
+The second point is a result about scale and about size at once: a global bandwidth says that the coefficient does not vary, and here the coefficient that does not vary is close to zero. On the [models page](models.qmd), poverty on urbanization alone showed a clear negative association; it disappears once the index is in the model.
+
+```{python}
+z2 = standardized(df, ["sdg1_2_mpi", "index_sdg", "urbanization"])
+ols2 = geo.regression(z2, "sdg1_2_mpi", ["index_sdg", "urbanization"])
+print(ols2.df[["term", "estimate", "p_value"]].round(3))
+print("least squares: R² =", round(ols2.summary["r2"][0], 3),
+      "AICc =", round(aicc(ols2.models[0]), 1))
+print("MGWR:          R² =", round(res2.r2, 3), "AICc =", round(res2.aicc, 1))
+print("largest local condition number:", round(res2.df["local_cn"].max(), 1))
+```
+
+The global regression agrees on the signs: −0.70 for the index, and −0.07 for urbanization, not significant at 5%. Letting the association with the index vary raises R² from 0.54 to 0.78 and lowers AICc from 713 to 555. The largest local condition number is 4.9, far below 30, so the two regressors can be told apart in every local regression.
+
+One caution about this model in particular: the multidimensional poverty index is one of the 81 indicators behind the Sustainable Development Index, and several of its components (drinking water, electricity, sanitation, school attendance) are close to other indicators of the index, such as the coverage of water, sanitation and electricity. A negative association between the two is therefore partly built in. What the MGWR adds is where that association is stronger and weaker, and that is not built in.
+
+## Practical matters
+
+**Run time.** MGWR is slow by design: each trial bandwidth means a local regression at every unit, the search tries many bandwidths for every term, and back-fitting repeats the rounds. With the 343 municipalities, a fit with one or two regressors takes from half a minute to a minute and a half; more units and more regressors take longer. `max_iter` caps the number of back-fitting rounds (200 by default; the search stops earlier when the estimates settle). A small value, such as `max_iter=5`, gives a faster and rougher answer for a first look. Fit once, keep the result in a variable, and work with its attributes.
+
+**Few and meaningful regressors.** Each term adds a whole surface to estimate: about 10 to 22 effective parameters per local term in the examples above. With many regressors the local regressions run out of information, the regressors become collinear locally and their coefficients trade off against each other. Choose two or three regressors that you can interpret, check `local_cn`, and prefer regressors that are not strongly correlated.
+
+**Missing data.** Units with a missing value in the outcome or in any regressor are left out, and the bandwidths count neighbours among the units that remain. `res.notes` says how many were left out, and `len(res.df)` is the number of units in the model. Datasets built on an earlier municipal map (`pop`, `ntl`) have 333 units, so a model that uses them has at most 333.
+
+**Other settings.** `kernel=` changes how the weights fall with distance (`"bisquare"`, `"gaussian"` or `"exponential"`), and `criterion=` what the bandwidth search minimises (`"AICc"`, `"AIC"`, `"BIC"` or `"CV"`). `year=` picks the year. Bandwidths are always adaptive and the variables are always standardized.
+
+## What MGWR cannot tell you
+
+- **It describes where an association differs, not why.** A coefficient that is larger in one region may reflect something about that region that the model does not include. Local coefficients absorb omitted variables that vary over space.
+- **It does not separate varying coefficients from spatially correlated errors.** As shown above, a global slope with a spatial error term can fit about as well. Report both.
+- **Local coefficients are estimated from few units.** A bandwidth of 44 means 44 weighted observations per regression. The corrected tests guard against chance findings; they do not make each local number precise.
+- **The coefficients are standardized against the whole country.** They are comparable between terms and places, but they are not in the units of the variables until you convert them.
+- **One year at a time.** The function describes a cross-section. It says nothing about how a municipality would change if its urbanization changed.
+- As everywhere in the package, the results are **associations**, not causes.
+
+## In short
+
+- **GWR** fits a regression at every unit with one bandwidth for all terms; **MGWR** finds one bandwidth per term, and `geo.mgwr` is MGWR.
+- **`.bw`** is the scale of each association, in nearest units: near the number of units is global, small is local. **`.bw_interval`** says how sure the search is. The search does not go below about 44 units.
+- **`.figs`** maps the local coefficients of each term, in standard deviations, with the units that are not significant after the correction in grey. **`.df`** has the numbers, and **`local_cn`** checks local collinearity (a concern above about 30).
+- The index is higher where urbanization is higher in every municipality, but the association is more than twice as strong in Potosí, Cochabamba and Chuquisaca as in Pando, Beni and Santa Cruz, and it varies at a scale of about 90 municipalities.
+- In the poverty model, the association with the index is local (bandwidth 44) and the association with urbanization is global (341) and not significant anywhere.
+- Compare **`.r2`** and **`.aicc`** with a global regression on z-standardized variables, and with a spatial error model: a better fit than least squares does not rule out other spatial descriptions.
+- MGWR shows where associations differ and at what scale. It does not say why.
+
+## Where next
+
+- **[Regression, panel and spatial models](models.qmd)**: the global models that MGWR is compared with.
+- **[Maps and spatial dependence](spatial-dependence.qmd)**: Moran's I and LISA, to see where the values themselves cluster.
+- **[Regional inequality](inequality.qmd)**: differences between and within departments.
+- **[Case study: the Sustainable Development Index](case-study-sdg.qmd)**: the index from a first map to models.
+- **[Function reference](../reference/index.qmd)**: every argument of `mgwr`.
+
+## References
+
+- Fotheringham, A. S., Yang, W., & Kang, W. (2017). Multiscale geographically weighted regression (MGWR). *Annals of the American Association of Geographers*, 107(6), 1247–1265.
+- Oshan, T. M., Li, Z., Kang, W., Wolf, L. J., & Fotheringham, A. S. (2019). mgwr: A Python implementation of multiscale geographically weighted regression for investigating process spatial heterogeneity and scale. *ISPRS International Journal of Geo-Information*, 8(6), 269. <https://doi.org/10.3390/ijgi8060269>

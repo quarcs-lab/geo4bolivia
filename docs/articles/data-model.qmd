@@ -1,5 +1,342 @@
 ---
-title: "data-model"
+title: "The data model: scales, geo IDs, datasets and metadata"
+description: "How the observatory's data are organised (spatial scales, geo IDs, panels and metadata) and how the package reads them."
+image: ../images/thumbs/data-model.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/data-model.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+Every function of geo4bolivia rests on a small set of conventions in the [data repository](https://github.com/quarcs-lab/gdo4bolivia). Once you know them, you can predict what any function returns, join any two tables, and read the data without the package at all. Four rules hold everything together:
+
+1. **Every spatial unit has one geo ID** (`geo_id`), at every scale, and the IDs nest by prefix.
+2. **Every dataset is a long panel**: one row per unit and year, one column per variable.
+3. **The metadata are the source of truth**: each variable's label, definition, unit, source and aggregation rule are written once, and everything else reads them.
+4. **Nothing published is edited by hand**: the files are generated from the original inputs and checked by a validator.
+
+```{python}
+#| eval: false
+!pip install -q geo4bolivia
+```
+
+```{python}
+import geo4bolivia as geo
+```
+
+## 1. Scales
+
+A **scale** is a set of units that covers the country: departments, provinces, municipalities, and later grid cells. The scales are listed in a registry, which `geo.scales()` returns as a table.
+
+```{python}
+geo.scales()
+```
+
+| Column | Meaning |
+| --- | --- |
+| `kind` | `admin`: administrative units that nest by ID prefix. `grouping`: unions of whole units of another scale. `grid`: regular cells. `custom`: any other zones |
+| `parent` | The next coarser scale every unit lies in exactly. It defines the hierarchy `geo.aggregate()` climbs |
+| `id_pattern` | A regular expression every ID of the scale matches. The patterns do not overlap, so an ID tells its scale |
+| `status` | `active`: published. `planned`: the scale and its ID scheme are reserved, with no data yet |
+
+Four scales are active: 1 country, 9 departments, 113 provinces and 343 municipalities. Two helper functions answer the usual questions about the hierarchy: what a scale nests in, and what scale an ID belongs to.
+
+```{python}
+print(geo.ancestors("municipality"))
+print(geo.scale_of("BO-04-17"), "|", geo.scale_of("BO-04-17-04"))
+```
+
+## 2. Geo IDs
+
+A geo ID is the country code followed by one two-digit number per administrative level. Each ID contains the IDs of the units it lies in:
+
+| Scale | Pattern | Example |
+| --- | --- | --- |
+| `country` | `BO` | `BO` (Bolivia) |
+| `department` | `BO-NN` | `BO-04` (La Paz) |
+| `province` | `BO-NN-NN` | `BO-04-17` (Murillo) |
+| `municipality` | `BO-NN-NN-NN` | `BO-04-17-04` (Nuestra Señora de La Paz) |
+
+`geo.units()` lists the units of a scale. Each row carries the ID of every coarser unit it lies in (`province_id`, `department_id`, `country_id`), so a join across scales never needs string surgery:
+
+```{python}
+units = geo.units("municipality")
+units[units["geo_id"] == "BO-04-17-04"].T
+```
+
+The same row shows the **source keys**: the codes other sources use for this unit. They are kept as columns and never used as the identifier.
+
+| Column | Code of |
+| --- | --- |
+| `ine_code` | Bolivia's National Statistics Institute (INE), as text with leading zeros (`020101`) |
+| `mun_id` | the same INE code as a number (`20101`), as many tables store it |
+| `gid` | GADM 4.1 (`BOL.4.17.4_2`) |
+| `asdf_id` | the polygon of the DS4Bolivia repository on which `pop`, `ntl` and the embeddings were computed; empty for the 10 units whose territory changed (section 4) |
+| `name_ds4bolivia`, `name_gadm` | older spellings of the name |
+
+::: {.callout-warning}
+## Geo IDs are not INE codes
+The numbers in a geo ID follow the order of GADM, a global database of administrative areas. INE orders the departments differently, so the two codes of a unit do not match:
+:::
+
+```{python}
+geo.units("department")[["geo_id", "name", "ine_code", "gid"]]
+```
+
+La Paz is `BO-04` here and `02` for INE; the province Murillo is `BO-04-17` here and `0201` for INE. The numbers are not always consecutive either: the provinces of La Paz run from `BO-04-02` to `BO-04-21`, because GADM skips number 1. Treat a geo ID as a label that nests, and take the official codes from `ine_code`.
+
+Why not use names? Because they repeat:
+
+```{python}
+repeated = units[units.duplicated("name", keep=False)]
+repeated.groupby("name")["department_id"].agg(list)
+```
+
+Eight municipality names belong to two or three municipalities in different departments, and four provinces are called Cercado. To attach a table of your own to the geo IDs, match on a code; [Building your own indicators](../articles/own-indicators.qmd) shows how `geo.link()` does it.
+
+## 3. Units, boundaries and crosswalks
+
+The geography is three kinds of table, all keyed by `geo_id`.
+
+**Units.** Without an argument, `geo.units()` returns every unit of every scale: 466 rows.
+
+```{python}
+geo.units().groupby("scale").size()
+```
+
+**Boundaries.** `geo.boundaries()` returns the polygons of a scale as a GeoDataFrame (a table with a `geometry` column, from the geopandas library), in longitude and latitude (WGS 84):
+
+```{python}
+departments = geo.boundaries("department")
+print(type(departments).__name__, "|", departments.crs.name)
+print(list(departments.columns))
+```
+
+**Crosswalks.** `geo.crosswalk()` links the units of a finer scale to those of a coarser one. `weight_area` is the share of the finer unit's area that lies in the coarser unit; it is 1 for scales that nest.
+
+```{python}
+geo.crosswalk("municipality", "department").head(3)
+```
+
+### The 343-unit map
+
+The boundaries are SDSN Bolivia's municipal map of 2025: 343 municipalities and indigenous autonomies, the units of the SDG Atlas 2026. They are lightly simplified (about 100 m), and provinces, departments and the country are exact unions of the municipalities, so the scales nest without gaps or overlaps. The map states no open license and is used and shared with SDSN Bolivia's permission; credit it as *SDSN Bolivia (2025). Límites Municipales Bolivia 2025 [Archivo shapefile]. https://sdsnbolivia.org/datos-espaciales/*.
+
+Municipalities are created over time, and the IDs are built to survive that. The previous map, of 2015, had 339 municipalities. All 339 kept their geo IDs in the 2025 map, and the four units created since were numbered after the last municipality of their province (one of them, TIOC-Territorio Indígena Multiétnico, is alone in a new province, `BO-03-09`). An ID therefore never changes meaning. What did change is the territory of the six municipalities that gave land to the new units. These ten units are the ones without an `asdf_id`:
+
+```{python}
+changed = units[units["asdf_id"].isna()]
+changed[["geo_id", "name", "ine_code", "area_km2"]]
+```
+
+### Holes in the map
+
+The map leaves the salt flats of Uyuni and Coipasa and lakes Poopó and Uru Uru outside every municipality. They are therefore holes at every scale, and `area_km2` does not count them. A map of the municipal areas shows them as gaps in the south-west:
+
+```{python}
+geo.map(units, "area_km2", scheme="quantiles",
+        title="Area of the municipalities (km²)")
+```
+
+The areas of the 343 municipalities add up to the area of the country unit, which confirms that the scales nest exactly:
+
+```{python}
+print(round(units["area_km2"].sum()), round(geo.units("country")["area_km2"].sum()))
+```
+
+## 4. Datasets are panels
+
+A **dataset** is a set of variables from one source. `geo.datasets()` is the catalog:
+
+```{python}
+geo.datasets()[["dataset", "scale", "title", "years", "units", "variables"]]
+```
+
+`geo.load()` returns a dataset as a **long panel**: one row per unit (`geo_id`) and `year`, one column per variable. Every dataset has this shape, which is what lets the same functions work on all of them.
+
+```{python}
+geo.load("sdg").head(4)
+```
+
+The arguments of `load` select and decorate the panel; they do not change its shape, with two exceptions noted below.
+
+| Argument | Effect |
+| --- | --- |
+| `years=` | one year (`2024`), a list (`[2012, 2024]`) or an inclusive range as a tuple (`(2015, 2020)`) |
+| `variables=` | one variable or a list; `geo_id` and `year` are always kept |
+| `names=True` | adds the unit's `name` |
+| `groups=[...]` | adds the names of the coarser units each unit lies in, e.g. a `department` column |
+| `wide=` | **changes the shape**: one row per unit, one column per year of the variable given |
+| `geometry=True` | **changes the type**: a GeoDataFrame with the boundaries attached |
+
+```{python}
+geo.load("sdg", variables="index_sdg", years=2024,
+         groups=["province", "department"]).head(3)
+```
+
+```{python}
+geo.load("pop", wide="pop").iloc[:3, :5]
+```
+
+```{python}
+gdf = geo.load("ntl", years=2020, geometry=True)
+print(type(gdf).__name__, gdf.shape)
+```
+
+A year or a variable that does not exist raises an error that says what the dataset has:
+
+```{python}
+try:
+    geo.load("sdg", years=2015)
+except ValueError as error:
+    print(error)
+```
+
+Two features of the catalog above need explaining.
+
+**Two periods stored as 2012 and 2024.** The SDG Atlas measures each indicator twice, near the census of 2012 and near the census of 2024, from sources of different years. Its datasets (`sdg` and one per goal, `sdg01` to `sdg17`, with none for goals 12 and 14) store the two periods at the *nominal* years 2012 and 2024, so that every variable can be compared between them. The actual years are in the metadata (next section).
+
+**333 units instead of 343.** `pop`, `ntl`, `emb` and `embpw` were computed on the polygons of the 2015 map. Their values are valid for the 333 municipalities whose territory has not changed, and they have no rows for the ten units listed in section 3. The analysis functions work on the units with data: a spatial function, for example, builds the neighbour relations among them and reports their number in the result's `w_spec`.
+
+## 5. The metadata
+
+Each dataset comes with a metadata file, a [Frictionless Data Package](https://datapackage.org/), that describes the dataset and every one of its columns. The package reads it whenever it needs to know something about a variable. You read it through five functions.
+
+`geo.dictionary()` is the variable dictionary:
+
+```{python}
+cols = ["variable", "label", "unit", "role", "aggregation", "reference_years"]
+geo.dictionary("sdg")[cols]
+```
+
+| Column | Meaning |
+| --- | --- |
+| `label` | a readable name, used on axes, legends and tables |
+| `description` | how the variable was built (not shown above: it is long) |
+| `unit` | the unit of measure |
+| `role` | `id`, `time`, `source_key` (a code kept from the source) or `variable` |
+| `aggregation` | how the variable moves to coarser scales |
+| `reference_years` | the actual years behind each stored year, when they differ |
+
+**Aggregation rules.** A population can be summed over the municipalities of a department; a rate cannot. The rule of each variable tells `geo.aggregate()` and `geo.combine()` what to do:
+
+| Rule | For | Examples |
+| --- | --- | --- |
+| `sum` | counts and totals | `population`, `pop` |
+| `weighted_mean:<field>` | rates and averages, weighted by another variable | every SDG indicator and index, weighted by census `population` |
+| `mean`, `min`, `max` | unweighted summaries | to be used with care |
+| `none` | values that cannot be aggregated without more data | logarithms (`ln_NTLpc`), rankings (`rank_sdg`), densities |
+
+The SDG indicators are weighted by the census population of the same period, which the package loads from the dataset `sdg` by itself. The department values it produces approximate, but are not, the Atlas's own department figures.
+
+**Reference years.** `geo.reference_years()` gives the actual years behind each stored year. In the hunger goal, for example, the nutrition indicators come from the health surveys of 2008 and 2023, and the agricultural ones are three-year averages:
+
+```{python}
+geo.reference_years("sdg02").drop_duplicates("reference")
+```
+
+**Labels.** `geo.labels()` returns the labels as a dictionary, for the `labels=` argument of Plotly Express. The package's own figures use them without being asked.
+
+```{python}
+geo.labels("ntl")
+```
+
+**Documentation and licenses.** `geo.info()` gathers what a dataset is: description, coverage, actual years, the license of the published files, the sources with their own licenses, the citation and notes on its use.
+
+```{python}
+print(geo.info("ntl"))
+```
+
+Two levels of license appear. The published files are under CC BY 4.0. Each *source* keeps its own terms: the SDG Atlas 2026 states no open license and is used and shared with SDSN Bolivia's permission, as `geo.info("sdg")` reports.
+
+**Citation.** `geo.cite()` returns the dataset's citation, in APA style or BibTeX, followed by the credits its sources ask for:
+
+```{python}
+print(geo.cite("sdg"))
+```
+
+## 6. Where the data are read from
+
+The package does not carry the data. It reads the files of the data repository when you ask for them:
+
+| Where you run it | What it reads |
+| --- | --- |
+| Anywhere (Google Colab, an installed package) | the files on GitHub, from the branch `main`; each file is downloaded once per session |
+| With `ref="..."` in any function that reads data | the same files at a git tag or commit, which freezes the data for a reproducible analysis |
+| With the environment variable `GEO4BOLIVIA_REF` | that tag or commit, as the default for every call |
+| Inside a clone of the data repository, or with `GEO4BOLIVIA_DATA_DIR` pointing to one | the local files, with no download |
+
+```python
+geo.load("ntl")                    # the current data (branch main)
+geo.load("ntl", ref="v0.5.0")      # the data as they were at a release tag
+```
+
+`geo.config()` shows the settings in use, among them the repository and the default branch:
+
+```{python}
+config = geo.config()
+print(config["repository"], "|", config["default_ref"])
+```
+
+### Without the package
+
+Because the data are plain files with stable paths, any tool can read them. There are three kinds of file:
+
+| Path | Contents |
+| --- | --- |
+| `data/<scale>/<dataset>.csv` and `.parquet` | the panel of a dataset |
+| `geo/units.csv`, `geo/boundaries/<scale>.geojson`, `geo/crosswalks/<from>__<to>.csv` | the geography |
+| `metadata/<dataset>.datapackage.json` | the metadata |
+
+The two ways of loading the same panel, side by side:
+
+::: {.panel-tabset}
+
+## With the package
+
+```python
+!pip install -q geo4bolivia
+import geo4bolivia as geo
+
+ntl = geo.load("ntl", groups=["department"])       # panel + names
+gdf = geo.load("ntl", years=2020, geometry=True)   # + boundaries
+```
+
+## Plain URLs
+
+```python
+import pandas as pd
+import geopandas as gpd
+
+BASE = "https://raw.githubusercontent.com/quarcs-lab/gdo4bolivia/main/"
+
+ntl = pd.read_csv(BASE + "data/municipality/ntl.csv")     # geo_id, year, variables
+units = pd.read_csv(BASE + "geo/units.csv", dtype={"ine_code": str})
+ntl = ntl.merge(units[["geo_id", "name", "department_id"]], on="geo_id")
+
+shapes = gpd.read_file(BASE + "geo/boundaries/municipality.geojson")
+gdf = shapes.merge(ntl[ntl["year"] == 2020], on="geo_id")
+```
+
+:::
+
+Replace `main` in the URL with a release tag for a frozen version. What the package adds to the plain files is the metadata at hand (labels, rules, reference years, citations), the joins done for you, and the analyses.
+
+## In short
+
+- A **geo ID** identifies each unit and nests by prefix (`BO-04-17-04` lies in `BO-04-17`, in `BO-04`, in `BO`). It follows GADM's numbering, not INE's; the INE codes are columns of `geo.units()`.
+- Four scales are active (country, department, province, municipality); `geo.scales()`, `geo.ancestors()` and `geo.scale_of()` describe the hierarchy.
+- The boundaries are SDSN Bolivia's map of 2025 with 343 units. Salt flats and lakes are holes in it. Datasets computed on the 2015 map cover 333 units.
+- Every dataset is a **panel** with one row per `geo_id` and `year`. The SDG datasets store two periods at the nominal years 2012 and 2024.
+- The **metadata** give each variable its label, unit, aggregation rule and reference years, and each dataset its sources, licenses and citation: `geo.dictionary()`, `geo.reference_years()`, `geo.labels()`, `geo.info()`, `geo.cite()`.
+- The data are read from GitHub by default, from a tag with `ref=`, from a local clone, or with plain URLs and no package.
+
+## Where next
+
+- **[Exploring the data](../articles/exploring.qmd)**: these conventions at work on multidimensional poverty, with the pitfalls they explain.
+- **[Building your own indicators](../articles/own-indicators.qmd)**: bring a table or a raster of your own onto the geo IDs, and move data across scales.
+- **[Get started](../get-started.qmd)**: from finding a variable to a first spatial result.
+- **[Function reference](../reference/index.qmd)**: every option of the functions used here.

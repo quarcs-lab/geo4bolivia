@@ -1,5 +1,337 @@
 ---
-title: "spatial-dependence"
+title: "Maps and spatial dependence"
+description: "From a map to a test: classed maps, spatial weights, global Moran's I and LISA clusters of multidimensional poverty in Bolivia's municipalities, and how far the conclusions depend on the choices made."
+image: ../images/thumbs/spatial-dependence.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/spatial-dependence.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+A map of poverty almost always shows patches: poor municipalities next to poor ones, better-off ones next to each other. The eye is quick to see patches, also where there are none, and the patches it sees depend on how the map was coloured. This article goes from the map to a test of what it seems to show, in four steps:
+
+1. **Draw the map**, and see how much the choice of classes changes it.
+2. **Define "neighbour"** with spatial weights, and inspect the result.
+3. **Test the whole map** with global Moran's I: are similar values closer together than chance would put them?
+4. **Locate the clusters** with local Moran statistics (LISA).
+
+It then repeats the tests with another definition of neighbour, and with a dataset that does not cover every municipality.
+
+```{python}
+#| eval: false
+!pip install -q geo4bolivia
+```
+
+## The data
+
+The running example is the **multidimensional poverty index** (MPI) of the SDG Atlas 2026, `sdg1_2_mpi` in the dataset `sdg01`. It multiplies the share of households deprived in three or more of nine indicators (water, electricity, sanitation, literacy, identity card, telephone, attended births, teenage pregnancy, school attendance) by the average share of the nine that those households lack. It runs from 0 to 1, and **lower is better**. The Atlas computes it from the censuses of 2012 and 2024 for the 343 municipalities.
+
+```{python}
+import geo4bolivia as geo
+import pandas as pd
+
+mpi = geo.load("sdg01", variables="sdg1_2_mpi", groups=["department"])
+cols = ["variable", "year", "count", "mean", "median", "min", "max"]
+geo.describe(mpi)[cols]
+```
+
+Poverty fell a great deal: the mean of the index went from 0.234 to 0.063, and its highest value from 0.563 to 0.296. In 2024 the distribution is skewed (a few values far above the rest): the mean is above the median and the maximum is more than five times the median. That skew matters for the first step.
+
+## 1. A map in classes
+
+Without further arguments `geo.map()` colours each unit on a continuous scale. With `scheme=` it sorts the units into `k` classes, each with one colour and its range in the legend. Classes are easier to read than a gradient, but someone has to decide where one class ends and the next begins, and the three schemes decide differently:
+
+| `scheme=` | How it sets the limits | Good for | Risk |
+| --- | --- | --- | --- |
+| `"quantiles"` | the same number of units in each class | comparing ranks; skewed variables | puts very different values in one class, and similar values in different classes |
+| `"equal_interval"` | classes of the same width | values with a meaningful, even scale | on a skewed variable most units fall in one class |
+| `"fisher_jenks"` | natural breaks: limits where the values have gaps, so each class holds similar values | showing the groups that are in the data | limits that are hard to explain and change with the data |
+
+The next chunk classifies the 2024 values in five classes with each scheme and counts the municipalities per class. A classed map keeps its limits in `fig.layout.meta["bins"]`.
+
+```{python}
+mpi24 = mpi.loc[mpi["year"] == 2024, "sdg1_2_mpi"]
+rows = []
+for scheme in ["quantiles", "equal_interval", "fisher_jenks"]:
+    fig = geo.map(mpi, "sdg1_2_mpi", year=2024, scheme=scheme, k=5)
+    limits = fig.layout.meta["bins"]
+    units = pd.cut(mpi24, limits, include_lowest=True).value_counts(sort=False)
+    rows.append({"scheme": scheme, "limits": [round(b, 3) for b in limits],
+                 "units per class": units.tolist()})
+pd.DataFrame(rows)
+```
+
+The same 343 values give three different pictures. Quantiles put about 69 municipalities in each class (ties make the counts uneven), so the top class runs from 0.092 all the way to 0.296. Equal intervals cut the range into five steps of 0.059: 203 municipalities fall in the lowest class and one in the highest. Natural breaks sit in between, with 107, 119, 72, 36 and 9.
+
+```{python}
+geo.map(mpi, "sdg1_2_mpi", year=2024, scheme="quantiles", k=5)
+```
+
+```{python}
+geo.map(mpi, "sdg1_2_mpi", year=2024, scheme="equal_interval", k=5)
+```
+
+On the quantile map a fifth of the country is in the darkest colour by construction; on the equal-interval map almost all of it is pale and only the few highest values stand out. Neither is wrong. The first answers "which municipalities are in the highest fifth?", the second "which municipalities are far above the others?". Decide which question the map should answer, say which scheme it uses, and do not read a pattern off one scheme alone.
+
+### Limits of your own, and two years in the same classes
+
+`bins=` sets the limits by hand, which is the right choice when the values have thresholds with a meaning. The Atlas counts the poverty target as met at an index of 0.066 and sees major challenges from 0.23 on. With a list of years, `geo.map()` draws one map per year **in the same classes**, so a colour means the same thing in both.
+
+```{python}
+geo.map(mpi, "sdg1_2_mpi", year=[2012, 2024], bins=[0.066, 0.23])
+```
+
+```{python}
+cut = pd.cut(mpi["sdg1_2_mpi"], [0, 0.066, 0.23, 1],
+             labels=["up to 0.066", "0.066 to 0.23", "above 0.23"])
+pd.crosstab(mpi["year"], cut)
+```
+
+In 2012, 12 municipalities met the target and 163 were above 0.23. In 2024, 221 meet it and one is above 0.23. Because the classes are fixed, the two maps and the two rows of the table can be compared directly.
+
+With a `scheme` instead of `bins`, the classes of a list of years are computed over all the years shown together. Maps drawn one year at a time would each get their own classes, and the same colour would stand for different values.
+
+### The map of the change
+
+`change=True` maps the last year minus the first, on a diverging scale centred at zero; with a scheme, falls and rises get their own classes, split at zero.
+
+```{python}
+geo.map(mpi, "sdg1_2_mpi", change=True, scheme="quantiles", k=4)
+```
+
+```{python}
+chg = geo.change(mpi, "sdg1_2_mpi")
+print(round(chg["sdg1_2_mpi_change"].corr(chg["sdg1_2_mpi_2012"]), 2))
+chg["sdg1_2_mpi_change"].describe().round(3)
+```
+
+Here there is only one side: the index fell in every municipality, by between 0.015 and 0.402, so all four classes are falls. The map shows where poverty fell most in index points, which is mostly where it was highest in 2012 (the correlation between the change and the 2012 level is −0.95); it is not a map of who is poor now.
+
+## 2. Who is a neighbour? Spatial weights
+
+Every statistic below compares a unit with its neighbours, so "neighbour" needs a definition. **Spatial weights** are that definition: for each unit, the list of its neighbours and the weight of each. `geo.weights()` builds them from the boundaries.
+
+| `method=` | Neighbours of a unit | Note |
+| --- | --- | --- |
+| `"queen"` (default) | the units that share a border or a corner with it | the number of neighbours varies from unit to unit |
+| `"rook"` | the units that share a border (not just a corner) | nearly the same as queen on irregular polygons |
+| `"knn"` | the `k` units with the nearest centroids | every unit has exactly `k`; neighbours need not touch, and A can be a neighbour of B without B being one of A |
+| `"distance_band"` | the units with centroids within `threshold` metres | many neighbours where units are small, few where they are large |
+| `"inverse_distance"` | the units within the distance band, weighted by distance ** −`power` | nearer units count more |
+
+By default the weights are **row-standardized**: each unit's weights sum to one, so "the neighbours' value" is a plain average of the neighbours.
+
+```{python}
+w_queen = geo.weights("municipality")
+w_rook = geo.weights("municipality", method="rook")
+w_knn = geo.weights("municipality", method="knn", k=6)
+w_band = geo.weights("municipality", method="distance_band")
+
+rows = []
+for name, w in [("queen", w_queen), ("rook", w_rook), ("6 nearest", w_knn),
+                ("distance band", w_band)]:
+    rows.append({"weights": name, "units": w.n,
+                 "mean neighbours": round(w.mean_neighbors, 2),
+                 "fewest": w.min_neighbors, "most": w.max_neighbors})
+pd.DataFrame(rows)
+```
+
+Under queen contiguity a municipality has 5.5 neighbours on average, between 1 and 12. Rook is almost the same (5.4). The distance band is very different: its default threshold is the smallest distance at which every unit has at least one neighbour, about 152 km here, which is set by the most remote municipality and gives the others 43 neighbours on average and up to 87. A distance band suits units of similar size; Bolivia's municipalities are not.
+
+### The island
+
+Contiguity leaves a unit that touches no other without neighbours: an **island**. Its "neighbours' average" is undefined, so by default (`attach_islands=True`) the package links it to its nearest unit. There is one on this map:
+
+```{python}
+alone = geo.weights("municipality", attach_islands=False).islands
+names = geo.units("municipality").set_index("geo_id")["name"]
+nearest = w_queen.neighbors[alone[0]]
+print(alone, names[alone].tolist(), "->", names[nearest].tolist())
+```
+
+Coipasa, in Oruro, shares no border with another municipality on this map, which leaves the salt flat of Coipasa outside every municipality. It is attached to Uru Chipaya, the nearest unit. One link among almost a thousand does not move a national statistic, but it decides everything about that unit's local statistic, so it is worth knowing it is there.
+
+### Look at the graph
+
+`geo.connectivity()` draws the weights as a graph, one line per pair of neighbours, and counts the neighbours of each unit. Look at it before trusting any result that uses the weights: missing links, an unexpected island, or a region cut off from the rest show at once.
+
+```{python}
+net = geo.connectivity("municipality")
+net.fig
+```
+
+```{python}
+print(net.n_components, "component |", round(net.pct_nonzero, 2), "% of pairs")
+net.df.sort_values("n_neighbors").head(5)
+```
+
+The graph is in one piece (one *component*: every municipality can be reached from every other through a chain of neighbours), and 1.6% of all pairs of municipalities are neighbours. Five municipalities have a single neighbour. Three of them (Copacabana, Santiago de Huata and Catacora) are in La Paz and one (Bermejo) is in Tarija; the fifth is Coipasa. For these units "the neighbours' average" is the value of one other municipality, so their local statistics below rest on very little. At the other end, Villa Tunari and Charagua have 12 neighbours each. `net.fig_hist` shows the whole distribution.
+
+## 3. Global Moran's I: is the map clustered?
+
+**Moran's I** answers one question for the whole map: do neighbouring units have more similar values than they would if the same values were dealt out at random? It is the correlation between each unit's value and the average of its neighbours:
+
+- near **zero** (slightly below: −1/(n−1)) when there is no spatial pattern,
+- **positive** when similar values are next to each other (clustering),
+- **negative** when high values sit next to low ones (a checkerboard).
+
+```{python}
+res = geo.moran(mpi, "sdg1_2_mpi", year=2024)
+res
+```
+
+**The scatterplot.** Each point is a municipality. The horizontal axis is its value, standardized (in standard deviations from the national mean); the vertical axis is the average standardized value of its neighbours. The slope of the line is Moran's I: 0.415 in 2024. The four quadrants are the four kinds of unit:
+
+```{python}
+res.df["quadrant"].value_counts()
+```
+
+258 of the 343 municipalities are in the two quadrants where a unit resembles its neighbours: 154 below the mean among neighbours below the mean (`LL`), and 104 above the mean among neighbours above it (`HH`). The other 85 differ from their surroundings.
+
+**The test.** Is 0.415 more than chance would give? The answer comes from **permutations**: the 343 values are shuffled over the map at random, 999 times, and Moran's I is computed each time. If the map had no spatial pattern, the observed value would look like one of the shuffled ones.
+
+```{python}
+print(round(res.moran_i, 3), res.p_sim, round(res.z_sim, 1), "|", res.w_spec)
+```
+
+It does not: none of the 999 shuffles reached 0.415. The pseudo p-value `p_sim` is (shuffles at least as large + 1) / (999 + 1) = 0.001, the smallest value 999 permutations can give, and the observed I is 11.9 standard deviations above the average of the shuffles (`z_sim`). `seed=` fixes the shuffles so the result is the same on every run, and `permutations=` sets how many there are.
+
+**One year, or all of them.** `year=` picks the year (the last one by default), and `year="all"` computes Moran's I in every year, on the units that have data in all of them.
+
+```{python}
+geo.moran(mpi, "sdg1_2_mpi", year="all").df
+```
+
+Moran's I is 0.436 in 2012 and 0.415 in 2024. Poverty fell everywhere, yet where it is high *relative to the national mean of the year* is about as clustered as before.
+
+The amount of the fall is clustered too. A table without a `year` column, such as the one `geo.change()` returns, works the same way:
+
+```{python}
+round(geo.moran(chg, "sdg1_2_mpi_change").moran_i, 3)
+```
+
+**What Moran's I does not show.** It is one number for the country. It does not say where the clusters are, how many there are, or whether they are of high or of low values. It does not say why neighbours are alike: shared geography, shared history, people and services crossing borders, or a boundary drawn through one community would all give a positive value. And it is always relative to the weights used.
+
+## 4. LISA: where are the clusters?
+
+**LISA** (local indicators of spatial association; here the *local* Moran statistic) repeats the comparison unit by unit. Each municipality gets its own statistic and its own permutation test: its value stays fixed while the values of the others are shuffled, and the test asks whether its neighbours are more like it (or more unlike it) than randomly drawn units would be. Units that pass the test at the level `alpha` are assigned to one of four types by their quadrant in the scatterplot; the rest are "Not significant".
+
+| Type | The unit | Its neighbours | Called |
+| --- | --- | --- | --- |
+| High-High | above the mean | above the mean | a hot spot |
+| Low-Low | below the mean | below the mean | a cold spot |
+| High-Low | above the mean | below the mean | a spatial outlier |
+| Low-High | below the mean | above the mean | a spatial outlier |
+
+For a poverty index, "high" is bad: a High-High cluster is a group of municipalities with high poverty, and a Low-Low cluster one with low poverty.
+
+```{python}
+lisa = geo.lisa(mpi, "sdg1_2_mpi", year=2024)
+lisa
+```
+
+At the 5% level, 94 of the 343 municipalities are assigned to a type: 35 High-High, 51 Low-Low and 8 outliers. The other 249 are not significant. `.df` has one row per unit with its local statistic, p-value and type, so the map can be turned into a table:
+
+```{python}
+where = lisa.df.merge(mpi.loc[mpi["year"] == 2024, ["geo_id", "department"]])
+where.groupby(["department", "cluster"]).size().unstack(fill_value=0)
+```
+
+Most Low-Low municipalities (low poverty among low poverty) are in Santa Cruz: 29 of the 51, more than half of that department's 56 municipalities. The High-High ones are spread over Potosí (11), Chuquisaca (9), Cochabamba (7) and Oruro (5). La Paz, with 87 municipalities, has 78 that are not significant. `lisa.fig_scatter` shows the same types on the Moran scatterplot.
+
+### Significance and `alpha`
+
+The types depend on the threshold. `alpha=` changes it:
+
+```{python}
+counts = {}
+for alpha in [0.10, 0.05, 0.01]:
+    res_a = geo.lisa(mpi, "sdg1_2_mpi", year=2024, alpha=alpha)
+    counts[f"alpha = {alpha}"] = res_a.df["cluster"].value_counts()
+pd.DataFrame(counts).fillna(0).astype(int)
+```
+
+From 131 municipalities in a cluster or outlier at the 10% level to 94 at 5% and 49 at 1%. There is no correct value. The reason for caution is that the map is the result of 343 tests, one per unit, with no adjustment for making so many: with no spatial pattern at all, a 5% level would still flag about 17 municipalities (5% of 343). Here 94 are flagged, far more than that, but any single municipality near the threshold could be one of the 17. The core of a cluster, which stays at 1%, is more reliable than its edge.
+
+### What a cluster map shows, and what it does not
+
+- **A coloured unit is the centre of a cluster, not its extent.** A High-High municipality is one whose *neighbours* are high. The neighbours belong to the cluster too, but each is coloured only if its own neighbourhood passes the test.
+- **High and low are relative to the mean of the year.** A Low-Low municipality of 2012 could have more poverty than a High-High one of 2024. A cluster map of each year shows where the high and low values are, not whether poverty rose or fell. To compare two years, see [Transitions and mobility](transitions.qmd).
+- **"Not significant" is not "average".** It means the test could not tell the unit's surroundings from a random draw. A municipality with one or two neighbours has little chance of passing whatever its value.
+- **It does not explain.** A cluster is a place to look at, not a finding about causes.
+
+## 5. Do the conclusions depend on the weights?
+
+They can, so check. Here is Moran's I of 2024 under six definitions of neighbour. A panel given to `geo.weights()` builds the weights for the units that have data.
+
+```{python}
+specs = {"queen": geo.weights(mpi),
+         "rook": geo.weights(mpi, method="rook"),
+         "4 nearest": geo.weights(mpi, method="knn", k=4),
+         "6 nearest": geo.weights(mpi, method="knn", k=6),
+         "10 nearest": geo.weights(mpi, method="knn", k=10),
+         "distance band": geo.weights(mpi, method="distance_band")}
+rows = []
+for name, w in specs.items():
+    m = geo.moran(mpi, "sdg1_2_mpi", year=2024, w=w)
+    rows.append({"weights": name, "moran_i": round(m.moran_i, 3),
+                 "p_sim": m.p_sim, "z_sim": round(m.z_sim, 1)})
+pd.DataFrame(rows)
+```
+
+The conclusion holds: Moran's I is positive and no shuffle reaches it under any of the six. Its size does change, from 0.43 with the four nearest neighbours to 0.33 with ten and 0.14 with the distance band. That is expected: the more units count as neighbours, and the farther away they are, the less the "neighbours' average" resembles the unit itself. So a Moran's I is comparable with another only when both use the same weights, and a report of it should always say which.
+
+The local results are more sensitive than the global one. The next table crosses the type of each municipality under queen contiguity (rows) with its type under the six nearest neighbours (columns).
+
+```{python}
+knn = geo.lisa(mpi, "sdg1_2_mpi", year=2024, w=specs["6 nearest"])
+both = lisa.df[["geo_id", "cluster"]].merge(
+    knn.df[["geo_id", "cluster"]], on="geo_id", suffixes=("_queen", "_knn"))
+print(round((both["cluster_queen"] == both["cluster_knn"]).mean(), 2))
+pd.crosstab(both["cluster_queen"], both["cluster_knn"])
+```
+
+83% of the municipalities (286 of 343) get the same type. No municipality changes from one type to a different one: every disagreement is between a type and "Not significant". 12 of the 35 High-High municipalities of the queen weights are not significant with the six nearest neighbours, and 25 municipalities that were not significant become Low-Low. The centres of the clusters are stable and their edges are not, which is the same lesson as with `alpha`.
+
+## 6. A dataset with fewer units
+
+Not every dataset covers the 343 municipalities. Night-time lights per capita (`ntl`, in logarithms as `ln_NTLpc`, 2012–2020) are published for 333: the values were computed on the municipal map of 2015, so the six municipalities that lost territory since and the four units created since have no rows (`geo.info("ntl")` explains it). Some municipalities also lack a value in some years.
+
+Nothing changes in the calls. The functions use the units that have data, and build the weights among those units only:
+
+```{python}
+ntl = geo.moran("ntl", "ln_NTLpc", year=2020)
+print(round(ntl.moran_i, 3), ntl.p_sim, "|", ntl.w_spec)
+```
+
+The description of the weights ends in `n=328`: the 328 municipalities with a value in 2020. With `year="all"`, Moran's I is computed on the municipalities that have a value in every year, so that the years are comparable:
+
+```{python}
+geo.moran("ntl", "ln_NTLpc", year="all")
+```
+
+That leaves 316 municipalities (`n_obs`). Moran's I of night-time lights per capita stays between 0.42 and 0.46 in the nine years: lights are clustered, and about as much in 2020 as in 2012.
+
+Two things to keep in mind with partial coverage. A unit without data is not a neighbour of anyone: the municipalities around it have one neighbour fewer, and one that loses all of them is attached to its nearest unit, like the island above. And the result describes the units in the analysis, not the country: here 328 or 316 municipalities out of 343. Always check `n` in `w_spec` or `n_obs` before comparing results between datasets.
+
+## In short
+
+- A classed map depends on its classes. Quantiles, equal intervals and natural breaks give different pictures of the same values; use `bins=` when thresholds have a meaning, and common classes to compare years.
+- Spatial weights define "neighbour". Queen contiguity is the default; look at the graph with `geo.connectivity()` and know its islands and its least connected units.
+- Global Moran's I tests the whole map against random placement. Multidimensional poverty is clustered in both censuses (0.44 and 0.42 under queen contiguity), although it fell in every municipality.
+- LISA locates the clusters: 35 High-High and 51 Low-Low municipalities in 2024 at the 5% level. Their centres are stable when `alpha` or the weights change; their edges are not.
+- The sign and significance of the global result hold under every definition of neighbour tried here; its size does not, so always report the weights.
+- With partial coverage the functions use the units with data. Check how many that is.
+- All of this describes a pattern. None of it says what produced it.
+
+## Where next
+
+- **[Transitions and mobility](transitions.qmd)**: did the clusters persist between the two periods?
+- **[Regional inequality](inequality.qmd)**: how unequal the municipalities are, and the spatial Gini.
+- **[Regression, panel and spatial models](models.qmd)**: what to do when the residuals of a regression are clustered.
+- **[Spatial heterogeneity: MGWR](heterogeneity.qmd)**: relationships that change from place to place.
+- **[Analyze](../analyze.qmd)**: all the families on one question.
+- Reference: [`map`](../reference/map.qmd), [`weights`](../reference/weights.qmd), [`connectivity`](../reference/connectivity.qmd), [`moran`](../reference/moran.qmd), [`lisa`](../reference/lisa.qmd).

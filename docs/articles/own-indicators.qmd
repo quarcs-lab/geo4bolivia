@@ -1,5 +1,330 @@
 ---
-title: "own-indicators"
+title: "Building your own indicators"
+description: "From a table or a raster of your own to an analysis: link it to the geo IDs, compute zonal statistics, move it across scales, save it and analyse it."
+image: ../images/thumbs/own-indicators.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/own-indicators.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+The observatory's datasets are a starting point. Sooner or later you will have data of your own: a table from a ministry or a survey, or a raster (a gridded image, such as a satellite product). This article takes both to the point where every function of the package works on them:
+
+| Step | Function | What it does |
+| --- | --- | --- |
+| 1 | `geo.link`, `geo.check` | attach geo IDs to a table that names its units by name or code, and check the result |
+| 2 | `geo.zonal` | summarise a raster over the units of a scale |
+| 3 | `geo.combine` | put your indicator and the observatory's datasets in one panel |
+| 4 | `geo.aggregate` | move a panel up the hierarchy, with a rule per variable |
+| 5 | `geo.overlay` | move it onto units that do not nest, such as a grid |
+| 6 | `geo.save` | write it as a documented dataset |
+| 7 | any analysis function | analyse it like any other dataset |
+
+The only requirement of everything that follows is a column called `geo_id` ([The data model](../articles/data-model.qmd) explains the IDs).
+
+```{python}
+#| eval: false
+!pip install -q "geo4bolivia[raster]"
+```
+
+The `[raster]` extra adds rasterio, which `geo.zonal()` needs. The files this page writes go to a temporary folder, `work`.
+
+```{python}
+import tempfile
+from pathlib import Path
+
+import geopandas as gpd
+import numpy as np
+import pandas as pd
+import geo4bolivia as geo
+
+work = Path(tempfile.mkdtemp())
+```
+
+## 1. A table of your own
+
+### Link by name where names are unique
+
+Tables from reports identify units by name, in every possible spelling. `geo.link()` adds the `geo_id`, ignoring accents, capitals, spaces and punctuation. The numbers in the tables of this section are **made up** for the demonstration.
+
+```{python}
+by_department = pd.DataFrame({
+    "Departamento": ["LA PAZ", "Cochabamba", "Santa Cruz", "Potosi", "chuquisaca"],
+    "year": 2024,
+    "clinics": [412, 301, 388, 266, 190],
+})
+geo.link(by_department, scale="department", on="Departamento")
+```
+
+The nine department names are unique, so this is safe.
+
+### Why names fail for municipalities
+
+Municipality names are not unique: eight names are shared by two or three municipalities in different departments. A typing mistake is the other usual problem. `geo.link()` does not guess in either case. With `errors="warn"` it links what it can, leaves the rest without a `geo_id` and explains each problem (the default, `errors="raise"`, stops with the same explanation):
+
+```{python}
+import warnings
+
+by_name = pd.DataFrame({"municipio": ["Sucre", "El Alto", "San Pedro", "Cochabmba"],
+                        "clinics": [41, 63, 5, 30]})
+with warnings.catch_warnings(record=True) as problems:
+    warnings.simplefilter("always")
+    linked = geo.link(by_name, scale="municipality", on="municipio", errors="warn")
+for problem in problems:
+    print(problem.message, "\n")
+linked
+```
+
+"San Pedro" is the name of three municipalities, in Pando, Potosí and Santa Cruz, and the table does not say which one is meant. A match on the name could attach the row to the wrong one without any warning, which is worse than an error.
+
+### Link by code
+
+Codes do not have this problem. Official statistics carry the municipality code of the National Statistics Institute (INE), and `key=` names the column of `geo.units()` to match: `"mun_id"` for the code as a number, `"ine_code"` for the code as text with its leading zero (`"020101"`).
+
+```{python}
+by_code = pd.DataFrame({"codigo": [10101, 20105, 20101, 50501, 71005],
+                        "year": 2024,
+                        "clinics": [41, 63, 58, 5, 9]})
+clinics = geo.link(by_code, scale="municipality", on="codigo", key="mun_id")
+geo.add_names(clinics, groups=["department"])
+```
+
+The last two rows are two different municipalities called San Pedro, each linked to its own ID. Remember that a geo ID is not an INE code: La Paz is `BO-04-17-04` here and `020101` for INE.
+
+### Check the result
+
+`geo.check()` lists what would stop a table from being a valid panel: unknown IDs, more than one row per unit and year, years that are not integers. An empty list means the table is ready.
+
+```{python}
+print(geo.check(clinics, scale="municipality"))
+
+broken = pd.DataFrame({"geo_id": ["BO-04-17-04", "BO-04-17-04", "BO-99-01-01"],
+                       "year": [2024, 2024, 2024], "clinics": [58, 60, 7]})
+geo.check(broken, scale="municipality")
+```
+
+## 2. A raster of your own
+
+`geo.zonal()` summarises a raster over the units of a scale: for each municipality, the sum, mean, minimum, maximum, median or count of the pixels whose centre falls inside it. It reads any GeoTIFF, from a path or a URL: an export from Google Earth Engine, a population grid, a land-cover map.
+
+So that this page needs no download, we make a small raster ourselves: the straight-line distance, in kilometres, from every pixel to the nearest of the three largest cities (La Paz, Cochabamba and Santa Cruz de la Sierra). It is a crude measure of remoteness, good enough to show the mechanics. With your own GeoTIFF, skip this chunk.
+
+```{python}
+import rasterio
+from rasterio.transform import from_bounds
+
+CITIES = {"La Paz": (-16.4955, -68.1336), "Cochabamba": (-17.3895, -66.1568),
+          "Santa Cruz de la Sierra": (-17.7833, -63.1821)}    # latitude, longitude
+
+x0, y0, x1, y1 = geo.boundaries("country").total_bounds
+n = 600                                                        # pixels per side
+lon, lat = np.meshgrid(np.linspace(x0, x1, n), np.linspace(y1, y0, n))
+
+def km_to(lat0, lon0):
+    """Approximate distance in km from every pixel to one point."""
+    return 111.2 * np.hypot((lon - lon0) * np.cos(np.radians(lat0)), lat - lat0)
+
+km = np.min([km_to(*city) for city in CITIES.values()], axis=0)
+
+tif = work / "distance.tif"
+with rasterio.open(tif, "w", driver="GTiff", width=n, height=n, count=1,
+                   dtype="float32", crs="EPSG:4326",
+                   transform=from_bounds(x0, y0, x1, y1, n, n)) as file:
+    file.write(km.astype("float32"), 1)
+```
+
+One call turns the raster into a panel. `name=` is the prefix of the new columns and `year=` the year to record.
+
+```{python}
+access = geo.zonal(tif, scale="municipality", stats=["mean", "max"],
+                   name="dist_km", year=2024)
+print(geo.check(access))
+access.head(3)
+```
+
+```{python}
+geo.map(access, "dist_km_mean", scheme="quantiles",
+        title="Mean distance to the nearest main city (km)")
+```
+
+The table has the same shape as a dataset loaded with `geo.load()`, so `geo.map()` draws it without being told anything else. The mean distance ranges from 8 km to 763 km across the 343 municipalities.
+
+Three things to know about `zonal`:
+
+- **Pixel size against unit size.** A pixel counts when its centre is inside the unit, and pixels are not split at the edges. The pixels here are a little over 2 km on each side and the smallest municipality has 13 km²; no municipality came out empty (`access` has no missing values). With a coarser raster, small units can: use a finer raster or `all_touched=True`, which counts every pixel a unit touches.
+- **Sum or mean.** Use `sum` for rasters of counts (people per pixel, radiance) and `mean` for rasters of rates or intensities (temperature, distance, a share).
+- **A series.** Pass `{2019: "a.tif", 2020: "b.tif"}` instead of one path to get one row per unit and year.
+
+## 3. Next to the observatory's data
+
+`geo.combine()` merges datasets into one panel at one scale. A dictionary picks the variables of each dataset, and `extra=` takes your own panels:
+
+```{python}
+panel = geo.combine({"sdg": ["population"], "sdg01": ["sdg1_2_mpi"]},
+                    scale="municipality", years=2024, extra=[access])
+panel.head(3)
+```
+
+From here a new indicator is one line of pandas. Columns of two datasets with the same name get the dataset id as a prefix, so nothing is overwritten silently.
+
+## 4. Up the hierarchy
+
+`geo.aggregate()` moves a panel to a coarser scale. For the observatory's variables it takes the **aggregation rule** from the metadata (`dataset=`). Your own variables have no metadata yet, so you state the rule, and thinking about it is the point: there is no single right way to turn 87 municipal distances into one number for La Paz.
+
+| Rule | Meaning | Here |
+| --- | --- | --- |
+| `sum` | add the units | `population` |
+| `mean` | the average unit, each counting the same | the distance of the average *municipality* |
+| `weighted_mean:<column>` | an average weighted by another column | the distance of the average *person* |
+| `max`, `min` | the extreme unit | the most remote place of the department |
+
+```{python}
+rules = {"population": "sum", "dist_km_mean": "weighted_mean:population",
+         "dist_km_max": "max"}
+by_person = geo.aggregate(panel, to="department", rules=rules,
+                          variables=list(rules))
+by_unit = geo.aggregate(panel, to="department", rules={"dist_km_mean": "mean"},
+                        variables="dist_km_mean")
+by_person["dist_km_simple"] = by_unit["dist_km_mean"]
+geo.add_names(by_person).round(0)
+```
+
+The two means answer different questions. In La Paz the average municipality is 103 km from a main city and the average person 56 km, because more than half of the department's people live in two municipalities, El Alto and Nuestra Señora de La Paz. `n_units` and `coverage` say how many municipalities each value rests on, and what share of the department's municipalities that is.
+
+### Rates and logs: aggregate the totals
+
+Some variables cannot be aggregated as they are. Night-time lights are published as the logarithm of lights per person (`ln_NTLpc`), whose rule in the metadata is `none`: the mean of the municipal logarithms is not the logarithm of the department's lights per person. The way through is to go back to totals, add them up, and build the ratio again.
+
+```{python}
+lights = geo.combine(["ntl", "pop"], scale="municipality", years=2020)
+lights = lights.dropna(subset=["ln_NTLpc"])
+lights["ntl"] = np.exp(lights["ln_NTLpc"]) * lights["pop"]       # total lights
+
+dep = geo.aggregate(lights, to="department", rules={"ntl": "sum", "pop": "sum"},
+                    variables=["ntl", "pop"])
+dep["ln_NTLpc"] = np.log(dep["ntl"] / dep["pop"])
+geo.add_names(dep)[["geo_id", "name", "ln_NTLpc", "n_units", "coverage"]].round(2)
+```
+
+`coverage` is below 1 in four departments: night-time lights exist for 333 of the 343 municipalities, and some of those have no value in 2020 (the `dropna` line removes them, so that their population is not counted without their lights). A department total built from part of its municipalities should be reported with that share.
+
+## 5. Units that do not nest
+
+Departments are unions of municipalities, so aggregation is exact. A grid, a set of watersheds or another vintage of the municipal map cut across municipalities. `geo.overlay()` moves data onto such units by **area weighting**. You say which variables are *extensive* (totals: each municipality's total is split among the cells in proportion to the area that falls in each) and which are *intensive* (rates: each cell gets the area-weighted mean of the municipalities it covers).
+
+First a grid of 50 km cells, built in the project's equal-area projection so that the cells have the same size everywhere:
+
+```{python}
+from shapely.geometry import box
+
+crs = geo.config()["equal_area_crs"]              # metres, equal area
+gx0, gy0, gx1, gy1 = geo.boundaries("country").to_crs(crs).total_bounds
+size = 50_000
+cells = [box(x, y, x + size, y + size) for x in np.arange(gx0, gx1, size)
+         for y in np.arange(gy0, gy1, size)]
+grid = gpd.GeoDataFrame({"geo_id": [f"cell-{i:03d}" for i in range(len(cells))]},
+                        geometry=cells, crs=crs).to_crs("EPSG:4326")
+```
+
+```{python}
+on_grid = geo.overlay(panel, grid, extensive=["population"],
+                      intensive=["sdg1_2_mpi"])
+print(len(on_grid), "of", len(grid), "cells touch the country")
+print(f"{panel['population'].sum():,.0f} people in the municipalities,",
+      f"{on_grid['population'].sum():,.0f} on the grid")
+```
+
+The total is kept: no person is lost or counted twice. `geo.map()` also draws tables that bring their own geometry:
+
+```{python}
+geo.map(grid.merge(on_grid), "population", scheme="quantiles",
+        title="Census population 2024 on a 50 km grid")
+```
+
+::: {.callout-warning}
+## What area weighting assumes
+`overlay` spreads each municipality's value evenly over its territory. People are not spread evenly: they live in towns. The grid above therefore shows where the populous *municipalities* are, not where people are within them, and this matters more the larger the municipalities are compared with the cells. For a variable that has a raster source, `geo.zonal()` on the grid is the better tool (it accepts a GeoDataFrame as `scale`).
+:::
+
+## 6. Save it as a documented dataset
+
+`geo.save()` writes a panel the way the observatory publishes its own datasets: a CSV file, a Parquet file with the same content, and a metadata file that describes every variable. The `variables` dictionary is where you record what you know now and will have forgotten in six months: a label, how the variable was built, its unit, its source and its aggregation rule.
+
+```{python}
+package = geo.save(
+    access, "access", scale="municipality", directory=work / "my_data",
+    title="Distance to the main cities",
+    description="Straight-line distance from each municipality to the nearest of "
+                "La Paz, Cochabamba and Santa Cruz de la Sierra.",
+    variables={
+        "dist_km_mean": {"label": "Mean distance to a main city (km)",
+                         "description": "Mean over the municipality's pixels",
+                         "unit": "km", "source": "Own calculation",
+                         "aggregation": "weighted_mean:population"},
+        "dist_km_max": {"label": "Maximum distance to a main city (km)",
+                        "description": "Maximum over the municipality's pixels",
+                        "unit": "km", "source": "Own calculation",
+                        "aggregation": "max"}},
+    sources=["Own calculation from the boundaries of SDSN Bolivia (2025)"])
+sorted(str(path.relative_to(work)) for path in (work / "my_data").rglob("*.*"))
+```
+
+The function returns the metadata it wrote. Each variable is a field with the properties the [data model](../articles/data-model.qmd) describes:
+
+```{python}
+package["resources"][0]["schema"]["fields"][2]
+```
+
+The folder has the layout of the data repository (`data/<scale>/<name>.csv`, `metadata/<name>.datapackage.json`), so it can be shared as it is, and read back with `pd.read_csv()`. To propose a dataset for the observatory itself, it must also be reproducible from its original files; the data repository's [contribution guide](https://github.com/quarcs-lab/gdo4bolivia/blob/main/CONTRIBUTING_DATA.md) gives the steps, and the metadata file written here is a starting point for it.
+
+## 7. Analyse it
+
+Nothing more is needed. Every analysis function takes a table with `geo_id`, finds the boundaries and builds the spatial weights. Is the new indicator clustered in space? Global Moran's I measures whether neighbouring units have similar values (0: no more than by chance; close to 1: very similar).
+
+A column of your own has no label in the metadata, so figures and readings would show its name. `geo.labels(table, own=...)` gives it one:
+
+```{python}
+geo.labels(panel, own={"dist_km_mean": "Mean distance to a main city (km)"})
+res = geo.moran(panel, "dist_km_mean")
+res
+```
+
+Moran's I is 0.94. That is no discovery: distance changes smoothly over space by construction, so neighbours must be alike. It is a useful check all the same, because it shows that the table, the boundaries and the weights fit together, and it is a reminder that a strongly clustered variable will correlate with many other clustered variables for no deeper reason.
+
+Is remoteness, measured this way, associated with poverty?
+
+```{python}
+geo.scatter(panel, "dist_km_mean", "sdg1_2_mpi",
+            title="Poverty and distance to the nearest main city, 2024")
+```
+
+Hardly: across the 343 municipalities the correlation is 0.04 and the line accounts for none of the variation, so there is no linear association between the two in 2024. This is one crude measure of remoteness and one year; it does not show that location is irrelevant to poverty.
+
+The analysis functions are not limited to the observatory's units either. For the grid, pass its polygons as `gdf=`:
+
+```{python}
+on_cells = geo.moran(on_grid, "population", gdf=grid)
+print(round(on_cells.moran_i, 2), on_cells.p_sim, "|", on_cells.w_spec)
+```
+
+On the 501 cells with data, population is positively but weakly clustered (I = 0.19), with neighbours defined among the cells themselves.
+
+## In short
+
+- Everything works on a table with a `geo_id` column. `geo.link()` adds it to your table and `geo.check()` verifies the result.
+- Link municipalities **by code** (`key="mun_id"` or `"ine_code"`), not by name: eight names are shared by several municipalities, and `geo.link()` refuses to guess.
+- `geo.zonal()` turns a raster into a panel; mind the pixel size, and choose `sum` for counts and `mean` for rates.
+- `geo.combine()` puts your indicator next to the observatory's data. `geo.aggregate()` needs a rule per variable; for rates and logs, aggregate the totals and rebuild the ratio.
+- `geo.overlay()` reaches units that do not nest, under the assumption that values are spread evenly within each unit.
+- `geo.save()` writes the data with their documentation. After that, your indicator is a dataset like any other.
+
+## Where next
+
+- **[The data model](../articles/data-model.qmd)**: geo IDs, source codes, aggregation rules and metadata in detail.
+- **[Exploring the data](../articles/exploring.qmd)**: a first look at any variable, yours included.
+- **[Maps and spatial dependence](../articles/spatial-dependence.qmd)**: Moran's I and local clusters, explained.
+- **[Regression, panel and spatial models](../articles/models.qmd)**: use your indicator as an explanatory variable.
+- **[Function reference](../reference/index.qmd)**: `link`, `check`, `zonal`, `combine`, `aggregate`, `overlay` and `save`.

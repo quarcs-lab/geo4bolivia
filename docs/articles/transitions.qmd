@@ -1,5 +1,242 @@
 ---
-title: "transitions"
+title: "Transitions and mobility"
+description: "How units move inside a distribution: changes of rank between two years, moves between spatial cluster types, and Markov transition matrices with and without the neighbours."
+image: ../images/thumbs/transitions.webp
 ---
 
-Coming soon.
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/transitions.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+A mean, a Gini index or a convergence slope describe a distribution as a whole. They do not say **who moved**. Two years can have the same dispersion with every unit in the same place, or with the top and the bottom having swapped. This article is about the movement of units inside the distribution, with four functions:
+
+| Question | Function | Years needed |
+| --- | --- | --- |
+| How much did the ranking change, and who climbed or fell? | `geo.rank_mobility` | 2 |
+| Did the spatial clusters stay where they were? | `geo.lisa_transitions` | 2 |
+| How likely is a unit to move from one class of the distribution to another in a year? | `geo.transitions` | 2, better many |
+| Do those chances depend on the unit's neighbours? | `geo.spatial_transitions` | 2, better many |
+
+The first two compare two years, and run here on the two periods of the Sustainable Development Index. The last two follow units year by year, and run on nine years of night-time lights. They use the giddy library, which the `[dynamics]` extra installs.
+
+```{python}
+#| eval: false
+!pip install -q "geo4bolivia[dynamics]"
+```
+
+```{python}
+import pandas as pd
+import geo4bolivia as geo
+
+ids = geo.load("sdg", variables="index_sdg", groups=["department"])
+```
+
+## Rank mobility: who climbed and who fell?
+
+`geo.rank_mobility()` ranks the units in each of two years (rank 1 is the highest value) and compares the two rankings.
+
+```{python}
+rm = geo.rank_mobility(ids, "index_sdg")
+rm
+```
+
+Each point is a municipality: its rank in 2012 against its rank in 2024. Points on the dashed line kept their position; the further from the line, the larger the move.
+
+Two **rank correlations** summarise how much of the order survived:
+
+```{python}
+print("Spearman:", round(rm.spearman, 3), " Kendall:", round(rm.kendall, 3))
+print("positions moved, mean:", round(rm.mean_abs_change, 1),
+      " median:", rm.median_abs_change)
+print(rm.n_climbed, "climbed,", rm.n_fell, "fell, of", rm.n_units)
+```
+
+- **Spearman's correlation** is the ordinary correlation computed on the ranks: 1 if the order is identical, 0 if the two rankings are unrelated. Here it is 0.84.
+- **Kendall's tau** counts pairs of units. It is the share of pairs in the same order in both years minus the share that swapped: 0.67, which means about 83% of all pairs of municipalities kept their order.
+- **A municipality moved 40 positions on average** (the median is 29) in a ranking of 343. Three kept their rank: Nuestra Señora de La Paz, Tarija and Santa Cruz de la Sierra, at positions 1, 2 and 6.
+
+So the order was broadly kept, with a good deal of reshuffling. `rm.gt` lists the units that moved most (`top=` sets how many), and `rm.climbers` and `rm.fallers` hold them as tables:
+
+```{python}
+rm.gt
+```
+
+The largest climb is Cruz de Machacamarca, from rank 315 to 90, with an index that rose from 42.9 to 63.4. The largest fall is San José de Chiquitos, from 42 to 283: it is the one municipality whose index went down (57.8 to 55.1). The other units in the lower half of the table all improved their index, by less than the rest. A fall in rank is not a fall in the value.
+
+### The quantile transition matrix
+
+The second view sorts the units into `k` groups of equal size in each year (quintiles by default; Q1 has the lowest values) and counts where the members of each group ended up.
+
+```{python}
+rm.fig_matrix
+```
+
+Each row is a group of 2012 and sums to one. The diagonal is the share that stayed: 56% of all municipalities are in the same quintile in both years (`rm.share_same_group`), against the 20% expected if the two years were unrelated. The ends hold their members best: 77% of the top quintile and 67% of the bottom one stayed, against 37% of the middle quintile. That is partly arithmetic: a unit at the top can only move down, and in the middle of a distribution values are close together, so a small change in the index crosses many positions.
+
+What rank mobility does not show:
+
+- **Levels.** Ranks are relative. The index rose in 342 of the 343 municipalities, and half of them still fell in the ranking, because a ranking has as many moves down as up.
+- **Distances.** A move of 50 positions in the crowded middle can be a smaller change of the index than a move of 5 positions at the top.
+- **Noise.** With two periods, a unit whose first value was unusually low or high will move towards its usual place, and that looks like mobility.
+
+For variables where less is better (poverty, mortality), `ascending=True` makes rank 1 the lowest value.
+
+## LISA transitions: did the clusters stay in place?
+
+Local Moran statistics (LISA) give each unit a type according to its value and its neighbours' values, both compared with the mean: **High-High** (a high value among high neighbours, a hot spot), **Low-Low** (a cold spot), **High-Low** and **Low-High** (outliers that differ from their surroundings), or **Not significant** when the pattern is compatible with chance. The [spatial dependence article](spatial-dependence.qmd) explains them.
+
+`geo.lisa_transitions()` computes the types in two years, on the same units and the same weights, and counts the moves between them.
+
+```{python}
+lt = geo.lisa_transitions(ids, "index_sdg")
+lt
+```
+
+Rows are the types in 2012, columns the types in 2024, and each cell counts municipalities.
+
+- **Most units kept their type**: 275 of 343 (80%). Most of those, 204, are not significant in either year.
+- **Hot spots persisted and grew in number.** Of the 46 High-High municipalities of 2012, 39 are still High-High in 2024, and 17 that were not significant joined them: 60 in 2024.
+- **Cold spots persisted less.** Of the 44 Low-Low municipalities of 2012, 30 are still Low-Low; 13 are no longer significant, and 13 others became Low-Low: 45 in 2024.
+- **Nothing crossed over.** No municipality went from High-High to Low-Low or the other way.
+
+Global Moran's I, the overall tendency of similar values to be neighbours, changed little: 0.43 in 2012 and 0.47 in 2024 (`lt.moran_i_first`, `lt.moran_i_last`). The moves in words, from the most common:
+
+```{python}
+lt.df[lt.df["moved"]]["transition"].value_counts().head(6)
+```
+
+The map shows the types of 2024, with the municipalities that changed type outlined:
+
+```{python}
+lt.fig_map
+```
+
+Read the changes with care:
+
+- **The threshold.** A unit has a type only when its pseudo p-value is below 0.05 (`alpha=`). Units near the threshold move in and out of "Not significant" without much having changed, and 58 of the 68 moves here are to or from that category.
+- **Relative to each year's mean.** "High" and "low" are measured against the mean of the same year. The index rose almost everywhere, so a Low-Low municipality of 2024 usually has a higher index than it had in 2012.
+- **The neighbours count.** A unit can change type because its neighbours' values changed while its own did not.
+
+## Markov transitions: how likely is a move?
+
+With many years, the same counting can be done for every pair of consecutive years and turned into probabilities. `geo.transitions()` assigns each unit to one of `k` classes in every year and builds the **transition matrix**: for a unit in a given class this year, the probability of being in each class next year.
+
+The data are night-time lights per capita (`ntl`, the variable `ln_NTLpc`), yearly from 2012 to 2020.
+
+```{python}
+tr = geo.transitions("ntl", "ln_NTLpc", k=5)
+tr
+```
+
+```{python}
+print(tr.notes)
+tr.p.round(3)
+```
+
+The classes are quintiles formed in each year, so they are positions in that year's distribution: Q1 is the fifth of municipalities with the least light per capita. (The variable is a logarithm; quintiles do not change when a variable is logged, so that makes no difference here.) The matrix pools 2,528 yearly moves of the 316 municipalities observed in all nine years.
+
+- **Positions are persistent from one year to the next.** A municipality stays in its class with a probability of 0.83 on average. The ends are the most persistent: 0.90 for Q1 and 0.91 for Q5; in the middle classes it is 0.76 to 0.82.
+- **Moves are short.** Almost all the probability off the diagonal is in the classes next to it. From Q1, the chance of reaching Q3 in one year is 0.002, and no unit went further.
+
+The table of the result adds three kinds of summary:
+
+```{python}
+tr.gt
+```
+
+- **Mobility indices** condense the matrix in one number. Shorrocks' index is 0 when no unit ever moves and 1 when next year's class does not depend on this year's: 0.21 here.
+- **Expected stay** (sojourn time) is the number of consecutive years a unit is expected to remain in a class, 1 / (1 − the probability of staying): about 10 years in Q1, 11 in Q5 and 4 in Q2.
+- **The steady state** is the distribution the units would settle into if the same matrix applied year after year, for ever.
+
+Here the steady state is 20% in each class, and it could be nothing else: quintiles formed year by year hold 20% of the units every year by construction. To ask where the distribution is heading, the classes have to be fixed levels. `per_year=False` forms them over all the years together, and `relative=True` first divides each value by the mean of its year, so that a class is a position relative to the average municipality:
+
+```{python}
+fixed = geo.transitions("ntl", "ln_NTLpc", k=5, per_year=False, relative=True)
+fixed.steady_state.round(2)
+```
+
+With fixed classes the long-run distribution has fewer units at both ends (17% in the lowest class and 12% in the highest, against 20% of the observations in each) and more in the middle. This is the same movement that [σ-convergence](convergence.qmd) measures on these data as a falling dispersion, seen through the transition matrix.
+
+The steady state is an extrapolation. It assumes that the probabilities are the same every year (eight yearly steps are little to check that), that a unit's chances depend only on its present class and not on how it got there, and that the same matrix will hold in the future. Read it as "the direction in which these eight years of moves point", not as a forecast.
+
+## Spatial Markov: do the neighbours matter?
+
+The transition matrix treats all units in a class alike. Rey's **spatial Markov** chain asks whether a unit's chances depend on where its neighbours stand. `geo.spatial_transitions()` classifies each unit's neighbourhood (the average of its neighbours, the *spatial lag*) as well as the unit, and estimates one transition matrix for each class of neighbourhood. If space does not matter, the matrices are equal apart from chance, and two tests check that.
+
+By default the classes are fixed levels relative to each year's mean. Three classes instead of five keep enough moves in every row of every matrix:
+
+```{python}
+st = geo.spatial_transitions("ntl", "ln_NTLpc", k=3)
+st
+```
+
+```{python}
+st.gt
+```
+
+Each panel of the figure is the transition matrix of the units whose neighbours are in one class, from the lowest (Q1) to the highest (Q3). Compare the same row across panels:
+
+```{python}
+pd.concat({f"neighbours in Q{i + 1}": p.round(3)
+           for i, p in enumerate(st.p_conditional)})
+```
+
+- **A municipality in the lowest class is more likely to leave it when its neighbours are higher.** The probability of moving from Q1 to Q2 in a year is 0.06 with neighbours in the lowest class, 0.11 with neighbours in the middle class and 0.17 with neighbours in the highest.
+- **A municipality in the highest class is more likely to keep it when its neighbours are high too.** The probability of falling from Q3 to Q2 is 0.10, 0.08 and 0.04 across the same three neighbourhoods.
+- **The tests reject equal matrices**: the likelihood ratio test gives p = 0.010 and the chi-square test p = 0.008, with 10 degrees of freedom.
+
+The average probability of staying is about the same in low and in high neighbourhoods, which is what the reading above reports; the difference is in the *direction* of the moves. Low neighbours go with staying low, high neighbours with staying high or moving up.
+
+What this does not show:
+
+- **Not a spillover.** Neighbouring municipalities can share roads, climate, markets and administrative history. Any of these makes neighbours move together without one affecting the other.
+- **Thin cells.** The moves are split over classes of units and classes of neighbourhood, and some combinations are rare: municipalities in the lowest class with neighbours in the highest account for 60 of the 2,528 moves. With `k=5` the same row rests on 7. Check the counts before reading a probability:
+
+```{python}
+moves = st.df.sort_values(["geo_id", "year"])
+moves["next_state"] = moves.groupby("geo_id")["state"].shift(-1)
+pd.crosstab([moves["neighbor_state"], moves["state"]], moves["next_state"])
+```
+
+- **The units left out.** Only municipalities with lights in every year enter (316 of 333), and a unit's neighbours are those among the 316.
+
+## A transition matrix from two periods
+
+`geo.transitions()` also runs on two years. On the Sustainable Development Index it gives the matrix that `rank_mobility` showed above:
+
+```{python}
+two = geo.transitions(ids, "index_sdg", k=5)
+print(two.n_transitions, "moves, one per municipality")
+two.p.round(2)
+```
+
+What it **can** say: how the municipalities of each quintile of 2012 are distributed over the quintiles of 2024. That is a description of one observed step, and a useful one.
+
+What it **cannot** say:
+
+- **Whether the probabilities are stable.** There is one step, so there is nothing to compare it with. Each row rests on about 69 municipalities.
+- **Anything per year.** The step is about twelve years long. An "expected stay of 4 periods" in this matrix would mean 4 steps of twelve years.
+- **Where the distribution is heading.** A steady state repeats the same step for ever. With one observed step, between two nominal years, that is arithmetic and not evidence.
+- **Real moves from noise.** A unit near the border of two classes changes class with a small change of its value, or with an error in either year. With many years such flips show up as moves back and forth; with two they cannot be told apart from lasting moves.
+
+With two periods, stay with the description: `rank_mobility` for who moved and by how much, and `lisa_transitions` for the clusters.
+
+## In short
+
+- **`geo.rank_mobility`**: between ~2012 and ~2024 the ranking of the Sustainable Development Index was broadly kept (Spearman 0.84, Kendall 0.67), a municipality moved 40 positions on average, and 56% stayed in their quintile.
+- **`geo.lisa_transitions`**: 80% of the municipalities kept their LISA type; hot spots went from 46 to 60 and cold spots from 44 to 45, and most changes are to or from "Not significant".
+- **`geo.transitions`**: from one year to the next, a municipality stays in its quintile of night-time lights per capita with a probability of 0.83, and moves are almost always to the next class.
+- **`geo.spatial_transitions`**: those chances differ with the neighbours' class (p = 0.01): low neighbours go with staying low, high neighbours with moving up.
+- Classes formed year by year describe positions; a steady state needs fixed classes, and is an extrapolation in any case.
+- A transition matrix from two periods describes one step. It does not support long-run statements.
+
+## Where next
+
+- **[Convergence: β, σ and clubs](convergence.qmd)**: whether the distribution narrows, and whether units head for one path.
+- **[Maps and spatial dependence](spatial-dependence.qmd)**: Moran's I, LISA and the spatial weights behind this article.
+- **[Regional inequality](inequality.qmd)**: how unequal the distribution is in each year.
+- **[Exploring the data](exploring.qmd)**: distributions, extremes and trends before any of this.
+- **[Case study: the Sustainable Development Index](case-study-sdg.qmd)**: mobility as one step of a complete analysis.

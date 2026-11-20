@@ -10,7 +10,7 @@ The package is built with [hatchling](https://hatch.pypa.io/) and published by G
 | Version | `version` in `pyproject.toml` **and** `__version__` in `src/geo4bolivia/__init__.py` (keep them equal) |
 | PyPI page | `README.md`. Use absolute links and image URLs: relative ones break on PyPI |
 | Repository the installed package reads data from | `repository` and `default_ref` in `project.yaml`, bundled into the wheel |
-| Extras | `[project.optional-dependencies]`: `dynamics` (giddy), `gwr` (mgwr), `panel` (linearmodels), `raster` (rasterio), `all` |
+| Extras | `[project.optional-dependencies]`: `dynamics` (giddy), `mgwr`, `panel` (linearmodels), `raster` (rasterio), `all` |
 
 ## Every release
 
