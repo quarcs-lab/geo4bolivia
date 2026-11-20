@@ -220,12 +220,16 @@ _MAP_HEIGHT = 540
 _MAP_ROOM = (620.0, 440.0)
 
 
-def _center_zoom(bounds: ArrayLike) -> tuple[dict[str, float], float]:
+def _center_zoom(
+    bounds: ArrayLike, *, room: tuple[float, float] = _MAP_ROOM, pad: float = 0.25
+) -> tuple[dict[str, float], float]:
     """Compute a MapLibre ``center`` / ``zoom`` fitting the WGS84 ``bounds``.
 
     ``bounds`` is ``(minx, miny, maxx, maxy)`` in degrees. A web map at zoom ``z`` draws
-    the world 512 * 2**z pixels wide, so the zoom that fits a span into the map's room
-    follows from the span in longitude and, for the height, in Web-Mercator latitude.
+    the world 512 * 2**z pixels wide, so the zoom that fits a span into the map's ``room``
+    (width, height in pixels) follows from the span in longitude and, for the height, in
+    Web-Mercator latitude. ``pad`` zooms out by that much to leave a margin (0.25 draws
+    the units at 84% of the room).
     """
     minx, miny, maxx, maxy = (float(b) for b in np.asarray(bounds, dtype=float))
 
@@ -238,8 +242,8 @@ def _center_zoom(bounds: ArrayLike) -> tuple[dict[str, float], float]:
     center = {"lon": (minx + maxx) / 2.0, "lat": middle}
     span_lon = max(maxx - minx, 1e-5)
     span_lat = max(high - low, 1e-5)
-    width, height = _MAP_ROOM
-    zoom = min(math.log2(width * 360.0 / (512.0 * span_lon)), math.log2(height * 360.0 / (512.0 * span_lat))) - 0.25
+    width, height = room
+    zoom = min(math.log2(width * 360.0 / (512.0 * span_lon)), math.log2(height * 360.0 / (512.0 * span_lat))) - pad
     return center, float(min(max(zoom, 0.0), 14.0))
 
 

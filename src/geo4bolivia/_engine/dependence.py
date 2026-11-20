@@ -30,7 +30,7 @@ from pandas.api import types as pdt
 from ._common import entity_display_map
 from ._geo import _align_cross_section, _first_ids, resolve_gdf_entity
 from ._labels import resolve_label
-from ._mapping import categorical_map
+from ._mapping import _center_zoom, categorical_map
 from ._panel import resolve_entity_name, resolve_panel
 from ._theme import (
     ANNOTATION_BG,
@@ -243,9 +243,22 @@ def _moran_scatter(
     return fig
 
 
-# The map panel of ``lisa_panels`` is about 380 px wide instead of the single map's 620 px,
-# so its zoom drops (a bit less than log2(620 / 380), as the panel is taller) to keep the whole study area in view.
-_PANEL_ZOOM_SHIFT = 0.5
+# The layout of ``lisa_panels``: the map, the point of a geospatial package, gets a little more
+# width than the scatterplot.
+_PANEL_COLUMNS = (0.44, 0.56)
+_PANEL_SPACING = 0.05
+_PANEL_HEIGHT = 650
+_PANEL_MARGIN = {"l": 60, "r": 20, "t": 125, "b": 100}
+# Plotly's tiled ``map`` subplot cannot fit its bounds to the panel by itself, so the zoom is
+# computed once, for the narrowest figure it is meant for: 760 px wide (the floor of the
+# documentation's wide figures). The map panel's width binds there (about 360 px); wider pages
+# leave room at the sides. ``_PANEL_PAD`` keeps a small margin (the units fill 93% of that side).
+_PANEL_MIN_WIDTH = 760
+_PANEL_ROOM = (
+    (_PANEL_MIN_WIDTH - _PANEL_MARGIN["l"] - _PANEL_MARGIN["r"]) * (1 - _PANEL_SPACING) * _PANEL_COLUMNS[1],
+    _PANEL_HEIGHT - _PANEL_MARGIN["t"] - _PANEL_MARGIN["b"],
+)
+_PANEL_PAD = 0.1
 
 
 def _on_left_panel(spec: dict) -> dict:
@@ -263,6 +276,7 @@ def lisa_panels(
     title: str | None,
     subtitle: str | None,
     legend_title: str = "Cluster",
+    bounds: Any = None,
 ) -> go.Figure:
     """The Moran scatterplot (left) and the LISA cluster map (right) in one figure.
 
@@ -271,6 +285,8 @@ def lisa_panels(
     listed, so one legend click shows or hides a cluster type in both panels. The
     scatter's zero lines and Moran's I box move into the left panel; the map keeps its
     basemap (``map`` subplot) or, for the vector backend, becomes a ``geo`` subplot.
+    ``bounds`` (WGS84 ``minx, miny, maxx, maxy`` of the mapped units) fits the basemap's
+    view to the panel; without them the single map's view is kept.
     """
     from plotly.subplots import make_subplots
 
@@ -279,7 +295,8 @@ def lisa_panels(
         rows=1,
         cols=2,
         specs=[[{"type": "xy"}, {"type": "map" if tiled else "geo"}]],
-        horizontal_spacing=0.06,
+        column_widths=list(_PANEL_COLUMNS),
+        horizontal_spacing=_PANEL_SPACING,
         subplot_titles=("Moran scatterplot", "Cluster map"),
     )
     for trace in fig_scatter.data:
@@ -300,8 +317,10 @@ def lisa_panels(
 
     if tiled:
         view = fig_map.layout.map
-        zoom = max(float(view.zoom or 0.0) - _PANEL_ZOOM_SHIFT, 0.0)
-        fig.update_layout(map={"style": view.style, "center": view.center, "zoom": zoom})
+        center, zoom = view.center, view.zoom
+        if bounds is not None:
+            center, zoom = _center_zoom(bounds, room=_PANEL_ROOM, pad=_PANEL_PAD)
+        fig.update_layout(map={"style": view.style, "center": center, "zoom": zoom})
     else:
         fig.update_geos(visible=False, fitbounds="locations")
 
@@ -309,11 +328,11 @@ def lisa_panels(
         fig,
         title=title,
         subtitle=subtitle,
-        height=600,
+        height=_PANEL_HEIGHT,
         # A fixed entry width: Plotly's own measure clips the last label of a horizontal legend
         legend={"orientation": "h", "x": 0.5, "xanchor": "center", "y": -0.14, "yanchor": "top",
                 "entrywidth": 108, "entrywidthmode": "pixels", "title": {"text": legend_title, "side": "left"}},
-        margin={"l": 60, "r": 20, "t": 125, "b": 100},
+        margin=dict(_PANEL_MARGIN),
     )
     return fig
 

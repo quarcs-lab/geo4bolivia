@@ -205,6 +205,7 @@ def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, see
             title=title or f"LISA: {resolve_label(df, variable)}{when}",
             subtitle=res.w_spec,
             legend_title=f"Cluster (p < {res.alpha:g})",
+            bounds=(geo.to_crs(4326) if geo.crs is not None else geo).total_bounds,
         )
         res = dataclasses.replace(res, fig=both)
     return _inputs.finish(res, df)

@@ -60,9 +60,22 @@ def test_lisa_shows_the_scatterplot_and_the_map_side_by_side(field, units):
     assert len(points) == len(areas) == 5 and any(t.mode == "lines" for t in res.fig.data)
     assert [t.legendgroup for t in points] == [t.legendgroup for t in areas] == [t.name for t in points]
     assert all(t.showlegend for t in points) and not any(t.showlegend for t in areas)   # one legend for both
-    assert res.fig.layout.map.domain.x[0] > 0.5 > res.fig.layout.xaxis.domain[1]
+    scatter, area = res.fig.layout.xaxis.domain, res.fig.layout.map.domain.x
+    assert scatter[1] < area[0] and area[1] - area[0] > scatter[1] - scatter[0]   # the map on the right, wider
     assert "Moran's I" in " ".join(a.text for a in res.fig.layout.annotations)
     assert res.fig.layout.title.text.startswith("LISA: ")
+
+
+def test_lisa_fits_the_map_to_its_panel(field, units):
+    from geo4bolivia._engine import dependence
+    from geo4bolivia._engine._mapping import _center_zoom
+
+    res = geo.lisa(field, "y", gdf=units)
+    bounds = units.to_crs(4326).total_bounds
+    _, zoom = _center_zoom(bounds, room=dependence._PANEL_ROOM, pad=dependence._PANEL_PAD)
+    assert res.fig.layout.map.zoom == pytest.approx(zoom)
+    assert res.fig.layout.map.zoom > res.fig_map.layout.map.zoom - 0.5   # larger than the old fixed shift
+    assert res.fig.layout.height == dependence._PANEL_HEIGHT
 
 
 def test_lisa_panels_choose_the_figure(field, units):
@@ -71,7 +84,7 @@ def test_lisa_panels_choose_the_figure(field, units):
     scatter = geo.lisa(field, "y", gdf=units, panels="scatter")
     assert all(t.type == "scatter" for t in scatter.fig.data) and scatter.fig is scatter.fig_scatter
     vector = geo.lisa(field, "y", gdf=units, tiles=None)
-    assert any(t.type == "choropleth" for t in vector.fig.data) and vector.fig.layout.geo.domain.x[0] > 0.5
+    assert any(t.type == "choropleth" for t in vector.fig.data) and vector.fig.layout.geo.domain.x[0] > 0.45
     with pytest.raises(ValueError, match="panels"):
         geo.lisa(field, "y", gdf=units, panels="both panels")
 
