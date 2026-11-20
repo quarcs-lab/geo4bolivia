@@ -4,7 +4,7 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
-## 0.7.2 (unreleased)
+## 0.7.2 (2026-11-20)
 
 **Maps: the basemap's credit moves off the map.** The white "© OpenStreetMap contributors © CARTO" box no longer covers a corner of every map drawn on a basemap (`map`, `lisa`, `connectivity`, `lisa_transitions`, `mgwr`, `convergence_clubs`, ...): the same CARTO style is drawn without its box, and the credit the tiles' licences require is a small grey line below the map. The style is downloaded from CARTO once per session; without a connection the maps keep Plotly's box. On this site the credit is a small (i) button on the map.
 
