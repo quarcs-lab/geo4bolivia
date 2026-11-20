@@ -4,6 +4,10 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
+## Documentation (unreleased)
+
+- The site opens in a dark theme matching the observatory's website (a toggle switches to light), with dark figures and tables. Every code box has Copy at the top and, for Python, Open in Colab at the bottom, which opens the page's notebook; each function of the reference has its own example notebook.
+
 ## 0.6.0 (2026-11-20)
 
 geo4bolivia becomes a self-contained package for spatial data science, in its own repository, with its own documentation site.

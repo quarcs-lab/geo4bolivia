@@ -1,0 +1,131 @@
+<script>
+// The code boxes of the observatory's website (its CodeBlock component): a bar on top with the
+// window dots, a title and Copy; a bar below with Open in Colab, which opens this page's notebook.
+// Python boxes get both bars; terminal boxes (bash, sh, or lines starting with pip/uv/$) and the
+// signatures of the reference pages only the top one. Styles: g4-common.scss (.g4-code).
+(function () {
+  "use strict";
+  var COLAB = "https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/";
+  var COLAB_EMPTY = "https://colab.research.google.com/notebooks/empty.ipynb";
+  var GUIDES = ["get-started", "explore", "analyze"];
+
+  // The page's path inside the site, e.g. "articles/convergence", "reference/lisa", "index"
+  function pagePath() {
+    var meta = document.querySelector('meta[name="quarto:offset"]');
+    var root = new URL(meta ? meta.getAttribute("content") : "./", window.location.href).pathname;
+    var path = window.location.pathname;
+    var rel = path.indexOf(root) === 0 ? path.slice(root.length) : path.replace(/^\//, "");
+    if (rel === "" || rel.slice(-1) === "/") rel += "index.html";
+    return rel.replace(/\.html$/, "");
+  }
+
+  function notebookFor(page) {
+    var parts = page.split("/");
+    var last = parts[parts.length - 1];
+    if (page === "index") return { url: COLAB + "get-started.ipynb", what: "the Get started notebook" };
+    if (GUIDES.indexOf(page) >= 0 || (parts[0] === "articles" && parts.length === 2 && last !== "index"))
+      return { url: COLAB + last + ".ipynb", what: "this page's notebook" };
+    if (parts[0] === "reference" && parts.length === 2 && last !== "index")
+      return { url: COLAB + "reference/" + last + ".ipynb", what: "this function's example notebook" };
+    return { url: COLAB_EMPTY, what: "a blank notebook" };
+  }
+
+  var SVG_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  var SVG_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      var area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(area);
+    });
+  }
+
+  function copyButton(code) {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "g4-code__btn";
+    button.setAttribute("aria-label", "Copy to clipboard");
+    button.innerHTML = SVG_COPY + '<span aria-live="polite">Copy</span>';
+    var timer;
+    button.addEventListener("click", function () {
+      copyText(code.innerText.replace(/\n$/, "")).then(function () {
+        button.classList.add("is-copied");
+        button.innerHTML = SVG_CHECK + '<span aria-live="polite">Copied</span>';
+        button.setAttribute("aria-label", "Copied to clipboard");
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          button.classList.remove("is-copied");
+          button.innerHTML = SVG_COPY + '<span aria-live="polite">Copy</span>';
+          button.setAttribute("aria-label", "Copy to clipboard");
+        }, 2000);
+      });
+    });
+    return button;
+  }
+
+  function colabButton(target) {
+    var link = document.createElement("a");
+    link.className = "g4-code__btn";
+    link.href = target.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.innerHTML = '<img src="https://colab.research.google.com/img/colab_favicon_256px.png" alt="" width="14" height="14">' +
+      '<span>Open in Colab<span class="visually-hidden-g4">: ' + target.what + ' (opens in a new tab)</span></span>';
+    return link;
+  }
+
+  function kindOf(box) {
+    // A function's signature on a reference page (outside its Example section) is not runnable
+    if (/^reference\//.test(pagePath()) && !box.closest(".doc-section-example")) return "signature";
+    var pre = box.querySelector("pre");
+    var code = box.querySelector("code");
+    var classes = ((pre && pre.className) || "") + " " + ((code && code.className) || "");
+    if (/\b(python|py)\b/.test(classes)) return "python";
+    if (/\b(bash|sh|shell|console|zsh)\b/.test(classes)) return "terminal";
+    var first = ((code && code.textContent) || "").trim().split("\n")[0];
+    if (/^(\$ |pip |uv |python -m |git |conda |npm )/.test(first)) return "terminal";
+    return null;
+  }
+
+  function wrap(box, target) {
+    var kind = kindOf(box);
+    var code = box.querySelector("code");
+    if (!kind || !code) return;
+    var shell = document.createElement("div");
+    shell.className = "g4-code g4-code--" + kind;
+    var top = document.createElement("div");
+    top.className = "g4-code__bar g4-code__bar--top";
+    top.innerHTML = '<div class="g4-code__label"><div class="g4-code__dots" aria-hidden="true"><span></span><span></span><span></span></div>' +
+      '<span class="g4-code__title">' + ({ python: "Colab · with geo4bolivia", terminal: "terminal", signature: "signature" })[kind] + "</span></div>";
+    top.appendChild(copyButton(code));
+    box.parentNode.insertBefore(shell, box);
+    shell.appendChild(top);
+    shell.appendChild(box);
+    if (kind === "python") {
+      var bottom = document.createElement("div");
+      bottom.className = "g4-code__bar g4-code__bar--bottom";
+      bottom.appendChild(colabButton(target));
+      shell.appendChild(bottom);
+    }
+  }
+
+  function init() {
+    var target = notebookFor(pagePath());
+    var boxes = document.querySelectorAll("main div.sourceCode, #quarto-document-content div.sourceCode");
+    Array.prototype.forEach.call(boxes, function (box) {
+      if (!box.closest(".g4-code")) wrap(box, target);
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>

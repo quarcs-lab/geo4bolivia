@@ -1,0 +1,108 @@
+/*-- scss:defaults --*/
+
+// The dark theme, the site's default: the GeoDevelopment Observatory of Bolivia's website
+// (lagoon backgrounds, salt text, turquoise links, rose buttons, flamingo accents). The rules both
+// themes share are in g4-common.scss; the light theme is custom.scss.
+$lagoon-950: #071417;
+$lagoon-900: #0b1e22;
+$lagoon-800: #122b30;
+$lagoon-700: #1b3c42;
+$lagoon-600: #29545b;
+$lagoon-500: #3b6f77;
+$teal-700: #13605f;
+$turquoise: #5ad6c6;
+$rose: #d1405a;
+$rose-hover: #b8344d;
+$flamingo: #ff8597;
+$sand: #e7c27d;
+$salt-100: #f2f7f6;
+$salt-200: #e3ecea;
+$salt-300: #cbd9d7;
+$salt-400: #a9bebb;
+$salt-500: #87a09d;
+
+$font-family-sans-serif: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+$primary: $turquoise;
+$secondary: $lagoon-600;
+$success: #34d399;
+$info: $turquoise;
+$warning: $sand;
+$danger: $flamingo;
+$body-bg: $lagoon-950;
+$body-color: $salt-200;
+$body-secondary-color: $salt-400;
+$headings-color: #ffffff;
+$link-color: $turquoise;
+$link-hover-color: #8ce6da;
+$navbar-bg: $lagoon-950;
+$navbar-fg: $salt-200;
+$navbar-hl: $turquoise;
+$footer-bg: $lagoon-950;
+$footer-fg: $salt-400;
+$code-color: $flamingo;
+$code-bg: rgba(255, 255, 255, 0.06);
+$font-size-root: 17px;
+$toc-color: $salt-400;
+$border-color: rgba(255, 255, 255, 0.1);
+$table-color: $salt-200;
+$table-border-color: rgba(255, 255, 255, 0.1);
+$dropdown-bg: $lagoon-900;
+$dropdown-link-color: $salt-200;
+$dropdown-link-hover-bg: $lagoon-800;
+$dropdown-link-hover-color: #ffffff;
+$input-bg: $lagoon-900;
+$input-color: $salt-200;
+$input-border-color: $lagoon-700;
+$callout-color-note: $turquoise;
+$callout-color-tip: #34d399;
+$callout-color-warning: $sand;
+$callout-color-important: $flamingo;
+$callout-color-caution: #fb923c;
+
+// Used by g4-common.scss
+$g4-surface: $lagoon-900;
+$g4-surface-2: $lagoon-800;
+$g4-border: rgba(255, 255, 255, 0.1);
+$g4-text: $salt-200;
+$g4-muted: $salt-400;
+$g4-heading: #ffffff;
+$g4-link: $turquoise;
+$g4-shadow: rgba(0, 0, 0, 0.45);
+
+/*-- scss:rules --*/
+
+// The sidebar, search and callouts sit on the lagoon surfaces
+.sidebar, #quarto-sidebar, .sidebar-navigation {
+  background-color: $lagoon-950;
+}
+.sidebar-item a, .sidebar-item .sidebar-item-text {
+  color: $salt-400;
+}
+.sidebar-item a.active, .sidebar-item a:hover {
+  color: $turquoise;
+}
+#TOC .nav-link, #TOC a {
+  color: $salt-400;
+}
+#TOC .nav-link.active, #TOC a.active {
+  color: $turquoise;
+  border-left-color: $turquoise;
+}
+.callout {
+  background-color: $lagoon-900;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.callout .callout-header {
+  background-color: $lagoon-800 !important;
+}
+.aa-DetachedOverlay, .aa-Panel, .aa-Form {
+  background-color: $lagoon-900 !important;
+  color: $salt-200 !important;
+}
+.navbar {
+  background: rgba(7, 20, 23, 0.92) !important;
+  backdrop-filter: blur(10px);
+}
+::selection {
+  background: rgba(90, 214, 198, 0.35);
+}

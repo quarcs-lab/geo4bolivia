@@ -6,11 +6,14 @@
 Steps:
 
 1. stand-in images for pictures that do not exist yet (``tools/build_images.py``);
-2. a Jupyter kernel named after the package, bound to this environment;
+2. a Jupyter kernel named after the package, bound to this environment, that starts with
+   ``docs/_ipython/profile_default/startup/`` (the site's dark Plotly and Great Tables style);
 3. the function reference with quartodoc (``docs/reference/``, generated, not committed);
 4. an example on every reference page, from ``docs/examples/<function>.py``: the code is
    shown as a Colab user would paste it and run at build time to show its result;
-5. a Colab notebook per article and per guide (``notebooks/``, committed);
+5. a Colab notebook per article and per guide (``notebooks/``, committed), and one per function
+   with its reference example (``notebooks/reference/``, committed): the code boxes' Open in Colab
+   buttons (``docs/code-boxes.html``) open them;
 6. ``docs/llms.txt`` (committed): the index that AI assistants read first;
 7. ``quarto render docs``: pages are executed here and frozen (``docs/_freeze``, committed);
 8. ``docs/_site/llms-full.txt``: every page, signature, docstring and example in one file.
@@ -39,8 +42,6 @@ PACKAGE = CONFIG["package"]
 QUARTO = yaml.safe_load((DOCS / "_quarto.yml").read_text())
 BASE = QUARTO["website"]["site-url"].rstrip("/")
 REPO = QUARTO["website"]["repo-url"].rstrip("/")
-COLAB_EMPTY = "https://colab.research.google.com/notebooks/empty.ipynb"
-COLAB = REPO.replace("https://github.com/", "https://colab.research.google.com/github/") + "/blob/main/notebooks"
 # Pages that become notebooks: the guides and every article
 NOTEBOOK_PAGES = ["get-started", "explore", "analyze"]
 
@@ -95,10 +96,6 @@ def enrich_reference() -> None:
 ```python
 {code}
 ```
-
-::: {{.g4-example-links}}
-[Open a blank Colab notebook to run it]({COLAB_EMPTY})
-:::
 
 ```{{python}}
 #| echo: false
@@ -160,6 +157,30 @@ def clean_prose(text: str, folder: str = "") -> str:
     text = re.sub(r"\]\((?!https?://|#|mailto:)([^)]+?)\.qmd(#[^)]*)?\)", absolute, text)
     text = re.sub(r"\{[.#][^}\n]*\}", "", text)
     return re.sub(r"\n{3,}", "\n\n", text).strip()
+
+
+def build_reference_notebooks() -> None:
+    """One notebook per function, its reference example as shown: the target of the page's Colab button."""
+    folder = NOTEBOOKS / "reference"
+    folder.mkdir(parents=True, exist_ok=True)
+    names = [name for name in public_functions() if example(name) is not None]
+    for stale in folder.glob("*.ipynb"):
+        if stale.stem not in names:
+            stale.unlink()
+    for name in names:
+        link = f"{BASE}/reference/{name}.html"
+        cells = [
+            {"cell_type": "markdown", "metadata": {}, "source": (
+                f"# `{PACKAGE}.{name}`\n\n"
+                f"The example of [`{name}`]({link}) in the [{PACKAGE} function reference]({BASE}/reference/). "
+                f"Run the cell; the reference page documents every argument.")},
+            {"cell_type": "code", "metadata": {}, "execution_count": None, "outputs": [], "source": example(name)},
+        ]
+        notebook = {"cells": cells, "nbformat": 4, "nbformat_minor": 5,
+                    "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
+                                 "language_info": {"name": "python"}}}
+        (folder / f"{name}.ipynb").write_text(json.dumps(notebook, indent=1, ensure_ascii=False) + "\n")
+    print(f"reference notebooks: {len(names)} in {folder.relative_to(ROOT)}/")
 
 
 def build_notebooks() -> None:
@@ -242,11 +263,13 @@ def main(argv: list[str]) -> int:
         return 0
     if not (DOCS / "images" / "hero.webp").exists() or "--placeholders" in argv:
         run(sys.executable, "tools/build_images.py", "--placeholders")
+    # The docs kernel starts with docs/_ipython/profile_default/startup/: the site's dark figures and tables
     run(sys.executable, "-m", "ipykernel", "install", "--user", "--name", PACKAGE,
-        "--display-name", f"Python ({PACKAGE} docs)")
+        "--display-name", f"Python ({PACKAGE} docs)", "--env", "IPYTHONDIR", str(DOCS / "_ipython"))
     run(sys.executable, "-m", "quartodoc", "build", "--config", "docs/_quarto.yml")
     enrich_reference()
     build_notebooks()
+    build_reference_notebooks()
     build_llms(full=False)
     if "--no-render" in argv:
         return 0

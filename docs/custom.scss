@@ -1,7 +1,9 @@
 /*-- scss:defaults --*/
 
-// The Altiplano palette of the GeoDevelopment Observatory of Bolivia: the night over the
-// Salar de Uyuni, Laguna Verde's turquoise, Laguna Colorada's flamingos, salt and sand.
+// The light theme (the site opens in the dark one, theme-dark.scss; the navbar toggle switches).
+// Both use the Altiplano palette of the GeoDevelopment Observatory of Bolivia: the night over the
+// Salar de Uyuni, Laguna Verde's turquoise, Laguna Colorada's flamingos, salt and sand. The rules
+// both themes share are in g4-common.scss.
 $lagoon-950: #071417;
 $lagoon-900: #0b1e22;
 $lagoon-800: #122b30;
@@ -16,219 +18,42 @@ $sand: #e7c27d;
 $salt-100: #f2f7f6;
 $salt-200: #e3ecea;
 $salt-300: #cbd9d7;
+$salt-400: #a9bebb;
 
+$font-family-sans-serif: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 $primary: $teal-700;
 $secondary: $lagoon-600;
 $link-color: $teal-700;
+$body-bg: #ffffff;
+$body-color: #1d2b2d;
 $navbar-bg: $lagoon-900;
 $navbar-fg: $salt-100;
 $navbar-hl: $turquoise;
 $footer-bg: $lagoon-900;
 $footer-fg: $salt-300;
-$body-color: #1d2b2d;
 $headings-color: $lagoon-800;
 $code-color: #a4304a;
 $font-size-root: 17px;
 $toc-color: $teal-700;
 
+// Used by g4-common.scss
+$g4-surface: #ffffff;
+$g4-surface-2: $salt-100;
+$g4-border: $salt-200;
+$g4-text: $body-color;
+$g4-muted: #40575a;
+$g4-heading: $lagoon-800;
+$g4-link: $teal-700;
+$g4-shadow: rgba(7, 20, 23, 0.12);
+
 /*-- scss:rules --*/
 
-// Navigation and footer
-.navbar {
-  border-bottom: 2px solid $turquoise;
-}
-.navbar-brand img {
-  max-height: 34px;
-}
-.navbar .dropdown-menu {
-  --bs-dropdown-link-active-bg: #{$teal-700};
-}
-.nav-footer {
-  border-top: 2px solid $turquoise;
-  a {
-    color: $turquoise;
-  }
-}
-
-h1, h2, h3 {
-  letter-spacing: -0.01em;
-}
-h2 {
-  border-bottom: 1px solid $salt-200;
-  padding-bottom: 0.3rem;
-  margin-top: 2.4rem;
-}
-
-// Code
-div.sourceCode {
-  border: 1px solid $salt-200;
-  border-radius: 0.55rem;
-  background: #f7faf9;
-}
-pre.sourceCode {
-  font-size: 0.87rem;
-}
-
-// Tables
-.table {
-  font-size: 0.93rem;
-}
-.table thead th {
-  border-bottom: 2px solid $teal-700;
-}
-
-// Buttons shared by the home page, the page banners and the examples
-.g4-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1.05rem;
-  border-radius: 0.55rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  line-height: 1.2;
-  text-decoration: none;
-  border: 1px solid transparent;
-  transition: transform 0.08s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-.g4-btn:hover {
-  text-decoration: none;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(7, 20, 23, 0.16);
-}
-.g4-btn--primary {
-  background: $rose;
-  color: #fff;
-}
-.g4-btn--primary:hover {
-  background: $rose-hover;
-  color: #fff;
-}
+// On white, the Colab button keeps Colab's orange (sand text would be too faint)
 .g4-btn--colab {
-  background: #fff;
   color: #b45309;
   border-color: #f9ab00;
 }
 .g4-btn--colab:hover {
   color: #b45309;
   background: #fff7e6;
-}
-.g4-btn--ghost {
-  background: transparent;
-  color: $body-color;
-  border-color: $salt-300;
-}
-.g4-btn--ghost:hover {
-  color: $teal-700;
-  border-color: $teal-700;
-}
-
-// Home page: hero and call to action
-.hero {
-  margin: 0 0 1.5rem;
-  border-radius: 1rem;
-  overflow: hidden;
-  background: $lagoon-950;
-  img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-}
-.hero-lead {
-  text-align: center;
-  font-size: 1.25rem;
-  max-width: 46rem;
-  margin: 0 auto 1rem;
-}
-.hero-cta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.6rem;
-  margin: 0.5rem 0 2.2rem;
-  .g4-btn {
-    padding: 0.6rem 1.3rem;
-    font-size: 1rem;
-  }
-}
-
-// Cards: the families on the home page and the articles
-.g4-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  border: 1px solid $salt-200;
-  border-radius: 0.8rem;
-  overflow: hidden;
-  background: #fff;
-  transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 22px rgba(7, 20, 23, 0.1);
-    border-color: $teal-700;
-  }
-  img {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    display: block;
-    background: $lagoon-900;
-  }
-  h3 {
-    margin: 0.9rem 1.1rem 0.35rem;
-    font-size: 1.12rem;
-    border: 0;
-    a {
-      text-decoration: none;
-      color: $lagoon-800;
-    }
-  }
-  p {
-    margin: 0 1.1rem 1rem;
-    font-size: 0.93rem;
-    color: #40575a;
-  }
-  code {
-    font-size: 0.82rem;
-  }
-}
-
-// The banner at the top of a page: open it in Colab
-.try-banner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1.25rem;
-  margin: 0.5rem 0 1.75rem;
-  padding: 0.85rem 1.2rem;
-  border: 1px solid $salt-200;
-  border-left: 4px solid $turquoise;
-  border-radius: 0.65rem;
-  background: $salt-100;
-  p {
-    margin: 0;
-    flex: 1 1 16rem;
-  }
-}
-
-// Reference pages: the example added to each function, and the index
-.g4-example-links {
-  display: flex;
-  justify-content: flex-end;
-  margin: -0.4rem 0 1rem;
-  font-size: 0.85rem;
-  a {
-    font-weight: 600;
-    text-decoration: none;
-  }
-}
-.doc-index td:first-child a {
-  text-decoration: none;
-  font-weight: 600;
-}
-
-// Plotly figures and Great Tables fit the column on a phone
-.cell-output-display {
-  overflow-x: auto;
 }

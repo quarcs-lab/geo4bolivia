@@ -1,0 +1,385 @@
+/*-- scss:defaults --*/
+
+// Rules shared by the dark (theme-dark.scss) and light (custom.scss) themes. Each theme defines
+// the $g4-* variables used here; the code boxes are dark in both, like the observatory's website.
+
+/*-- scss:rules --*/
+
+// Navigation and footer
+.navbar {
+  border-bottom: 1px solid rgba(90, 214, 198, 0.35);
+}
+.navbar-brand img {
+  max-height: 34px;
+}
+.navbar .dropdown-menu {
+  --bs-dropdown-link-active-bg: #{$teal-700};
+}
+.nav-footer {
+  border-top: 1px solid rgba(90, 214, 198, 0.35);
+  a {
+    color: $turquoise;
+  }
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+h2 {
+  border-bottom: 1px solid $g4-border;
+  padding-bottom: 0.3rem;
+  margin-top: 2.4rem;
+}
+
+// Tables (pandas, Markdown), and Great Tables' outer frame
+.table {
+  font-size: 0.93rem;
+  color: $g4-text;
+  --bs-table-color: #{$g4-text};
+  --bs-table-bg: transparent;
+  --bs-table-striped-color: #{$g4-text};
+  --bs-table-hover-color: #{$g4-text};
+}
+.table thead th {
+  border-bottom: 2px solid $turquoise;
+}
+.cell-output-display .dataframe {
+  color: $g4-text;
+  th, td {
+    border-color: $g4-border;
+  }
+}
+
+// --- Code boxes: the observatory website's CodeBlock (docs/code-boxes.js adds the bars) ---------
+$g4-code-bg: #0f1c1f;
+$g4-code-bar: rgba(255, 255, 255, 0.05);
+$g4-code-line: rgba(255, 255, 255, 0.1);
+
+.g4-code {
+  margin: 1rem 0 1.25rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: $g4-code-bg;
+  border: 1px solid $g4-code-line;
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55);
+  div.sourceCode, pre.sourceCode {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent !important;
+  }
+  pre.sourceCode {
+    padding: 1rem 1.1rem;
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: #cbd9d7;
+    overflow-x: auto;
+  }
+  pre.sourceCode > code.sourceCode > span {
+    color: #cbd9d7;
+  }
+  // Syntax colours of the observatory's highlighter
+  code span.kw, code span.cf, code span.im, code span.op.kw {
+    color: #ff8597;
+    font-weight: 600;
+  }
+  code span.bu, code span.fu, code span.dt, code span.cn {
+    color: #5ad6c6;
+    font-weight: normal;
+  }
+  code span.st, code span.ss, code span.vs, code span.ch, code span.sc {
+    color: #e7c27d;
+  }
+  code span.co, code span.do, code span.an, code span.cv, code span.in {
+    color: #8fb0ad;
+    font-style: italic;
+  }
+  code span.dv, code span.fl, code span.bn {
+    color: #f6a38f;
+  }
+  code span.op, code span.va, code span.at, code span.ot, code span.pp, code span.ex {
+    color: #e3ecea;
+  }
+  code span.er, code span.al, code span.wa {
+    color: #ff8597;
+  }
+}
+.g4-code__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.45rem 1rem;
+  background: $g4-code-bar;
+  font-size: 0.75rem;
+}
+.g4-code__bar--top {
+  border-bottom: 1px solid $g4-code-line;
+}
+.g4-code__bar--bottom {
+  justify-content: flex-end;
+  border-top: 1px solid $g4-code-line;
+}
+.g4-code__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.g4-code__dots {
+  display: flex;
+  gap: 0.375rem;
+  flex-shrink: 0;
+  span {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 999px;
+  }
+  span:nth-child(1) { background: rgba(239, 68, 68, 0.8); }
+  span:nth-child(2) { background: rgba(234, 179, 8, 0.8); }
+  span:nth-child(3) { background: rgba(34, 197, 94, 0.8); }
+}
+.g4-code__title {
+  margin-left: 0.5rem;
+  color: #a9bebb;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.g4-code__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #a9bebb;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+  &:hover, &:focus-visible {
+    color: #ffffff;
+    text-decoration: none;
+  }
+  &:focus-visible {
+    outline: 2px solid $turquoise;
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+  img {
+    width: 14px;
+    height: 14px;
+  }
+  &.is-copied svg {
+    color: $turquoise;
+  }
+}
+.visually-hidden-g4 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+// Text printed by a cell (not a figure) reads as console output under its box
+.cell-output-stdout pre, .cell-output-stderr pre, .cell-output pre {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid $g4-border;
+  border-radius: 0.6rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+}
+
+// Buttons shared by the home page, the page banners and the examples
+.g4-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+.g4-btn:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px $g4-shadow;
+}
+.g4-btn--primary {
+  background: $rose;
+  color: #fff;
+}
+.g4-btn--primary:hover {
+  background: $rose-hover;
+  color: #fff;
+}
+.g4-btn--colab {
+  background: transparent;
+  color: $sand;
+  border-color: rgba(231, 194, 125, 0.6);
+}
+.g4-btn--colab:hover {
+  color: $lagoon-950;
+  background: $sand;
+}
+.g4-btn--ghost {
+  background: transparent;
+  color: $g4-text;
+  border-color: $g4-border;
+}
+.g4-btn--ghost:hover {
+  color: $g4-link;
+  border-color: $g4-link;
+}
+
+// Home page: hero and call to action
+.hero {
+  margin: 0 0 1.5rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: $lagoon-950;
+  border: 1px solid $g4-border;
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+.hero-lead {
+  text-align: center;
+  font-size: 1.3rem;
+  max-width: 46rem;
+  margin: 0 auto 1rem;
+  color: $g4-heading;
+}
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0.5rem 0 2.2rem;
+  .g4-btn {
+    padding: 0.6rem 1.3rem;
+    font-size: 1rem;
+  }
+}
+
+// Cards: the families on the home page and the articles listing
+.g4-card, .quarto-grid-item.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid $g4-border;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: $g4-surface;
+  color: $g4-text;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px $g4-shadow;
+    border-color: $turquoise;
+  }
+}
+.g4-card {
+  img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    background: $lagoon-900;
+  }
+  h3 {
+    margin: 0.9rem 1.1rem 0.35rem;
+    font-size: 1.12rem;
+    border: 0;
+    a {
+      text-decoration: none;
+      color: $g4-heading;
+    }
+    a:hover {
+      color: $g4-link;
+    }
+  }
+  p {
+    margin: 0 1.1rem 1rem;
+    font-size: 0.93rem;
+    color: $g4-muted;
+  }
+  code {
+    font-size: 0.82rem;
+  }
+}
+.quarto-grid-item.card {
+  .card-body, .card-title, .listing-title {
+    color: $g4-heading;
+  }
+  .card-text, .listing-description {
+    color: $g4-muted;
+  }
+  .card-img-top {
+    background: $lagoon-900;
+  }
+}
+
+// The banner at the top of a page: open it in Colab
+.try-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin: 0.5rem 0 1.75rem;
+  padding: 0.85rem 1.2rem;
+  border: 1px solid $g4-border;
+  border-left: 4px solid $turquoise;
+  border-radius: 0.65rem;
+  background: $g4-surface-2;
+  p {
+    margin: 0;
+    flex: 1 1 16rem;
+  }
+}
+
+// Reference pages: the index of functions
+.doc-index td:first-child a {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+// Plotly figures and Great Tables fit the column on a phone; figures sit in a dark card
+.cell-output-display {
+  overflow-x: auto;
+}
+.cell-output-display .plotly-graph-div {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .g4-btn, .g4-card, .quarto-grid-item.card, .g4-code__btn {
+    transition: none;
+  }
+  .g4-btn:hover, .g4-card:hover, .quarto-grid-item.card:hover {
+    transform: none;
+  }
+}

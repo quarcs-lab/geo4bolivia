@@ -84,16 +84,25 @@ execute:
 
 format:
   html:
-    theme: [cosmo, custom.scss]
+    # Dark is listed first, so the site opens dark; the navbar toggle switches to light
+    theme:
+      dark: [darkly, g4-common.scss, theme-dark.scss]
+      light: [cosmo, g4-common.scss, custom.scss]
     toc: true
     toc-depth: 3
-    code-copy: true
-    code-overflow: wrap
+    # The code boxes bring their own Copy and Open in Colab buttons (code-boxes.html)
+    code-copy: false
+    code-overflow: scroll
     code-link: false
     link-external-newwindow: true
     fig-align: center
+    include-after-body:
+      - code-boxes.html
     include-in-header:
       text: |
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <link rel="alternate" type="text/markdown" href="https://quarcs-lab.github.io/geo4bolivia/llms.txt" title="llms.txt for LLMs">
         <link rel="alternate" type="text/plain" href="https://quarcs-lab.github.io/geo4bolivia/llms-full.txt" title="llms-full.txt for LLMs">
 
