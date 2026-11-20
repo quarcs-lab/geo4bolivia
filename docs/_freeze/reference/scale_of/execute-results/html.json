@@ -1,0 +1,12 @@
+{
+  "hash": "d56890385ecc206dd3b21c4962274648",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: scale_of\n---\n\n\n\n```python\nscale_of(geo_id, ref=None)\n```\n\nThe scale a geo ID belongs to, from the ID patterns (e.g. a municipality ID -> ``\"municipality\"``).\n\n## Example {.doc-section .doc-section-example}\n\n```python\n!pip install -q geo4bolivia\nimport geo4bolivia as geo\nimport plotly.express as px\n\nprint(geo.scale_of(\"BO-04-17-04\"), geo.scale_of(\"BO-04\"))\n```\n\n::: {.g4-example-links}\n[Open a blank Colab notebook to run it](https://colab.research.google.com/notebooks/empty.ipynb)\n:::\n\n\n::: {#1234419a .cell execution_count=1}\n\n::: {.cell-output .cell-output-stdout}\n```\nmunicipality department\n```\n:::\n:::\n\n\n",
+    "supporting": [
+      "scale_of_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

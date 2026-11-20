@@ -623,6 +623,22 @@ def _mgwr_gt(
     )
 
 
+@contextlib.contextmanager
+def _no_progress_bars():
+    """Switch tqdm's progress bars off for the duration (they would fill a notebook's output)."""
+    import os
+
+    before = os.environ.get("TQDM_DISABLE")
+    os.environ["TQDM_DISABLE"] = "1"
+    try:
+        yield
+    finally:
+        if before is None:
+            os.environ.pop("TQDM_DISABLE", None)
+        else:
+            os.environ["TQDM_DISABLE"] = before
+
+
 #: Local condition number above which local collinearity is a concern (Belsley et al.).
 _CN_THRESHOLD = 30.0
 
@@ -813,8 +829,8 @@ def analyze_mgwr(
     from mgwr.sel_bw import Sel_BW
 
     selector = Sel_BW(coords, y, x, multi=True, fixed=False, kernel=kernel)
-    # mgwr reports its progress on stdout and, with tqdm installed, on stderr
-    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+    # mgwr reports its progress on stdout and, with tqdm installed, with progress bars
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()), _no_progress_bars():
         bws = np.asarray(
             selector.search(criterion=criterion, max_iter_multi=int(max_iter)),
             dtype=float,

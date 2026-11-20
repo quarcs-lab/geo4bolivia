@@ -6,22 +6,22 @@ geo4bolivia is the Python package of the GeoDevelopment Observatory of Bolivia. 
 
 ## Pages
 
-- [analyze](https://quarcs-lab.github.io/geo4bolivia/analyze.html)
+- [Analyze](https://quarcs-lab.github.io/geo4bolivia/analyze.html): A tour of the analysis functions on one question: did sustainable development become more equal across Bolivia's municipalities, and what role does space play?
 - [Changelog](https://quarcs-lab.github.io/geo4bolivia/changelog.html): What changed in each release of geo4bolivia.
-- [explore](https://quarcs-lab.github.io/geo4bolivia/explore.html)
-- [get-started](https://quarcs-lab.github.io/geo4bolivia/get-started.html)
-- [use-with-llms](https://quarcs-lab.github.io/geo4bolivia/use-with-llms.html)
-- [case-study-sdg](https://quarcs-lab.github.io/geo4bolivia/articles/case-study-sdg.html)
-- [convergence](https://quarcs-lab.github.io/geo4bolivia/articles/convergence.html)
-- [data-model](https://quarcs-lab.github.io/geo4bolivia/articles/data-model.html)
-- [exploring](https://quarcs-lab.github.io/geo4bolivia/articles/exploring.html)
-- [heterogeneity](https://quarcs-lab.github.io/geo4bolivia/articles/heterogeneity.html)
-- [index](https://quarcs-lab.github.io/geo4bolivia/articles/index.html)
-- [inequality](https://quarcs-lab.github.io/geo4bolivia/articles/inequality.html)
-- [models](https://quarcs-lab.github.io/geo4bolivia/articles/models.html)
-- [own-indicators](https://quarcs-lab.github.io/geo4bolivia/articles/own-indicators.html)
-- [spatial-dependence](https://quarcs-lab.github.io/geo4bolivia/articles/spatial-dependence.html)
-- [transitions](https://quarcs-lab.github.io/geo4bolivia/articles/transitions.html)
+- [Explore](https://quarcs-lab.github.io/geo4bolivia/explore.html): A first pass over one indicator, the Sustainable Development Index: summaries, distributions, extremes, correlations, trends and maps, before any model.
+- [Get started](https://quarcs-lab.github.io/geo4bolivia/get-started.html): Install geo4bolivia, find a variable, load it, map it and run a first spatial analysis, in ten minutes.
+- [For AI assistants and LLMs](https://quarcs-lab.github.io/geo4bolivia/use-with-llms.html): How an AI assistant should install and call geo4bolivia, and the files that describe the package to it.
+- [Case study: the Sustainable Development Index, ~2012 to ~2024](https://quarcs-lab.github.io/geo4bolivia/articles/case-study-sdg.html): One complete analysis with geo4bolivia: how the Sustainable Development Index of Bolivia's 343 municipalities changed between two periods, which goals moved, whether municipalities converged, and where.
+- [Convergence: β, σ and clubs](https://quarcs-lab.github.io/geo4bolivia/articles/convergence.html): Three questions about catching up, and the method for each: do units that start lower grow faster, is dispersion falling, and do units head for one path or for several?
+- [The data model: scales, geo IDs, datasets and metadata](https://quarcs-lab.github.io/geo4bolivia/articles/data-model.html): How the observatory's data are organised (spatial scales, geo IDs, panels and metadata) and how the package reads them.
+- [Exploring the data](https://quarcs-lab.github.io/geo4bolivia/articles/exploring.html): A question-driven exploration of multidimensional poverty in Bolivia's municipalities, and the pitfalls of these data that a newcomer should know.
+- [Spatial heterogeneity: MGWR](https://quarcs-lab.github.io/geo4bolivia/articles/heterogeneity.html): Multiscale geographically weighted regression asks whether an association differs from place to place and at what spatial scale it operates: how to run it with geo.mgwr and how to read its bandwidths, coefficient maps and diagnostics.
+- [Articles](https://quarcs-lab.github.io/geo4bolivia/articles/index.html): One article per method, written around Bolivia's data, and a complete case study.
+- [Regional inequality](https://quarcs-lab.github.io/geo4bolivia/articles/inequality.html): How unequal Bolivia's municipalities are, whether that is changing, and whether the inequality lies between departments or inside them: Gini, Theil, the Lorenz curve and Theil's decomposition.
+- [Regression, panel and spatial models](https://quarcs-lab.github.io/geo4bolivia/articles/models.html): Three kinds of regression model for subnational data, what each one compares and when it is the right tool: least squares with fixed effects and clustered errors, panel estimators with the Hausman test, and spatial models with their diagnostics and impacts.
+- [Building your own indicators](https://quarcs-lab.github.io/geo4bolivia/articles/own-indicators.html): From a table or a raster of your own to an analysis: link it to the geo IDs, compute zonal statistics, move it across scales, save it and analyse it.
+- [Maps and spatial dependence](https://quarcs-lab.github.io/geo4bolivia/articles/spatial-dependence.html): From a map to a test: classed maps, spatial weights, global Moran's I and LISA clusters of multidimensional poverty in Bolivia's municipalities, and how far the conclusions depend on the choices made.
+- [Transitions and mobility](https://quarcs-lab.github.io/geo4bolivia/articles/transitions.html): How units move inside a distribution: changes of rank between two years, moves between spatial cluster types, and Markov transition matrices with and without the neighbours.
 - [Function reference](https://quarcs-lab.github.io/geo4bolivia/reference/index.html): every public function, with an example
 - [llms-full.txt](https://quarcs-lab.github.io/geo4bolivia/llms-full.txt): all of the above in one file
 
@@ -33,7 +33,7 @@ geo4bolivia is the Python package of the GeoDevelopment Observatory of Bolivia. 
 - [`geo.dictionary(dataset: 'str', scale: 'str | None' = None, ref: 'str | None' = None) -> 'pd.DataFrame'`](https://quarcs-lab.github.io/geo4bolivia/reference/dictionary.html): The variable dictionary of a dataset, one row per column.
 - [`geo.reference_years(dataset: 'str', variable: 'str | None' = None, scale: 'str | None' = None, ref: 'str | None' = None) -> 'pd.DataFrame'`](https://quarcs-lab.github.io/geo4bolivia/reference/reference_years.html): The actual years behind each stored year, one row per variable and stored year.
 - [`geo.cite(dataset: 'str', style: 'str' = 'apa', ref: 'str | None' = None) -> 'str'`](https://quarcs-lab.github.io/geo4bolivia/reference/cite.html): How to cite a dataset: its recommended citation, then the credits its sources require.
-- [`geo.labels(data, ref: 'str | None' = None) -> 'dict[str, str]'`](https://quarcs-lab.github.io/geo4bolivia/reference/labels.html): Readable labels for the columns of a panel (or every field of a dataset id).
+- [`geo.labels(data, own: 'dict[str, str] | None' = None, ref: 'str | None' = None) -> 'dict[str, str]'`](https://quarcs-lab.github.io/geo4bolivia/reference/labels.html): Readable labels for the columns of a panel (or every field of a dataset id).
 - [`geo.describe(df: 'pd.DataFrame', variables=None, by: 'str | None' = 'year', ref: 'str | None' = None) -> 'pd.DataFrame'`](https://quarcs-lab.github.io/geo4bolivia/reference/describe.html): Summary statistics of a panel's variables, per ``by`` group (default: per year).
 
 ## Load data, units and boundaries

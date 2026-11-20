@@ -23,6 +23,7 @@ listing:
     - articles/models.qmd
     - articles/heterogeneity.qmd
     - articles/own-indicators.qmd
+sidebar: false
 ---
 
 ::: {.hero}

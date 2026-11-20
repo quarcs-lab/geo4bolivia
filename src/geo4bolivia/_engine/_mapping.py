@@ -32,6 +32,7 @@ import geopandas as gpd
 import numpy as np
 import plotly.colors as pcolors
 import plotly.graph_objects as go
+import shapely
 
 from ._theme import (
     MAP_DIVERGING,
@@ -89,21 +90,48 @@ def _wgs84_simplified(
         )
         if simplify == "auto":
             minx, miny, maxx, maxy = metric.total_bounds
-            tolerance = max(maxx - minx, maxy - miny) / 2000.0
+            tolerance = max(maxx - minx, maxy - miny) / _AUTO_SIMPLIFY_DIVISOR
         else:
             tolerance = float(simplify)
         if tolerance > 0:
             metric = metric.copy() if metric is g else metric
-            metric[geom_col] = metric.geometry.simplify(
-                tolerance, preserve_topology=True
-            )
+            metric[geom_col] = _simplified(metric.geometry, tolerance)
         g = metric
     if g.crs is not None:
         g = g.to_crs("EPSG:4326")
     # Plotly's vector maps (tiles=None) follow d3's winding rule: a polygon whose exterior
     # ring runs anticlockwise is drawn as everything *outside* it. Tile maps accept either.
     g[geom_col] = g.geometry.apply(_clockwise)
+    if simplify is not None:
+        # five decimals of a degree are about one metre: more digits only make the figure heavier
+        g[geom_col] = shapely.transform(g.geometry.values, lambda xy: np.round(xy, 5))
     return g
+
+
+#: ``simplify="auto"`` removes detail smaller than the map's extent divided by this number
+#: (about 2.5 km for a country 1,500 km across): invisible at the scale of the whole map,
+#: and it keeps a figure of a few hundred units well under half a megabyte.
+_AUTO_SIMPLIFY_DIVISOR = 600.0
+
+
+def _simplified(geometry: gpd.GeoSeries, tolerance: float) -> Any:
+    """Simplified geometries: as one coverage when the units tile the map, else one by one.
+
+    Simplifying polygons one by one moves each side of a shared border separately, which
+    opens gaps and overlaps between neighbours. ``shapely.coverage_simplify`` moves shared
+    borders once, so neighbours still fit; it needs polygons that do not overlap, and
+    anything else falls back to the one-by-one method.
+    """
+    values = geometry.values
+    kinds = set(geometry.geom_type.dropna())
+    if len(values) > 1 and kinds <= {"Polygon", "MultiPolygon"} and hasattr(shapely, "coverage_simplify"):
+        try:
+            light = shapely.coverage_simplify(values, tolerance)
+            if not (shapely.is_empty(light) | shapely.is_missing(light)).any():
+                return light
+        except Exception:  # not a valid coverage
+            pass
+    return geometry.simplify(tolerance, preserve_topology=True).values
 
 
 def _clockwise(geometry: Any) -> Any:

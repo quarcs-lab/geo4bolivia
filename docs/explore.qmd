@@ -2,6 +2,7 @@
 title: "Explore"
 description: "A first pass over one indicator, the Sustainable Development Index: summaries, distributions, extremes, correlations, trends and maps, before any model."
 image: images/thumbs/exploring.webp
+sidebar: false
 ---
 
 ```{=html}

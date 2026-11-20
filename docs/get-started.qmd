@@ -2,6 +2,7 @@
 title: "Get started"
 description: "Install geo4bolivia, find a variable, load it, map it and run a first spatial analysis, in ten minutes."
 image: images/hero.webp
+sidebar: false
 ---
 
 ```{=html}

@@ -277,7 +277,7 @@ class LisaTransitionsResult(Interpretable):
 
     def interpret(self, *, lang: str = "en") -> str:
         """A plain-language reading of how the local clusters changed between the two years."""
-        return _interpret_lisa_transitions(self)
+        return self._read(_interpret_lisa_transitions(self))
 
     def tidy(self) -> pd.DataFrame:
         """The transition matrix as a long table: one row per pair of types."""
@@ -400,6 +400,7 @@ def lisa_transitions(data, variable: str, first=None, last=None, *, w=None, perm
                          subtitle=f"{n_moved:,} of {n_units:,} units changed type; {w_spec}",
                          legend_title_text=f"Type in {last}")
 
+    table.attrs["geo_labels"] = dict(df.attrs.get("geo_labels") or {})   # the reading names the variable by its label
     return LisaTransitionsResult(
         df=table, matrix=matrix, shares=shares, fig=fig, fig_map=fig_map, n_units=n_units,
         n_stayed=n_units - n_moved, n_moved=n_moved, share_stayed=(n_units - n_moved) / n_units,
@@ -505,7 +506,7 @@ class RankMobilityResult(Interpretable):
 
     def interpret(self, *, lang: str = "en") -> str:
         """A plain-language reading of how much the ranking changed between the two years."""
-        return _interpret_rank_mobility(self)
+        return self._read(_interpret_rank_mobility(self))
 
     def tidy(self) -> pd.DataFrame:
         """The table with one row per unit."""
@@ -660,6 +661,7 @@ def rank_mobility(data, variable: str, first=None, last=None, *, k: int = 5, top
           .fmt_number(columns=[v0, v1], n_sigfig=4)
           .fmt_integer(columns="rank_change", force_sign=True))
 
+    table.attrs["geo_labels"] = dict(panel.attrs.get("geo_labels") or {})   # the reading names the variable by its label
     return RankMobilityResult(
         df=table, matrix=matrix, counts=counts, climbers=climbers, fallers=fallers, fig=fig, fig_matrix=fig_matrix,
         gt=gt, spearman=spearman, kendall=kendall, mean_abs_change=float(moves.abs().mean()),

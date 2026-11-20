@@ -1,0 +1,12 @@
+{
+  "hash": "aec0184ebca09a8eaacce9f8791cc9a7",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: check\n---\n\n\n\n```python\ncheck(df, scale=None, time='year', ref=None)\n```\n\nProblems that would stop ``df`` from being a valid panel at ``scale`` (empty list = OK).\n\nChecks: a ``geo_id`` column, ids known at the scale, one row per unit (and\nyear) and integer years.\n\n## Parameters {.doc-section .doc-section-parameters}\n\n| Name   | Type         | Description                                      | Default    |\n|--------|--------------|--------------------------------------------------|------------|\n| df     | pd.DataFrame | Your panel, e.g. from ``geo.link``               | _required_ |\n| scale  | str \\| None  | Its scale (default: inferred from ``geo_id``)    | `None`     |\n| time   | str \\| None  | The year column, or ``None`` for a cross-section | `'year'`   |\n\n## Example {.doc-section .doc-section-example}\n\n```python\n!pip install -q geo4bolivia\nimport geo4bolivia as geo\nimport plotly.express as px\nimport pandas as pd\n\ndf = pd.DataFrame({\"geo_id\": [\"BO-04-17-04\", \"BO-04-17-04\", \"BO-99\"],\n                   \"year\": [2024, 2024, 2024], \"x\": [1, 2, 3]})\ngeo.check(df, scale=\"municipality\")        # unknown id, duplicate rows\n```\n\n::: {.g4-example-links}\n[Open a blank Colab notebook to run it](https://colab.research.google.com/notebooks/empty.ipynb)\n:::\n\n\n::: {#0dd2757c .cell execution_count=1}\n\n::: {.cell-output .cell-output-display execution_count=1}\n```\n[\"geo_id not found at scale 'municipality': ['BO-99']\",\n \"1 duplicate rows for ['geo_id', 'year']\"]\n```\n:::\n:::\n\n\n",
+    "supporting": [
+      "check_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

@@ -173,7 +173,14 @@ def add_names(df: pd.DataFrame, groups=None, scale: str | None = None, ref: str 
     if scale is None:
         found = {scale_of(i, ref) for i in df["geo_id"].dropna().drop_duplicates()}
         if len(found) != 1:
-            raise ValueError(f"Rows mix units from several scales: {sorted(found)}")
+            if groups:
+                raise ValueError(f"Rows mix units from several scales ({sorted(found)}), so groups= cannot be added")
+            # a stacked table (e.g. aggregate(to=[...])): each unit takes its own name
+            every = units(ref=ref).set_index("geo_id")["name"]
+            out = df.drop(columns="name", errors="ignore").copy()
+            out["name"] = out["geo_id"].map(every)
+            first = ["geo_id", "name"] + (["year"] if "year" in out.columns else [])
+            return out[first + [c for c in out.columns if c not in first]]
         scale = found.pop()
     groups = [groups] if isinstance(groups, str) else list(groups or [])
     unit_table = units(scale, ref=ref).set_index("geo_id")

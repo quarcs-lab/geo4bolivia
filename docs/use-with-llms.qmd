@@ -1,6 +1,7 @@
 ---
 title: "For AI assistants and LLMs"
 description: "How an AI assistant should install and call geo4bolivia, and the files that describe the package to it."
+sidebar: false
 ---
 
 AI assistants write better code for a package when they can read what it offers. This page is for people who work with an assistant (Claude, ChatGPT, Gemini, Copilot) and for the assistants themselves.

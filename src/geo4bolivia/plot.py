@@ -38,7 +38,11 @@ def _label(df: pd.DataFrame, variable: str, ref: str | None) -> str:
         return variable
 
 
-def _with_shapes(df: pd.DataFrame, scale: str | None, simplify: float | None, ref: str | None) -> gpd.GeoDataFrame:
+_METRES_PER_DEGREE = 111_000.0
+
+
+def _with_shapes(df: pd.DataFrame, scale: str | None, simplify: float | str | None,
+                 ref: str | None) -> gpd.GeoDataFrame:
     """The rows of a table with their unit's name and boundary, in EPSG:4326 and simplified."""
     if not isinstance(df, gpd.GeoDataFrame) or "geometry" not in df.columns:
         scale = scale or scale_of(df["geo_id"].iloc[0], ref)
@@ -52,7 +56,12 @@ def _with_shapes(df: pd.DataFrame, scale: str | None, simplify: float | None, re
     gdf = gpd.GeoDataFrame(df, geometry="geometry", crs=getattr(df, "crs", None) or "EPSG:4326").reset_index(drop=True)
     gdf = gdf.to_crs("EPSG:4326")
     if simplify:
-        gdf["geometry"] = gdf.geometry.simplify(simplify, preserve_topology=True)
+        from ._engine._mapping import _wgs84_simplified
+        # one boundary per unit (a panel repeats them), simplified as a coverage so neighbours still fit
+        tolerance = simplify if simplify == "auto" else float(simplify) * _METRES_PER_DEGREE
+        light = _wgs84_simplified(gdf.drop_duplicates("geo_id")[["geo_id", "geometry"]], "geo_id", tolerance)
+        gdf["geometry"] = gdf["geo_id"].map(light.set_index("geo_id")["geometry"])
+        gdf = gdf.set_geometry("geometry", crs="EPSG:4326")
     return gdf
 
 
@@ -240,7 +249,7 @@ def _draw(panels: list[tuple[str | None, gpd.GeoDataFrame]], column: str, *, leg
 
 
 def map(data, variable: str, year=None, scale: str | None = None, title: str | None = None,
-        simplify: float | None = 0.005, ref: str | None = None, *, scheme: str | None = None, k: int = 5,
+        simplify: float | str | None = "auto", ref: str | None = None, *, scheme: str | None = None, k: int = 5,
         bins=None, change: bool = False, **kwargs):
     """An interactive choropleth map (Plotly) of one variable: in one year, in several years side by
     side, or its change between two years; on a continuous colour scale or in classes.
@@ -262,9 +271,11 @@ def map(data, variable: str, year=None, scale: str | None = None, title: str | N
     title
         The figure title (default: the variable's label and the year)
     simplify
-        Tolerance in degrees for simplifying the drawn boundaries (about 500 m by
-        default, invisible at the country's scale; it keeps the figure light). ``None``
-        draws them in full detail
+        How much to simplify the drawn boundaries, which keeps the figure light.
+        ``"auto"`` (the default) removes detail smaller than about 1/600 of the map's
+        extent, invisible at the scale of the whole map; a number is a tolerance in
+        degrees (0.005 is about 500 m), for maps you will zoom into; ``None`` draws
+        the boundaries in full detail. Neighbouring units keep fitting each other
     scheme
         Draw classes instead of a continuous scale, one colour per class with its
         range in the legend: ``"fisher_jenks"`` (natural breaks: similar values together),
