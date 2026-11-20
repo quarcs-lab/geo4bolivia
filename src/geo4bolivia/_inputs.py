@@ -24,6 +24,7 @@ from .scales import scale_of
 
 ENTITY, TIME, NAME = "geo_id", "year", "name"
 _LABELS_KEY = "geo_labels"     # where the engine keeps the labels declared on a table (``_engine._labels``)
+_NOTE_KEY = "geo_left_out"      # a note on the units ``spatial`` left out, passed on to the result
 
 
 def as_list(value) -> list:
@@ -100,7 +101,9 @@ def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, 
             raise TypeError(f"Column(s) {text} must be numeric")
     df = df.reset_index(drop=True)
     set_panel(df, entity=ENTITY, time=TIME if TIME in df.columns else None, entity_name=NAME)
-    set_labels(df, {k: v for k, v in _labels(df, ref).items() if k not in (ENTITY, NAME, TIME)})
+    # labels the user declared with ``labels(df, own=...)`` win over the metadata's
+    own = dict(getattr(data, "attrs", {}).get(_LABELS_KEY) or {})
+    set_labels(df, {**{k: v for k, v in _labels(df, ref).items() if k not in (ENTITY, NAME, TIME)}, **own})
     return df
 
 
@@ -255,6 +258,12 @@ def spatial(data, variables=None, *, year=None, gdf=None, w=None, groups=None, w
     geo = shapes(df, gdf, ids=ids, ref=ref)
     kept = df[df[ENTITY].isin(set(geo[ENTITY]))].reset_index(drop=True)
     kept.attrs = dict(df.attrs)
+    left_out = df[ENTITY].nunique() - kept[ENTITY].nunique()
+    if left_out:
+        when = years(kept)
+        kept.attrs[_NOTE_KEY] = (
+            f"{left_out} of {df[ENTITY].nunique()} units are left out: no data for {', '.join(cols) or 'the variables'}"
+            + (f" in {when[0]}" if len(when) == 1 else " in every year kept" if when else "") + ", or no boundary")
     return kept, geo, (spatial_weights(geo, w) if weights else None)
 
 def finish(result, names: pd.Series | pd.DataFrame | None = None):
@@ -274,6 +283,9 @@ def finish(result, names: pd.Series | pd.DataFrame | None = None):
         labels = names.attrs.get(_LABELS_KEY)
         if labels and isinstance(getattr(out, "df", None), pd.DataFrame):
             out.df.attrs[_LABELS_KEY] = dict(labels)      # the readings name variables by their labels
+        note = names.attrs.get(_NOTE_KEY)
+        if note and isinstance(getattr(out, "notes", None), tuple) and note not in out.notes:
+            out = dataclasses.replace(out, notes=(note, *out.notes))
         if NAME not in names.columns:
             return out
         names = names.drop_duplicates(ENTITY).set_index(ENTITY)[NAME]

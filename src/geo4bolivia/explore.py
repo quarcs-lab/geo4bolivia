@@ -345,7 +345,8 @@ class DistributionResult(Interpretable):
                     f"least within **{tight[split]}** ({_num(tight['sd'])}). Where the groups' distributions "
                     "barely overlap, the differences between groups are large compared with those within them.")
         if self.kind in ("box", "violin"):
-            lines.append("In each box, the line is the median and the box holds the middle half of the units; "
+            where = "In each box" if self.kind == "box" else "In the box inside each violin"
+            lines.append(f"{where}, the line is the median and the box holds the middle half of the units; "
                          "points beyond the whiskers are unusually high or low units.")
         return "\n\n".join([*lines, _ASSOC_NOTE])
 
@@ -447,7 +448,8 @@ class TrendResult(Interpretable):
                 lines.append(("Every unit" if self.share_rising else "No unit") + " with data in both years ended "
                              "higher than it started.")
             else:
-                lines.append(f"{self.share_rising:.0%} of the units with data in both years ended higher than "
+                share = f"{self.share_rising:.1%}" if not 0.01 <= self.share_rising <= 0.99 else f"{self.share_rising:.0%}"
+                lines.append(f"{share} of the units with data in both years ended higher than "
                              "they started: the summary line describes the typical unit, not every unit.")
         if self.by is not None:
             wide = self.df[self.df[TIME].isin([self.first, self.last])].pivot(index=self.by, columns=TIME,

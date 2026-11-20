@@ -294,7 +294,7 @@ def _scale_label(name: str) -> str | None:
         return None
 
 
-def labels(data, ref: str | None = None) -> dict[str, str]:
+def labels(data, own: dict[str, str] | None = None, ref: str | None = None) -> dict[str, str]:
     """Readable labels for the columns of a panel (or every field of a dataset id).
 
     Variables take their metadata ``title``; columns written by ``geo.change()``
@@ -305,13 +305,20 @@ def labels(data, ref: str | None = None) -> dict[str, str]:
     ----------
     data
         A panel (any DataFrame) or a dataset id
+    own
+        Labels for columns of your own, ``{column: label}``. They are stored on the
+        table, so the figures, tables and readings of the analysis functions use them
 
     Returns
     -------
-    dict[str, str]
+    dict
         ``{column: label}`` for the columns it knows. Pass it to Plotly:
         ``px.scatter(df, x=..., y=..., labels=geo.labels(df))``.
     """
+    if own is not None:
+        if isinstance(data, str):
+            raise TypeError("own= labels need a table, not a dataset id")
+        data.attrs["geo_labels"] = {**(data.attrs.get("geo_labels") or {}), **{str(k): str(v) for k, v in own.items()}}
     if isinstance(data, str):
         return {f["name"]: f.get("title", f["name"]) for f in metadata.fields(data, ref=ref)}
     known = {k: f.get("title", k) for k, f in metadata.field_index(ref).items()}
@@ -331,6 +338,7 @@ def labels(data, ref: str | None = None) -> dict[str, str]:
             if m and m.group("v") in known:
                 out[col] = template.format(label=known[m.group("v")], y=m.groupdict().get("y", ""))
                 break
+    out.update({c: label for c, label in (data.attrs.get("geo_labels") or {}).items() if c in data.columns})
     return out
 
 

@@ -100,7 +100,7 @@ def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | No
     -------
     pandas.DataFrame
         One row per target unit (and year) with ``n_units``, the number of
-        source units that contributed, and ``coverage``, their share of all the source
+        source units with data for at least one of the variables, and ``coverage``, their share of all the source
         units in the target (1.0 when every unit has data). With a list of targets,
         the results are stacked with a ``scale`` column.
     """
@@ -151,7 +151,10 @@ def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | No
         raise ValueError(f"Units missing from the {source}->{to} crosswalk: {list(bad)}")
 
     group = ["geo_id_to"] + keys[1:]
+    # the source units that contributed: those with data for at least one of the variables
+    has_data = data[list(rule)].notna().any(axis=1) if rule else pd.Series(True, index=data.index)
     out = data.groupby(group)["geo_id"].nunique().rename("n_units").to_frame()
+    out["n_units"] = data[has_data].groupby(group)["geo_id"].nunique().reindex(out.index).fillna(0).astype(int)
     for var, r in rule.items():
         g = data.groupby(group)
         if r == "sum":

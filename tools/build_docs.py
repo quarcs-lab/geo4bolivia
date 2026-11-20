@@ -21,6 +21,7 @@ from __future__ import annotations
 import importlib
 import inspect
 import json
+import posixpath
 import re
 import subprocess
 import sys
@@ -120,6 +121,7 @@ def page_to_notebook(page: Path, target: Path) -> None:
         _, front, text = text.split("---", 2)
         meta = yaml.safe_load(front) or {}
     link = f"{BASE}/{page.relative_to(DOCS).with_suffix('.html').as_posix()}"
+    folder = page.parent.relative_to(DOCS).as_posix().strip(".")
     cells = [{"cell_type": "markdown", "metadata": {}, "source": (
         f"# {meta.get('title', page.stem)}\n\n"
         f"This notebook is the page [{meta.get('title', page.stem)}]({link}) of the "
@@ -127,14 +129,14 @@ def page_to_notebook(page: Path, target: Path) -> None:
     chunk = re.compile(r"^```\{python\}\n(.*?)^```\s*$", flags=re.M | re.S)
     position = 0
     for match in chunk.finditer(text):
-        prose = clean_prose(text[position:match.start()])
+        prose = clean_prose(text[position:match.start()], folder)
         if prose:
             cells.append({"cell_type": "markdown", "metadata": {}, "source": prose})
         code = "\n".join(line for line in match.group(1).split("\n") if not line.startswith("#|")).strip()
         if code:
             cells.append({"cell_type": "code", "metadata": {}, "execution_count": None, "outputs": [], "source": code})
         position = match.end()
-    prose = clean_prose(text[position:])
+    prose = clean_prose(text[position:], folder)
     if prose:
         cells.append({"cell_type": "markdown", "metadata": {}, "source": prose})
     notebook = {"cells": cells, "nbformat": 4, "nbformat_minor": 5,
@@ -144,12 +146,18 @@ def page_to_notebook(page: Path, target: Path) -> None:
     target.write_text(json.dumps(notebook, indent=1, ensure_ascii=False) + "\n")
 
 
-def clean_prose(text: str) -> str:
-    """Page prose as notebook Markdown: no raw HTML blocks or Quarto divs, links made absolute."""
+def clean_prose(text: str, folder: str = "") -> str:
+    """Page prose as notebook Markdown: no raw HTML blocks or Quarto divs, links made absolute.
+
+    ``folder`` is the page's folder inside the site (``""`` or ``"articles"``), from which its relative links resolve.
+    """
     text = re.sub(r"^```\{=html\}\n.*?^```\s*$", "", text, flags=re.M | re.S)
     text = re.sub(r"^:::+.*$", "", text, flags=re.M)
-    text = re.sub(r"\]\((?!https?://|#|mailto:)([^)]+?)\.qmd(#[^)]*)?\)",
-                  lambda m: f"]({BASE}/{m.group(1).lstrip('./')}.html{m.group(2) or ''})", text)
+    def absolute(match: re.Match) -> str:
+        target = posixpath.normpath(posixpath.join(folder, match.group(1)))
+        return f"]({BASE}/{target}.html{match.group(2) or ''})"
+
+    text = re.sub(r"\]\((?!https?://|#|mailto:)([^)]+?)\.qmd(#[^)]*)?\)", absolute, text)
     text = re.sub(r"\{[.#][^}\n]*\}", "", text)
     return re.sub(r"\n{3,}", "\n\n", text).strip()
 
