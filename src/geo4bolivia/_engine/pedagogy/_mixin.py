@@ -18,6 +18,8 @@ __all__ = ["Interpretable"]
 # own names are used in the results that the public functions return.
 _TO_PUBLIC = {"entity": "geo_id", "period": "year"}
 _TO_ENGINE = {v: k for k, v in _TO_PUBLIC.items()}
+# Where a table carries the labels of the variables (set by the public functions)
+_LABELS_KEY = "geo_labels"
 
 
 class Interpretable:
@@ -44,6 +46,15 @@ class Interpretable:
     def year(self):
         """The year analysed (``None`` when the analysis covers several years)."""
         return getattr(self, "period", None)
+
+    def _read(self, text: str) -> str:
+        """An interpretation text that names the variables by their labels, where the tables carry them."""
+        frame = getattr(self, "df", None)
+        labels = getattr(frame, "attrs", {}).get(_LABELS_KEY) or {}
+        for name, label in labels.items():
+            if label and label != name:
+                text = text.replace(f"**{name}**", f"**{label}**")
+        return text
 
     def _frames(self) -> dict:
         """The DataFrame-valued fields of this result."""

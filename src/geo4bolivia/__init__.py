@@ -1,20 +1,26 @@
-"""Find, load, understand, aggregate and build geo-referenced development data across spatial scales.
+"""Find, load, map and analyse geo-referenced development data across spatial scales.
 
 >>> import geo4bolivia as geo
 >>> geo.datasets()                                   # the catalog: datasets, scales, years, units
 >>> geo.search("poverty")                            # variables matching words, in every dataset
->>> geo.info("sdg01")                                # coverage, sources, licenses, citation, notes
->>> df = geo.load("sdg01", variables="sdg1_2_mpi", groups=["department"])   # panel with names
->>> geo.describe(df)                                 # summary statistics per year, with labels
->>> geo.change(df, "sdg1_2_mpi")                     # first-to-last change and rank change per unit
->>> geo.aggregate(df, to=["department", "country"], dataset="sdg01")   # up the hierarchy
->>> geo.map(df, "sdg1_2_mpi", year=2024)             # interactive map (needs plotly)
->>> mine = geo.link(my_table, scale="municipality", on="mun_id", key="mun_id")  # your data -> geo_id
->>> geo.combine(["ntl", "pop"], scale="municipality", extra=[mine])  # one panel, one scale
->>> gdf, df, df_dict = geo.for_geometrics("sdg", variables="index_sdg")   # for geometrics
->>> df, df_def = geo.for_expdpy("sdg", groups=["department"])            # for expdpy
+>>> df = geo.load(dataset, variables=variable, groups=[scale])     # a panel: geo_id, year, names
+>>> geo.describe(df); geo.change(df, variable)       # summaries; first-to-last change per unit
+>>> geo.map(df, variable, year=[first, last], scheme="fisher_jenks")   # maps in common classes
+>>> res = geo.moran(df, variable)                    # one call per analysis ...
+>>> res.fig; res.df; res.interpret()                 # ... and a result with figure, table and reading
 
-The website documents every function: https://quarcs-lab.github.io/geo4bolivia/tools/geo4bolivia-reference/
+Every analysis function takes a dataset id or a panel with ``geo_id`` (and ``year``),
+finds the boundaries, the spatial weights and the labels itself, and returns a result
+object. The families: explore (``correlation``, ``extremes``, ``distribution``,
+``scatter``, ``trend``), spatial dependence (``weights``, ``connectivity``, ``moran``,
+``lisa``), convergence (``beta_convergence``, ``sigma_convergence``,
+``convergence_clubs``), transitions (``transitions``, ``spatial_transitions``,
+``lisa_transitions``, ``rank_mobility``), inequality (``inequality``,
+``theil_decomposition``), models (``regression``, ``panel_model``, ``spatial_model``,
+``spatial_diagnostics``) and spatial heterogeneity (``mgwr``).
+
+The documentation site (``config()["documentation"]``) has a guide, articles and an
+example for every function.
 """
 
 from .aggregate import aggregate, overlay, overlay_weights

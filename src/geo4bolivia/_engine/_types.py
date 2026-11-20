@@ -91,7 +91,7 @@ class ChoroplethMapResult(Interpretable):
         """Plain-language reading of the mapped distribution and its class breaks."""
         from .pedagogy._interpret import interpret_choropleth_map
 
-        return interpret_choropleth_map(self._engine_view(), lang=lang)
+        return self._read(interpret_choropleth_map(self._engine_view(), lang=lang))
 
 
 @dataclass(frozen=True, repr=False)
@@ -121,7 +121,7 @@ class ConnectivityMapResult(Interpretable):
         """Plain-language reading of the connectivity health of the weights graph."""
         from .pedagogy._interpret import interpret_connectivity_map
 
-        return interpret_connectivity_map(self._engine_view(), lang=lang)
+        return self._read(interpret_connectivity_map(self._engine_view(), lang=lang))
 
 
 @dataclass(frozen=True, repr=False)
@@ -150,7 +150,7 @@ class MoranPlotResult(Interpretable):
         """Plain-language reading of the strength and significance of clustering."""
         from .pedagogy._interpret import interpret_moran_plot
 
-        return interpret_moran_plot(self._engine_view(), lang=lang)
+        return self._read(interpret_moran_plot(self._engine_view(), lang=lang))
 
     def glance(self) -> pd.DataFrame:
         """One-row summary of the global Moran test."""
@@ -204,7 +204,7 @@ class LisaClusterMapResult(Interpretable):
         """Plain-language reading of the local clusters and spatial outliers."""
         from .pedagogy._interpret import interpret_lisa_cluster_map
 
-        return interpret_lisa_cluster_map(self._engine_view(), lang=lang)
+        return self._read(interpret_lisa_cluster_map(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-entity LISA frame."""
@@ -231,7 +231,7 @@ class MoranOverTimeResult(Interpretable):
         """Plain-language reading of the trajectory of spatial dependence."""
         from .pedagogy._interpret import interpret_moran_over_time
 
-        return interpret_moran_over_time(self._engine_view(), lang=lang)
+        return self._read(interpret_moran_over_time(self._engine_view(), lang=lang))
 
 
 @dataclass(frozen=True, repr=False)
@@ -255,7 +255,7 @@ class DistributionOverTimeResult(Interpretable):
         """Plain-language reading of how the cross-sectional distribution evolves."""
         from .pedagogy._interpret import interpret_distribution_over_time
 
-        return interpret_distribution_over_time(self._engine_view(), lang=lang)
+        return self._read(interpret_distribution_over_time(self._engine_view(), lang=lang))
 
 
 @dataclass(frozen=True, repr=False)
@@ -278,7 +278,7 @@ class SpacetimeHeatmapResult(Interpretable):
         """Plain-language reading of the space-time value surface."""
         from .pedagogy._interpret import interpret_spacetime_heatmap
 
-        return interpret_spacetime_heatmap(self._engine_view(), lang=lang)
+        return self._read(interpret_spacetime_heatmap(self._engine_view(), lang=lang))
 
 
 # ---------------------------------------------------------------------------
@@ -341,7 +341,7 @@ class BetaConvergenceResult(Interpretable):
         """Plain-language reading of the convergence slope, spillovers, speed."""
         from .pedagogy._interpret import interpret_beta_convergence
 
-        return interpret_beta_convergence(self._engine_view(), lang=lang)
+        return self._read(interpret_beta_convergence(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the estimate table (direct/indirect/total where spatial)."""
@@ -413,7 +413,7 @@ class SigmaConvergenceResult(Interpretable):
         """Plain-language reading of whether and how fast dispersion narrows."""
         from .pedagogy._interpret import interpret_sigma_convergence
 
-        return interpret_sigma_convergence(self._engine_view(), lang=lang)
+        return self._read(interpret_sigma_convergence(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-measure trend table."""
@@ -467,7 +467,7 @@ class ConvergenceClubsResult(Interpretable):
         """Plain-language reading of how the panel splits into convergence clubs."""
         from .pedagogy._interpret import interpret_convergence_clubs
 
-        return interpret_convergence_clubs(self._engine_view(), lang=lang)
+        return self._read(interpret_convergence_clubs(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-club classification table."""
@@ -515,7 +515,7 @@ class SpatialModelResult(Interpretable):
         """Plain-language reading of the spatial parameters and impacts."""
         from .pedagogy._interpret import interpret_spatial_model
 
-        return interpret_spatial_model(self._engine_view(), lang=lang)
+        return self._read(interpret_spatial_model(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the tidy coefficient frame."""
@@ -565,7 +565,7 @@ class SpatialDiagnosticsResult(Interpretable):
         """Plain-language reading of the LM diagnostics and the model they point to."""
         from .pedagogy._interpret import interpret_spatial_diagnostics
 
-        return interpret_spatial_diagnostics(self._engine_view(), lang=lang)
+        return self._read(interpret_spatial_diagnostics(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-test frame."""
@@ -594,7 +594,7 @@ class WeightsRobustnessResult(Interpretable):
         """Plain-language reading of how stable the impacts are across weights."""
         from .pedagogy._interpret import interpret_weights_robustness
 
-        return interpret_weights_robustness(self._engine_view(), lang=lang)
+        return self._read(interpret_weights_robustness(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-weights impact frame."""
@@ -638,7 +638,7 @@ class MarkovTransitionsResult(Interpretable):
         """Plain-language reading of persistence, mobility and the long-run mix."""
         from .pedagogy._interpret import interpret_markov_transitions
 
-        return interpret_markov_transitions(self._engine_view(), lang=lang)
+        return self._read(interpret_markov_transitions(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the transition-probability matrix as a tidy long frame."""
@@ -682,7 +682,7 @@ class SpatialMarkovResult(Interpretable):
         """Plain-language reading of how neighbors condition transition dynamics."""
         from .pedagogy._interpret import interpret_spatial_markov
 
-        return interpret_spatial_markov(self._engine_view(), lang=lang)
+        return self._read(interpret_spatial_markov(self._engine_view(), lang=lang))
 
 
 # ---------------------------------------------------------------------------
@@ -716,7 +716,7 @@ class InequalityOverTimeResult(Interpretable):
         """Plain-language reading of the inequality level and trend."""
         from .pedagogy._interpret import interpret_inequality_over_time
 
-        return interpret_inequality_over_time(self._engine_view(), lang=lang)
+        return self._read(interpret_inequality_over_time(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-measure trend table."""
@@ -745,7 +745,7 @@ class TheilDecompositionResult(Interpretable):
         """Plain-language reading of the between/within inequality split."""
         from .pedagogy._interpret import interpret_theil_decomposition
 
-        return interpret_theil_decomposition(self._engine_view(), lang=lang)
+        return self._read(interpret_theil_decomposition(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-period decomposition frame."""
@@ -790,7 +790,7 @@ class GWRResult(Interpretable):
         """Plain-language reading of where and how associations vary over space."""
         from .pedagogy._interpret import interpret_gwr
 
-        return interpret_gwr(self._engine_view(), lang=lang)
+        return self._read(interpret_gwr(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-entity local-coefficient frame."""
@@ -849,7 +849,7 @@ class MGWRResult(Interpretable):
         """Plain-language reading of the per-term operating scales and local patterns."""
         from .pedagogy._interpret import interpret_mgwr
 
-        return interpret_mgwr(self._engine_view(), lang=lang)
+        return self._read(interpret_mgwr(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the per-entity local-coefficient frame."""
@@ -887,7 +887,7 @@ class SandboxResult(Interpretable):
         """Plain-language takeaway of the demonstration."""
         from .pedagogy._interpret import interpret_sandbox
 
-        return interpret_sandbox(self._engine_view(), lang=lang)
+        return self._read(interpret_sandbox(self._engine_view(), lang=lang))
 
     def tidy(self) -> pd.DataFrame:
         """Return the estimated-vs-truth comparison table."""

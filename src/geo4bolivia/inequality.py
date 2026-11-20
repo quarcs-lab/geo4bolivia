@@ -77,7 +77,7 @@ class InequalityResult(InequalityOverTimeResult):
                 f"On the Lorenz curve of {last}, the half of the units with the lowest values holds "
                 f"{low(last):.0%} of the total ({low(first):.0%} in {first}) and the tenth with the highest "
                 f"values holds {top(last):.0%} ({top(first):.0%}); with no inequality they would hold 50% and 10%.")
-        return "\n\n".join([*lines, _ASSOC_NOTE])
+        return self._read("\n\n".join([*lines, _ASSOC_NOTE]))
 
 
 @dataclass(frozen=True, repr=False)
@@ -104,7 +104,7 @@ class TheilResult(TheilDecompositionResult):
             # The engine reads any difference as a rise or a fall, even one that rounds away ("from 6% to 6%").
             lines = [f"Over the window, the between-group share stayed at about {shares.iloc[-1]:.0%}."
                      if line.startswith("Over the window, the between-group share") else line for line in lines]
-        return "\n\n".join(lines)
+        return self._read("\n\n".join(lines))
 
 
 def _as(cls, result, **changes):

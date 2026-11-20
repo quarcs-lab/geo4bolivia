@@ -1,5 +1,28 @@
 ---
-title: "index"
+title: "Articles"
+description: "One article per method, written around Bolivia's data, and a complete case study."
+toc: false
+listing:
+  id: all
+  type: grid
+  grid-columns: 3
+  image-height: 170px
+  fields: [image, title, description]
+  sort: false
+  contents:
+    - case-study-sdg.qmd
+    - data-model.qmd
+    - exploring.qmd
+    - spatial-dependence.qmd
+    - convergence.qmd
+    - transitions.qmd
+    - inequality.qmd
+    - models.qmd
+    - heterogeneity.qmd
+    - own-indicators.qmd
 ---
 
-Coming soon.
+Each article takes one question, shows the function that answers it on the observatory's data, and reads the result in words. Every article opens in Google Colab, where it runs without installing anything on your computer.
+
+::: {#all}
+:::

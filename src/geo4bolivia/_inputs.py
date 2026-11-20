@@ -23,6 +23,7 @@ from . import io
 from .scales import scale_of
 
 ENTITY, TIME, NAME = "geo_id", "year", "name"
+_LABELS_KEY = "geo_labels"     # where the engine keeps the labels declared on a table (``_engine._labels``)
 
 
 def as_list(value) -> list:
@@ -270,6 +271,9 @@ def finish(result, names: pd.Series | pd.DataFrame | None = None):
     if names is None:
         return out
     if isinstance(names, pd.DataFrame):
+        labels = names.attrs.get(_LABELS_KEY)
+        if labels and isinstance(getattr(out, "df", None), pd.DataFrame):
+            out.df.attrs[_LABELS_KEY] = dict(labels)      # the readings name variables by their labels
         if NAME not in names.columns:
             return out
         names = names.drop_duplicates(ENTITY).set_index(ENTITY)[NAME]

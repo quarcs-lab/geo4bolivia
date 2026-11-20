@@ -1,5 +1,62 @@
 ---
-title: "use-with-llms"
+title: "For AI assistants and LLMs"
+description: "How an AI assistant should install and call geo4bolivia, and the files that describe the package to it."
 ---
 
-Coming soon.
+AI assistants write better code for a package when they can read what it offers. This page is for people who work with an assistant (Claude, ChatGPT, Gemini, Copilot) and for the assistants themselves.
+
+## Give the assistant these files
+
+| File | What it holds | Use it when |
+| --- | --- | --- |
+| [`llms.txt`](https://quarcs-lab.github.io/geo4bolivia/llms.txt) | A short index: what the package is, its pages, and every function with its signature and one-line description | You want the assistant to know what exists (small enough for any model) |
+| [`llms-full.txt`](https://quarcs-lab.github.io/geo4bolivia/llms-full.txt) | Every page of this site, every signature and docstring, and a tested example per function, in one file | You want the assistant to write a full analysis |
+
+Paste the address into the conversation, or attach the file. For example:
+
+> Read https://quarcs-lab.github.io/geo4bolivia/llms-full.txt. Then, with geo4bolivia in Google Colab, test whether multidimensional poverty (`sdg1_2_mpi` in dataset `sdg01`) is spatially clustered in 2024 and map the clusters.
+
+## The essentials, for an assistant
+
+**Install and import.** The code runs in Google Colab or any Python 3.11+ environment.
+
+```python
+!pip install -q geo4bolivia          # extras: [dynamics], [mgwr], [panel], [raster], [all]
+import geo4bolivia as geo
+```
+
+**Find before you load.** Do not guess dataset or variable names: look them up.
+
+```python
+geo.datasets()                       # the catalog: dataset ids, years, units
+geo.search("poverty")                # variables matching words, in every dataset
+geo.dictionary("sdg01")              # every variable of a dataset: label, description, unit
+geo.info("sdg01")                    # coverage, sources, licenses, citation
+```
+
+**The data contract.** `geo.load(dataset)` returns a long panel: one row per unit and year, with columns `geo_id`, `year` and the variables. `groups=["department"]` adds the name of the department each unit lies in. Every analysis function accepts either a dataset id or such a panel.
+
+**One call per analysis.** The functions find the boundaries, build queen contiguity weights among the units with data, and take labels from the metadata. Pass `w=geo.weights(...)` or `gdf=` only to override.
+
+```python
+res = geo.moran("sdg01", "sdg1_2_mpi", year=2024)   # also: lisa, beta_convergence, inequality, ...
+res.fig            # the Plotly figure
+res.df             # the table behind it (geo_id, name, ...)
+res.interpret()    # a reading of the numbers in words
+```
+
+**Rules that avoid the usual mistakes**
+
+- The SDG Atlas datasets (`sdg`, `sdg01` to `sdg17`) have **two periods**, stored as years 2012 and 2024, for 343 municipalities. `pop` (2001 to 2020) and `ntl` (2012 to 2020) have 333 municipalities.
+- Methods that need many years (`sigma_convergence`, `convergence_clubs`, `transitions`) run on `pop` and `ntl`, not on the two SDG periods; the error message says so.
+- `beta_convergence` and `sigma_convergence` take a variable in **levels** and log it themselves. `ln_NTLpc` is already a logarithm: use `np.exp` first.
+- Link tables by **code**, never by name: municipality names repeat across departments. `geo.link(table, scale="municipality", on="<column>", key="ine_code")`.
+- Use the vocabulary of the package: `variable`, `year`, `first` and `last`, `by`, `y` and `x`.
+- Results describe **associations**. Do not turn them into causal statements.
+- Cite the data: `print(geo.cite("sdg01"))` gives the citation and the credits the sources require.
+
+## For developers of agents
+
+- The function reference is generated from the docstrings, so `help(geo.moran)` and `inspect.signature(geo.moran)` return the same content as this site.
+- `geo.__all__` lists the public functions; everything else is internal and may change.
+- The package reads its data over the network from the [data repository](https://github.com/quarcs-lab/gdo4bolivia), cached for the session. Set `GEO4BOLIVIA_DATA_DIR` to a local checkout to work offline, or `GEO4BOLIVIA_REF` to a release tag to freeze the data.
