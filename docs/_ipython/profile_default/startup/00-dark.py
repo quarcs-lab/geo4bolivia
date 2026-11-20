@@ -84,7 +84,12 @@ def _g4_dark_setup():
                 sub = layout[name]
                 if sub is not None and (sub.style is None or str(sub.style) in _LIGHT_TILES):
                     sub.style = "carto-darkmatter"
+        for shape in layout.shapes or ():
+            if shape.line is not None and _dark(shape.line.color):
+                shape.line.color = "rgba(227,236,234,0.35)"
         for trace in fig.data:
+            if trace.type == "scatter" and "lines" in str(trace.mode) and _dark(trace.line.color):
+                trace.line.color = _TEXT
             bar = getattr(trace, "colorbar", None)
             if bar is not None:
                 bar.update(tickfont={"color": _MUTED}, title={"font": {"color": _TEXT}}, outlinewidth=0)

@@ -40,7 +40,7 @@ geo.map(mpi, "sdg1_2_mpi", year=[2012, 2024], scheme="fisher_jenks")     # both 
 
 res = geo.lisa(mpi, "sdg1_2_mpi", year=2024)           # where are the clusters of poverty?
 print(res.interpret())                                 # a reading of the numbers in words
-res.fig                                                # the interactive map
+res.fig                                                # Moran scatterplot and cluster map, side by side
 ```
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/notebooks/empty.ipynb)
@@ -66,7 +66,7 @@ The [articles](https://quarcs-lab.github.io/geo4bolivia/articles/) take one ques
 
 ## The data
 
-The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia); `ref="v0.6.0"` freezes them at a release.
+The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia); `ref="v0.7.0"` freezes them at a release.
 
 | Dataset | What | Units and years |
 | --- | --- | --- |
@@ -105,7 +105,7 @@ uv run python tools/build_docs.py    # documentation site, into docs/_site
 
 ## Cite
 
-Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.6.0). <https://quarcs-lab.github.io/geo4bolivia/>
+Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.7.0). <https://quarcs-lab.github.io/geo4bolivia/>
 
 Please also cite the sources of the datasets you use (`geo.cite(dataset)`).
 

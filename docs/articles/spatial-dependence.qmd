@@ -230,18 +230,19 @@ round(geo.moran(chg, "sdg1_2_mpi_change").moran_i, 3)
 For a poverty index, "high" is bad: a High-High cluster is a group of municipalities with high poverty, and a Low-Low cluster one with low poverty.
 
 ```{python}
+#| classes: g4-wide
 lisa = geo.lisa(mpi, "sdg1_2_mpi", year=2024)
 lisa
 ```
 
-At the 5% level, 94 of the 343 municipalities are assigned to a type: 35 High-High, 51 Low-Low and 8 outliers. The other 249 are not significant. `.df` has one row per unit with its local statistic, p-value and type, so the map can be turned into a table:
+At the 5% level, 94 of the 343 municipalities are assigned to a type: 35 High-High, 51 Low-Low and 8 outliers. The other 249 are not significant. `.df` has one row per unit with its local statistic, p-value and type, so the types can be turned into a table:
 
 ```{python}
 where = lisa.df.merge(mpi.loc[mpi["year"] == 2024, ["geo_id", "department"]])
 where.groupby(["department", "cluster"]).size().unstack(fill_value=0)
 ```
 
-Most Low-Low municipalities (low poverty among low poverty) are in Santa Cruz: 29 of the 51, more than half of that department's 56 municipalities. The High-High ones are spread over Potosí (11), Chuquisaca (9), Cochabamba (7) and Oruro (5). La Paz, with 87 municipalities, has 78 that are not significant. `lisa.fig_scatter` shows the same types on the Moran scatterplot.
+Most Low-Low municipalities (low poverty among low poverty) are in Santa Cruz: 29 of the 51, more than half of that department's 56 municipalities. The High-High ones are spread over Potosí (11), Chuquisaca (9), Cochabamba (7) and Oruro (5). La Paz, with 87 municipalities, has 78 that are not significant. The figure shows each type twice: on the Moran scatterplot (left), where it is a quadrant, and on the map (right); a click on a type in the legend shows or hides it in both. `panels="map"` or `panels="scatter"` gives one of them alone, and `.fig_map` and `.fig_scatter` hold each one.
 
 ### Significance and `alpha`
 

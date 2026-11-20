@@ -4,7 +4,11 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
-## Documentation (unreleased)
+## 0.7.0 (2026-11-20)
+
+**`lisa` shows the Moran scatterplot and the cluster map side by side.** `.fig` is now one interactive figure with both panels and one legend: a click on a type (High-High, Low-Low, the outliers, not significant) shows or hides it on the scatterplot and on the map at once. `panels="map"` or `panels="scatter"` gives one panel alone, and the result keeps each one as `.fig_map` (new) and `.fig_scatter`. Nothing else changes: the same clusters, counts and reading.
+
+**Documentation**
 
 - The site opens in a dark theme matching the observatory's website (a toggle switches to light), with dark figures and tables. Every code box has Copy at the top and, for Python, Open in Colab at the bottom, which opens the page's notebook; each function of the reference has its own example notebook.
 - A night-sky background (faint stars over a blue-to-teal gradient, fixed while the page scrolls), shared with the observatory's website.

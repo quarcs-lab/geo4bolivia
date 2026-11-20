@@ -179,6 +179,8 @@ class LisaClusterMapResult(Interpretable):
     ``quadrant``, ``p_sim``, ``cluster``) where ``cluster`` is the significance-masked
     label (High-High, Low-Low, Low-High, High-Low, or Not significant at ``alpha``).
     ``fig`` is the cluster map; ``fig_scatter`` the quadrant-colored Moran scatterplot.
+    ``geo4bolivia.lisa`` sets ``fig`` to both side by side by default and keeps the map
+    alone in ``fig_map``.
     ``moran_i`` / ``p_sim_global`` report the accompanying global test, and the ``n_*``
     counts tally entities per significant cluster class (``n_ns`` = not significant).
     """
@@ -199,6 +201,7 @@ class LisaClusterMapResult(Interpretable):
     period: Any
     w_spec: str
     notes: tuple[str, ...] = ()
+    fig_map: go.Figure | None = None
 
     def interpret(self, *, lang: str = "en") -> str:
         """Plain-language reading of the local clusters and spatial outliers."""

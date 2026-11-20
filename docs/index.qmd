@@ -55,6 +55,7 @@ geo.lisa("sdg", "index_sdg", year=2024)     # where are the clusters of sustaina
 
 ```{python}
 #| echo: false
+#| classes: g4-wide
 import geo4bolivia as geo
 
 geo.lisa("sdg", "index_sdg", year=2024)
@@ -110,7 +111,7 @@ Every analysis function takes a dataset id or a table with a `geo_id` column, fi
 
 ## The data
 
-The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia): nothing to download by hand, and a release tag (`ref="v0.6.0"`) freezes them for reproducible work.
+The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia): nothing to download by hand, and a release tag (`ref="v0.7.0"`) freezes them for reproducible work.
 
 | Dataset | What | Units and years |
 | --- | --- | --- |
@@ -130,6 +131,6 @@ geo4bolivia covers the fundamentals. Two sister packages go further, and `geo.fo
 
 ## Cite
 
-Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.6.0). <https://quarcs-lab.github.io/geo4bolivia/>
+Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.7.0). <https://quarcs-lab.github.io/geo4bolivia/>
 
 Please also cite the sources of the datasets you use: `print(geo.cite("sdg"))`.

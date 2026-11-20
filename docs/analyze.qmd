@@ -56,6 +56,7 @@ Moran's I is 0.43 in 2012 and 0.47 in 2024. In both periods none of the 999 rand
 Local Moran statistics (LISA) show *where*. Each municipality is compared with its neighbours and, when the pattern is unlikely under random placement, assigned to a type: High-High (a high value among high neighbours), Low-Low, or one of the two kinds of outlier.
 
 ```{python}
+#| classes: g4-wide
 lisa = geo.lisa(ids, "index_sdg", year=2024)
 lisa
 ```

@@ -50,7 +50,30 @@ def test_lisa_labels_every_unit(field, units):
     assert len(res.df) == len(units) and {"geo_id", "name", "cluster", "p_sim"} <= set(res.df.columns)
     assert res.n_hh + res.n_ll + res.n_hl + res.n_lh + res.n_ns == len(units)
     assert res.n_hh + res.n_ll > res.n_hl + res.n_lh        # positive dependence: clusters, not outliers
-    assert res.fig.data and res.fig_scatter.data and res.interpret()
+    assert res.fig.data and res.fig_scatter.data and res.fig_map.data and res.interpret()
+
+
+def test_lisa_shows_the_scatterplot_and_the_map_side_by_side(field, units):
+    res = geo.lisa(field, "y", gdf=units)
+    points = [t for t in res.fig.data if t.type == "scatter" and t.mode == "markers"]
+    areas = [t for t in res.fig.data if t.type == "choroplethmap"]
+    assert len(points) == len(areas) == 5 and any(t.mode == "lines" for t in res.fig.data)
+    assert [t.legendgroup for t in points] == [t.legendgroup for t in areas] == [t.name for t in points]
+    assert all(t.showlegend for t in points) and not any(t.showlegend for t in areas)   # one legend for both
+    assert res.fig.layout.map.domain.x[0] > 0.5 > res.fig.layout.xaxis.domain[1]
+    assert "Moran's I" in " ".join(a.text for a in res.fig.layout.annotations)
+    assert res.fig.layout.title.text.startswith("LISA: ")
+
+
+def test_lisa_panels_choose_the_figure(field, units):
+    alone = geo.lisa(field, "y", gdf=units, panels="map")
+    assert all(t.type == "choroplethmap" for t in alone.fig.data) and alone.fig is alone.fig_map
+    scatter = geo.lisa(field, "y", gdf=units, panels="scatter")
+    assert all(t.type == "scatter" for t in scatter.fig.data) and scatter.fig is scatter.fig_scatter
+    vector = geo.lisa(field, "y", gdf=units, tiles=None)
+    assert any(t.type == "choropleth" for t in vector.fig.data) and vector.fig.layout.geo.domain.x[0] > 0.5
+    with pytest.raises(ValueError, match="panels"):
+        geo.lisa(field, "y", gdf=units, panels="both panels")
 
 
 def test_inputs_are_checked(field, units):

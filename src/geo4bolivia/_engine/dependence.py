@@ -57,6 +57,7 @@ if TYPE_CHECKING:
 
 __all__ = [
     "explore_lisa_cluster_map",
+    "lisa_panels",
     "explore_moran_over_time",
     "explore_moran_plot",
 ]
@@ -238,6 +239,81 @@ def _moran_scatter(
         xaxis={"title": f"{var_label} (z-score)"},
         yaxis={"title": f"Spatial lag of {var_label} (z-score)"},
         legend_title_text=legend_title,
+    )
+    return fig
+
+
+# The map panel of ``lisa_panels`` is about 380 px wide instead of the single map's 620 px,
+# so its zoom drops (a bit less than log2(620 / 380), as the panel is taller) to keep the whole study area in view.
+_PANEL_ZOOM_SHIFT = 0.5
+
+
+def _on_left_panel(spec: dict) -> dict:
+    """A shape or annotation of a one-panel figure, placed on the first subplot instead."""
+    for axis in ("x", "y"):
+        if spec.get(f"{axis}ref") == "paper":
+            spec[f"{axis}ref"] = f"{axis} domain"
+    return spec
+
+
+def lisa_panels(
+    fig_scatter: go.Figure,
+    fig_map: go.Figure,
+    *,
+    title: str | None,
+    subtitle: str | None,
+    legend_title: str = "Cluster",
+) -> go.Figure:
+    """The Moran scatterplot (left) and the LISA cluster map (right) in one figure.
+
+    Both panels keep their interactivity (hover, zoom, pan). Each cluster's scatter
+    points and map polygons share a ``legendgroup``, and only the scatter traces are
+    listed, so one legend click shows or hides a cluster type in both panels. The
+    scatter's zero lines and Moran's I box move into the left panel; the map keeps its
+    basemap (``map`` subplot) or, for the vector backend, becomes a ``geo`` subplot.
+    """
+    from plotly.subplots import make_subplots
+
+    tiled = any(isinstance(trace, go.Choroplethmap) for trace in fig_map.data)
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        specs=[[{"type": "xy"}, {"type": "map" if tiled else "geo"}]],
+        horizontal_spacing=0.06,
+        subplot_titles=("Moran scatterplot", "Cluster map"),
+    )
+    for trace in fig_scatter.data:
+        if trace.mode == "markers":
+            trace.update(legendgroup=trace.name, showlegend=True)
+        fig.add_trace(trace, row=1, col=1)
+    for trace in fig_map.data:
+        fig.add_trace(trace.update(legendgroup=trace.name, showlegend=False), row=1, col=2)
+
+    # The scatter's zero lines and statistics box, on the left panel's axes
+    for shape in fig_scatter.layout.shapes:
+        fig.add_shape(_on_left_panel(shape.to_plotly_json()))
+    for note in fig_scatter.layout.annotations:
+        fig.add_annotation(_on_left_panel(note.to_plotly_json()))
+    # Short axis titles: the figure's title names the variable, and the panel is narrow
+    fig.update_xaxes(title_text="Value (z-score)", row=1, col=1)
+    fig.update_yaxes(title_text="Neighbours' mean, spatial lag (z-score)", row=1, col=1)
+
+    if tiled:
+        view = fig_map.layout.map
+        zoom = max(float(view.zoom or 0.0) - _PANEL_ZOOM_SHIFT, 0.0)
+        fig.update_layout(map={"style": view.style, "center": view.center, "zoom": zoom})
+    else:
+        fig.update_geos(visible=False, fitbounds="locations")
+
+    apply_default_layout(
+        fig,
+        title=title,
+        subtitle=subtitle,
+        height=600,
+        # A fixed entry width: Plotly's own measure clips the last label of a horizontal legend
+        legend={"orientation": "h", "x": 0.5, "xanchor": "center", "y": -0.14, "yanchor": "top",
+                "entrywidth": 108, "entrywidthmode": "pixels", "title": {"text": legend_title, "side": "left"}},
+        margin={"l": 60, "r": 20, "t": 125, "b": 100},
     )
     return fig
 
@@ -636,6 +712,7 @@ def explore_lisa_cluster_map(
         period=resolved_period,
         w_spec=w_spec,
         notes=tuple(notes),
+        fig_map=fig,
     )
 
 

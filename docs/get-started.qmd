@@ -134,9 +134,10 @@ Displaying a result shows its main figure and a reading of the numbers. The part
 print(round(res.moran_i, 3), res.p_sim, "|", res.w_spec)
 ```
 
-*Where* are the clusters? Local Moran statistics (LISA) put them on the map:
+*Where* are the clusters? Local Moran statistics (LISA) show them on the Moran scatterplot and on the map, side by side:
 
 ```{python}
+#| classes: g4-wide
 geo.lisa(ids, "index_sdg", year=2024).fig
 ```
 

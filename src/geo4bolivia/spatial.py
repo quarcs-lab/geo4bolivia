@@ -137,10 +137,18 @@ def moran(data, variable: str, year=None, *, w=None, permutations: int = 999, se
                                                         permutations=permutations, seed=seed, title=title), df)
 
 
+_PANELS = ("both", "map", "scatter")
+
+
 def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, seed: int | None = 12345,
-         alpha: float = 0.05, tiles: str | None = "carto-positron", title: str | None = None, gdf=None,
-         ref: str | None = None):
+         alpha: float = 0.05, panels: str = "both", tiles: str | None = "carto-positron", title: str | None = None,
+         gdf=None, ref: str | None = None):
     """Local Moran (LISA) clusters of a variable: where are the hot spots, cold spots and outliers?
+
+    The figure shows the Moran scatterplot (each unit's standardized value against its
+    neighbours' mean, coloured by cluster, grey where not significant) next to the map of
+    the clusters. Both are interactive, and a click on a cluster type in the legend shows
+    or hides it in both.
 
     Parameters
     ----------
@@ -158,6 +166,9 @@ def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, see
         Makes the permutations reproducible
     alpha
         Significance level below which a unit is assigned to a cluster
+    panels
+        What ``.fig`` shows: ``"both"`` (the scatterplot and the map side by side),
+        ``"map"`` (the cluster map) or ``"scatter"`` (the Moran scatterplot)
     tiles
         The basemap style (``None``: no basemap)
     title
@@ -168,17 +179,35 @@ def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, see
     Returns
     -------
     result object
-        A result with ``.fig`` (the cluster map), ``.fig_scatter`` (the Moran scatterplot
-        coloured by cluster), ``.df`` (one row per unit: local statistic, p-value and
+        A result with ``.fig`` (by default the Moran scatterplot and the cluster map side
+        by side; see ``panels``), ``.fig_map`` (the cluster map alone), ``.fig_scatter``
+        (the Moran scatterplot alone), ``.df`` (one row per unit: local statistic, p-value and
         ``cluster``: High-High, Low-Low, High-Low, Low-High or not significant), the number
         of units of each type (``.n_hh``, ``.n_ll``, ``.n_hl``, ``.n_lh``, ``.n_ns``), the
         global ``.moran_i`` and ``.interpret()``.
     """
+    import dataclasses
+
     from ._engine import dependence
+    from ._engine._labels import resolve_label
+    if panels not in _PANELS:
+        raise ValueError(f"lisa: panels must be one of {', '.join(map(repr, _PANELS))}, got {panels!r}")
     df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year=year, ref=ref)
-    return _inputs.finish(dependence.explore_lisa_cluster_map(df, variable, gdf=geo, w=w, period=_inputs.one_year(df),
-                                                              permutations=permutations, seed=seed, alpha=alpha,
-                                                              tiles=tiles, title=title), df)
+    res = dependence.explore_lisa_cluster_map(df, variable, gdf=geo, w=w, period=_inputs.one_year(df),
+                                              permutations=permutations, seed=seed, alpha=alpha, tiles=tiles,
+                                              title=title if panels == "map" else None)
+    if panels == "scatter":
+        res = dataclasses.replace(res, fig=res.fig_scatter)
+    elif panels == "both":
+        when = f" ({res.period})" if res.period is not None else ""
+        both = dependence.lisa_panels(
+            res.fig_scatter, res.fig_map,
+            title=title or f"LISA: {resolve_label(df, variable)}{when}",
+            subtitle=res.w_spec,
+            legend_title=f"Cluster (p < {res.alpha:g})",
+        )
+        res = dataclasses.replace(res, fig=both)
+    return _inputs.finish(res, df)
 
 
 __all__ = ["connectivity", "lisa", "moran", "weights"]

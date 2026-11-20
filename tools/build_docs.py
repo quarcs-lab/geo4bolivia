@@ -77,6 +77,11 @@ def runnable(code: str) -> str:
     return code
 
 
+def wide(code: str) -> str:
+    """The cell option of a figure that needs the column's full width (``geo.lisa``'s two panels)."""
+    return "#| classes: g4-wide\n" if "geo.lisa(" in code else ""
+
+
 def enrich_reference() -> None:
     """Append its example to every reference page, shown as pasted in Colab and run for its result."""
     missing = []
@@ -100,7 +105,7 @@ def enrich_reference() -> None:
 ```{{python}}
 #| echo: false
 #| warning: false
-{runnable(code)}
+{wide(code)}{runnable(code)}
 ```
 """
         page.write_text(text + "\n")

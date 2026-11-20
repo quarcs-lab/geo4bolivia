@@ -384,6 +384,10 @@ $g4-code-line: rgba(255, 255, 255, 0.1);
   border-radius: 0.75rem;
   overflow: hidden;
 }
+// Figures with two panels side by side (geo.lisa): readable widths, scrolled sideways on a phone
+.g4-wide .cell-output-display .plotly-graph-div {
+  min-width: 760px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .g4-btn, .g4-card, .quarto-grid-item.card, .g4-code__btn {

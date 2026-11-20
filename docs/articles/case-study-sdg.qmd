@@ -142,9 +142,10 @@ geo.moran(ids, "index_sdg", year="all").df
 
 The index is clearly clustered in both periods, and slightly more in the second: Moran's I is 0.43 and 0.47, each far from what random placement gives (pseudo p-value 0.001). The change is clustered as well, less strongly (0.22). Convergence in values did not go with a weaker spatial pattern.
 
-Local statistics (LISA) say where the clusters are:
+Local statistics (LISA) say where the clusters are, on the Moran scatterplot and on the map:
 
 ```{python}
+#| classes: g4-wide
 geo.lisa(ids, "index_sdg", year=2024).fig
 ```
 
