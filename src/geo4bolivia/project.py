@@ -1,9 +1,10 @@
 """Project identity, read from ``project.yaml``.
 
 Nothing else in the package hard-codes the project: the package name comes from
-the folder this module lives in, and the repository, country code and
-projection come from ``project.yaml``. Inside a checkout that file is read from
-the repository root; an installed package reads the copy bundled with it.
+the folder this module lives in, and the data repository, country code and
+projection come from ``project.yaml``. The package carries its own copy (bundled
+into the wheel; at the repository root in a source checkout). Inside a checkout of
+the data repository, that repository's ``project.yaml`` is read on top of it.
 """
 
 from __future__ import annotations
@@ -17,7 +18,8 @@ import yaml
 PACKAGE = __name__.split(".")[0]          # "geo4bolivia" (the folder name in src/)
 ENV_PREFIX = PACKAGE.upper()              # GEO4BOLIVIA_DATA_DIR, ..._BASE_URL, ..._REF
 CONFIG_FILE = "project.yaml"
-_BUNDLED = Path(__file__).resolve().parent / CONFIG_FILE
+_BUNDLED = Path(__file__).resolve().parent / CONFIG_FILE          # in an installed wheel
+_SOURCE = Path(__file__).resolve().parents[2] / CONFIG_FILE       # in a source checkout of the package
 
 
 def env(name: str) -> str | None:
@@ -26,7 +28,7 @@ def env(name: str) -> str | None:
 
 
 def _is_root(path: Path) -> bool:
-    """A checkout of *this* project: has geo/scales.yaml and a project.yaml naming this package."""
+    """A checkout of this project's data repository: geo/scales.yaml and a project.yaml naming this package."""
     cfg = path / CONFIG_FILE
     if not (cfg.is_file() and (path / "geo" / "scales.yaml").is_file()):
         return False
@@ -38,7 +40,7 @@ def _is_root(path: Path) -> bool:
 
 @lru_cache(maxsize=1)
 def local_root() -> Path | None:
-    """The repository root if running inside a checkout (or ``<PREFIX>_DATA_DIR``), else ``None``."""
+    """The data repository's root if running inside a checkout of it (or ``<PREFIX>_DATA_DIR``), else ``None``."""
     explicit = env("DATA_DIR")
     if explicit:
         root = Path(explicit).expanduser().resolve()
@@ -51,14 +53,27 @@ def local_root() -> Path | None:
     return None
 
 
+def _own_config() -> dict:
+    """The package's own project.yaml."""
+    for path in (_BUNDLED, _SOURCE):
+        if path.is_file():
+            cfg = yaml.safe_load(path.read_text()) or {}
+            if cfg.get("package") == PACKAGE:
+                return cfg
+    raise FileNotFoundError(f"{CONFIG_FILE} not found (looked in {_BUNDLED} and {_SOURCE})")
+
+
 @lru_cache(maxsize=1)
 def config() -> dict:
-    """The contents of project.yaml."""
+    """The project settings: the package's project.yaml, with the data repository's on top inside a checkout."""
     root = local_root()
-    path = root / CONFIG_FILE if root is not None else _BUNDLED
-    if not path.is_file():
-        raise FileNotFoundError(f"{CONFIG_FILE} not found (looked in {path})")
-    return yaml.safe_load(path.read_text())
+    if root is None:
+        return _own_config()
+    local = yaml.safe_load((root / CONFIG_FILE).read_text()) or {}
+    try:
+        return {**_own_config(), **local}
+    except FileNotFoundError:
+        return local
 
 
 def country_code() -> str:

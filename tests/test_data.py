@@ -1,8 +1,10 @@
-"""Generic tests: they hold for any project built from this template, whatever its data.
+"""Generic tests on the project's data: they hold for any project built from this template.
 
-They read the scale registry, units and metadata instead of hard-coding values,
-so a new project inherits them unchanged. Project-specific facts belong in
-tests/test_project.py.
+They read the scale registry, units and metadata instead of hard-coding values, so a
+new project inherits them unchanged. They need the data repository (see conftest.py):
+a checkout next to this one, ``<PREFIX>_DATA_DIR``, or the network. Project-specific
+facts are tested in the data repository; the analyses are tested on synthetic data
+in the other test files.
 """
 
 import json
@@ -21,6 +23,8 @@ from geo4bolivia.aggregate import EQUAL_AREA_CRS
 ACTIVE = list(geo.scales(active_only=True).index)
 DATASETS = list(metadata.dataset_ids())
 needs_data = pytest.mark.skipif(not DATASETS, reason="no datasets registered yet")
+needs_checkout = pytest.mark.skipif(project.local_root() is None, reason="needs a checkout of the data repository")
+pytestmark = pytest.mark.data
 
 
 # --- project and geography -------------------------------------------------------------
@@ -195,6 +199,7 @@ def test_zonal_sums_a_raster_over_units(tmp_path):
 
 # --- validation ----------------------------------------------------------------------------
 
+@needs_checkout
 def test_everything_validates():
     reports = validate.run()
     assert all(r.ok for r in reports), "\n".join(str(r) for r in reports if not r.ok)
@@ -218,6 +223,7 @@ def repo_copy(tmp_path, monkeypatch):
 
 
 @needs_data
+@needs_checkout
 def test_validator_catches_broken_data(repo_copy):
     dataset = DATASETS[0]
     res = metadata.resource(dataset)
@@ -231,6 +237,7 @@ def test_validator_catches_broken_data(repo_copy):
 
 
 @needs_data
+@needs_checkout
 def test_validator_catches_incomplete_metadata(repo_copy):
     dataset = DATASETS[0]
     path = repo_copy / f"metadata/{dataset}.datapackage.json"
@@ -399,6 +406,7 @@ def test_aggregate_to_several_scales_reports_coverage():
 
 
 @needs_data
+@needs_checkout
 def test_validator_catches_stale_coverage_metadata(repo_copy):
     dataset = DATASETS[0]
     path = repo_copy / f"metadata/{dataset}.datapackage.json"
@@ -419,21 +427,3 @@ def test_map_draws_a_variable():
     variable = metadata.variables(dataset)[0]
     fig = geo.map(dataset, variable)
     assert fig.data and geo.labels(dataset)[variable] in fig.layout.title.text
-
-
-# --- the website's function reference ------------------------------------------------------
-
-def test_function_reference_is_current_and_every_function_has_an_example():
-    import re
-    import subprocess
-    import sys
-    root = store.repo_root()
-    if not (root / "scripts/api_reference.py").exists():
-        pytest.skip("no function reference in this project")
-    check = subprocess.run([sys.executable, "scripts/api_reference.py", "--check"], cwd=root,
-                           capture_output=True, text=True)
-    assert check.returncode == 0, check.stdout + check.stderr
-    content = (root / "site/src/content.js").read_text()
-    block = content.split("export const API_EXAMPLES = {", 1)[1].split("\n};", 1)[0]
-    examples = set(re.findall(r"^  (\w+): `", block, flags=re.M))
-    assert set(geo.__all__) <= examples, f"no example for {sorted(set(geo.__all__) - examples)}"

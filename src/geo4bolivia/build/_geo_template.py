@@ -1,4 +1,4 @@
-"""TEMPLATE geo builder for a new project (scripts/new_project.py installs it as build/geo.py).
+"""TEMPLATE geo builder for a new project. Copy to builders/geo.py in the data repository.
 
 It builds every administrative scale from one GADM file:
 
@@ -11,12 +11,12 @@ It builds every administrative scale from one GADM file:
 To add a grouping (regions made of whole units, like Global Data Lab regions),
 register it in scales.yaml with ``children: <scale>``, add its units (scale,
 name, parent_id) to ``units``, set ``<grouping>_id`` on the child units, and add
-its dissolved layer, as geo4bolivia does in its build/geo.py.
+its dissolved layer.
 """
 
-from .. import store
-from .common import publish_geo
-from .gadm import from_gadm
+from geo4bolivia import store
+from geo4bolivia.build.common import publish_geo
+from geo4bolivia.build.gadm import from_gadm
 
 GADM_FILE = "raw/boundaries/gadm41_XXX_2.json"   # CHANGE: your GADM download
 LEVELS = {1: "province", 2: "district"}           # CHANGE: GADM level -> scale id in geo/scales.yaml

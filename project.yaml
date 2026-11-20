@@ -1,5 +1,6 @@
-# Project identity. See TEMPLATE.md and docs/data-infrastructure.md.
-# Everything generic in the package reads its settings from here.
+# Package identity, bundled into the wheel. See TEMPLATE.md.
+# Everything generic in the package reads its settings from here; inside a checkout
+# of the data repository, that repository's own project.yaml is read instead.
 
 name: GeoDevelopment Observatory of Bolivia
 short_name: GDO-Bolivia
@@ -8,12 +9,14 @@ short_name: GDO-Bolivia
 # variables (GEO4BOLIVIA_DATA_DIR, GEO4BOLIVIA_BASE_URL, GEO4BOLIVIA_REF).
 package: geo4bolivia
 
-# GitHub repository holding the published files, and the git ref an installed
-# package reads from by default (a release tag freezes the data).
-repository: quarcs-lab/geo4bolivia
+# GitHub repository holding the published files (the data repository), and the git ref
+# an installed package reads from by default (a release tag freezes the data).
+repository: quarcs-lab/gdo4bolivia
 default_ref: main
 
-website: https://quarcs-lab.github.io/geo4bolivia/
+# The observatory's website, and this package's documentation.
+website: https://quarcs-lab.github.io/gdo4bolivia/
+documentation: https://quarcs-lab.github.io/geo4bolivia/
 
 country:
   name: Bolivia
@@ -24,29 +27,10 @@ country:
 # An Albers equal-area projection fitted to Bolivia (standard parallels 11°S and 21°S).
 equal_area_crs: "+proj=aea +lat_0=-16.5 +lon_0=-64.5 +lat_1=-11 +lat_2=-21 +datum=WGS84 +units=m +no_defs"
 
-# Default view of geo.map() (the package's quick interactive maps).
+# Default view of the package's interactive maps.
 map:
   center: {lat: -16.3, lon: -64.0}
   zoom: 4
 
 # Generated table listing every variable of every dataset.
 catalog: definitions_gdo-bolivia.csv
-
-# Website maps drawn by scripts/indicator_map.py: a keyless basemap (tiles below the units,
-# labels above them) and the colours of the three natural-break classes (Low, Middle, High).
-site:
-  # Credit printed under every map drawn from geo/boundaries/ or site/data/
-  boundary_credit: "SDSN Bolivia (2025), Límites Municipales Bolivia 2025"
-  basemap:
-    base: https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}
-    labels: https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}
-    attribution: "Basemap: Esri, HERE, Garmin, © OpenStreetMap contributors, and the GIS user community"
-  colors:
-    background: "#071417"
-    text: "#e6efee"
-    muted: "#a9bebb"
-    accent: "#5ad6c6"
-    no_data: "#5c6b6a"
-    classes: ["#1f8a80", "#ec8f99", "#ffd9de"]
-    # The five classes of the interactive maps (low to high), from the site's lagoon-to-flamingo ramp
-    ramp: ["#13605f", "#5fb7a6", "#c9e2d6", "#ec8f99", "#d84a64"]

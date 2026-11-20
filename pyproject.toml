@@ -1,77 +1,66 @@
 [project]
 name = "geo4bolivia"
-version = "0.5.0"
-description = "Subnational development data for Bolivia across spatial scales (GeoDevelopment Observatory of Bolivia)"
-readme = "docs/python-package.md"
+version = "0.6.0"
+description = "Spatial data science for Bolivia's subnational development data: load, map and analyse it across spatial scales (GeoDevelopment Observatory of Bolivia)"
+readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.11"
-authors = [
-    {name = "Carlos Mendez"},
-]
-
+authors = [{name = "Carlos Mendez"}]
 dependencies = [
-    # Kept small so `pip install geo4bolivia` is quick: Google Colab already has all of these
-    "pandas>=2.0",
-    "numpy>=1.24",
+    "pandas>=2.1",
+    "numpy>=1.26",
+    "scipy>=1.11",
     "requests>=2.31",
-    "geopandas>=0.14",
+    "geopandas>=1.0",
     "pyarrow>=15",
     "pyyaml>=6.0",
+    "libpysal>=4.9",
+    "esda>=2.5",
+    "spreg>=1.8",
+    "inequality>=1.0",
+    "mapclassify>=2.6",
+    "statsmodels>=0.14",
+    "plotly>=5.24",
+    "great-tables>=0.16",
 ]
-
-keywords = ["bolivia", "geospatial", "regional development", "subnational data", "panel data", "sdg atlas", "municipalities", "sdgs", "remote sensing"]
+keywords = ["bolivia", "geospatial", "regional development", "subnational data", "panel data", "sdg atlas",
+            "municipalities", "sdgs", "remote sensing", "spatial econometrics", "convergence", "spatial dependence",
+            "regional inequality", "exploratory spatial data analysis"]
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: GIS",
 ]
 
 [project.optional-dependencies]
-raster = ["rasterio>=1.3"]   # geo4bolivia.zonal(): summarise rasters (GeoTIFF) over units
-plot = ["plotly>=5.24"]     # geo4bolivia.map(): interactive choropleth maps (preinstalled in Colab)
+raster = ["rasterio>=1.3"]        # geo.zonal()
+dynamics = ["giddy>=2.3.5"]       # geo.transitions(), geo.spatial_transitions()
+gwr = ["mgwr>=2.2"]               # geo.gwr(), geo.mgwr()
+panel = ["linearmodels>=6"]       # geo.panel_model()
+plot = []                         # kept for compatibility: plotly is a core dependency since 0.6
+all = ["rasterio>=1.3", "giddy>=2.3.5", "mgwr>=2.2", "linearmodels>=6"]
 
 [project.scripts]
 geo4bolivia = "geo4bolivia.cli:main"
 
 [project.urls]
 Homepage = "https://quarcs-lab.github.io/geo4bolivia/"
-Documentation = "https://github.com/quarcs-lab/geo4bolivia/blob/main/docs/data-infrastructure.md"
+Documentation = "https://quarcs-lab.github.io/geo4bolivia/"
 Repository = "https://github.com/quarcs-lab/geo4bolivia"
 Issues = "https://github.com/quarcs-lab/geo4bolivia/issues"
+Changelog = "https://quarcs-lab.github.io/geo4bolivia/changelog.html"
+Observatory = "https://quarcs-lab.github.io/gdo4bolivia/"
 
 [dependency-groups]
-analysis = [
-    # Visualization
-    "matplotlib>=3.7",
-    "seaborn>=0.12",
-    "plotly>=5.15",
-    "folium>=0.12",            # interactive maps (GeoDataFrame.explore), as in Colab
-    # Spatial analysis
-    "contextily>=1.4",
-    "rasterio>=1.3",
-    "libpysal>=4.9",
-    "mapclassify>=2.6",
-    "esda>=2.5",
-    "splot>=1.1",
-    "mgwr>=2.2",
-    "inequality>=1.0",
-    # Econometrics and machine learning
-    "statsmodels>=0.14",
-    "scikit-learn>=1.3",
-    "xgboost>=2.0",
-    # Jupyter
-    "jupyter>=1.0",
-    "notebook>=7.0",
-    "jupytext>=1.19.1",
-    "geometrics>=0.1.3",
-    "expdpy>=0.5.2",
-]
-dev = [
-    "openpyxl>=3.1.5",
-    "pytest>=8.0",
-]
+dev = ["pytest>=8.0", "pytest-xdist>=3.5", "ruff>=0.6"]
+docs = ["quartodoc>=0.11", "griffe<1", "jupyter>=1.0", "nbformat>=5.9", "ipykernel>=6"]
+# The sister packages, to compare the ported analyses with their originals
+compare = ["geometrics>=0.1.3", "expdpy>=0.5.2"]
 
 [build-system]
 requires = ["hatchling"]
@@ -80,21 +69,45 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/geo4bolivia"]
 
-# Ship project.yaml inside the package, so an installed copy knows its repository
+# Ship project.yaml inside the package, so an installed copy knows its data repository
 [tool.hatch.build.targets.wheel.force-include]
 "project.yaml" = "geo4bolivia/project.yaml"
 
-# The source distribution holds the code only; data are read from GitHub
 [tool.hatch.build.targets.sdist]
-only-include = ["src", "project.yaml", "pyproject.toml", "docs/python-package.md", "LICENSE"]
+only-include = ["src", "project.yaml", "pyproject.toml", "README.md", "LICENSE"]
 
 [tool.uv]
 package = true
-default-groups = ["analysis", "dev"]
+default-groups = ["dev", "docs", "compare"]
+# giddy's Markov code needs a working numba and a recent quantecon; without these
+# constraints uv can resolve versions that fail to import (as geometrics documents).
+# numba 0.62 and llvmlite 0.45 have no wheels for Intel Macs.
 constraint-dependencies = [
-    "numba>=0.60,<0.62",
-    "llvmlite>=0.44,<0.45",
+    "numba>=0.60",
+    "numba<0.62; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "llvmlite<0.45; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "numpy<2.3; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "quantecon>=0.7",
+    "giddy>=2.3.5",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "data: needs the observatory's data (a checkout of the data repository, or the network)",
+    "dynamics: needs the [dynamics] extra (giddy)",
+    "gwr: needs the [gwr] extra (mgwr)",
+    "panel: needs the [panel] extra (linearmodels)",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "NPY", "RUF"]
+ignore = ["RUF022", "E501", "RUF001", "RUF002", "RUF003"]   # grouped __all__; long lines in tables; Greek letters and dashes in text
+
+[tool.ruff.lint.per-file-ignores]
+"src/geo4bolivia/plot.py" = ["A001"]
