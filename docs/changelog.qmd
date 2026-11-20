@@ -4,7 +4,7 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
-## 0.7.1 (unreleased)
+## 0.7.1 (2026-11-20)
 
 **`lisa`: a larger cluster map.** In the two-panel figure the map now takes a little more width than the Moran scatterplot (56% and 44%) and its view is fitted to its panel, so Bolivia is drawn about 45% larger while the whole country stays in view; the figure is a little taller (650 px). The clusters, counts and reading are unchanged.
 
