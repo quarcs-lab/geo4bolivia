@@ -2,6 +2,7 @@
 title: "Exploring the data"
 description: "A question-driven exploration of multidimensional poverty in Bolivia's municipalities, and the pitfalls of these data that a newcomer should know."
 image: ../images/thumbs/exploring.webp
+image-alt: "Rolls of Andean aguayo textiles of different heights standing side by side like the bars of a chart"
 ---
 
 ```{=html}

@@ -2,6 +2,7 @@
 title: "Regional inequality"
 description: "How unequal Bolivia's municipalities are, whether that is changing, and whether the inequality lies between departments or inside them: Gini, Theil, the Lorenz curve and Theil's decomposition."
 image: ../images/thumbs/inequality.webp
+image-alt: "La Paz at night from the rim of El Alto: a bright dense core of lights and dim, sparse lights on the slopes"
 ---
 
 ```{=html}

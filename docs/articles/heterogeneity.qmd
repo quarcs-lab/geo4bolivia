@@ -2,6 +2,7 @@
 title: "Spatial heterogeneity: MGWR"
 description: "Multiscale geographically weighted regression asks whether an association differs from place to place and at what spatial scale it operates: how to run it with geo.mgwr and how to read its bandwidths, coefficient maps and diagnostics."
 image: ../images/thumbs/heterogeneity.webp
+image-alt: "A panorama from the Andes to the lowlands whose light shifts from rose over the highlands to turquoise over the cloud forest"
 ---
 
 ```{=html}

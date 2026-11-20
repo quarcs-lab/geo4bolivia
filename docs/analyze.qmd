@@ -2,6 +2,7 @@
 title: "Analyze"
 description: "A tour of the analysis functions on one question: did sustainable development become more equal across Bolivia's municipalities, and what role does space play?"
 image: images/thumbs/case-study-sdg.webp
+image-alt: "An Altiplano town at dawn with a school with a solar roof, a water tower and street lamps, quinoa fields in front"
 sidebar: false
 ---
 

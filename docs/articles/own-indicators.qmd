@@ -2,6 +2,7 @@
 title: "Building your own indicators"
 description: "From a table or a raster of your own to an analysis: link it to the geo IDs, compute zonal statistics, move it across scales, save it and analyse it."
 image: ../images/thumbs/own-indicators.webp
+image-alt: "An Andean loom with threads in turquoise, rose and sand joining into one woven pattern"
 ---
 
 ```{=html}

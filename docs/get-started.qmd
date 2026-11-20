@@ -2,6 +2,7 @@
 title: "Get started"
 description: "Install geo4bolivia, find a variable, load it, map it and run a first spatial analysis, in ten minutes."
 image: images/hero.webp
+image-alt: "The Salar de Uyuni at blue hour, its salt polygons glowing rose and turquoise, with town lights and the Cordillera Real behind"
 sidebar: false
 ---
 

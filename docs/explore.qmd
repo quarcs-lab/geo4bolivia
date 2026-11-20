@@ -2,6 +2,7 @@
 title: "Explore"
 description: "A first pass over one indicator, the Sustainable Development Index: summaries, distributions, extremes, correlations, trends and maps, before any model."
 image: images/thumbs/exploring.webp
+image-alt: "Rolls of Andean aguayo textiles of different heights standing side by side like the bars of a chart"
 sidebar: false
 ---
 

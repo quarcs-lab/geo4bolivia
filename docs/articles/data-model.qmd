@@ -2,6 +2,7 @@
 title: "The data model: scales, geo IDs, datasets and metadata"
 description: "How the observatory's data are organised (spatial scales, geo IDs, panels and metadata) and how the package reads them."
 image: ../images/thumbs/data-model.webp
+image-alt: "Agricultural terraces on Isla del Sol at dusk, nested in levels edged with turquoise light, above Lake Titicaca"
 ---
 
 ```{=html}

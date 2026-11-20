@@ -2,6 +2,7 @@
 title: "Maps and spatial dependence"
 description: "From a map to a test: classed maps, spatial weights, global Moran's I and LISA clusters of multidimensional poverty in Bolivia's municipalities, and how far the conclusions depend on the choices made."
 image: ../images/thumbs/spatial-dependence.webp
+image-alt: "The Altiplano at night with village lights gathered in a rose cluster and a turquoise cluster, a volcano behind"
 ---
 
 ```{=html}

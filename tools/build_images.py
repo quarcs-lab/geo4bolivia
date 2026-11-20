@@ -1,12 +1,16 @@
-"""Prepare the documentation's images from pictures drawn in ChatGPT.
+"""Generate and prepare the documentation's images.
 
-    uv run python tools/build_images.py [<folder with the PNGs>]   # default ~/Downloads
-    uv run python tools/build_images.py --prompts                  # print the prompts
-    uv run python tools/build_images.py --placeholders             # stand-ins for missing pictures
+    uv run python tools/build_images.py --generate     # draw the missing pictures with the Codex CLI
+    uv run python tools/build_images.py [<folder>]     # process the pictures (default: docs/images/originals)
+    uv run python tools/build_images.py --prompts      # print the prompts
+    uv run python tools/build_images.py --placeholders # stand-ins for missing pictures
 
-The pictures are AI-generated in ChatGPT (OpenAI image model, with the maintainer's
-subscription) from the prompts in PROMPTS and saved as ``g4b-<id>.png``. This script
-crops and resizes them into ``docs/images/``:
+The pictures are AI-generated with OpenAI's image model from the prompts in PROMPTS,
+through the maintainer's ChatGPT subscription: either with the Codex CLI
+(``--generate`` runs ``codex exec`` once per picture and collects the result from
+``~/.codex/generated_images``) or by hand in ChatGPT. They are kept as
+``docs/images/originals/g4b-<id>.png`` (not committed). This script crops and resizes
+them into ``docs/images/``:
 
 - ``icon``  -> ``icon.png`` (512 px), ``favicon.png`` (64 px), ``logo-navbar.png`` (72 px)
 - ``hero``  -> ``hero.webp`` (1600 x 800), the home page and README banner
@@ -19,7 +23,9 @@ documentation is drawn by the package from the official boundaries.
 
 from __future__ import annotations
 
+import subprocess
 import sys
+import time
 from pathlib import Path
 
 from PIL import Image, ImageDraw
@@ -130,14 +136,40 @@ def write(key: str, source: Image.Image) -> list[Path]:
     return out
 
 
+ORIGINALS = IMG / "originals"
+CODEX_IMAGES = Path.home() / ".codex" / "generated_images"
+ASK = ("Use your image generation tool to create exactly one image from this description, then stop. "
+       "Do not write any code or files yourself. Description: ")
+
+
+def generate(only_missing: bool = True) -> None:
+    """Draw the pictures with the Codex CLI's image tool (needs ``codex`` signed in to ChatGPT)."""
+    ORIGINALS.mkdir(parents=True, exist_ok=True)
+    for key, prompt in PROMPTS.items():
+        target = ORIGINALS / f"{PREFIX}{key}.png"
+        if only_missing and target.exists():
+            continue
+        started = time.time()
+        subprocess.run(["codex", "exec", "--skip-git-repo-check", ASK + prompt], stdin=subprocess.DEVNULL,
+                       capture_output=True, cwd=ORIGINALS, check=False)
+        new = [p for p in CODEX_IMAGES.glob("*/*.png") if p.stat().st_mtime >= started]
+        if not new:
+            print(f"{key}: no picture was generated")
+            continue
+        target.write_bytes(max(new, key=lambda p: p.stat().st_mtime).read_bytes())
+        print(f"{target.relative_to(ROOT)}  ({time.time() - started:.0f} s)")
+
+
 def main(argv: list[str]) -> int:
     if "--prompts" in argv:
         for key, prompt in PROMPTS.items():
             print(f"\n### {PREFIX}{key}.png\n{prompt}")
         return 0
+    if "--generate" in argv:
+        generate(only_missing="--all" not in argv)
     stand_ins = "--placeholders" in argv
     folders = [a for a in argv if not a.startswith("--")]
-    folder = Path(folders[0]).expanduser() if folders else Path.home() / "Downloads"
+    folder = Path(folders[0]).expanduser() if folders else ORIGINALS
     IMG.mkdir(parents=True, exist_ok=True)
     missing = []
     for key in PROMPTS:

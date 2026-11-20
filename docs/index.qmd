@@ -2,6 +2,7 @@
 title: "geo4bolivia"
 description: "Spatial data science for Bolivia's subnational development data: find, load, map and analyse it across spatial scales."
 image: images/hero.webp
+image-alt: "The Salar de Uyuni at blue hour, its salt polygons glowing rose and turquoise, with town lights and the Cordillera Real behind"
 toc: false
 page-layout: full
 title-block-style: none
@@ -27,7 +28,7 @@ sidebar: false
 ---
 
 ::: {.hero}
-![](images/hero.webp){fig-alt="The Salar de Uyuni at blue hour, its salt polygons glowing like the cells of a data mosaic, with the lights of Altiplano towns and the Cordillera Real behind"}
+![](images/hero.webp){fig-alt="The Salar de Uyuni at blue hour, its salt polygons glowing rose and turquoise, with town lights and the Cordillera Real behind"}
 :::
 
 ::: {.hero-lead}

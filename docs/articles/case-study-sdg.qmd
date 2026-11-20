@@ -2,6 +2,7 @@
 title: "Case study: the Sustainable Development Index, ~2012 to ~2024"
 description: "One complete analysis with geo4bolivia: how the Sustainable Development Index of Bolivia's 343 municipalities changed between two periods, which goals moved, whether municipalities converged, and where."
 image: ../images/thumbs/case-study-sdg.webp
+image-alt: "An Altiplano town at dawn with a school with a solar roof, a water tower and street lamps, quinoa fields in front"
 ---
 
 ```{=html}

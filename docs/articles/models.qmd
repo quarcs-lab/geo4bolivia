@@ -2,6 +2,7 @@
 title: "Regression, panel and spatial models"
 description: "Three kinds of regression model for subnational data, what each one compares and when it is the right tool: least squares with fixed effects and clustered errors, panel estimators with the Hausman test, and spatial models with their diagnostics and impacts."
 image: ../images/thumbs/models.webp
+image-alt: "A straight turquoise line drawn through the stars above the Cordillera Real, beside a small observatory dome"
 ---
 
 ```{=html}

@@ -1,7 +1,8 @@
 # Image prompts for the documentation
 
-Run each prompt in ChatGPT and save the picture in ~/Downloads with the file name in its heading.
-Then: uv run python tools/build_images.py
+Generate them with `uv run python tools/build_images.py --generate` (Codex CLI), or run each prompt in ChatGPT
+and save the picture in docs/images/originals/ with the file name in its heading; then
+`uv run python tools/build_images.py`.
 
 ### g4b-icon.png
 1:1. A flat, minimal vector-style app icon, perfectly centred on a deep teal-black (#0b1e22) rounded square, bold simple shapes that stay legible at 32 pixels, generous margins, no gradients on the background, no text, letters, numbers, maps, country outlines, flags or watermarks. The emblem: one hexagonal tile of the Salar de Uyuni's salt crust, drawn as seven nested hexagon cells (one in the middle, six around it) in turquoise (#5ad6c6) outlines, the middle cell filled flamingo rose (#d1405a), two of the outer cells filled soft salt-white; a single thin turquoise orbit arc with a small dot (a satellite) curving around the upper right of the hexagon.

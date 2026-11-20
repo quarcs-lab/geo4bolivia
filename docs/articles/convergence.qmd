@@ -2,6 +2,7 @@
 title: "Convergence: β, σ and clubs"
 description: "Three questions about catching up, and the method for each: do units that start lower grow faster, is dispersion falling, and do units head for one path or for several?"
 image: ../images/thumbs/convergence.webp
+image-alt: "Meandering rose and turquoise rivers of the Bolivian lowlands joining into one wide river at dawn"
 ---
 
 ```{=html}

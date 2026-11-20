@@ -2,6 +2,7 @@
 title: "Transitions and mobility"
 description: "How units move inside a distribution: changes of rank between two years, moves between spatial cluster types, and Markov transition matrices with and without the neighbours."
 image: ../images/thumbs/transitions.webp
+image-alt: "Cable-car cabins lit rose and turquoise gliding over La Paz at dusk, with Illimani behind"
 ---
 
 ```{=html}
