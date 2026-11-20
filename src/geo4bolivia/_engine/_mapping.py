@@ -214,17 +214,32 @@ def _geo_inputs(
     return fc, list(g[entity]), g
 
 
+#: Height of a map figure, and the room the map itself gets inside it (title and margins
+#: take the rest), in pixels. The zoom is chosen so the units fill that room.
+_MAP_HEIGHT = 540
+_MAP_ROOM = (620.0, 440.0)
+
+
 def _center_zoom(bounds: ArrayLike) -> tuple[dict[str, float], float]:
     """Compute a MapLibre ``center`` / ``zoom`` fitting the WGS84 ``bounds``.
 
-    ``bounds`` is ``(minx, miny, maxx, maxy)`` in degrees; the zoom fits the wider of
-    the longitude/latitude spans into a single map view with a small padding.
+    ``bounds`` is ``(minx, miny, maxx, maxy)`` in degrees. A web map at zoom ``z`` draws
+    the world 512 * 2**z pixels wide, so the zoom that fits a span into the map's room
+    follows from the span in longitude and, for the height, in Web-Mercator latitude.
     """
     minx, miny, maxx, maxy = (float(b) for b in np.asarray(bounds, dtype=float))
-    center = {"lon": (minx + maxx) / 2.0, "lat": (miny + maxy) / 2.0}
+
+    def mercator(lat: float) -> float:
+        lat = min(max(lat, -85.0), 85.0)
+        return math.degrees(math.log(math.tan(math.pi / 4.0 + math.radians(lat) / 2.0)))
+
+    low, high = mercator(miny), mercator(maxy)
+    middle = math.degrees(2.0 * math.atan(math.exp(math.radians((low + high) / 2.0))) - math.pi / 2.0)
+    center = {"lon": (minx + maxx) / 2.0, "lat": middle}
     span_lon = max(maxx - minx, 1e-5)
-    span_lat = max(maxy - miny, 1e-5)
-    zoom = min(math.log2(360.0 / span_lon), math.log2(170.0 / span_lat)) - 0.4
+    span_lat = max(high - low, 1e-5)
+    width, height = _MAP_ROOM
+    zoom = min(math.log2(width * 360.0 / (512.0 * span_lon)), math.log2(height * 360.0 / (512.0 * span_lat))) - 0.25
     return center, float(min(max(zoom, 0.0), 14.0))
 
 
@@ -250,6 +265,8 @@ def _finish_map(
     else:
         fig.update_layout(geo={"visible": False, "fitbounds": "locations"})
     apply_default_layout(fig, title=title, margin=dict(_MAP_MARGIN))
+    if fig.layout.height is None:
+        fig.update_layout(height=_MAP_HEIGHT)
     if legend_title is not None:
         fig.update_layout(legend_title_text=legend_title)
     return fig

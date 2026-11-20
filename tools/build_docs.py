@@ -237,8 +237,8 @@ def build_llms(full: bool) -> None:
 # --- main ------------------------------------------------------------------------------------------
 
 def main(argv: list[str]) -> int:
-    if "--llms" in argv:
-        build_llms(full=False)
+    if "--llms" in argv or "--llms-full" in argv:      # only the files for AI assistants (the full one needs docs/_site)
+        build_llms(full="--llms-full" in argv)
         return 0
     if not (DOCS / "images" / "hero.webp").exists() or "--placeholders" in argv:
         run(sys.executable, "tools/build_images.py", "--placeholders")

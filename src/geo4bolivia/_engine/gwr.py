@@ -625,18 +625,37 @@ def _mgwr_gt(
 
 @contextlib.contextmanager
 def _no_progress_bars():
-    """Switch tqdm's progress bars off for the duration (they would fill a notebook's output)."""
-    import os
+    """Switch off the progress bars mgwr draws with tqdm (they would fill a notebook's output).
 
-    before = os.environ.get("TQDM_DISABLE")
-    os.environ["TQDM_DISABLE"] = "1"
+    mgwr imports ``tqdm`` from ``tqdm.auto`` and ``tqdm.autonotebook`` inside its functions,
+    so for the duration both names create disabled bars.
+    """
+    import warnings
+
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            import tqdm.auto
+            import tqdm.autonotebook
+    except ImportError:
+        yield
+        return
+    modules = (tqdm.auto, tqdm.autonotebook)
+    originals = [module.tqdm for module in modules]
+
+    def disabled(original):
+        def make(*args, **kwargs):
+            kwargs["disable"] = True
+            return original(*args, **kwargs)
+        return make
+
+    for module, original in zip(modules, originals, strict=True):
+        module.tqdm = disabled(original)
     try:
         yield
     finally:
-        if before is None:
-            os.environ.pop("TQDM_DISABLE", None)
-        else:
-            os.environ["TQDM_DISABLE"] = before
+        for module, original in zip(modules, originals, strict=True):
+            module.tqdm = original
 
 
 #: Local condition number above which local collinearity is a concern (Belsley et al.).

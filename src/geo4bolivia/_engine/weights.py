@@ -20,6 +20,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from ._geo import ensure_metric_crs, resolve_gdf_entity
+from ._mapping import _MAP_HEIGHT
 from ._theme import apply_default_layout, color_for
 from ._types import ConnectivityMapResult
 from ._validation import AnalysisWarning, ensure_geodataframe
@@ -328,10 +329,10 @@ def _edge_coordinates(
 
 
 def _map_zoom(bounds: np.ndarray) -> float:
-    """Approximate a MapLibre zoom level that frames ``bounds`` (lon/lat degrees)."""
-    minx, miny, maxx, maxy = (float(b) for b in bounds)
-    span = max(maxx - minx, (maxy - miny) * 1.6, 1e-4)
-    return float(np.clip(np.log2(360.0 / span) - 0.5, 1.0, 13.0))
+    """The MapLibre zoom level that frames ``bounds`` (lon/lat degrees), as on the other maps."""
+    from ._mapping import _center_zoom
+
+    return _center_zoom(bounds)[1]
 
 
 def explore_connectivity_map(
@@ -492,7 +493,8 @@ def explore_connectivity_map(
                     "lat": float((bounds[1] + bounds[3]) / 2),
                 },
                 "zoom": _map_zoom(bounds),
-            }
+            },
+            height=_MAP_HEIGHT,
         )
     else:
         if polygonal:
