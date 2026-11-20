@@ -183,6 +183,19 @@ def build_reference_notebooks() -> None:
     print(f"reference notebooks: {len(names)} in {folder.relative_to(ROOT)}/")
 
 
+def build_home_notebook() -> None:
+    """The home page's first code box as a notebook of its own, with exactly that code: its Colab button opens it."""
+    match = re.search(r"^```python\n(.*?)^```\s*$", (DOCS / "index.qmd").read_text(), flags=re.M | re.S)
+    if match is None:
+        raise SystemExit("docs/index.qmd has no ```python block for the home notebook")
+    cells = [{"cell_type": "code", "metadata": {}, "execution_count": None, "outputs": [],
+              "source": match.group(1).strip()}]
+    notebook = {"cells": cells, "nbformat": 4, "nbformat_minor": 5,
+                "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
+                             "language_info": {"name": "python"}}}
+    (NOTEBOOKS / "home.ipynb").write_text(json.dumps(notebook, indent=1, ensure_ascii=False) + "\n")
+
+
 def build_notebooks() -> None:
     pages = [DOCS / f"{name}.qmd" for name in NOTEBOOK_PAGES]
     pages += sorted(p for p in (DOCS / "articles").glob("*.qmd") if p.stem != "index")
@@ -270,6 +283,7 @@ def main(argv: list[str]) -> int:
     enrich_reference()
     build_notebooks()
     build_reference_notebooks()
+    build_home_notebook()
     build_llms(full=False)
     if "--no-render" in argv:
         return 0

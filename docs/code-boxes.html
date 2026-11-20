@@ -22,7 +22,7 @@
   function notebookFor(page) {
     var parts = page.split("/");
     var last = parts[parts.length - 1];
-    if (page === "index") return { url: COLAB + "get-started.ipynb", what: "the Get started notebook" };
+    if (page === "index") return { url: COLAB + "home.ipynb", what: "a notebook with this code" };
     if (GUIDES.indexOf(page) >= 0 || (parts[0] === "articles" && parts.length === 2 && last !== "index"))
       return { url: COLAB + last + ".ipynb", what: "this page's notebook" };
     if (parts[0] === "reference" && parts.length === 2 && last !== "index")
