@@ -262,7 +262,7 @@ $g4-code-line: rgba(255, 255, 255, 0.1);
   border-color: $g4-link;
 }
 
-// Home page: hero and call to action
+// Home page: hero (its title is drawn on the picture) and call to action
 .hero {
   margin: 0 0 1.5rem;
   border-radius: 1rem;
@@ -274,13 +274,6 @@ $g4-code-line: rgba(255, 255, 255, 0.1);
     width: 100%;
     height: auto;
   }
-}
-.hero-lead {
-  text-align: center;
-  font-size: 1.3rem;
-  max-width: 46rem;
-  margin: 0 auto 1rem;
-  color: $g4-heading;
 }
 .hero-cta {
   display: flex;
