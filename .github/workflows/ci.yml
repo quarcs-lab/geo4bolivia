@@ -29,7 +29,7 @@ jobs:
         with:
           enable-cache: true
       - name: Sync environment
-        run: uv sync --locked --all-extras --only-group dev
+        run: uv sync --locked --all-extras --no-default-groups --group dev
       - name: Ruff
         run: uv run --no-sync ruff check src tests
 
@@ -60,6 +60,6 @@ jobs:
         with:
           enable-cache: true
       - name: Sync environment
-        run: uv sync --locked --all-extras --only-group dev --python ${{ matrix.python }}
+        run: uv sync --locked --all-extras --no-default-groups --group dev --python ${{ matrix.python }}
       - name: Run tests
         run: uv run --no-sync pytest -n auto -p no:warnings
