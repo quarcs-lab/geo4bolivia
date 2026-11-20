@@ -307,11 +307,15 @@ def finish(result, names: pd.Series | pd.DataFrame | None = None):
     Its tables use the package's column names (``geo_id`` and ``year`` instead of the
     engine's ``entity`` and ``period``), and those with one row per unit get the unit
     ``name`` next to ``geo_id`` when ``names`` (a panel, or a Series indexed by
-    ``geo_id``) is given.
+    ``geo_id``) is given. Its maps credit their basemap below the map (``_basemap.credit``).
     """
     import dataclasses
 
+    from ._engine._basemap import credit_all
+
     out = _whole_years(result._public_view())
+    for field in dataclasses.fields(out):
+        credit_all(getattr(out, field.name))
     if names is None:
         return out
     if isinstance(names, pd.DataFrame):

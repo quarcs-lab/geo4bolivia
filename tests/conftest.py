@@ -45,6 +45,20 @@ import pytest
 
 RNG_SEED = 20260702
 
+#: A stand-in for CARTO's style, so the maps' basemap credit needs no network in the tests.
+FAKE_CARTO_STYLE = (
+    '{"version": 8, "sources": {"carto": {"type": "vector", "tiles": ["https://example.org/{z}/{x}/{y}.mvt"], '
+    '"attribution": "&copy; OpenStreetMap contributors &copy; CARTO"}}, "layers": []}'
+)
+
+
+@pytest.fixture(autouse=True)
+def _offline_basemap(monkeypatch):
+    """Every map's basemap style comes from ``FAKE_CARTO_STYLE`` instead of CARTO's server."""
+    from geo4bolivia._engine import _basemap
+
+    monkeypatch.setattr(_basemap, "_download", lambda url: FAKE_CARTO_STYLE)
+
 GRID_SIDE = 8
 GRID_N = GRID_SIDE * GRID_SIDE
 # 0.1-degree cells anchored in central India so estimate_utm_crs() resolves.

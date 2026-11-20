@@ -96,7 +96,7 @@ def test_explicit_bins_are_the_class_limits(cells):
 def test_several_years_share_one_colour_range(two_years):
     fig = draw_map(two_years, "y", year=[2020, 2021])
     assert len(fig.data) == 2 and [t.subplot for t in fig.data] == ["map", "map2"]
-    assert [a.text for a in fig.layout.annotations] == ["<b>2020</b>", "<b>2021</b>"]
+    assert [a.text for a in fig.layout.annotations if a.name != "basemap-credit"] == ["<b>2020</b>", "<b>2021</b>"]
     assert {t.coloraxis for t in fig.data} == {"coloraxis"}
     assert fig.layout.coloraxis.cmin == two_years["y"].min() and fig.layout.coloraxis.cmax == two_years["y"].max()
     assert fig.layout.map.domain.x[1] <= fig.layout.map2.domain.x[0]          # side by side
@@ -129,7 +129,7 @@ def test_more_than_three_years_wrap_into_rows(two_years):
     decades = pd.concat([two_years.assign(year=two_years["year"] + 10 * i) for i in range(3)])
     fig = draw_map(decades, "y", year=[2020, 2021, 2030, 2031, 2040], bins=[0])
     assert {t.subplot for t in fig.data} == {"map", "map2", "map3", "map4", "map5"}
-    assert [a.text for a in fig.layout.annotations] == [f"<b>{y}</b>" for y in (2020, 2021, 2030, 2031, 2040)]
+    assert [a.text for a in fig.layout.annotations if a.name != "basemap-credit"] == [f"<b>{y}</b>" for y in (2020, 2021, 2030, 2031, 2040)]
     assert fig.layout.map4.domain.y[1] < fig.layout.map.domain.y[0] and fig.layout.height > 450        # a second row
     assert fig.layout.map3.zoom < draw_map(two_years, "y", year=[2020, 2021]).layout.map.zoom          # narrower maps
 
@@ -188,7 +188,7 @@ def test_bad_arguments_are_refused(cells, two_years):
 def test_options_of_the_drawn_maps(cells):
     fig = draw_map(cells, "y", scheme="quantiles", k=3, color_continuous_scale="Viridis", map_style="open-street-map",
                    zoom=7, center={"lat": 20.4, "lon": 78.4}, opacity=0.5, height=300, title="Mine")
-    assert fig.layout.map.style == "open-street-map" and fig.layout.map.zoom == 7 and fig.layout.map.center.lat == 20.4
+    assert fig.layout.map.style["name"] == "geo4bolivia:open-street-map" and fig.layout.map.zoom == 7 and fig.layout.map.center.lat == 20.4
     assert fig.layout.height == 300 and fig.layout.title.text == "Mine" and fig.data[0].marker.opacity == 0.5
     assert fig.data[0].colorscale[0][1] != draw_map(cells, "y", scheme="quantiles", k=3).data[0].colorscale[0][1]
     no_years = draw_map(cells.drop(columns="year"), "y", scheme="quantiles")

@@ -2,7 +2,7 @@
   "hash": "5e2c047ece84aad86b9f3d6a2028f5c5",
   "result": {
     "engine": "jupyter",
-    "markdown": "---\ntitle: config\n---\n\n\n\n```python\nconfig()\n```\n\nThe project settings: the package's project.yaml, with the data repository's on top inside a checkout.\n\n## Example {.doc-section .doc-section-example}\n\n```python\n!pip install -q geo4bolivia\nimport geo4bolivia as geo\nimport plotly.express as px\n\ncfg = geo.config()                         # project.yaml: repository, CRS...\nprint(cfg[\"repository\"], cfg[\"equal_area_crs\"])\n```\n\n\n::: {#d71c310b .cell execution_count=1}\n\n::: {.cell-output .cell-output-stdout}\n```\nquarcs-lab/gdo4bolivia +proj=aea +lat_0=-16.5 +lon_0=-64.5 +lat_1=-11 +lat_2=-21 +datum=WGS84 +units=m +no_defs\n```\n:::\n:::\n\n\n",
+    "markdown": "---\ntitle: config\n---\n\n\n\n```python\nconfig()\n```\n\nThe project settings: the package's project.yaml, with the data repository's on top inside a checkout.\n\n## Example {.doc-section .doc-section-example}\n\n```python\n!pip install -q geo4bolivia\nimport geo4bolivia as geo\nimport plotly.express as px\n\ncfg = geo.config()                         # project.yaml: repository, CRS...\nprint(cfg[\"repository\"], cfg[\"equal_area_crs\"])\n```\n\n\n::: {#06c0fee7 .cell execution_count=1}\n\n::: {.cell-output .cell-output-stdout}\n```\nquarcs-lab/gdo4bolivia +proj=aea +lat_0=-16.5 +lon_0=-64.5 +lat_1=-11 +lat_2=-21 +datum=WGS84 +units=m +no_defs\n```\n:::\n:::\n\n\n",
     "supporting": [
       "config_files"
     ],

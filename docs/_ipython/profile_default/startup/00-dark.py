@@ -82,8 +82,15 @@ def _g4_dark_setup():
         for key in ("map", "mapbox"):
             for name in [n for n in layout if n == key or n.startswith(key) and n[len(key):].isdigit()]:
                 sub = layout[name]
-                if sub is not None and (sub.style is None or str(sub.style) in _LIGHT_TILES):
+                if sub is None:
+                    continue
+                if isinstance(sub.style, dict) and str(sub.style.get("name", "")).startswith("geo4bolivia:"):
+                    sub.style = "carto-darkmatter"      # the package's credit-free style: MapLibre's own (i) here
+                elif sub.style is None or str(sub.style) in _LIGHT_TILES:
                     sub.style = "carto-darkmatter"
+        # The package writes the basemap's credit below the map; the site shows MapLibre's (i) instead
+        if any(note.name == "basemap-credit" for note in layout.annotations or ()):
+            layout.annotations = [note for note in layout.annotations if note.name != "basemap-credit"]
         for shape in layout.shapes or ():
             if shape.line is not None and _dark(shape.line.color):
                 shape.line.color = "rgba(227,236,234,0.35)"

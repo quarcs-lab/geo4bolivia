@@ -128,4 +128,26 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();
+
+// Basemap credits start collapsed to MapLibre's (i) button (it opens them by default); a click still toggles them
+(function () {
+  function collapse(el) {
+    if (el.dataset.g4Collapsed || !el.classList.contains("maplibregl-compact-show")) return;
+    el.classList.remove("maplibregl-compact-show");
+    el.removeAttribute("open");
+    el.dataset.g4Collapsed = "1";
+  }
+  function scan(node) {
+    if (!(node instanceof Element)) return;
+    if (node.classList.contains("maplibregl-ctrl-attrib")) collapse(node);
+    Array.prototype.forEach.call(node.querySelectorAll(".maplibregl-ctrl-attrib"), collapse);
+  }
+  new MutationObserver(function (mutations) {
+    mutations.forEach(function (m) {
+      if (m.type === "attributes") scan(m.target);
+      else Array.prototype.forEach.call(m.addedNodes, scan);
+    });
+  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ["class"] });
+  scan(document.documentElement);
+})();
 </script>

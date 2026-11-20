@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 
 from . import io, project
+from ._engine._basemap import credit
 from .scales import scale_of
 
 SCHEMES = {"fisherjenks": "fisher_jenks", "quantiles": "quantiles", "equalinterval": "equal_interval"}
@@ -333,7 +334,7 @@ def map(data, variable: str, year=None, scale: str | None = None, title: str | N
         options = {"center": center, "zoom": zoom, "hover_name": "name", "labels": {variable: label},
                    "title": title or (f"{label}, {year}" if year is not None else label)}
         options.update(kwargs)
-        return px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color=variable, **options)
+        return credit(px.choropleth_map(gdf, geojson=gdf.geometry, locations=gdf.index, color=variable, **options))
 
     if not pd.api.types.is_numeric_dtype(df[variable]):
         raise TypeError(f"Column {variable!r} must be numeric to map it in classes, in several years or as a change")
@@ -366,4 +367,5 @@ def map(data, variable: str, year=None, scale: str | None = None, title: str | N
     if classed:
         edges = _limits(np.concatenate([part[column].to_numpy(dtype=float) for _, part in panels]), scheme, k, bins,
                         zero=change)
-    return _draw(panels, column, legend=legend, title=title, edges=edges, diverging=change, hover=hover, options=kwargs)
+    return credit(_draw(panels, column, legend=legend, title=title, edges=edges, diverging=change, hover=hover,
+                        options=kwargs))

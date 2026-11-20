@@ -336,6 +336,7 @@ def lisa_transitions(data, variable: str, first=None, last=None, *, w=None, perm
     import plotly.graph_objects as go
 
     from ._engine import dependence
+    from ._engine._basemap import credit
     from ._engine._labels import resolve_label
     from ._engine._mapping import _wgs84_simplified, categorical_map
     from ._engine._theme import LISA_COLORS, apply_default_layout
@@ -401,6 +402,7 @@ def lisa_transitions(data, variable: str, first=None, last=None, *, w=None, perm
                          legend_title_text=f"Type in {last}")
 
     table.attrs["geo_labels"] = dict(df.attrs.get("geo_labels") or {})   # the reading names the variable by its label
+    credit(fig_map)
     return LisaTransitionsResult(
         df=table, matrix=matrix, shares=shares, fig=fig, fig_map=fig_map, n_units=n_units,
         n_stayed=n_units - n_moved, n_moved=n_moved, share_stayed=(n_units - n_moved) / n_units,
