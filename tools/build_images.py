@@ -13,12 +13,14 @@ through the maintainer's ChatGPT subscription: either with the Codex CLI
 them into ``docs/images/``:
 
 - ``icon``  -> ``icon.png`` (512 px), ``favicon.png`` (64 px), ``logo-navbar.png`` (72 px)
-- ``hero``  -> ``hero.webp`` (1600 x 800), the home page and README banner
+- ``hero``  -> ``hero.webp`` (1600 x 800), the home page and README banner, with the SDG colour
+  wheel drawn on it by this script (``HERO_SDG_WHEEL``)
 - articles  -> ``thumbs/<id>.webp`` (1200 x 675), one per article
 
-Rules for the pictures: Bolivian places and themes only; no maps, country outlines,
-borders, globes or other countries; no text, logos or flags. Any map in the
-documentation is drawn by the package from the official boundaries.
+Rules for the pictures: Bolivian places and themes only; no country outlines,
+borders, globes or other countries; no text, logos or flags (the hero may hold abstract map-like
+shapes, and its SDG wheel is drawn by this script). Any real map in the documentation is drawn by
+the package from the official boundaries.
 """
 
 from __future__ import annotations
@@ -28,7 +30,7 @@ import sys
 import time
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 IMG = ROOT / "docs" / "images"
@@ -41,6 +43,14 @@ RULES = (
     "lines, NO globe, NO other countries or continents; no people's faces; no text, letters, numbers, labels, "
     "logos, flags or watermarks."
 )
+# The hero shows the package's subject, so it may hold abstract map-like shapes (never a country outline)
+HERO_RULES = (
+    "Cinematic, editorial, luminous. Palette: deep teal-black (#071417, #0b1e22), glowing turquoise "
+    "(#5ad6c6), flamingo pink and rose (#ff8597, #d1405a), soft salt-white and a little warm sand (#e7c27d). "
+    "Strict rules: Bolivian landscape only; abstract map-like shapes are allowed, but NO country outline, "
+    "NO borders or boundary lines, NO globe, NO other countries or continents; no people's faces; no text, "
+    "letters, numbers, axis labels, legends, logos, flags or watermarks."
+)
 ICON_RULES = (
     "A flat, minimal vector-style app icon, perfectly centred on a deep teal-black (#0b1e22) rounded square, "
     "bold simple shapes that stay legible at 32 pixels, generous margins, no gradients on the background, "
@@ -51,12 +61,18 @@ PROMPTS = {
     "seven nested hexagon cells (one in the middle, six around it) in turquoise (#5ad6c6) outlines, the middle cell "
     "filled flamingo rose (#d1405a), two of the outer cells filled soft salt-white; a single thin turquoise orbit "
     "arc with a small dot (a satellite) curving around the upper right of the hexagon.",
-    "hero": "2:1 wide banner. " + RULES + " Bolivia's landscapes in one sweep at blue hour, from a high oblique "
-    "aerial angle: in the foreground the Salar de Uyuni, its hexagonal salt polygons glowing softly in a gradient "
-    "from rose to turquoise like the cells of a data mosaic; in the middle distance the lights of Altiplano towns "
-    "joined by thin luminous threads; on the horizon the snow peaks of the Cordillera Real and, beyond them, the "
-    "dark green lowlands under a starry sky crossed by one thin satellite trail. Leave the composition calm and "
-    "uncluttered.",
+    "hero": "2:1 wide banner. " + HERO_RULES + " Spatial data science over Bolivia's landscapes, at blue hour, "
+    "from a high oblique aerial angle. Foreground: the Salar de Uyuni, its hexagonal salt polygons lit like a "
+    "LISA cluster map: one connected group of cells glowing rose (a hot spot), another group glowing turquoise "
+    "(a cold spot), a few single cells of the opposite colour among them (outliers), the rest soft salt-white. "
+    "Middle distance: the lights of Altiplano towns as glowing nodes, each marked by a small luminous location "
+    "pin, joined to their nearest neighbours by thin straight turquoise lines, like a spatial weights network. "
+    "A faint latitude-longitude grid of thin light lines curves over the land. On the horizon the snow peaks "
+    "of the Cordillera Real and the dark green lowlands. In the starry sky, faint translucent holographic "
+    "charts float without any labels or numbers: a scatter plot of dots with a fitted straight line, a Lorenz "
+    "curve under its diagonal, a declining line chart, and a small abstract mosaic of shaded square tiles like "
+    "a choropleth; a small satellite casts a soft scanning beam onto the plain. Keep it elegant and readable, "
+    "the left third calmer than the right, not cluttered.",
     "data-model": "16:9. " + RULES + " The Inca agricultural terraces of Isla del Sol on Lake Titicaca at dusk, "
     "seen from above: the terraces nest inside one another in clear levels, each level edged with a faint "
     "turquoise glow, the smallest plots inside larger ones, the lake dark and still beyond.",
@@ -90,6 +106,47 @@ PROMPTS = {
     "one aguayo pattern taking shape on the loom, warm light on dark adobe walls.",
 }
 SIZES = {"icon": (512, 512), "hero": (1600, 800)}
+
+# The SDG colour wheel is drawn by this script, not by the image model (which gets its 17 segments and
+# colours wrong): official colours, SDG 1 at twelve o'clock, clockwise, no text. Used for information only,
+# as the UN's SDG guidelines allow. Position and radius are fractions of the original picture's height,
+# x as a fraction of its width.
+SDG_COLOURS = ["#E5243B", "#DDA63A", "#4C9F38", "#C5192D", "#FF3A21", "#26BDE2", "#FCC30B", "#A21942", "#FD6925",
+               "#DD1367", "#FD9D24", "#BF8B2E", "#3F7E44", "#0A97D9", "#56C02B", "#00689D", "#19486A"]
+HERO_SDG_WHEEL = {"x": 440 / 1774, "y": 122 / 887, "r": 86 / 887, "alpha": 0.8, "glow": 0.45}
+
+
+def sdg_wheel(r: int, inner: float = 0.6, gap_deg: float = 1.2, ss: int = 4) -> Image.Image:
+    """The SDG colour wheel as an RGBA ring of radius ``r`` pixels."""
+    big = r * ss
+    img = Image.new("RGBA", (2 * big + 2, 2 * big + 2), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    step = 360 / len(SDG_COLOURS)
+    for k, colour in enumerate(SDG_COLOURS):
+        start = -90 + k * step + gap_deg / 2
+        draw.pieslice([0, 0, 2 * big, 2 * big], start, start + step - gap_deg, fill=colour)
+    hole = big * inner
+    draw.ellipse([big - hole, big - hole, big + hole, big + hole], fill=(0, 0, 0, 0))
+    return img.resize((2 * r + 1, 2 * r + 1), Image.LANCZOS)
+
+
+def add_sdg_wheel(img: Image.Image, x: float, y: float, r: float, alpha: float, glow: float) -> Image.Image:
+    """Composite a softly glowing, slightly translucent SDG wheel onto ``img``."""
+    base = img.convert("RGBA")
+    cx, cy, radius = round(x * base.width), round(y * base.height), round(r * base.height)
+
+    def faded(ring: Image.Image, factor: float) -> Image.Image:
+        ring.putalpha(ring.getchannel("A").point(lambda v: int(v * factor)))
+        return ring
+
+    halo = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    ring = faded(sdg_wheel(round(radius * 1.06)), glow)
+    halo.paste(ring, (cx - ring.width // 2, cy - ring.height // 2), ring)
+    base = Image.alpha_composite(base, halo.filter(ImageFilter.GaussianBlur(radius * 0.18)))
+    layer = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    ring = faded(sdg_wheel(radius), alpha)
+    layer.paste(ring, (cx - ring.width // 2, cy - ring.height // 2), ring)
+    return Image.alpha_composite(base, layer).convert("RGB")
 THUMB = (1200, 675)
 
 
@@ -126,7 +183,8 @@ def write(key: str, source: Image.Image) -> list[Path]:
             icon.resize((px, px), Image.LANCZOS).save(IMG / name)
             out.append(IMG / name)
     elif key == "hero":
-        crop_to(source.convert("RGB"), SIZES["hero"]).save(IMG / "hero.webp", quality=86, method=6)
+        hero = add_sdg_wheel(source, **HERO_SDG_WHEEL) if HERO_SDG_WHEEL else source.convert("RGB")
+        crop_to(hero, SIZES["hero"]).save(IMG / "hero.webp", quality=86, method=6)
         out.append(IMG / "hero.webp")
     else:
         (IMG / "thumbs").mkdir(parents=True, exist_ok=True)
