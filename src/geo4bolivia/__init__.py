@@ -19,20 +19,47 @@ The website documents every function: https://quarcs-lab.github.io/geo4bolivia/t
 
 from .aggregate import aggregate, overlay, overlay_weights
 from .bridge import for_expdpy, for_geometrics
+from .convergence import beta_convergence, convergence_clubs, sigma_convergence
 from .create import check, combine, link, save, zonal
 from .discover import cite, describe, info, labels, reference_years, search
+from .dynamics import lisa_transitions, rank_mobility, spatial_transitions, transitions
+from .explore import correlation, distribution, extremes, scatter, trend
+from .inequality import inequality, theil_decomposition
 from .io import add_names, boundaries, crosswalk, datasets, dictionary, load, units
+from .local import mgwr
+from .models import panel_model, regression, spatial_diagnostics, spatial_model
 from .panel import change
 from .plot import map
-from .project import PACKAGE, config
+from .project import PACKAGE as PACKAGE
+from .project import config
 from .scales import ancestors, scale_of
 from .scales import table as scales
 from .spatial import connectivity, lisa, moran, weights
 
-__all__ = ["add_names", "aggregate", "ancestors", "boundaries", "change", "check", "cite", "combine", "config",
-           "crosswalk", "datasets", "describe", "dictionary", "for_expdpy", "for_geometrics", "info", "labels",
-           "link", "load", "map", "overlay", "overlay_weights", "reference_years", "save", "scale_of", "scales",
-           "search", "units", "zonal",
-           # spatial dependence
-           "connectivity", "lisa", "moran", "weights"]
+__all__ = [
+    # find and understand the data
+    "datasets", "search", "info", "dictionary", "reference_years", "cite", "labels", "describe",
+    # load data, units and boundaries
+    "load", "add_names", "units", "boundaries", "crosswalk", "scales", "ancestors", "scale_of", "config",
+    # work with panels and scales
+    "change", "aggregate", "combine", "overlay", "overlay_weights",
+    # build your own indicators
+    "link", "check", "zonal", "save",
+    # explore
+    "correlation", "extremes", "distribution", "scatter", "trend",
+    # maps and spatial dependence
+    "map", "weights", "connectivity", "moran", "lisa",
+    # convergence
+    "beta_convergence", "sigma_convergence", "convergence_clubs",
+    # transitions and mobility
+    "transitions", "spatial_transitions", "lisa_transitions", "rank_mobility",
+    # inequality
+    "inequality", "theil_decomposition",
+    # models
+    "regression", "panel_model", "spatial_model", "spatial_diagnostics",
+    # spatial heterogeneity
+    "mgwr",
+    # companion packages
+    "for_expdpy", "for_geometrics",
+]
 __version__ = "0.6.0"

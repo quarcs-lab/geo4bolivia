@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Sync environment
+        run: uv sync --locked --all-extras --only-group dev
+      - name: Ruff
+        run: uv run --no-sync ruff check src tests
+
+  test:
+    name: Tests (py${{ matrix.python }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.11", "3.13"]
+    env:
+      # The published files the data tests read: a sparse checkout of the data repository.
+      GEO4BOLIVIA_DATA_DIR: ${{ github.workspace }}/data-repository
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check out the data repository
+        uses: actions/checkout@v7
+        with:
+          repository: quarcs-lab/gdo4bolivia
+          path: data-repository
+          sparse-checkout: |
+            project.yaml
+            geo
+            metadata
+            data
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Sync environment
+        run: uv sync --locked --all-extras --only-group dev --python ${{ matrix.python }}
+      - name: Run tests
+        run: uv run --no-sync pytest -n auto -p no:warnings

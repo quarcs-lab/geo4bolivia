@@ -623,6 +623,10 @@ def _mgwr_gt(
     )
 
 
+#: Local condition number above which local collinearity is a concern (Belsley et al.).
+_CN_THRESHOLD = 30.0
+
+
 def _mgwr_bw_gt(
     df: pd.DataFrame,
     terms: Sequence[str],
@@ -631,14 +635,20 @@ def _mgwr_bw_gt(
     adj_alpha: dict[str, float],
     critical_t: dict[str, float],
     n: int,
+    bw_interval: dict[str, tuple[float, float]] | None = None,
 ) -> GT:
     """Render the per-term MGWR bandwidth table as a Great Tables object."""
     from great_tables import GT
 
+    bw_interval = bw_interval or {}
     disp = pd.DataFrame(
         {
             "Term": [_term_label(df, t) for t in terms],
             "Bandwidth": [f"{bw[t]:g}" for t in terms],
+            "95% interval": [
+                f"{bw_interval[t][0]:g} to {bw_interval[t][1]:g}" if t in bw_interval else ""
+                for t in terms
+            ],
             "ENP": [f"{float(e):.4g}" for e in enp_j],
             "Corrected alpha": [f"{adj_alpha[t]:.4g}" for t in terms],
             "Critical |t|": [f"{critical_t[t]:.4g}" for t in terms],
@@ -803,7 +813,8 @@ def analyze_mgwr(
     from mgwr.sel_bw import Sel_BW
 
     selector = Sel_BW(coords, y, x, multi=True, fixed=False, kernel=kernel)
-    with contextlib.redirect_stdout(io.StringIO()):
+    # mgwr reports its progress on stdout and, with tqdm installed, on stderr
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
         bws = np.asarray(
             selector.search(criterion=criterion, max_iter_multi=int(max_iter)),
             dtype=float,
@@ -816,6 +827,32 @@ def analyze_mgwr(
         "per-term bandwidths selected by multiscale backfitting: "
         + ", ".join(f"{t}={bw[t]:g}" for t in terms)
     )
+
+    # Uncertainty of each bandwidth: the 95% interval from the Akaike weights of the
+    # bandwidths tried during the search (Li et al. 2020; MGWRResults.get_bws_intervals).
+    bw_interval: dict[str, tuple[float, float]] = {}
+    try:
+        intervals = results.get_bws_intervals(selector)
+        bw_interval = {
+            t: (float(lo), float(hi)) for t, (lo, hi) in zip(terms, intervals, strict=True)
+        }
+    except Exception:  # not available for every search path
+        notes.append("bandwidth intervals could not be computed for this fit")
+
+    # Local multicollinearity: the condition number of the weighted design at each
+    # unit; above about 30 the local coefficients there are unreliable.
+    local_cn: np.ndarray | None = None
+    try:
+        local_cn = np.asarray(results.local_collinearity()[0], dtype=float).ravel()
+        n_high = int((local_cn > _CN_THRESHOLD).sum())
+        if n_high:
+            notes.append(
+                f"local condition number above {_CN_THRESHOLD:g} at {n_high} of "
+                f"{len(local_cn)} unit(s): local collinearity makes the coefficients "
+                "there unreliable"
+            )
+    except Exception:
+        local_cn = None
 
     # Per-term multiple-testing correction: MGWRResults.adj_alpha_j rows are terms,
     # columns the nominal levels in _MGWR_NOMINAL_ALPHAS; critical_tval() returns
@@ -839,7 +876,9 @@ def analyze_mgwr(
         bse,
         tvalues,
         significant,
-        {"residual": residuals},
+        {"residual": residuals}
+        if local_cn is None
+        else {"residual": residuals, "local_cn": local_cn},
     )
 
     outcome_label = resolve_label(df, outcome)
@@ -888,6 +927,7 @@ def analyze_mgwr(
         adj_alpha,
         critical_t,
         len(cross),
+        bw_interval,
     )
     return MGWRResult(
         df=tidy,
@@ -906,4 +946,5 @@ def analyze_mgwr(
         covariates=tuple(covs),
         period=resolved_period,
         notes=tuple(notes),
+        bw_interval=bw_interval,
     )

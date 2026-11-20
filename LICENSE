@@ -19,3 +19,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+--------------------------------------------------------------------------------
+
+Parts of this package are ported from two sister packages by the same author, both
+under the MIT License:
+
+- geometrics (https://github.com/quarcs-lab/geometrics): the analysis engine in
+  src/geo4bolivia/_engine/ (maps, spatial weights, spatial dependence, convergence,
+  distribution dynamics, inequality, spatial models, geographically weighted regression)
+  and its tests in tests/engine/.
+- expdpy (https://github.com/cmg777/expdpy): the design of the exploration functions
+  and of the panel models. expdpy is itself a Python port of the R package ExPanDaR
+  (https://github.com/joachim-gassen/ExPanDaR, MIT License, Joachim Gassen).

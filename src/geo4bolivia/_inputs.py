@@ -61,10 +61,14 @@ def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, 
 
     Parameters
     ----------
-    data : a dataset id, or a table with ``geo_id`` (and ``year``), with or without geometry
-    variables : the columns the analysis needs; they must exist (and be numeric)
-    groups : coarser scales whose unit names are needed as columns (e.g. ``"department"``)
-    gdf : explicit boundaries, used for the units' names when the table has none
+    data
+        A dataset id, or a table with ``geo_id`` (and ``year``), with or without geometry
+    variables
+        The columns the analysis needs; they must exist (and be numeric)
+    groups
+        Coarser scales whose unit names are needed as columns (e.g. ``"department"``)
+    gdf
+        Explicit boundaries, used for the units' names when the table has none
 
     Returns a copy with ``name`` (and the groups), whose ``attrs`` declare the panel ids
     (``geo_id``, ``year``, ``name``) and the labels of its columns for the engine.
@@ -95,22 +99,23 @@ def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, 
     return df
 
 
-def years(df: pd.DataFrame, variable: str | None = None) -> list[int]:
-    """The years of a panel (those with data for ``variable``), sorted; ``[]`` without a year column."""
+def years(df: pd.DataFrame, variables=None) -> list[int]:
+    """The years of a panel with data for every one of ``variables``, sorted; ``[]`` without a year column."""
     if TIME not in df.columns:
         return []
-    rows = df if variable is None else df[df[variable].notna()]
+    cols = as_list(variables)
+    rows = df[df[cols].notna().all(axis=1)] if cols else df
     return sorted(int(y) for y in rows[TIME].dropna().unique())
 
 
-def pick_year(df: pd.DataFrame, variable: str | None, year) -> int | None:
+def pick_year(df: pd.DataFrame, variables, year) -> int | None:
     """The year to analyse: the one asked for (checked), else the last with data; ``None`` without years."""
-    have = years(df, variable)
+    have = years(df, variables)
     if not have:
         if year is not None and TIME not in df.columns:
             raise ValueError("The table has no year column, so year= cannot be used")
         if TIME in df.columns:
-            raise ValueError(f"No rows with data for {variable!r}")
+            raise ValueError(f"No year has data for {as_list(variables)}")
         return None
     if year is None:
         return have[-1]
@@ -125,10 +130,14 @@ def shapes(df: pd.DataFrame | None, gdf=None, *, scale: str | None = None, ids: 
 
     Parameters
     ----------
-    df : the panel whose units are needed (``None`` with ``scale`` or ``gdf``: every unit)
-    gdf : explicit boundaries with a ``geo_id`` column (default: the project's, for the units' scale)
-    scale : the units' scale (default: inferred from ``geo_id``)
-    ids : keep only these units (default: the units of ``df``)
+    df
+        The panel whose units are needed (``None`` with ``scale`` or ``gdf``: every unit)
+    gdf
+        Explicit boundaries with a ``geo_id`` column (default: the project's, for the units' scale)
+    scale
+        The units' scale (default: inferred from ``geo_id``)
+    ids
+        Keep only these units (default: the units of ``df``)
     """
     from ._engine._geo import _GEO_KEY
 
@@ -155,11 +164,31 @@ def shapes(df: pd.DataFrame | None, gdf=None, *, scale: str | None = None, ids: 
 
 
 def spatial_weights(gdf: gpd.GeoDataFrame, w=None, *, method: str = "queen", **options):
-    """The weights to use: the ones given, else contiguity (or ``method``) weights built from ``gdf``."""
-    if w is not None:
-        return w
+    """The weights to use: the ones given, else contiguity (or ``method``) weights built from ``gdf``.
+
+    Given weights that cover more units than ``gdf`` are restricted to its units (and
+    standardized again), so they can be built once for a scale and reused on datasets
+    that lack some units.
+    """
     from ._engine.weights import make_weights
-    return make_weights(gdf, method=method, entity=ENTITY, **options)
+    if w is None:
+        return make_weights(gdf, method=method, entity=ENTITY, **options)
+    ids = list(gdf[ENTITY])
+    known = set(w.id_order)
+    if set(ids) == known:
+        return w
+    absent = [i for i in ids if i not in known]
+    if absent:
+        raise ValueError(f"The weights lack {len(absent)} unit(s) of the data (e.g. {absent[:3]}); "
+                         "build them with weights() on the same units")
+    from libpysal.weights import w_subset
+    spec = getattr(w, "geo_meta", {}).get("spec")
+    transform = w.transform
+    sub = w_subset(w, ids, silence_warnings=True)
+    sub.transform = transform
+    if spec:
+        sub.geo_meta = {"spec": f"{str(spec).replace(f'n={w.n}', f'n={sub.n}')} (restricted from {w.n} units)"}
+    return sub
 
 
 def one_year(df: pd.DataFrame) -> int | None:
@@ -168,16 +197,22 @@ def one_year(df: pd.DataFrame) -> int | None:
     return have[0] if len(have) == 1 else None
 
 
-def spatial(data, variables=None, *, year=None, gdf=None, w=None, groups=None,
+def spatial(data, variables=None, *, year=None, gdf=None, w=None, groups=None, weights: bool = True,
             ref: str | None = None) -> tuple[pd.DataFrame, gpd.GeoDataFrame, object]:
     """The three inputs of a spatial analysis: the panel, its boundaries and its weights.
 
     Parameters
     ----------
-    data, variables, groups, gdf : see ``panel``
-    year : ``None`` or a year: keep that year only (the last with data for the first
-        variable when ``None``); ``"all"``: keep every year; a list of years: keep those
-    w : the weights to use (default: queen contiguity)
+    data, variables, groups, gdf
+        See ``panel``
+    year
+        ``None`` or a year: keep that year only (the last with data for every
+        variable when ``None``); ``"all"``: keep every year with data; a list of years:
+        keep those
+    w
+        The weights to use (default: queen contiguity)
+    weights
+        ``False`` skips the weights (``None`` is returned in their place)
 
     The panel keeps only the units with data for every variable in every year kept, the
     boundaries are restricted to those units, and the default weights are built on them:
@@ -188,12 +223,11 @@ def spatial(data, variables=None, *, year=None, gdf=None, w=None, groups=None,
     cols = as_list(variables)
     if TIME in df.columns:
         if isinstance(year, str) and year.lower() == "all":
-            pass
+            df = df[df[TIME].isin(years(df, cols))]        # a year without any data is not a year of the panel
         elif isinstance(year, list | tuple):
-            wanted = [pick_year(df, cols[0] if cols else None, y) for y in year]
-            df = df[df[TIME].isin(wanted)]
+            df = df[df[TIME].isin([pick_year(df, cols, y) for y in year])]
         else:
-            df = df[df[TIME] == pick_year(df, cols[0] if cols else None, year)]
+            df = df[df[TIME] == pick_year(df, cols, year)]
     elif year is not None and not (isinstance(year, str) and year.lower() == "all"):
         raise ValueError("The table has no year column, so year= cannot be used")
     if cols:
@@ -201,12 +235,14 @@ def spatial(data, variables=None, *, year=None, gdf=None, w=None, groups=None,
         n_years = df[TIME].nunique() if TIME in df.columns else 1
         counts = ok.groupby(df[ENTITY]).sum()
         ids = counts.index[counts.to_numpy() == n_years]
+        if not len(ids):
+            raise ValueError(f"No unit has data for {cols} in every year kept ({years(df) or 'no years'})")
     else:
         ids = df[ENTITY].unique()
     geo = shapes(df, gdf, ids=ids, ref=ref)
     kept = df[df[ENTITY].isin(set(geo[ENTITY]))].reset_index(drop=True)
     kept.attrs = dict(df.attrs)
-    return kept, geo, spatial_weights(geo, w)
+    return kept, geo, (spatial_weights(geo, w) if weights else None)
 
 def finish(result, names: pd.Series | pd.DataFrame | None = None):
     """An engine result as the public functions return it.
@@ -218,7 +254,7 @@ def finish(result, names: pd.Series | pd.DataFrame | None = None):
     """
     import dataclasses
 
-    out = result._public_view()
+    out = _whole_years(result._public_view())
     if names is None:
         return out
     if isinstance(names, pd.DataFrame):
@@ -232,3 +268,17 @@ def finish(result, names: pd.Series | pd.DataFrame | None = None):
             frame.insert(frame.columns.get_loc(ENTITY) + 1, NAME, frame[ENTITY].map(names))
             changes[field] = frame
     return dataclasses.replace(out, **changes) if changes else out
+
+
+def _whole_years(result):
+    """A result whose ``year`` columns hold whole numbers as integers (the engine may return floats or objects)."""
+    import dataclasses
+
+    changes = {}
+    for field, frame in result._frames().items():
+        if TIME not in frame.columns or pd.api.types.is_integer_dtype(frame[TIME]):
+            continue
+        numbers = pd.to_numeric(frame[TIME], errors="coerce")
+        if numbers.notna().all() and (numbers % 1 == 0).all():
+            changes[field] = frame.assign(**{TIME: numbers.astype(int)})
+    return dataclasses.replace(result, **changes) if changes else result

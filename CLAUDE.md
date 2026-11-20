@@ -18,9 +18,9 @@ uv run ruff check src tests          # lint
 
 | Part | Modules |
 | --- | --- |
-| Data | `project`, `store`, `scales`, `metadata`, `io`, `discover`, `panel`, `create`, `aggregate`, `bridge`, `plot` |
+| Data | `project`, `store`, `scales`, `metadata`, `io`, `discover`, `panel`, `create`, `aggregate`, `bridge` |
 | Maintainer tools | `build/` (generic helpers and the entry point; the project's builders are in the data repository), `validate`, `cli` |
-| Analyses (public) | `spatial` (weights, connectivity, moran, lisa), `explore`, `convergence`, `dynamics`, `inequality`, `models`, `local` |
+| Analyses (public) | `explore` (correlation, extremes, distribution, scatter, trend), `plot` (map), `spatial` (weights, connectivity, moran, lisa), `convergence` (beta_convergence, sigma_convergence, convergence_clubs), `dynamics` (transitions, spatial_transitions, lisa_transitions, rank_mobility), `inequality` (inequality, theil_decomposition), `models` (regression, panel_model, spatial_model, spatial_diagnostics), `local` (mgwr) |
 | Shared | `_inputs` (panel, boundaries, weights, labels, result finishing) |
 | Engine | `_engine/`: estimators, figures, tables and interpretation texts ported from geometrics; it keeps geometrics' vocabulary (`var`, `period`, `entity`, `time`, `start`/`end`) and takes every input explicitly |
 
@@ -34,6 +34,6 @@ Read `src/geo4bolivia/spatial.py`, `src/geo4bolivia/_inputs.py` and `tests/test_
 - **Figures.** Plotly only, styled with `_engine._theme.apply_default_layout` (colours from `color_for`, `active_sequential_scale`, `active_diverging_scale`); axis and legend text from `_engine._labels.resolve_label(df, column)`. Never call `.show()`; never change Plotly's default template.
 - **Interpretation.** `.interpret()` returns Markdown that reads the numbers in words. It describes associations only (never "causes" or "effect of") and ends with `_engine.pedagogy._interpret._shared._ASSOC_NOTE`.
 - **Errors.** `ValueError` for a missing column or year (say what the table has), `TypeError` for a non-numeric variable. When data are too short for a method (e.g. it needs three periods), say what the method needs and what the data have.
-- **Docstrings.** NumPy sections in this package's compact style (`name : description`), a `Returns` section that names the result's attributes, and no `Examples` section: the documentation site adds a tested example per function from `docs/examples/`.
-- **Optional libraries** (giddy, mgwr, linearmodels, rasterio) are imported inside the function, with an `ImportError` that gives the install line (`pip install "<package>[extra]"`, built from `project.PACKAGE`).
+- **Docstrings.** Standard NumPy sections (`name` on one line, its description indented below; types come from the signature), a `Returns` section that starts with the type and names the result's attributes, and no `Examples` section: the documentation site adds a tested example per function from `docs/examples/`, which keeps Bolivian names out of `src/`.
+- **Optional libraries** (giddy: `[dynamics]`; mgwr: `[mgwr]`; linearmodels: `[panel]`; rasterio: `[raster]`) are imported inside the function, with an `ImportError` that gives the install line (`pip install "<package>[extra]"`, built from `project.PACKAGE`).
 - **Tests.** Known-answer tests on the synthetic fixtures of `tests/conftest.py` (`units`, `field`, `growth_panel`: a lattice with planted spatial dependence and convergence), plus one `@pytest.mark.data` test that runs on the project's first dataset without naming it.

@@ -262,7 +262,7 @@ def _detect_entity_name(
         candidates.append(c)
     if not candidates:
         return None
-    key = lambda c: (_name_likeness(c, df[c]), _avg_len(df[c]))  # noqa: E731
+    key = lambda c: (_name_likeness(c, df[c]), _avg_len(df[c]))
     best = max(candidates, key=key)
     if key(best) <= (_name_likeness(primary, df[primary]), _avg_len(df[primary])):
         return None

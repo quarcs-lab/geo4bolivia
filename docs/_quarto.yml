@@ -1,0 +1,225 @@
+project:
+  type: website
+  output-dir: _site
+  resources:
+    - robots.txt
+    - llms.txt
+
+website:
+  title: "geo4bolivia"
+  description: "Spatial data science for Bolivia's subnational development data: find, load, map and analyse it across spatial scales."
+  site-url: https://quarcs-lab.github.io/geo4bolivia/
+  favicon: images/favicon.png
+  image: images/hero.webp
+  repo-url: https://github.com/quarcs-lab/geo4bolivia
+  repo-actions: [issue, edit]
+  repo-subdir: docs
+  open-graph: true
+  twitter-card: true
+  page-navigation: true
+  navbar:
+    logo: images/logo-navbar.png
+    logo-alt: "geo4bolivia"
+    left:
+      - text: "Get started"
+        file: get-started.qmd
+      - text: "Explore"
+        file: explore.qmd
+      - text: "Analyze"
+        file: analyze.qmd
+      - text: "Articles"
+        menu:
+          - text: "All articles"
+            file: articles/index.qmd
+          - text: "---"
+          - text: "The data model"
+            file: articles/data-model.qmd
+          - text: "Exploring the data"
+            file: articles/exploring.qmd
+          - text: "Maps and spatial dependence"
+            file: articles/spatial-dependence.qmd
+          - text: "Convergence: β, σ and clubs"
+            file: articles/convergence.qmd
+          - text: "Transitions and mobility"
+            file: articles/transitions.qmd
+          - text: "Regional inequality"
+            file: articles/inequality.qmd
+          - text: "Regression, panel and spatial models"
+            file: articles/models.qmd
+          - text: "Spatial heterogeneity: MGWR"
+            file: articles/heterogeneity.qmd
+          - text: "Case study: the Sustainable Development Index"
+            file: articles/case-study-sdg.qmd
+          - text: "Building your own indicators"
+            file: articles/own-indicators.qmd
+      - text: "For AI / LLMs"
+        file: use-with-llms.qmd
+      - text: "Reference"
+        file: reference/index.qmd
+      - text: "Changelog"
+        file: changelog.qmd
+    right:
+      - text: "Observatory"
+        href: https://quarcs-lab.github.io/gdo4bolivia/
+      - icon: github
+        href: https://github.com/quarcs-lab/geo4bolivia
+        aria-label: "GitHub repository"
+  sidebar:
+    style: docked
+    contents:
+      - reference/_sidebar.yml
+  page-footer:
+    left: "geo4bolivia · code MIT · part of the [GeoDevelopment Observatory of Bolivia](https://quarcs-lab.github.io/gdo4bolivia/)"
+    right: "Built with [Quarto](https://quarto.org) and [quartodoc](https://machow.github.io/quartodoc/)"
+
+# The pages run against the project environment through a registered kernel
+# (tools/build_docs.py registers it), so a user-level python3 kernel cannot shadow it.
+jupyter: geo4bolivia
+
+# Pages are executed locally and their results committed (docs/_freeze), so the site
+# builds on GitHub without re-running the analyses.
+execute:
+  freeze: auto
+  warning: false
+
+format:
+  html:
+    theme: [cosmo, custom.scss]
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-overflow: wrap
+    code-link: false
+    link-external-newwindow: true
+    fig-align: center
+    include-in-header:
+      text: |
+        <link rel="alternate" type="text/markdown" href="https://quarcs-lab.github.io/geo4bolivia/llms.txt" title="llms.txt for LLMs">
+        <link rel="alternate" type="text/plain" href="https://quarcs-lab.github.io/geo4bolivia/llms-full.txt" title="llms-full.txt for LLMs">
+
+metadata-files:
+  - reference/_sidebar.yml
+
+quartodoc:
+  package: geo4bolivia
+  parser: numpy
+  title: Function reference
+  sidebar: reference/_sidebar.yml
+  dir: reference
+  render_interlinks: false
+  sections:
+    - title: Find and understand the data
+      desc: >-
+        The catalog of datasets, a search across every variable, each dataset's
+        documentation, its variable dictionary, the actual years behind each stored
+        year, and how to cite it.
+      contents:
+        - datasets
+        - search
+        - info
+        - dictionary
+        - reference_years
+        - cite
+        - labels
+        - describe
+    - title: Load data, units and boundaries
+      desc: >-
+        Panels with one row per unit and year, the units of every scale with their
+        names and codes, their boundaries, and the links between scales.
+      contents:
+        - load
+        - add_names
+        - units
+        - boundaries
+        - crosswalk
+        - scales
+        - ancestors
+        - scale_of
+        - config
+    - title: Work with panels and scales
+      desc: >-
+        The change of each unit between two years, aggregation up the hierarchy with
+        the rule each variable declares, several datasets on one scale, and
+        area-weighted transfer to units that do not nest.
+      contents:
+        - change
+        - aggregate
+        - combine
+        - overlay
+        - overlay_weights
+    - title: Build your own indicators
+      desc: >-
+        Link a table of your own to the geo IDs, check it, compute zonal statistics
+        from a raster, and save the result as a documented dataset.
+      contents:
+        - link
+        - check
+        - zonal
+        - save
+    - title: Explore
+      desc: >-
+        A first look at any variable without using space: correlations, the highest
+        and lowest units, distributions, relationships and trends.
+      contents:
+        - correlation
+        - extremes
+        - distribution
+        - scatter
+        - trend
+    - title: Maps and spatial dependence
+      desc: >-
+        Interactive maps (continuous, classed, side by side or of the change), spatial
+        weights and their neighbour graph, global Moran's I and LISA cluster maps.
+      contents:
+        - map
+        - weights
+        - connectivity
+        - moran
+        - lisa
+    - title: Convergence
+      desc: >-
+        β-convergence with ordinary or spatial estimators, σ-convergence (the trend of
+        dispersion) and Phillips–Sul convergence clubs.
+      contents:
+        - beta_convergence
+        - sigma_convergence
+        - convergence_clubs
+    - title: Transitions and mobility
+      desc: >-
+        How units move within the distribution: Markov and spatial Markov transition
+        matrices, transitions between LISA cluster types, and rank mobility.
+      contents:
+        - transitions
+        - spatial_transitions
+        - lisa_transitions
+        - rank_mobility
+    - title: Inequality
+      desc: >-
+        Gini, Theil and the coefficient of variation in each year with the Lorenz
+        curve, and Theil's decomposition between and within groups of units.
+      contents:
+        - inequality
+        - theil_decomposition
+    - title: Models
+      desc: >-
+        Regression tables with fixed effects and clustered errors, the standard panel
+        estimators with the Hausman test, and spatial regression with impacts and
+        specification diagnostics.
+      contents:
+        - regression
+        - panel_model
+        - spatial_model
+        - spatial_diagnostics
+    - title: Spatial heterogeneity
+      desc: >-
+        Multiscale geographically weighted regression (MGWR): coefficients that vary
+        over space, each at its own spatial scale, with a map per coefficient.
+      contents:
+        - mgwr
+    - title: Companion packages
+      desc: >-
+        Hand a panel over to expdpy (panel econometrics) and geometrics (spatial
+        models and teaching tools) for specialised methods.
+      contents:
+        - for_expdpy
+        - for_geometrics

@@ -1,18 +1,14 @@
-# R
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-
 # Python
 __pycache__/
 *.py[cod]
 *.egg-info/
 /dist/
-.pytest_cache/
 /build/
+.pytest_cache/
+.ruff_cache/
+.coverage
 
-# Virtual environment (UV)
+# Virtual environment (uv)
 .venv/
 
 # Jupyter
@@ -21,18 +17,13 @@ __pycache__/
 # OS
 .DS_Store
 
-# Reference clones used to start this project (never committed)
-/geo4cambodia/
-/ds4bolivia/
+# Documentation site (Quarto + quartodoc): generated pages and the built site
+/docs/_site/
+/docs/.quarto/
+/docs/reference/
+/docs/objects.json
+/docs/llms-full.txt
+/.quarto/
 
-# Files written by running the notebooks
-/notebooks/my_data/
-/notebooks/*.tif
-
-# Website build (site/)
-/site/node_modules/
-/_site/
-/raw/boundaries/gadm41_*.json
-
-# The SDG Atlas 2026 as delivered (its workbook and shapefiles are copied to raw/)
-/SDG-atlas-20261110*/
+# Images as delivered, before tools/build_images.py processes them
+/docs/images/originals/

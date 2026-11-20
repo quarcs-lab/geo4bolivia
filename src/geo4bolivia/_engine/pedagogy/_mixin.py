@@ -37,13 +37,13 @@ class Interpretable:
 
     @property
     def variable(self):
-        """The variable analysed (the engine calls it ``var``)."""
-        return self.var
+        """The variable analysed (``None`` when the analysis has several)."""
+        return getattr(self, "var", None) or getattr(self, "outcome", None)
 
     @property
     def year(self):
-        """The year analysed (the engine calls it ``period``)."""
-        return self.period
+        """The year analysed (``None`` when the analysis covers several years)."""
+        return getattr(self, "period", None)
 
     def _frames(self) -> dict:
         """The DataFrame-valued fields of this result."""

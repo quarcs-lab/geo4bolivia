@@ -1,13 +1,13 @@
 cff-version: 1.2.0
-message: "If you use the GeoDevelopment Observatory of Bolivia, please cite it as below."
-title: "GeoDevelopment Observatory of Bolivia"
-type: dataset
+message: "If you use geo4bolivia, please cite it as below, together with the sources of the datasets you use (geo.cite(dataset) gives them)."
+title: "geo4bolivia: spatial data science for Bolivia's subnational development data"
+type: software
 authors:
   - family-names: Mendez
     given-names: Carlos
     affiliation: "Nagoya University"
-version: 0.5.0
-date-released: 2026-11-17
+version: 0.6.0
+date-released: 2026-11-20
 url: "https://quarcs-lab.github.io/geo4bolivia/"
 repository-code: "https://github.com/quarcs-lab/geo4bolivia"
 license: MIT
@@ -16,9 +16,9 @@ keywords:
   - municipalities
   - regional development
   - sustainable development goals
-  - SDG Atlas
-  - convergence
-  - remote sensing
-  - night-time lights
-  - satellite embeddings
   - spatial data science
+  - exploratory spatial data analysis
+  - spatial dependence
+  - convergence
+  - regional inequality
+  - spatial econometrics

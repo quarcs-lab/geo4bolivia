@@ -89,19 +89,24 @@ def for_geometrics(data, scale: str | None = None, years=None, variables=None, l
 
     Parameters
     ----------
-    data : a dataset id (see ``geo.datasets()``) or your own panel with ``geo_id`` and ``year``
+    data
+        A dataset id (see ``geo.datasets()``) or your own panel with ``geo_id`` and ``year``
         (from ``geo.link``, ``geo.combine``, ``geo.zonal``...)
-    scale, years, variables : as in ``geo.load`` (for a dataset id)
-    labels : ``{variable: description}`` for your own columns (dataset variables are
+    scale, years, variables
+        As in ``geo.load`` (for a dataset id)
+    labels
+        ``{variable: description}`` for your own columns (dataset variables are
         described from the metadata)
-    groups : coarser scales whose unit names to add as columns, e.g. ``["province"]``
+    groups
+        Coarser scales whose unit names to add as columns, e.g. ``["province"]``
 
     Returns
     -------
-    gdf : GeoDataFrame with ``geo_id`` and ``geometry`` (EPSG:4326)
-    df : the panel with ``geo_id``, ``name``, ``year``, the group names and the variables
-    df_dict : one row per ``df`` column with ``var_name``, ``var_def``, ``label``,
-        ``type`` (entity / time / factor / numeric), ``role`` and ``can_be_na``
+    geopandas.GeoDataFrame
+        gdf : GeoDataFrame with ``geo_id`` and ``geometry`` (EPSG:4326)
+        df : the panel with ``geo_id``, ``name``, ``year``, the group names and the variables
+        df_dict : one row per ``df`` column with ``var_name``, ``var_def``, ``label``,
+            ``type`` (entity / time / factor / numeric), ``role`` and ``can_be_na``
     """
     df, df_dict, scale = _panel_inputs(data, scale, years, variables, labels, groups, ref)
     gdf = io.boundaries(scale, ref=ref)[["geo_id", "geometry"]]
@@ -115,10 +120,14 @@ def for_expdpy(data, scale: str | None = None, years=None, variables=None, label
 
     Parameters
     ----------
-    data : a dataset id or your own panel with ``geo_id`` and ``year``
-    scale, years, variables : as in ``geo.load`` (for a dataset id)
-    labels : ``{variable: description}`` for your own columns
-    groups : coarser scales whose unit names to add as columns
+    data
+        A dataset id or your own panel with ``geo_id`` and ``year``
+    scale, years, variables
+        As in ``geo.load`` (for a dataset id)
+    labels
+        ``{variable: description}`` for your own columns
+    groups
+        Coarser scales whose unit names to add as columns
 
     These are the parameters of ``for_geometrics``. ``groups`` is handy for expdpy's
     by-group views, e.g. ``groups=["department"]`` adds a ``department`` column
@@ -126,9 +135,10 @@ def for_expdpy(data, scale: str | None = None, years=None, variables=None, label
 
     Returns
     -------
-    df : the panel with ``geo_id``, ``name``, ``year``, the group names and the variables
-    df_def : the data dictionary (``var_name``, ``var_def``, ``label``, ``type``,
-        ``role``, ``can_be_na``); pass both to ``ex.set_labels(df, df_def, set_panel=True)``
+    dict
+        df : the panel with ``geo_id``, ``name``, ``year``, the group names and the variables
+        df_def : the data dictionary (``var_name``, ``var_def``, ``label``, ``type``,
+            ``role``, ``can_be_na``); pass both to ``ex.set_labels(df, df_def, set_panel=True)``
     """
     df, df_def, _ = _panel_inputs(data, scale, years, variables, labels, groups, ref)
     return df, df_def

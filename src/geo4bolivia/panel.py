@@ -13,21 +13,25 @@ def change(df: pd.DataFrame, variables=None, first: int | None = None, last: int
 
     Parameters
     ----------
-    df : a long panel with ``geo_id``, ``year`` and variables (e.g. from ``geo.load``)
-    variables : a variable or list of them (default: every numeric variable)
-    first, last : the two years to compare (default: the panel's first and last year)
+    df
+        A long panel with ``geo_id``, ``year`` and variables (e.g. from ``geo.load``)
+    variables
+        A variable or list of them (default: every numeric variable)
+    first, last
+        The two years to compare (default: the panel's first and last year)
 
     Returns
     -------
-    One row per unit. For each variable ``v``: ``v_<first>``, ``v_<last>``,
-    ``v_change`` (last minus first), ``v_pct_change`` (in percent of the first
-    value), ``v_annual_change`` (the change divided by the years between them),
-    ``v_rank_<first>`` and ``v_rank_<last>`` (1 = highest value) and
-    ``v_rank_change`` (positive when the unit climbed). Text columns that are
-    constant within a unit (``name``, ``department``...) are kept.
+    pandas.DataFrame
+        One row per unit. For each variable ``v``: ``v_<first>``, ``v_<last>``,
+        ``v_change`` (last minus first), ``v_pct_change`` (in percent of the first
+        value), ``v_annual_change`` (the change divided by the years between them),
+        ``v_rank_<first>`` and ``v_rank_<last>`` (1 = highest value) and
+        ``v_rank_change`` (positive when the unit climbed). Text columns that are
+        constant within a unit (``name``, ``department``...) are kept.
 
-    The years are the stored years: for panels stored at nominal years (see
-    ``geo.reference_years``), the actual span of an indicator may differ.
+        The years are the stored years: for panels stored at nominal years (see
+        ``geo.reference_years``), the actual span of an indicator may differ.
     """
     if "geo_id" not in df.columns or "year" not in df.columns:
         raise ValueError("change() needs a long panel with geo_id and year columns (e.g. from geo.load)")

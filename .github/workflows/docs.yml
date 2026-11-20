@@ -1,0 +1,53 @@
+name: Docs
+
+# Builds the documentation site (Quarto + quartodoc) and deploys it to GitHub Pages.
+# Pages are executed locally and frozen (docs/_freeze is committed), so this job renders
+# without re-running the analyses; a page whose source changed is executed here, reading
+# the data from the data repository on GitHub.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: "1.8.27"
+      - name: Sync environment
+        run: uv sync --locked --all-extras --group dev --group docs
+      - name: Build the site
+        run: uv run --no-sync python tools/build_docs.py
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs/_site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

@@ -145,7 +145,7 @@ def validate_dataset(dataset: str) -> Report:
             if cons.get("required"):
                 rep.check(col.notna().all(), f"{tag}: {f['name']} has missing values")
             if "pattern" in cons:
-                bad = col.dropna()[~col.dropna().map(lambda v: re.fullmatch(cons["pattern"], str(v)) is not None)]
+                bad = col.dropna()[~col.dropna().map(lambda v, pattern=cons["pattern"]: re.fullmatch(pattern, str(v)) is not None)]
                 rep.check(bad.empty, f"{tag}: {f['name']} values not matching {cons['pattern']}: {bad.head(3).tolist()}")
             if "minimum" in cons:
                 rep.check((col.dropna() >= cons["minimum"]).all(), f"{tag}: {f['name']} below {cons['minimum']}")
@@ -217,7 +217,7 @@ def _check_map(rep: Report, dataset: str, spec: dict) -> None:
     rep.check(not values.empty, f"geo:map: {variable} has no values in {year}")
     for panel in spec.get("panels", []):
         rep.check(df.loc[df["year"] == panel, variable].notna().any(), f"geo:map: panel {panel} of {variable} has no values")
-    if rep.check(spec.get("classify", "log") == "log", f"geo:map: classify must be 'log' or absent"):
+    if rep.check(spec.get("classify", "log") == "log", "geo:map: classify must be 'log' or absent"):
         rep.check(spec.get("classify") != "log" or (values > 0).all(),
                   f"geo:map: {variable} has values <= 0, so it cannot be classified on a log scale")
 

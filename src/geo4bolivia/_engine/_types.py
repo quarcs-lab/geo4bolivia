@@ -21,7 +21,7 @@ import keeps this module importable independent of them and rules out import cyc
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from .pedagogy import Interpretable
@@ -821,7 +821,8 @@ class MGWRResult(Interpretable):
     """Result of :func:`geometrics.analyze_mgwr`.
 
     Like :class:`GWRResult` but multiscale: ``bw`` maps each term to its own
-    bandwidth and ``gt_bw`` renders the bandwidth table. Variables are always
+    bandwidth, ``bw_interval`` to the 95% interval of that bandwidth, and ``gt_bw``
+    renders the bandwidth table. ``df`` carries ``local_cn``, the local condition number. Variables are always
     z-standardized for MGWR, so local coefficients are on the standardized scale
     (recorded in ``notes``).
     """
@@ -842,6 +843,7 @@ class MGWRResult(Interpretable):
     covariates: tuple[str, ...]
     period: Any
     notes: tuple[str, ...] = ()
+    bw_interval: dict[str, tuple[float, float]] = field(default_factory=dict)
 
     def interpret(self, *, lang: str = "en") -> str:
         """Plain-language reading of the per-term operating scales and local patterns."""

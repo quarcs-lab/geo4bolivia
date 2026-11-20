@@ -19,15 +19,14 @@ import unicodedata
 import warnings
 from pathlib import Path
 
-import geopandas as gpd
 import numpy as np
 import pandas as pd
 
 from . import io, metadata, project, store
 from .aggregate import aggregate
-from .scales import ancestors, get as get_scale, scale_of
+from .scales import ancestors, scale_of
+from .scales import get as get_scale
 from .scales import scales as registry
-
 
 # --- link: attach geo_id to any table --------------------------------------------------
 
@@ -50,17 +49,22 @@ def link(df: pd.DataFrame, scale: str, on: str, key: str = "auto", errors: str =
 
     Parameters
     ----------
-    df : your table (one row per unit, or per unit and year)
-    scale : scale of your units, e.g. ``"province"`` (see ``geo.scales()``)
-    on : the column of ``df`` that identifies the unit
-    key : the column of ``geo.units(scale)`` to match against: ``"name"``, a
+    df
+        Your table (one row per unit, or per unit and year)
+    scale
+        Scale of your units, e.g. ``"province"`` (see ``geo.scales()``)
+    on
+        The column of ``df`` that identifies the unit
+    key
+        The column of ``geo.units(scale)`` to match against: ``"name"``, a
         source code column of ``geo.units(scale)`` (e.g. ``"gid"`` for GADM codes), or
         ``"auto"``: the column matching most values, with the others filling the
         gaps (so mixed spellings from different sources still link). Matching ignores
         accents, case, spaces and punctuation ("BântéayMéanchey" = "Banteay Meanchey").
         A value shared by several units (two municipalities with the same name) is
         ambiguous and links to none of them: link such units by a code instead.
-    errors : ``"raise"`` (default), ``"warn"`` or ``"ignore"`` for values that match no unit
+    errors
+        ``"raise"`` (default), ``"warn"`` or ``"ignore"`` for values that match no unit
         or are ambiguous
 
     Returns a copy of ``df`` with ``geo_id`` as its first column.
@@ -129,9 +133,12 @@ def check(df: pd.DataFrame, scale: str | None = None, time: str | None = "year",
 
     Parameters
     ----------
-    df : your panel, e.g. from ``geo.link``
-    scale : its scale (default: inferred from ``geo_id``)
-    time : the year column, or ``None`` for a cross-section
+    df
+        Your panel, e.g. from ``geo.link``
+    scale
+        Its scale (default: inferred from ``geo_id``)
+    time
+        The year column, or ``None`` for a cross-section
     """
     problems = []
     if "geo_id" not in df.columns:
@@ -174,11 +181,16 @@ def combine(datasets, scale: str, years=None, extra=(), rules: dict | None = Non
 
     Parameters
     ----------
-    datasets : dataset ids, or ``{dataset: [variables]}`` to pick variables
-    scale : target scale; each dataset must be published at it or nest in it
-    years : as in ``geo.load``
-    extra : your own panels (with ``geo_id`` and ``year``) at ``scale``
-    rules : aggregation rules overriding the metadata, ``{variable: rule}``
+    datasets
+        Dataset ids, or ``{dataset: [variables]}`` to pick variables
+    scale
+        Target scale; each dataset must be published at it or nest in it
+    years
+        As in ``geo.load``
+    extra
+        Your own panels (with ``geo_id`` and ``year``) at ``scale``
+    rules
+        Aggregation rules overriding the metadata, ``{variable: rule}``
 
     Variables without an aggregation rule (``none``) are dropped, with a warning,
     when a dataset has to be aggregated. Clashing column names get the dataset
@@ -232,12 +244,18 @@ def zonal(raster, scale, stats=("sum", "mean"), name: str = "value", year: int |
 
     Parameters
     ----------
-    raster : path or URL of a raster, or ``{year: path}`` for an annual series
-    scale : a scale id, or a GeoDataFrame with ``geo_id`` and polygons
-    stats : any of ``sum``, ``mean``, ``min``, ``max``, ``median``, ``count``
-    name : prefix of the output columns (``name_sum``, ``name_mean``, ...)
-    year : year to record when ``raster`` is a single file
-    all_touched : count every pixel a unit touches (default: pixel centres inside)
+    raster
+        Path or URL of a raster, or ``{year: path}`` for an annual series
+    scale
+        A scale id, or a GeoDataFrame with ``geo_id`` and polygons
+    stats
+        Any of ``sum``, ``mean``, ``min``, ``max``, ``median``, ``count``
+    name
+        Prefix of the output columns (``name_sum``, ``name_mean``, ...)
+    year
+        Year to record when ``raster`` is a single file
+    all_touched
+        Count every pixel a unit touches (default: pixel centres inside)
 
     Needs ``rasterio``: in Colab, ``!pip install -q "geo4bolivia[raster]"``.
     Pixels are not split at unit edges, so use a fine raster, or
@@ -290,15 +308,24 @@ def save(df: pd.DataFrame, name: str, scale: str, directory=".", title: str | No
 
     Parameters
     ----------
-    df : a valid panel (see ``geo.check``)
-    name : the dataset id: lowercase letters, digits, ``-`` or ``_``
-    scale : its scale
-    directory : where to write ``data/`` and ``metadata/`` (default: the current folder)
-    title, description : what the dataset is
-    variables : ``{column: {"label", "description", "unit", "aggregation", "source"}}``
-    sources : titles or ``{"title", "path"}`` dicts of the sources
-    citation : the recommended citation
-    license : an SPDX license id (default ``CC-BY-4.0``)
+    df
+        A valid panel (see ``geo.check``)
+    name
+        The dataset id: lowercase letters, digits, ``-`` or ``_``
+    scale
+        Its scale
+    directory
+        Where to write ``data/`` and ``metadata/`` (default: the current folder)
+    title, description
+        What the dataset is
+    variables
+        ``{column: {"label", "description", "unit", "aggregation", "source"}}``
+    sources
+        Titles or ``{"title", "path"}`` dicts of the sources
+    citation
+        The recommended citation
+    license
+        An SPDX license id (default ``CC-BY-4.0``)
 
     Notes
     -----

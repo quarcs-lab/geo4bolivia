@@ -24,23 +24,32 @@ def weights(data, method: str = "queen", *, k: int = 6, threshold: float | None 
 
     Parameters
     ----------
-    data : a scale id (every unit of that scale), a dataset id or a panel (the units
+    data
+        A scale id (every unit of that scale), a dataset id or a panel (the units
         with data), or a GeoDataFrame with ``geo_id``
-    method : ``"queen"`` (units sharing a border or a corner), ``"rook"`` (a border),
+    method
+        ``"queen"`` (units sharing a border or a corner), ``"rook"`` (a border),
         ``"knn"`` (the ``k`` nearest), ``"distance_band"`` (within ``threshold``
         metres) or ``"inverse_distance"`` (all units, weighted by distance ** -``power``)
-    k : neighbours for ``"knn"``
-    threshold : distance in metres for ``"distance_band"`` (default: the smallest
+    k
+        Neighbours for ``"knn"``
+    threshold
+        Distance in metres for ``"distance_band"`` (default: the smallest
         distance at which every unit has a neighbour)
-    power : distance decay for ``"inverse_distance"``
-    row_standardize : make each unit's weights sum to one
-    attach_islands : link a unit without contiguous neighbours to its nearest unit
-    gdf : boundaries to use instead of the project's
+    power
+        Distance decay for ``"inverse_distance"``
+    row_standardize
+        Make each unit's weights sum to one
+    attach_islands
+        Link a unit without contiguous neighbours to its nearest unit
+    gdf
+        Boundaries to use instead of the project's
 
     Returns
     -------
-    A ``libpysal.weights.W`` keyed by ``geo_id``, to pass as ``w=`` to the spatial
-    functions. They build queen weights themselves when ``w`` is not given.
+    libpysal.weights.W
+        A ``libpysal.weights.W`` keyed by ``geo_id``, to pass as ``w=`` to the spatial
+        functions. They build queen weights themselves when ``w`` is not given.
     """
     from ._engine.weights import make_weights
     return make_weights(_units(data, gdf, ref), method=method, k=k, threshold=threshold, power=power,
@@ -53,18 +62,25 @@ def connectivity(data, w=None, *, method: str = "queen", tiles: str | None = "ca
 
     Parameters
     ----------
-    data : a scale id, a dataset id or a panel, or a GeoDataFrame with ``geo_id``
-    w : the weights to draw (default: ``method`` weights built from the boundaries)
-    method : the weights to build when ``w`` is not given (see ``weights``)
-    tiles : the basemap style (``None``: no basemap)
-    title : the figure title
-    gdf : boundaries to use instead of the project's
+    data
+        A scale id, a dataset id or a panel, or a GeoDataFrame with ``geo_id``
+    w
+        The weights to draw (default: ``method`` weights built from the boundaries)
+    method
+        The weights to build when ``w`` is not given (see ``weights``)
+    tiles
+        The basemap style (``None``: no basemap)
+    title
+        The figure title
+    gdf
+        Boundaries to use instead of the project's
 
     Returns
     -------
-    A result with ``.fig`` (the links over the map), ``.fig_hist`` (neighbours per
-    unit), ``.df`` (one row per unit with its number of neighbours), the weights
-    ``.w`` and ``.interpret()``.
+    result object
+        A result with ``.fig`` (the links over the map), ``.fig_hist`` (neighbours per
+        unit), ``.df`` (one row per unit with its number of neighbours), the weights
+        ``.w`` and ``.interpret()``.
     """
     from ._engine.weights import explore_connectivity_map
     geo = _units(data, gdf, ref)
@@ -78,24 +94,33 @@ def moran(data, variable: str, year=None, *, w=None, permutations: int = 999, se
 
     Parameters
     ----------
-    data : a dataset id, or a panel with ``geo_id`` (and ``year``), e.g. from ``load``
-    variable : the numeric column to test
-    year : the year to test (default: the last with data), or ``"all"`` for Moran's I
+    data
+        A dataset id, or a panel with ``geo_id`` (and ``year``), e.g. from ``load``
+    variable
+        The numeric column to test
+    year
+        The year to test (default: the last with data), or ``"all"`` for Moran's I
         in every year, on the units that have data in all of them
-    w : spatial weights from ``weights`` (default: queen contiguity among the units with data)
-    permutations : random permutations behind the pseudo p-value
-    seed : makes the permutations reproducible (``None``: leave the random state alone)
-    title : the figure title
-    gdf : boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
+    w
+        Spatial weights from ``weights`` (default: queen contiguity among the units with data)
+    permutations
+        Random permutations behind the pseudo p-value
+    seed
+        Makes the permutations reproducible (``None``: leave the random state alone)
+    title
+        The figure title
+    gdf
+        Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
     Returns
     -------
-    For one year, a result with ``.moran_i``, ``.p_sim``, ``.z_sim``, ``.fig`` (the Moran
-    scatterplot: each unit's standardized value against its neighbours' mean), ``.df``
-    (one row per unit with its quadrant) and ``.interpret()``.
+    result object
+        For one year, a result with ``.moran_i``, ``.p_sim``, ``.z_sim``, ``.fig`` (the Moran
+        scatterplot: each unit's standardized value against its neighbours' mean), ``.df``
+        (one row per unit with its quadrant) and ``.interpret()``.
 
-    For ``year="all"``, a result with ``.df`` (one row per year: ``moran_i``, ``p_sim``,
-    ``z_sim``), ``.fig`` (Moran's I over time) and ``.interpret()``.
+        For ``year="all"``, a result with ``.df`` (one row per year: ``moran_i``, ``p_sim``,
+        ``z_sim``), ``.fig`` (Moran's I over time) and ``.interpret()``.
     """
     from ._engine import dependence
     everything = isinstance(year, str) and year.lower() == "all"
@@ -115,23 +140,34 @@ def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, see
 
     Parameters
     ----------
-    data : a dataset id, or a panel with ``geo_id`` (and ``year``), e.g. from ``load``
-    variable : the numeric column to analyse
-    year : the year to analyse (default: the last with data)
-    w : spatial weights from ``weights`` (default: queen contiguity among the units with data)
-    permutations : random permutations behind each unit's pseudo p-value
-    seed : makes the permutations reproducible
-    alpha : significance level below which a unit is assigned to a cluster
-    tiles : the basemap style (``None``: no basemap)
-    title : the figure title
-    gdf : boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
+    data
+        A dataset id, or a panel with ``geo_id`` (and ``year``), e.g. from ``load``
+    variable
+        The numeric column to analyse
+    year
+        The year to analyse (default: the last with data)
+    w
+        Spatial weights from ``weights`` (default: queen contiguity among the units with data)
+    permutations
+        Random permutations behind each unit's pseudo p-value
+    seed
+        Makes the permutations reproducible
+    alpha
+        Significance level below which a unit is assigned to a cluster
+    tiles
+        The basemap style (``None``: no basemap)
+    title
+        The figure title
+    gdf
+        Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
     Returns
     -------
-    A result with ``.fig`` (the cluster map), ``.fig_scatter`` (the Moran scatterplot
-    coloured by cluster), ``.df`` (one row per unit: local statistic, p-value and
-    ``cluster``: High-High, Low-Low, High-Low, Low-High or not significant), ``.counts``,
-    the global ``.moran_i`` and ``.interpret()``.
+    result object
+        A result with ``.fig`` (the cluster map), ``.fig_scatter`` (the Moran scatterplot
+        coloured by cluster), ``.df`` (one row per unit: local statistic, p-value and
+        ``cluster``: High-High, Low-Low, High-Low, Low-High or not significant), ``.counts``,
+        the global ``.moran_i`` and ``.interpret()``.
     """
     from ._engine import dependence
     df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year=year, ref=ref)

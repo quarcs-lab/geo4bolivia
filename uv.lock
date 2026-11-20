@@ -1046,7 +1046,7 @@ dynamics = [
     { name = "giddy", version = "2.3.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "giddy", version = "2.3.9", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
 ]
-gwr = [
+mgwr = [
     { name = "mgwr" },
 ]
 panel = [
@@ -1088,7 +1088,7 @@ requires-dist = [
     { name = "linearmodels", marker = "extra == 'panel'", specifier = ">=6" },
     { name = "mapclassify", specifier = ">=2.6" },
     { name = "mgwr", marker = "extra == 'all'", specifier = ">=2.2" },
-    { name = "mgwr", marker = "extra == 'gwr'", specifier = ">=2.2" },
+    { name = "mgwr", marker = "extra == 'mgwr'", specifier = ">=2.2" },
     { name = "numpy", specifier = ">=1.26" },
     { name = "pandas", specifier = ">=2.1" },
     { name = "plotly", specifier = ">=5.24" },
@@ -1101,7 +1101,7 @@ requires-dist = [
     { name = "spreg", specifier = ">=1.8" },
     { name = "statsmodels", specifier = ">=0.14" },
 ]
-provides-extras = ["raster", "dynamics", "gwr", "panel", "plot", "all"]
+provides-extras = ["raster", "dynamics", "mgwr", "panel", "plot", "all"]
 
 [package.metadata.requires-dev]
 compare = [

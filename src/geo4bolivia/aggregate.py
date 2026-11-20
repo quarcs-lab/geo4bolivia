@@ -78,14 +78,20 @@ def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | No
 
     Parameters
     ----------
-    df : panel with ``geo_id``, optionally ``year``, and variable columns
-    to : target scale id, or a list of them (e.g. ``["department", "country"]``),
+    df
+        Panel with ``geo_id``, optionally ``year``, and variable columns
+    to
+        Target scale id, or a list of them (e.g. ``["department", "country"]``),
         each containing the source scale (see ``geo.ancestors``)
-    dataset : take each variable's ``geo:aggregation`` rule from this dataset's metadata
-    rules : explicit rules that override the metadata, e.g. ``{"y": "weighted_mean:pop"}``
-    variables : variables to aggregate (default: every numeric column except ids and year,
+    dataset
+        Take each variable's ``geo:aggregation`` rule from this dataset's metadata
+    rules
+        Explicit rules that override the metadata, e.g. ``{"y": "weighted_mean:pop"}``
+    variables
+        Variables to aggregate (default: every numeric column except ids and year,
         leaving out, with a warning, those without a rule)
-    weights : extra columns to join on ``geo_id`` (and ``year`` if present) for
+    weights
+        Extra columns to join on ``geo_id`` (and ``year`` if present) for
         ``weighted_mean`` rules whose weight is not already in ``df``. When the dataset's
         metadata names where a weight lives (``geo:weights``, e.g. census population),
         it is loaded automatically.
@@ -176,13 +182,16 @@ def overlay_weights(source, target, id_col: str = "geo_id") -> pd.DataFrame:
 
     Parameters
     ----------
-    source, target : scale ids, or GeoDataFrames with ``id_col`` and polygons
-    id_col : the id column of GeoDataFrame inputs
+    source, target
+        Scale ids, or GeoDataFrames with ``id_col`` and polygons
+    id_col
+        The id column of GeoDataFrame inputs
 
     Returns
     -------
-    Columns ``geo_id_from``, ``geo_id_to``, ``area_km2``, ``share_of_from`` (the
-    part of the source unit inside the target) and ``share_of_to``.
+    pandas.DataFrame
+        Columns ``geo_id_from``, ``geo_id_to``, ``area_km2``, ``share_of_from`` (the
+        part of the source unit inside the target) and ``share_of_to``.
     """
     src = _as_target(source, id_col).to_crs(EQUAL_AREA_CRS)
     tgt = _as_target(target, id_col).to_crs(EQUAL_AREA_CRS)
@@ -205,13 +214,18 @@ def overlay(df: pd.DataFrame, target, extensive=(), intensive=(), source=None,
 
     Parameters
     ----------
-    df : panel with ``geo_id``, optionally ``year``, and the variables
-    target : a scale id or a GeoDataFrame with ``id_col`` and polygons (e.g. a grid)
-    extensive : counts/totals (population, GDP): split by the share of each
+    df
+        Panel with ``geo_id``, optionally ``year``, and the variables
+    target
+        A scale id or a GeoDataFrame with ``id_col`` and polygons (e.g. a grid)
+    extensive
+        Counts/totals (population, GDP): split by the share of each
         source unit's area falling in the target, then summed
-    intensive : rates/averages (GDP per capita, HDI): area-weighted mean over
+    intensive
+        Rates/averages (GDP per capita, HDI): area-weighted mean over
         the parts of source units inside the target
-    source : the source scale or GeoDataFrame (default: inferred from ``geo_id``)
+    source
+        The source scale or GeoDataFrame (default: inferred from ``geo_id``)
 
     Assumes values are spread uniformly within each source unit. Returns one row
     per target unit (and year), with ``geo_id`` holding the target ids.

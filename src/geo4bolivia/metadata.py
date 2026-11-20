@@ -32,19 +32,19 @@ label for plots and its ``description`` says how it was built; the package's
 from __future__ import annotations
 
 import json
-from functools import lru_cache
+from functools import cache
 
 from . import store
 
 INDEX = "metadata/index.json"   # list of dataset ids, so remote clients can discover them
 
 
-@lru_cache(maxsize=None)
+@cache
 def dataset_ids(ref: str | None = None) -> tuple[str, ...]:
     return tuple(json.load(store.open_binary(INDEX, ref))["datasets"])
 
 
-@lru_cache(maxsize=None)
+@cache
 def package(dataset: str, ref: str | None = None) -> dict:
     if dataset not in dataset_ids(ref):
         raise KeyError(f"Unknown dataset {dataset!r}; available: {', '.join(dataset_ids(ref))}")

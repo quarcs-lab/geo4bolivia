@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import warnings
-from functools import lru_cache
+from functools import cache
 from numbers import Integral
 
 import geopandas as gpd
@@ -19,10 +19,11 @@ def datasets(ref: str | None = None) -> pd.DataFrame:
 
     Returns
     -------
-    Columns ``dataset`` (the id to pass to ``geo.load``), ``scale``, ``title``,
-    ``years`` (e.g. ``"2001–2020"`` for an annual panel or ``"2012, 2024"`` for two
-    periods), ``units`` (units with data), ``variables`` (how many), ``first_year``,
-    ``last_year``, ``license``, ``categories`` and the ``csv`` and ``parquet`` paths.
+    pandas.DataFrame
+        Columns ``dataset`` (the id to pass to ``geo.load``), ``scale``, ``title``,
+        ``years`` (e.g. ``"2001–2020"`` for an annual panel or ``"2012, 2024"`` for two
+        periods), ``units`` (units with data), ``variables`` (how many), ``first_year``,
+        ``last_year``, ``license``, ``categories`` and the ``csv`` and ``parquet`` paths.
     """
     columns = ["dataset", "scale", "title", "years", "units", "variables", "first_year", "last_year",
                "license", "categories", "csv", "parquet"]
@@ -53,16 +54,19 @@ def dictionary(dataset: str, scale: str | None = None, ref: str | None = None) -
 
     Parameters
     ----------
-    dataset : dataset id (see ``geo.datasets()``)
-    scale : the resource's scale (default: the dataset's native scale)
+    dataset
+        Dataset id (see ``geo.datasets()``)
+    scale
+        The resource's scale (default: the dataset's native scale)
 
     Returns
     -------
-    Columns ``variable``, ``label`` (the field's ``title``, a readable name for
-    plot axes and legends), ``description`` (how it was built), ``unit``, ``role``
-    (id, time, source_key or variable), ``aggregation`` (the rule ``geo.aggregate``
-    uses), ``source`` and ``reference_years`` (the actual years behind each stored
-    year, e.g. ``"2012: 2008; 2024: 2023"``, when they differ).
+    pandas.DataFrame
+        Columns ``variable``, ``label`` (the field's ``title``, a readable name for
+        plot axes and legends), ``description`` (how it was built), ``unit``, ``role``
+        (id, time, source_key or variable), ``aggregation`` (the rule ``geo.aggregate``
+        uses), ``source`` and ``reference_years`` (the actual years behind each stored
+        year, e.g. ``"2012: 2008; 2024: 2023"``, when they differ).
     """
     return pd.DataFrame([{"variable": f["name"], "label": f.get("title", f["name"]),
                           "description": f.get("description", ""),
@@ -87,18 +91,27 @@ def load(dataset: str, scale: str | None = None, years=None, variables=None,
 
     Parameters
     ----------
-    dataset : dataset id (see ``geo.datasets()``)
-    scale : scale to load; defaults to the dataset's native scale
-    years : an int, a list of ints, or a ``(first, last)`` range (inclusive)
-    variables : a variable or list of variables to keep (``geo_id`` and ``year``
+    dataset
+        Dataset id (see ``geo.datasets()``)
+    scale
+        Scale to load; defaults to the dataset's native scale
+    years
+        An int, a list of ints, or a ``(first, last)`` range (inclusive)
+    variables
+        A variable or list of variables to keep (``geo_id`` and ``year``
         are always kept); ``geo.search()`` and ``geo.dictionary()`` list them
-    wide : a variable name; returns one row per unit with one column per year
+    wide
+        A variable name; returns one row per unit with one column per year
         (``<variable><year>``)
-    geometry : attach unit boundaries (and names) and return a GeoDataFrame
-    names : add the unit ``name``
-    groups : coarser scales whose unit names to add as columns, e.g.
+    geometry
+        Attach unit boundaries (and names) and return a GeoDataFrame
+    names
+        Add the unit ``name``
+    groups
+        Coarser scales whose unit names to add as columns, e.g.
         ``["department"]`` adds a ``department`` column (implies ``names``)
-    ref : git branch, tag or commit to read from GitHub (default: local checkout or ``main``)
+    ref
+        Git branch, tag or commit to read from GitHub (default: local checkout or ``main``)
 
     Raises ``ValueError`` for unknown variables, and for years that have no rows
     (listing the years the dataset has).
@@ -142,14 +155,18 @@ def add_names(df: pd.DataFrame, groups=None, scale: str | None = None, ref: str 
 
     Parameters
     ----------
-    df : any table with ``geo_id``
-    groups : a coarser scale or list of them (see ``geo.ancestors``), e.g. ``["department"]``
-    scale : the units' scale (default: inferred from ``geo_id``)
+    df
+        Any table with ``geo_id``
+    groups
+        A coarser scale or list of them (see ``geo.ancestors``), e.g. ``["department"]``
+    scale
+        The units' scale (default: inferred from ``geo_id``)
 
     Returns
     -------
-    A copy with ``name`` and one column per group (the group unit's name) after
-    ``geo_id`` (and ``year``).
+    pandas.DataFrame
+        A copy with ``name`` and one column per group (the group unit's name) after
+        ``geo_id`` (and ``year``).
     """
     if scale is None:
         found = {scale_of(i, ref) for i in df["geo_id"].dropna().drop_duplicates()}
@@ -174,7 +191,7 @@ def group_label(scale: str, ref: str | None = None) -> str:
     return get_scale(scale, ref).label
 
 
-@lru_cache(maxsize=None)
+@cache
 def _units(ref: str | None) -> pd.DataFrame:
     return pd.read_parquet(store.open_binary("geo/units.parquet", ref))
 
@@ -184,13 +201,15 @@ def units(scale: str | None = None, ref: str | None = None) -> pd.DataFrame:
 
     Parameters
     ----------
-    scale : a scale id (see ``geo.scales()``); default: every scale
+    scale
+        A scale id (see ``geo.scales()``); default: every scale
 
     Returns
     -------
-    Every row has ``geo_id``, ``scale``, ``name``, ``parent_id``, ``area_km2``, a
-    ``<scale>_id`` column for each coarser scale it lies in, and the codes each
-    source uses for it (e.g. ``ine_code``), which ``geo.link(..., key=...)`` matches.
+    pandas.DataFrame
+        Every row has ``geo_id``, ``scale``, ``name``, ``parent_id``, ``area_km2``, a
+        ``<scale>_id`` column for each coarser scale it lies in, and the codes each
+        source uses for it (e.g. ``ine_code``), which ``geo.link(..., key=...)`` matches.
     """
     df = _units(ref)
     return (df if scale is None else df[df["scale"] == scale]).reset_index(drop=True).copy()
@@ -201,7 +220,8 @@ def boundaries(scale: str, ref: str | None = None) -> gpd.GeoDataFrame:
 
     Parameters
     ----------
-    scale : a scale id (see ``geo.scales()``)
+    scale
+        A scale id (see ``geo.scales()``)
     """
     return gpd.read_parquet(store.open_binary(f"geo/boundaries/{scale}.parquet", ref))
 
@@ -211,13 +231,16 @@ def crosswalk(source: str, target: str, ref: str | None = None) -> pd.DataFrame:
 
     Parameters
     ----------
-    source : the finer scale, e.g. ``"municipality"``
-    target : a coarser scale it nests in, e.g. ``"department"``
+    source
+        The finer scale, e.g. ``"municipality"``
+    target
+        A coarser scale it nests in, e.g. ``"department"``
 
     Returns
     -------
-    ``weight_area`` is the share of the source unit's area inside the target unit
-    (1.0 for nested scales). Crosswalks are published for every pair of active
-    scales where one nests in the other, from finer to coarser.
+    pandas.DataFrame
+        ``weight_area`` is the share of the source unit's area inside the target unit
+        (1.0 for nested scales). Crosswalks are published for every pair of active
+        scales where one nests in the other, from finer to coarser.
     """
     return pd.read_csv(store.open_binary(f"geo/crosswalks/{source}__{target}.csv", ref))

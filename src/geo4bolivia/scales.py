@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from functools import lru_cache
+from functools import cache
+from typing import TYPE_CHECKING
 
 import yaml
 
 from . import store
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
 @dataclass(frozen=True)
@@ -27,7 +31,7 @@ class Scale:
         return re.fullmatch(self.id_pattern, geo_id) is not None
 
 
-@lru_cache(maxsize=None)
+@cache
 def _registry(ref: str | None = None) -> dict[str, Scale]:
     raw = yaml.safe_load(store.open_binary("geo/scales.yaml", ref))
     known = {"label", "kind", "id_pattern", "parent", "children", "level", "status"}
@@ -44,7 +48,7 @@ def scales(active_only: bool = False, ref: str | None = None) -> dict[str, Scale
     return {k: v for k, v in reg.items() if v.status == "active" or not active_only}
 
 
-def table(active_only: bool = False, ref: str | None = None) -> "pd.DataFrame":
+def table(active_only: bool = False, ref: str | None = None) -> pd.DataFrame:
     """The registry of spatial scales as a table, one row per scale (``geo.scales()``).
 
     Columns: ``label``, ``kind`` (admin, grouping, grid, custom), ``parent`` (the

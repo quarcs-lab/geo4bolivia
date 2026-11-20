@@ -48,14 +48,17 @@ def search(text: str, dataset: str | None = None, ref: str | None = None) -> pd.
 
     Parameters
     ----------
-    text : one or more words, e.g. ``"poverty"`` or ``"night lights"``
-    dataset : search only this dataset
+    text
+        One or more words, e.g. ``"poverty"`` or ``"night lights"``
+    dataset
+        Search only this dataset
 
     Returns
     -------
-    One row per variable and scale: ``dataset``, ``variable``, ``label``, ``unit``,
-    ``years``, ``scale``, ``units`` (with data) and ``description``. Pass the
-    ``dataset`` and ``variable`` to ``geo.load(dataset, variables=variable)``.
+    pandas.DataFrame
+        One row per variable and scale: ``dataset``, ``variable``, ``label``, ``unit``,
+        ``years``, ``scale``, ``units`` (with data) and ``description``. Pass the
+        ``dataset`` and ``variable`` to ``geo.load(dataset, variables=variable)``.
     """
     words = _fold(text).split()
     if not words:
@@ -91,14 +94,18 @@ def reference_years(dataset: str, variable: str | None = None, scale: str | None
 
     Parameters
     ----------
-    dataset : dataset id
-    variable : one variable (default: all)
-    scale : the resource's scale (default: the dataset's native scale)
+    dataset
+        Dataset id
+    variable
+        One variable (default: all)
+    scale
+        The resource's scale (default: the dataset's native scale)
 
     Returns
     -------
-    Columns ``variable``, ``label``, ``year`` (as stored) and ``reference`` (the
-    actual years; the stored year when they are the same).
+    pandas.DataFrame
+        Columns ``variable``, ``label``, ``year`` (as stored) and ``reference`` (the
+        actual years; the stored year when they are the same).
     """
     res = metadata.resource(dataset, scale, ref)
     years = metadata.resource_years(res)
@@ -141,12 +148,15 @@ def cite(dataset: str, style: str = "apa", ref: str | None = None) -> str:
 
     Parameters
     ----------
-    dataset : dataset id
-    style : ``"apa"`` (plain text) or ``"bibtex"``
+    dataset
+        Dataset id
+    style
+        ``"apa"`` (plain text) or ``"bibtex"``
 
     Returns
     -------
-    A string; print it: ``print(geo.cite("<dataset>"))``.
+    str
+        A string; print it: ``print(geo.cite("<dataset>"))``.
     """
     pkg = metadata.package(dataset, ref)
     cfg = project.config()
@@ -253,12 +263,14 @@ def info(dataset: str, ref: str | None = None) -> DatasetInfo:
 
     Parameters
     ----------
-    dataset : dataset id (see ``geo.datasets()``)
+    dataset
+        Dataset id (see ``geo.datasets()``)
 
     Returns
     -------
-    A ``DatasetInfo``: in a notebook it displays as formatted HTML; ``print()``
-    gives plain text, and ``.dict`` the full datapackage.
+    DatasetInfo
+        A ``DatasetInfo``: in a notebook it displays as formatted HTML; ``print()``
+        gives plain text, and ``.dict`` the full datapackage.
     """
     return DatasetInfo(dataset, ref)
 
@@ -291,12 +303,14 @@ def labels(data, ref: str | None = None) -> dict[str, str]:
 
     Parameters
     ----------
-    data : a panel (any DataFrame) or a dataset id
+    data
+        A panel (any DataFrame) or a dataset id
 
     Returns
     -------
-    ``{column: label}`` for the columns it knows. Pass it to Plotly:
-    ``px.scatter(df, x=..., y=..., labels=geo.labels(df))``.
+    dict[str, str]
+        ``{column: label}`` for the columns it knows. Pass it to Plotly:
+        ``px.scatter(df, x=..., y=..., labels=geo.labels(df))``.
     """
     if isinstance(data, str):
         return {f["name"]: f.get("title", f["name"]) for f in metadata.fields(data, ref=ref)}
@@ -325,15 +339,19 @@ def describe(df: pd.DataFrame, variables=None, by: str | None = "year", ref: str
 
     Parameters
     ----------
-    df : a panel, e.g. from ``geo.load``
-    variables : a variable or list of them (default: every numeric variable)
-    by : a column to group by: ``"year"`` (default), ``None`` to pool all rows, or a
+    df
+        A panel, e.g. from ``geo.load``
+    variables
+        A variable or list of them (default: every numeric variable)
+    by
+        A column to group by: ``"year"`` (default), ``None`` to pool all rows, or a
         group such as ``"department"`` (after ``geo.load(..., groups=["department"])``)
 
     Returns
     -------
-    One row per variable (and group): ``variable``, ``label``, ``unit``, ``count``,
-    ``mean``, ``std``, ``min``, ``p25``, ``median``, ``p75`` and ``max``.
+    pandas.DataFrame
+        One row per variable (and group): ``variable``, ``label``, ``unit``, ``count``,
+        ``mean``, ``std``, ``min``, ``p25``, ``median``, ``p75`` and ``max``.
     """
     skip = {"geo_id", "year", "n_units", "coverage"} | ({by} if by else set())
     if variables is None:

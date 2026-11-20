@@ -100,7 +100,24 @@ def _wgs84_simplified(
         g = metric
     if g.crs is not None:
         g = g.to_crs("EPSG:4326")
+    # Plotly's vector maps (tiles=None) follow d3's winding rule: a polygon whose exterior
+    # ring runs anticlockwise is drawn as everything *outside* it. Tile maps accept either.
+    g[geom_col] = g.geometry.apply(_clockwise)
     return g
+
+
+def _clockwise(geometry: Any) -> Any:
+    """A polygon (or its parts) with the exterior ring clockwise and the holes anticlockwise."""
+    from shapely.geometry import MultiPolygon
+    from shapely.geometry.polygon import orient
+
+    if geometry is None or geometry.is_empty:
+        return geometry
+    if geometry.geom_type == "Polygon":
+        return orient(geometry, sign=-1.0)
+    if geometry.geom_type == "MultiPolygon":
+        return MultiPolygon([orient(part, sign=-1.0) for part in geometry.geoms])
+    return geometry
 
 
 def geojson_interface(

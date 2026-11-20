@@ -40,7 +40,7 @@ classifiers = [
 [project.optional-dependencies]
 raster = ["rasterio>=1.3"]        # geo.zonal()
 dynamics = ["giddy>=2.3.5"]       # geo.transitions(), geo.spatial_transitions()
-gwr = ["mgwr>=2.2"]               # geo.gwr(), geo.mgwr()
+mgwr = ["mgwr>=2.2"]              # geo.mgwr()
 panel = ["linearmodels>=6"]       # geo.panel_model()
 plot = []                         # kept for compatibility: plotly is a core dependency since 0.6
 all = ["rasterio>=1.3", "giddy>=2.3.5", "mgwr>=2.2", "linearmodels>=6"]
@@ -96,7 +96,7 @@ testpaths = ["tests"]
 markers = [
     "data: needs the observatory's data (a checkout of the data repository, or the network)",
     "dynamics: needs the [dynamics] extra (giddy)",
-    "gwr: needs the [gwr] extra (mgwr)",
+    "mgwr: needs the [mgwr] extra (mgwr)",
     "panel: needs the [panel] extra (linearmodels)",
 ]
 
@@ -107,7 +107,15 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "NPY", "RUF"]
-ignore = ["RUF022", "E501", "RUF001", "RUF002", "RUF003"]   # grouped __all__; long lines in tables; Greek letters and dashes in text
+ignore = [
+    "E501",                        # long lines in tables and messages
+    "E731",                        # small lambdas
+    "B905",                        # zip() over columns of one frame
+    "RUF001", "RUF002", "RUF003",  # Greek letters and dashes in text
+    "RUF005",                      # list concatenation reads fine
+    "RUF022",                      # __all__ is grouped by family, not sorted
+    "NPY002",                      # esda draws its permutations from numpy's global state, which the engine seeds
+]
 
 [tool.ruff.lint.per-file-ignores]
-"src/geo4bolivia/plot.py" = ["A001"]
+"tests/conftest.py" = ["E402"]     # the data folder is set before the package is imported
