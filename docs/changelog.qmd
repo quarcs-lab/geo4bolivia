@@ -7,6 +7,7 @@ sidebar: false
 ## Documentation (unreleased)
 
 - The site opens in a dark theme matching the observatory's website (a toggle switches to light), with dark figures and tables. Every code box has Copy at the top and, for Python, Open in Colab at the bottom, which opens the page's notebook; each function of the reference has its own example notebook.
+- A night-sky background (faint stars over a blue-to-teal gradient, fixed while the page scrolls), shared with the observatory's website.
 
 ## 0.6.0 (2026-11-20)
 

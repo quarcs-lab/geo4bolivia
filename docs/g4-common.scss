@@ -5,6 +5,16 @@
 
 /*-- scss:rules --*/
 
+// The page's background ($g4-page-bg, set by each theme), fixed behind the scrolling content
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: $g4-page-bg;
+}
+
 // Navigation and footer
 .navbar {
   border-bottom: 1px solid rgba(90, 214, 198, 0.35);
