@@ -1,0 +1,164 @@
+---
+title: "Get started"
+description: "Install geo4bolivia, find a variable, load it, map it and run a first spatial analysis, in ten minutes."
+image: images/hero.webp
+---
+
+```{=html}
+<div class="try-banner">
+  <p>✨ <strong>Run this page yourself</strong>: nothing to install on your computer.</p>
+  <a class="g4-btn g4-btn--colab" href="https://colab.research.google.com/github/quarcs-lab/geo4bolivia/blob/main/notebooks/get-started.ipynb" target="_blank" rel="noopener">▶ Open in Colab</a>
+</div>
+```
+
+**geo4bolivia** gives you the data of the [GeoDevelopment Observatory of Bolivia](https://quarcs-lab.github.io/gdo4bolivia/) and the standard analyses of spatial data science in one package. This page takes one indicator, the Sustainable Development Index of Bolivia's 343 municipalities, from *finding it* to a *first spatial result*.
+
+## Install
+
+In Google Colab or any Python 3.11+ environment:
+
+```{python}
+#| eval: false
+!pip install -q geo4bolivia
+```
+
+```{python}
+import geo4bolivia as geo
+```
+
+The default install covers loading, maps and the core analyses. A few methods need an extra library, which you add only when you use them:
+
+| Extra | Adds | For |
+| --- | --- | --- |
+| `geo4bolivia[dynamics]` | giddy | `transitions`, `spatial_transitions` |
+| `geo4bolivia[mgwr]` | mgwr | `mgwr` |
+| `geo4bolivia[panel]` | linearmodels | `panel_model` |
+| `geo4bolivia[raster]` | rasterio | `zonal` |
+| `geo4bolivia[all]` | all of them | everything |
+
+## 1. Find the data
+
+`geo.datasets()` is the catalog: one row per dataset, with its years and the number of units that have data.
+
+```{python}
+geo.datasets()[["dataset", "title", "years", "units", "variables"]].head(6)
+```
+
+You do not need to know where a variable lives. `geo.search()` looks through the names, labels and descriptions of every variable of every dataset:
+
+```{python}
+geo.search("sustainable development index")[["dataset", "variable", "label", "years", "units"]]
+```
+
+`geo.info()` documents a dataset: what it is, its sources and their licenses, and how to cite it.
+
+```{python}
+geo.info("sdg")
+```
+
+::: {.callout-note}
+## Two periods, stored as 2012 and 2024
+The SDG Atlas 2026 describes two periods, "around 2012" and "around 2024". Each indicator's actual years are in the metadata: `geo.reference_years("sdg03")` lists them, and `geo.cite("sdg")` gives the citation and the credits its sources require.
+:::
+
+## 2. Load it
+
+`geo.load()` returns a **panel**: one row per unit (`geo_id`) and `year`. `groups=` adds the name of the department each municipality lies in.
+
+```{python}
+ids = geo.load("sdg", variables="index_sdg", groups=["department"])
+ids.head()
+```
+
+Every unit has one **geo ID** that nests by prefix: `BO-04` is the department of La Paz, `BO-04-17` its province Murillo and `BO-04-17-04` the municipality of Nuestra Señora de La Paz. The [data model article](articles/data-model.qmd) explains scales and IDs.
+
+::: {.callout-tip collapse="true"}
+## Without the package: plain URLs
+Every dataset is also a CSV and a Parquet file you can read with pandas alone:
+
+```python
+import pandas as pd
+
+BASE = "https://raw.githubusercontent.com/quarcs-lab/gdo4bolivia/main/"
+ids = pd.read_csv(BASE + "data/municipality/sdg.csv")
+units = pd.read_csv(BASE + "geo/units.csv")       # names, parents and source codes
+```
+:::
+
+## 3. Look at it
+
+`geo.describe()` summarises each variable in each year, with its label and unit:
+
+```{python}
+geo.describe(ids)
+```
+
+`geo.map()` draws any variable. With a classification scheme and a list of years, it puts the two periods side by side in the same classes, so the colours are comparable:
+
+```{python}
+geo.map(ids, "index_sdg", year=[2012, 2024], scheme="fisher_jenks")
+```
+
+`geo.change()` gives one row per municipality with its value, change and rank in both years:
+
+```{python}
+chg = geo.change(ids, "index_sdg")
+chg[["name", "department", "index_sdg_2012", "index_sdg_2024", "index_sdg_change"]].nlargest(5, "index_sdg_change")
+```
+
+## 4. Analyse it
+
+Every analysis is one call. It takes the panel (or just the dataset id), finds the boundaries and builds the spatial weights itself, and returns a **result object**.
+
+Is sustainable development clustered in space? Global Moran's I answers for the whole country:
+
+```{python}
+res = geo.moran(ids, "index_sdg", year=2024)
+res
+```
+
+Displaying a result shows its main figure and a reading of the numbers. The parts are there to use one by one:
+
+| Attribute | What it holds |
+| --- | --- |
+| `res.fig` | the main figure (Plotly, interactive); some results have more, e.g. `fig_map` |
+| `res.df` | the table behind it, one row per unit or year, with `geo_id` and `name` |
+| `res.gt` | a formatted table, where one helps (regressions, summaries) |
+| `res.moran_i`, `res.p_sim`, ... | the numbers, by name |
+| `res.interpret()` | the reading in words; it describes associations, never causes |
+| `res.notes` | what the function decided for you (units left out, weights used) |
+
+```{python}
+print(round(res.moran_i, 3), res.p_sim, "|", res.w_spec)
+```
+
+*Where* are the clusters? Local Moran statistics (LISA) put them on the map:
+
+```{python}
+geo.lisa(ids, "index_sdg", year=2024).fig
+```
+
+And did the municipalities that started lower catch up? β-convergence compares growth with the initial level:
+
+```{python}
+conv = geo.beta_convergence(ids, "index_sdg")
+conv
+```
+
+## 5. Your own choices, your own data
+
+The defaults are a starting point. Build other weights with `geo.weights()` and pass them as `w=`:
+
+```{python}
+w6 = geo.weights("municipality", method="knn", k=6)      # the six nearest municipalities
+round(geo.moran(ids, "index_sdg", w=w6).moran_i, 3)
+```
+
+The functions are not tied to the observatory's data. Any table with a `geo_id` column works, and `gdf=` supplies boundaries for units the package does not know. To bring a table of your own onto the observatory's units, see [Building your own indicators](articles/own-indicators.qmd).
+
+## Where next
+
+- **[Explore](explore.qmd)**: distributions, correlations, trends and maps, before any model.
+- **[Analyze](analyze.qmd)**: spatial dependence, convergence, transitions, inequality, regression and MGWR.
+- **[Articles](articles/index.qmd)**: one article per method, and a full case study.
+- **[Function reference](reference/index.qmd)**: every function, with an example you can paste into Colab.

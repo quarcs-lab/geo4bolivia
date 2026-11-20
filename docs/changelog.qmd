@@ -1,0 +1,42 @@
+---
+title: "Changelog"
+description: "What changed in each release of geo4bolivia."
+---
+
+## 0.6.0 (2026-11-20)
+
+geo4bolivia becomes a self-contained package for spatial data science, in its own repository, with its own documentation site.
+
+**New: the analyses are built in.** Every function below takes a dataset id or a panel with `geo_id` and `year`, finds the boundaries, the spatial weights and the labels itself, and returns a result object with `.df`, `.fig` (Plotly), `.gt` (a table, where one helps) and `.interpret()`, a reading of the numbers in words.
+
+| Family | Functions |
+| --- | --- |
+| Explore | `correlation`, `extremes`, `distribution`, `scatter`, `trend` |
+| Maps | `map` gains class schemes (`scheme="fisher_jenks"`, `"quantiles"`, `"equal_interval"`, or `bins=`), several years side by side in common classes, and `change=True` |
+| Spatial dependence | `weights`, `connectivity`, `moran`, `lisa` |
+| Convergence | `beta_convergence` (ordinary and spatial models), `sigma_convergence`, `convergence_clubs` |
+| Transitions and mobility | `transitions`, `spatial_transitions`, `lisa_transitions`, `rank_mobility` |
+| Inequality | `inequality` (Gini, Theil, coefficient of variation, Lorenz curve), `theil_decomposition` |
+| Models | `regression`, `panel_model` (with the Hausman test), `spatial_model`, `spatial_diagnostics` |
+| Spatial heterogeneity | `mgwr` (multiscale geographically weighted regression) |
+
+The analysis engine is ported from the sister package [geometrics](https://quarcs-lab.github.io/geometrics/), and the exploration functions and panel models follow [expdpy](https://cmg777.github.io/expdpy/). Both remain the place for specialised methods; `for_geometrics` and `for_expdpy` still hand panels over to them.
+
+**Changed**
+
+- **Two repositories.** The package now lives in [quarcs-lab/geo4bolivia](https://github.com/quarcs-lab/geo4bolivia). The data, their builders, the notebooks and the observatory website moved to [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia), which the package reads.
+- **Versions 0.5 and earlier no longer find the data**, because they look for them at the package's old address. Upgrade with `pip install -U geo4bolivia`. If you cannot upgrade, set the environment variable `GEO4BOLIVIA_BASE_URL` to `https://raw.githubusercontent.com/quarcs-lab/gdo4bolivia/{ref}/`.
+- **Dependencies.** The default install now includes the libraries of the core analyses: libpysal, esda, spreg, inequality, mapclassify, statsmodels, scipy, plotly and great-tables. Heavier ones are extras: `geo4bolivia[dynamics]` (giddy, for `transitions` and `spatial_transitions`), `[mgwr]` (for `mgwr`), `[panel]` (linearmodels, for `panel_model`), `[raster]` (rasterio, for `zonal`) and `[all]`. `[plot]` is kept as an empty alias, since plotly is now always installed.
+- **`geo4bolivia build`** runs the builders from the `builders/` folder of a checkout of the data repository; the package keeps only the generic build helpers.
+
+## 0.5.0 (2026-11-17)
+
+Functions to understand the data: `search`, `info`, `reference_years`, `cite`, `labels`, `describe`, `add_names`, `change` and `map`; `load` with names and groups; aggregation to several scales with coverage; census-population-weighted aggregation of the SDG Atlas indicators.
+
+## 0.4.0 (2026-11-10)
+
+The SDG Atlas 2026 (two periods, 15 goals, 81 indicators) on SDSN Bolivia's map of 343 municipalities and indigenous autonomies.
+
+## 0.3.0 and earlier
+
+The first releases: the scale registry and geo IDs, loading, linking, aggregation, zonal statistics, and the bridges to geometrics and expdpy.

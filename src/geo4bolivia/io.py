@@ -113,6 +113,8 @@ def load(dataset: str, scale: str | None = None, years=None, variables=None,
     ref
         Git branch, tag or commit to read from GitHub (default: local checkout or ``main``)
 
+    Notes
+    -----
     Raises ``ValueError`` for unknown variables, and for years that have no rows
     (listing the years the dataset has).
     """

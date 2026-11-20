@@ -13,6 +13,7 @@ a plain DataFrame with the panel ids and labels declared, a GeoDataFrame keyed b
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Iterable
 
 import geopandas as gpd
@@ -70,8 +71,11 @@ def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, 
     gdf
         Explicit boundaries, used for the units' names when the table has none
 
-    Returns a copy with ``name`` (and the groups), whose ``attrs`` declare the panel ids
-    (``geo_id``, ``year``, ``name``) and the labels of its columns for the engine.
+    Returns
+    -------
+    pandas.DataFrame
+        A copy with ``name`` (and the groups), whose ``attrs`` declare the panel ids
+        (``geo_id``, ``year``, ``name``) and the labels of its columns for the engine.
     """
     from ._engine._labels import set_labels
     from ._engine._panel import set_panel
@@ -170,9 +174,15 @@ def spatial_weights(gdf: gpd.GeoDataFrame, w=None, *, method: str = "queen", **o
     standardized again), so they can be built once for a scale and reused on datasets
     that lack some units.
     """
+    from ._engine._validation import AnalysisWarning
     from ._engine.weights import make_weights
     if w is None:
-        return make_weights(gdf, method=method, entity=ENTITY, **options)
+        # What the engine warns about here (an island attached to its nearest neighbour, the
+        # projection used for distances) is recorded in the weights' description, which every
+        # result carries as ``w_spec``: a default should not warn on every call.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", AnalysisWarning)
+            return make_weights(gdf, method=method, entity=ENTITY, **options)
     ids = list(gdf[ENTITY])
     known = set(w.id_order)
     if set(ids) == known:
@@ -214,6 +224,8 @@ def spatial(data, variables=None, *, year=None, gdf=None, w=None, groups=None, w
     weights
         ``False`` skips the weights (``None`` is returned in their place)
 
+    Notes
+    -----
     The panel keeps only the units with data for every variable in every year kept, the
     boundaries are restricted to those units, and the default weights are built on them:
     a unit without data is not a neighbour, and every table and statistic refers to the

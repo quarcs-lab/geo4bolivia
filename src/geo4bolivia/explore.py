@@ -497,6 +497,8 @@ def correlation(data, variables=None, year=None, *, method: str = "pearson", dig
     title
         The figure and table title
 
+    Notes
+    -----
     Only the observations with data for every variable are used, so that all the
     coefficients refer to the same units.
 
@@ -992,6 +994,8 @@ def trend(data, variable: str, *, by: str | None = None, units: bool = True, sta
     title
         The figure title
 
+    Notes
+    -----
     The panel needs at least two years with data.
 
     Returns

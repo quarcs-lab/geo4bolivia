@@ -37,3 +37,24 @@ Read `src/geo4bolivia/spatial.py`, `src/geo4bolivia/_inputs.py` and `tests/test_
 - **Docstrings.** Standard NumPy sections (`name` on one line, its description indented below; types come from the signature), a `Returns` section that starts with the type and names the result's attributes, and no `Examples` section: the documentation site adds a tested example per function from `docs/examples/`, which keeps Bolivian names out of `src/`.
 - **Optional libraries** (giddy: `[dynamics]`; mgwr: `[mgwr]`; linearmodels: `[panel]`; rasterio: `[raster]`) are imported inside the function, with an `ImportError` that gives the install line (`pip install "<package>[extra]"`, built from `project.PACKAGE`).
 - **Tests.** Known-answer tests on the synthetic fixtures of `tests/conftest.py` (`units`, `field`, `growth_panel`: a lattice with planted spatial dependence and convergence), plus one `@pytest.mark.data` test that runs on the project's first dataset without naming it.
+
+## Documentation site (`docs/`)
+
+Quarto + quartodoc, deployed by `.github/workflows/docs.yml` to https://quarcs-lab.github.io/geo4bolivia/.
+
+```bash
+uv run python tools/build_docs.py              # reference, examples, notebooks, llms.txt, render to docs/_site
+uv run python tools/run_page.py docs/articles/convergence.qmd --show   # run one page's code without rendering
+uv run python tools/build_images.py            # process the pictures drawn in ChatGPT (prompts inside)
+```
+
+- **Generated, not committed:** `docs/reference/` (quartodoc), `docs/_site/`. **Generated and committed:** `docs/_freeze/` (the executed pages), `docs/llms.txt`, `notebooks/*.ipynb` (one Colab notebook per guide and article).
+- **Reference.** Sections and their order are in `docs/_quarto.yml` (`quartodoc.sections`); every public function must be in one. Each function's example is `docs/examples/<function>.py`: Colab-ready code (first line `!pip install -q ...`), shown as written and run at build time.
+- **Pages** (`get-started`, `explore`, `analyze`, `articles/*.qmd`). `docs/get-started.qmd` is the model. Rules:
+  - Front matter: `title`, `description` (one sentence), `image` (the article's thumbnail, `../images/thumbs/<id>.webp`).
+  - A "try-banner" with the Colab link of the page's notebook, then a first chunk with `#| eval: false` holding the `!pip install -q ...` line (with the extras the page needs).
+  - Every chunk runs at build time on the observatory's data; keep each page under about two minutes. Lines of code within about 84 characters.
+  - Show results as the package gives them: a result object as the last expression displays its figure and its reading; `.fig`, `.gt`, `.df` for a specific part. Other figures are Plotly Express with the simplest syntax (data, `x`/`y`/`color`, `hover_name`, `labels=geo.labels(df)`, `title`).
+  - Write for a reader who knows some statistics but not the method: say what question the method answers, read every result in words using the actual numbers, and say what it does not show. Associations only, never causal claims. Plain sentences; no marketing language.
+  - Datasets: `sdg` and `sdg01`...`sdg17` have two periods stored as 2012 and 2024 (343 units); `pop` (2001-2020) and `ntl` (2012-2020) have 333 units. Methods that need many years use `pop` or `ntl`.
+- **Images.** The icon, the hero and the article thumbnails are drawn in ChatGPT from the prompts in `tools/build_images.py` (Bolivian places and themes; no maps, borders, text or faces). Every map on the site is drawn by the package from the official boundaries.

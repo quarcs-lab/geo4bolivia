@@ -67,7 +67,10 @@ def link(df: pd.DataFrame, scale: str, on: str, key: str = "auto", errors: str =
         ``"raise"`` (default), ``"warn"`` or ``"ignore"`` for values that match no unit
         or are ambiguous
 
-    Returns a copy of ``df`` with ``geo_id`` as its first column.
+    Returns
+    -------
+    pandas.DataFrame
+        A copy of ``df`` with ``geo_id`` as its first column.
     """
     units = io.units(scale, ref=ref)
     if units.empty:
@@ -192,6 +195,8 @@ def combine(datasets, scale: str, years=None, extra=(), rules: dict | None = Non
     rules
         Aggregation rules overriding the metadata, ``{variable: rule}``
 
+    Notes
+    -----
     Variables without an aggregation rule (``none``) are dropped, with a warning,
     when a dataset has to be aggregated. Clashing column names get the dataset
     id as a prefix (``<dataset>_<column>``). Weighted means fetch their weights as
@@ -257,6 +262,8 @@ def zonal(raster, scale, stats=("sum", "mean"), name: str = "value", year: int |
     all_touched
         Count every pixel a unit touches (default: pixel centres inside)
 
+    Notes
+    -----
     Needs ``rasterio``: in Colab, ``!pip install -q "geo4bolivia[raster]"``.
     Pixels are not split at unit edges, so use a fine raster, or
     ``all_touched=True`` for very small units. Nodata pixels are ignored.

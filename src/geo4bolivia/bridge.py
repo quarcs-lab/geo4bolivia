@@ -129,6 +129,8 @@ def for_expdpy(data, scale: str | None = None, years=None, variables=None, label
     groups
         Coarser scales whose unit names to add as columns
 
+    Notes
+    -----
     These are the parameters of ``for_geometrics``. ``groups`` is handy for expdpy's
     by-group views, e.g. ``groups=["department"]`` adds a ``department`` column
     (the department's name) for ``ex.explore_trend_plot_by_group``.

@@ -96,10 +96,13 @@ def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | No
         metadata names where a weight lives (``geo:weights``, e.g. census population),
         it is loaded automatically.
 
-    Returns one row per target unit (and year) with ``n_units``, the number of
-    source units that contributed, and ``coverage``, their share of all the source
-    units in the target (1.0 when every unit has data). With a list of targets,
-    the results are stacked with a ``scale`` column.
+    Returns
+    -------
+    pandas.DataFrame
+        One row per target unit (and year) with ``n_units``, the number of
+        source units that contributed, and ``coverage``, their share of all the source
+        units in the target (1.0 when every unit has data). With a list of targets,
+        the results are stacked with a ``scale`` column.
     """
     if not isinstance(to, str):
         parts = []
@@ -227,6 +230,8 @@ def overlay(df: pd.DataFrame, target, extensive=(), intensive=(), source=None,
     source
         The source scale or GeoDataFrame (default: inferred from ``geo_id``)
 
+    Notes
+    -----
     Assumes values are spread uniformly within each source unit. Returns one row
     per target unit (and year), with ``geo_id`` holding the target ids.
     """
