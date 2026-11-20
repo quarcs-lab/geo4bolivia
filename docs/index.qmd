@@ -28,7 +28,7 @@ sidebar: false
 ---
 
 ::: {.hero}
-![](images/hero.webp){fig-alt="The Salar de Uyuni at blue hour, its salt hexagons lit as rose and turquoise clusters, towns marked by pins and joined by a network of lines, a satellite scanning the plain, and over the Cordillera Real the Sustainable Development Goals wheel and faint charts: a scatter plot with a fitted line, a Lorenz curve, a declining trend and a mosaic of shaded tiles"}
+![](images/hero.webp){fig-alt="The Andes and the Altiplano at night seen from orbit: city lights on the high plateau beside a lake and on the eastern lowlands, a satellite sensing them, a faint hexagon grid aggregating the lights into cells, the Sustainable Development Goals wheel, and a panel of charts (a scatter plot with a fitted line, a Lorenz curve and a trend)"}
 :::
 
 ::: {.hero-lead}

@@ -61,18 +61,20 @@ PROMPTS = {
     "seven nested hexagon cells (one in the middle, six around it) in turquoise (#5ad6c6) outlines, the middle cell "
     "filled flamingo rose (#d1405a), two of the outer cells filled soft salt-white; a single thin turquoise orbit "
     "arc with a small dot (a satellite) curving around the upper right of the hexagon.",
-    "hero": "2:1 wide banner. " + HERO_RULES + " Spatial data science over Bolivia's landscapes, at blue hour, "
-    "from a high oblique aerial angle. Foreground: the Salar de Uyuni, its hexagonal salt polygons lit like a "
-    "LISA cluster map: one connected group of cells glowing rose (a hot spot), another group glowing turquoise "
-    "(a cold spot), a few single cells of the opposite colour among them (outliers), the rest soft salt-white. "
-    "Middle distance: the lights of Altiplano towns as glowing nodes, each marked by a small luminous location "
-    "pin, joined to their nearest neighbours by thin straight turquoise lines, like a spatial weights network. "
-    "A faint latitude-longitude grid of thin light lines curves over the land. On the horizon the snow peaks "
-    "of the Cordillera Real and the dark green lowlands. In the starry sky, faint translucent holographic "
-    "charts float without any labels or numbers: a scatter plot of dots with a fitted straight line, a Lorenz "
-    "curve under its diagonal, a declining line chart, and a small abstract mosaic of shaded square tiles like "
-    "a choropleth; a small satellite casts a soft scanning beam onto the plain. Keep it elegant and readable, "
-    "the left third calmer than the right, not cluttered.",
+    "hero": "2:1 wide banner. " + HERO_RULES + " "
+    "Bolivia's night-time lights seen from orbit: a high view of the Earth's surface at night over the Andes,"
+    ' the Altiplano and the eastern lowlands, with no coastline, no borders and no visible country shape. '
+    'City lights form clusters of warm gold and rose: one large dense cluster on the high plateau beside a '
+    'dark lake, others in the valleys and a large one on the eastern plain, villages as faint specks, the '
+    'dark snow-capped cordillera between them. A faint turquoise hexagon grid lies over part of the land, '
+    'aggregating the lights into cells. In the foreground, in orbit, a detailed satellite with solar panels '
+    'senses the lights below with a soft turquoise sensor glow. A slim translucent panel of three tiny '
+    'unlabelled charts floats in space at right: a scatter plot with a fitted line, a Lorenz curve, a trend '
+    'line. Logic of the picture: the satellite only observes the land (it images the terrain or senses its '
+    'lights); every analytical graphic (points, network lines, cells, charts) is a translucent data layer or '
+    'overlay derived from the land, never an object lying on the ground. Charts are tiny and unlabelled: no '
+    'axis labels, no numbers, no letters. Leave the upper-left corner of the picture as calm, empty dark sky '
+    'or space, with nothing in it, for an emblem added later. Elegant, modern, uncluttered.',
     "data-model": "16:9. " + RULES + " The Inca agricultural terraces of Isla del Sol on Lake Titicaca at dusk, "
     "seen from above: the terraces nest inside one another in clear levels, each level edged with a faint "
     "turquoise glow, the smallest plots inside larger ones, the lake dark and still beyond.",
@@ -113,7 +115,7 @@ SIZES = {"icon": (512, 512), "hero": (1600, 800)}
 # x as a fraction of its width.
 SDG_COLOURS = ["#E5243B", "#DDA63A", "#4C9F38", "#C5192D", "#FF3A21", "#26BDE2", "#FCC30B", "#A21942", "#FD6925",
                "#DD1367", "#FD9D24", "#BF8B2E", "#3F7E44", "#0A97D9", "#56C02B", "#00689D", "#19486A"]
-HERO_SDG_WHEEL = {"x": 440 / 1774, "y": 122 / 887, "r": 86 / 887, "alpha": 0.8, "glow": 0.45}
+HERO_SDG_WHEEL = {"x": 0.17, "y": 0.21, "r": 0.1, "alpha": 0.85, "glow": 0.45}
 
 
 def sdg_wheel(r: int, inner: float = 0.6, gap_deg: float = 1.2, ss: int = 4) -> Image.Image:
