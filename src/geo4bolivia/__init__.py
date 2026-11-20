@@ -27,9 +27,12 @@ from .plot import map
 from .project import PACKAGE, config
 from .scales import ancestors, scale_of
 from .scales import table as scales
+from .spatial import connectivity, lisa, moran, weights
 
 __all__ = ["add_names", "aggregate", "ancestors", "boundaries", "change", "check", "cite", "combine", "config",
            "crosswalk", "datasets", "describe", "dictionary", "for_expdpy", "for_geometrics", "info", "labels",
            "link", "load", "map", "overlay", "overlay_weights", "reference_years", "save", "scale_of", "scales",
-           "search", "units", "zonal"]
-__version__ = "0.5.0"
+           "search", "units", "zonal",
+           # spatial dependence
+           "connectivity", "lisa", "moran", "weights"]
+__version__ = "0.6.0"

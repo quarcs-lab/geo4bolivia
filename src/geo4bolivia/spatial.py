@@ -1,0 +1,143 @@
+"""Spatial dependence: weights, the neighbour graph, global Moran's I and LISA clusters."""
+
+from __future__ import annotations
+
+import geopandas as gpd
+
+from . import _inputs
+
+
+def _units(data, gdf, ref):
+    """Boundaries for a scale id, a dataset id, a panel or a GeoDataFrame."""
+    if isinstance(data, gpd.GeoDataFrame) and gdf is None:
+        return _inputs.shapes(None, data)
+    if isinstance(data, str):
+        from .scales import scales as registry
+        if data in registry(ref):
+            return _inputs.shapes(None, gdf, scale=data, ref=ref)
+    return _inputs.shapes(_inputs.panel(data, gdf=gdf, ref=ref), gdf, ref=ref)
+
+
+def weights(data, method: str = "queen", *, k: int = 6, threshold: float | None = None, power: float = 1.0,
+            row_standardize: bool = True, attach_islands: bool = True, gdf=None, ref: str | None = None):
+    """Spatial weights for the units of a scale, a dataset or a panel.
+
+    Parameters
+    ----------
+    data : a scale id (every unit of that scale), a dataset id or a panel (the units
+        with data), or a GeoDataFrame with ``geo_id``
+    method : ``"queen"`` (units sharing a border or a corner), ``"rook"`` (a border),
+        ``"knn"`` (the ``k`` nearest), ``"distance_band"`` (within ``threshold``
+        metres) or ``"inverse_distance"`` (all units, weighted by distance ** -``power``)
+    k : neighbours for ``"knn"``
+    threshold : distance in metres for ``"distance_band"`` (default: the smallest
+        distance at which every unit has a neighbour)
+    power : distance decay for ``"inverse_distance"``
+    row_standardize : make each unit's weights sum to one
+    attach_islands : link a unit without contiguous neighbours to its nearest unit
+    gdf : boundaries to use instead of the project's
+
+    Returns
+    -------
+    A ``libpysal.weights.W`` keyed by ``geo_id``, to pass as ``w=`` to the spatial
+    functions. They build queen weights themselves when ``w`` is not given.
+    """
+    from ._engine.weights import make_weights
+    return make_weights(_units(data, gdf, ref), method=method, k=k, threshold=threshold, power=power,
+                        row_standardize=row_standardize, attach_islands=attach_islands, entity=_inputs.ENTITY)
+
+
+def connectivity(data, w=None, *, method: str = "queen", tiles: str | None = "carto-positron",
+                 title: str | None = None, gdf=None, ref: str | None = None):
+    """A map of the neighbour links of a set of weights, with the distribution of neighbours per unit.
+
+    Parameters
+    ----------
+    data : a scale id, a dataset id or a panel, or a GeoDataFrame with ``geo_id``
+    w : the weights to draw (default: ``method`` weights built from the boundaries)
+    method : the weights to build when ``w`` is not given (see ``weights``)
+    tiles : the basemap style (``None``: no basemap)
+    title : the figure title
+    gdf : boundaries to use instead of the project's
+
+    Returns
+    -------
+    A result with ``.fig`` (the links over the map), ``.fig_hist`` (neighbours per
+    unit), ``.df`` (one row per unit with its number of neighbours), the weights
+    ``.w`` and ``.interpret()``.
+    """
+    from ._engine.weights import explore_connectivity_map
+    geo = _units(data, gdf, ref)
+    return _inputs.finish(explore_connectivity_map(geo, w=_inputs.spatial_weights(geo, w, method=method),
+                                                   entity=_inputs.ENTITY, tiles=tiles, title=title), geo)
+
+
+def moran(data, variable: str, year=None, *, w=None, permutations: int = 999, seed: int | None = 12345,
+          title: str | None = None, gdf=None, ref: str | None = None):
+    """Global Moran's I of a variable: is it clustered in space?
+
+    Parameters
+    ----------
+    data : a dataset id, or a panel with ``geo_id`` (and ``year``), e.g. from ``load``
+    variable : the numeric column to test
+    year : the year to test (default: the last with data), or ``"all"`` for Moran's I
+        in every year, on the units that have data in all of them
+    w : spatial weights from ``weights`` (default: queen contiguity among the units with data)
+    permutations : random permutations behind the pseudo p-value
+    seed : makes the permutations reproducible (``None``: leave the random state alone)
+    title : the figure title
+    gdf : boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
+
+    Returns
+    -------
+    For one year, a result with ``.moran_i``, ``.p_sim``, ``.z_sim``, ``.fig`` (the Moran
+    scatterplot: each unit's standardized value against its neighbours' mean), ``.df``
+    (one row per unit with its quadrant) and ``.interpret()``.
+
+    For ``year="all"``, a result with ``.df`` (one row per year: ``moran_i``, ``p_sim``,
+    ``z_sim``), ``.fig`` (Moran's I over time) and ``.interpret()``.
+    """
+    from ._engine import dependence
+    everything = isinstance(year, str) and year.lower() == "all"
+    if everything:
+        df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year="all", ref=ref)
+        return _inputs.finish(dependence.explore_moran_over_time(df, variable, gdf=geo, w=w, permutations=permutations,
+                                                                 seed=seed, title=title))
+    df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year=year, ref=ref)
+    return _inputs.finish(dependence.explore_moran_plot(df, variable, gdf=geo, w=w, period=_inputs.one_year(df),
+                                                        permutations=permutations, seed=seed, title=title), df)
+
+
+def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, seed: int | None = 12345,
+         alpha: float = 0.05, tiles: str | None = "carto-positron", title: str | None = None, gdf=None,
+         ref: str | None = None):
+    """Local Moran (LISA) clusters of a variable: where are the hot spots, cold spots and outliers?
+
+    Parameters
+    ----------
+    data : a dataset id, or a panel with ``geo_id`` (and ``year``), e.g. from ``load``
+    variable : the numeric column to analyse
+    year : the year to analyse (default: the last with data)
+    w : spatial weights from ``weights`` (default: queen contiguity among the units with data)
+    permutations : random permutations behind each unit's pseudo p-value
+    seed : makes the permutations reproducible
+    alpha : significance level below which a unit is assigned to a cluster
+    tiles : the basemap style (``None``: no basemap)
+    title : the figure title
+    gdf : boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
+
+    Returns
+    -------
+    A result with ``.fig`` (the cluster map), ``.fig_scatter`` (the Moran scatterplot
+    coloured by cluster), ``.df`` (one row per unit: local statistic, p-value and
+    ``cluster``: High-High, Low-Low, High-Low, Low-High or not significant), ``.counts``,
+    the global ``.moran_i`` and ``.interpret()``.
+    """
+    from ._engine import dependence
+    df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year=year, ref=ref)
+    return _inputs.finish(dependence.explore_lisa_cluster_map(df, variable, gdf=geo, w=w, period=_inputs.one_year(df),
+                                                              permutations=permutations, seed=seed, alpha=alpha,
+                                                              tiles=tiles, title=title), df)
+
+
+__all__ = ["connectivity", "lisa", "moran", "weights"]
