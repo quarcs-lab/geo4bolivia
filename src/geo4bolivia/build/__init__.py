@@ -5,11 +5,14 @@ builders live in its data repository, in a ``builders/`` package next to ``raw/`
 whose ``__init__.py`` defines:
 
 - ``build_geo``: a function that writes ``geo/`` (units, boundaries, crosswalks);
-- ``DATASETS``: ``{dataset id: function}``, one builder per dataset.
+- ``DATASETS``: ``{dataset id: function}``, one builder per dataset;
+- optionally ``after_build``: a function run last, with the target (``"all"``, ``"geo"`` or a
+  dataset id), for the project's own finishing steps (e.g. Colab notebooks for the
+  generated docs' code blocks).
 
 ``<package> build`` runs them from a checkout of that repository: the geo builder
 first (dataset builders take their geo IDs from ``geo/units``), then each dataset,
-then the catalog. ``_template.py`` and ``_geo_template.py`` are starting points.
+then the catalog, then ``after_build``. ``_template.py`` and ``_geo_template.py`` are starting points.
 """
 
 from __future__ import annotations
@@ -37,7 +40,7 @@ def load_builders():
 
 
 def build(target: str = "all") -> None:
-    """Run the geo builder, the dataset builders or one of them, then rewrite the catalog."""
+    """Run the geo builder, the dataset builders or one of them, rewrite the catalog, then ``after_build``."""
     builders = load_builders()
     datasets = dict(builders.DATASETS)
     if target not in ("all", "geo", *datasets):
@@ -51,3 +54,7 @@ def build(target: str = "all") -> None:
             builder()
     print("catalog")
     write_catalog()
+    after = getattr(builders, "after_build", None)
+    if callable(after):
+        print("after_build")
+        after(target)

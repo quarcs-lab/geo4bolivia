@@ -4,6 +4,10 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
+## 0.8.1 (2026-11-21)
+
+**Building: a finishing step for the data repository.** `geo4bolivia build` now ends by calling `after_build(target)` when the data repository's `builders/__init__.py` defines it, after the catalog. The observatory uses it to give every Python block of the generated dataset docs a Colab notebook of its own, so their Open in Colab badges open the code ready to run, as the website's code boxes do. Nothing changes for builders that do not define it.
+
 ## 0.8.0 (2026-11-21)
 
 **Breaking: municipal maps are named by their units, and every spatial function knows its map.** The observatory now publishes two municipal maps that share their geo IDs: `map343`, SDSN Bolivia's map of 2025 (the SDG Atlas), and `map339`, the map of 2015 on whose polygons `pop`, `ntl`, `emb` and `embpw` were computed. A municipal ID alone no longer tells the map, so the map is recorded with the data and can be named in every call.

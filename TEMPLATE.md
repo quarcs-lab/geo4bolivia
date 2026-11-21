@@ -24,7 +24,7 @@ Generic code never names a country, a dataset, a variable, a repository or a pac
 
 - **Files the package reads:** `geo/scales.yaml`, `geo/units.parquet`, `geo/boundaries/<scale>.parquet`, `geo/crosswalks/<from>__<to>.csv`, `metadata/index.json`, `metadata/<dataset>.datapackage.json`, and each resource's `geo:parquet`.
 - **A checkout is recognised** by a `project.yaml` whose `package` is this package and a `geo/scales.yaml` (`project._is_root`). Its `project.yaml` is read on top of the package's own, so it can add website settings.
-- **Builders:** `builders/__init__.py` in the data repository defines `build_geo` (a function that writes `geo/`) and `DATASETS` (`{dataset id: function}`). `<package> build [geo|<dataset>]` loads and runs them; they import the generic helpers from `<package>.build`. `build/_template.py` and `build/_geo_template.py` are starting points.
+- **Builders:** `builders/__init__.py` in the data repository defines `build_geo` (a function that writes `geo/`) and `DATASETS` (`{dataset id: function}`), and optionally `after_build(target)`, run last for the project's own finishing steps. `<package> build [geo|<dataset>]` loads and runs them; they import the generic helpers from `<package>.build`. `build/_template.py` and `build/_geo_template.py` are starting points.
 - **Versions:** the data repository is tagged with the package's version at each release, so `ref="vX.Y.Z"` freezes the data.
 
 ## Porting to geo4cambodia (not done yet)
