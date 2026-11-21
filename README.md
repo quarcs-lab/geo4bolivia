@@ -66,7 +66,7 @@ The [articles](https://quarcs-lab.github.io/geo4bolivia/articles/) take one ques
 
 ## The data
 
-The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia); `ref="v0.7.2"` freezes them at a release.
+The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia); `ref="v0.8.0"` freezes them at a release.
 
 | Dataset | What | Units and years |
 | --- | --- | --- |
@@ -105,7 +105,7 @@ uv run python tools/build_docs.py    # documentation site, into docs/_site
 
 ## Cite
 
-Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.7.2). <https://quarcs-lab.github.io/geo4bolivia/>
+Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.8.0). <https://quarcs-lab.github.io/geo4bolivia/>
 
 Please also cite the sources of the datasets you use (`geo.cite(dataset)`).
 

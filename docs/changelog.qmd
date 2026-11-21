@@ -4,7 +4,7 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
-## 0.8.0 (unreleased)
+## 0.8.0 (2026-11-21)
 
 **Breaking: municipal maps are named by their units, and every spatial function knows its map.** The observatory now publishes two municipal maps that share their geo IDs: `map343`, SDSN Bolivia's map of 2025 (the SDG Atlas), and `map339`, the map of 2015 on whose polygons `pop`, `ntl`, `emb` and `embpw` were computed. A municipal ID alone no longer tells the map, so the map is recorded with the data and can be named in every call.
 
@@ -15,6 +15,7 @@ sidebar: false
 - Results name the map in their description of the weights: `w_spec` ends in "(on map343)".
 - `geo.scale_of()` raises for an ID that is on several maps; `geo.change()`, `geo.combine()` and `geo.aggregate()` keep or set the map of the table they return.
 - **Building and validating:** `publish_geo` and `from_polygons` accept maps that share IDs (`from_polygons(..., scale=)`); `validate` allows IDs shared by scales with the same pattern, checks a map that nests by ID only (`nesting: ids` in `scales.yaml`) with a looser geometric test, and checks every other crosswalk in `geo/crosswalks/`.
+- **Older versions:** geo4bolivia 0.7.2 and earlier read the old layout, so they no longer work with the current data. Upgrade (`pip install -U geo4bolivia`), or keep them working with `ref="v0.7.2"` (or `GEO4BOLIVIA_REF=v0.7.2`), which reads the data as they were at that release.
 
 ## 0.7.2 (2026-11-20)
 
