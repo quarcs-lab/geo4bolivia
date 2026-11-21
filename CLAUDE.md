@@ -10,9 +10,48 @@ uv run pytest -n 6 -p no:warnings    # tests (data tests need the data repositor
 uv run ruff check src tests          # lint
 ```
 
-- The package reads the data from a checkout of the data repository next to this one (`../gdo4bolivia`), from `GEO4BOLIVIA_DATA_DIR`, or from GitHub.
+- The package reads the data from `GEO4BOLIVIA_DATA_DIR`, from a checkout of the data repository next to this one named like it (`../gdo4bolivia`), or from GitHub. Locally that checkout is `../geo4bolivia`, so set `GEO4BOLIVIA_DATA_DIR=../geo4bolivia` for the data tests and the docs build (see below).
 - Version: keep `pyproject.toml` and `__version__` in `src/geo4bolivia/__init__.py` equal.
 - **Generic code.** Nothing in `src/` names Bolivia, a dataset, a variable, the repository or the package: the package name is `project.PACKAGE`, everything else comes from `project.yaml` and the metadata. Bolivian examples belong in `docs/` and `tests/` marked `data` must be driven by the registry and the metadata.
+
+## Working across the two repositories
+
+The observatory is two repositories that change together: a package change often needs the data repository's dependency, examples or website updated, and a data or website change can touch the package's documentation. Both are usually open side by side in one session. **This section is mirrored in `../geo4bolivia/CLAUDE.md`; when you change one, change the other.**
+
+| | Data repository | Package repository |
+| --- | --- | --- |
+| GitHub | `quarcs-lab/gdo4bolivia` | `quarcs-lab/geo4bolivia` |
+| Local folder (siblings) | `geo4bolivia/` (its name before the split; not renamed yet) | `geo4bolivia-package/` |
+| Holds | `raw/`, `builders/`, `geo/`, `data/`, `metadata/`, the observatory website (`site/`), notebooks | `src/geo4bolivia/`, its tests, its documentation site (`docs/`), the Colab notebooks of the guides |
+| Instructions | `CLAUDE.md`, `TEMPLATE.md`, `CONTRIBUTING_DATA.md` | `CLAUDE.md`, `TEMPLATE.md`, `RELEASING.md` |
+| Website, deployed on push to `main` | https://quarcs-lab.github.io/gdo4bolivia/ (`pages.yml`) | https://quarcs-lab.github.io/geo4bolivia/ (`docs.yml`) |
+| A tag `vX.Y.Z` | freezes the data for `ref="vX.Y.Z"` | publishes the package to PyPI (`release.yml`) |
+
+You are in the **package repository**. The local folder names do not match the GitHub names, so the package does not find the data checkout by itself: in `geo4bolivia-package/`, run its tests and docs build with `GEO4BOLIVIA_DATA_DIR=../geo4bolivia` (or rename the folder to `gdo4bolivia`, after which the package finds it by itself, and update this section in both files and `RELEASING.md`).
+
+**Which repository a change belongs to**
+
+| Change | Made in | Then |
+| --- | --- | --- |
+| A function, its arguments, docstring, figure or `.interpret()` text | package | its tests and ruff; a release if users should get it (below) |
+| The package's documentation (guides, articles, reference examples, `docs/_ipython/.../00-dark.py`) | package | `tools/build_docs.py`, commit `docs/_freeze`; push deploys it |
+| The build helpers (`geo4bolivia.build`), the validator, the CLI | package | also `validate` and `pytest` in the data repository |
+| Raw inputs, builders, metadata, published data, `geo/` | data | `build`, `validate`, `pytest`; no release (the package reads `main`). If numbers quoted in the package's docs change, re-run those pages there |
+| The observatory website, indicator pages, notebooks | data | `npm run --prefix site preview` |
+| The geo4bolivia page on the website (`CONTENT_REGISTRY` entry and its snippets) | data | keep it in line with the package after a release that changes what it shows |
+| Fields both `project.yaml` files have | both | keep them equal: the package bundles its own copy into the wheel |
+| The shared look: Altiplano palette, Inter, the night-sky background | both | `site/src/styles.css` (data) and `docs/g4-common.scss` (package) |
+| The geo4bolivia card | package draws it (`tools/build_images.py`, `hero-card.webp`) | copy it to the data repository as `images/tools/geo4bolivia-package.webp` |
+
+**Developing across both before a release.** To try the data repository on an unreleased package, add `[tool.uv.sources]` `geo4bolivia = { path = "../geo4bolivia-package", editable = true }` to its `pyproject.toml` and `uv sync`; never commit it. Run the data repository's `validate` and `pytest` before raising its dependency to an unreleased version (uv cannot resolve it until it is on PyPI).
+
+**Releasing `vX.Y.Z` (the order matters).** Pushing, tagging and publishing are outward steps: ask the user first. Find every version string with `grep -rn 'X\.Y\.Z' --exclude-dir={.venv,_site,_freeze,dist} .` in each repository.
+
+1. Package: `version` in `pyproject.toml`, `__version__` in `src/geo4bolivia/__init__.py`, `CITATION.cff`; `ref="vX.Y.Z"` and the citation in `README.md` and `docs/index.qmd`; date the entry in `docs/changelog.qmd`; `uv lock`; tests and ruff; `tools/build_docs.py`; build and test the wheel in a clean environment (`RELEASING.md`); commit "Release X.Y.Z: ...", tag, push `main` and the tag. The tag publishes to PyPI.
+2. Data, once PyPI has it: `geo4bolivia[all]>=X.Y.Z` and `version` in `pyproject.toml`, `CITATION.cff`, `ref="vX.Y.Z"` in `README.md`, `CLAUDE.md` and `docs/data-infrastructure.md`; `uv lock --refresh-package geo4bolivia` (retry for a minute while PyPI indexes it), `uv sync`, `validate`, `pytest`; commit "Depend on geo4bolivia X.Y.Z: ...", tag, push `main` and the tag.
+3. Check `gh run list` in both (CI, Docs, Release, Pages) and the live sites.
+
+A push carrying many re-executed `docs/_freeze` pages can fail with "the remote end hung up unexpectedly": retry with `git -c http.postBuffer=524288000 push origin main`.
 
 ## Layout of `src/geo4bolivia/`
 

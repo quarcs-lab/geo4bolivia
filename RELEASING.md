@@ -37,8 +37,12 @@ t/bin/python -c "import geo4bolivia as geo; print(geo.moran('sdg', 'index_sdg').
 # 6. Commit, tag and push: the tag runs .github/workflows/release.yml, which publishes
 git commit -am "Release X.Y.Z" && git tag vX.Y.Z && git push origin main --tags
 
-# 7. Tag the data repository with the same version, so ref="vX.Y.Z" freezes the data
-(cd ../gdo4bolivia && git tag vX.Y.Z && git push origin vX.Y.Z)
+# 7. Once PyPI has it: raise the data repository's dependency, check it and tag it with the same
+#    version, so ref="vX.Y.Z" freezes the data (the files to change: CLAUDE.md, "Working across
+#    the two repositories"; the local folder is ../geo4bolivia, GitHub's quarcs-lab/gdo4bolivia)
+(cd ../geo4bolivia && uv lock --refresh-package geo4bolivia && uv sync && uv run geo4bolivia validate \
+  && uv run pytest && git commit -am "Depend on geo4bolivia X.Y.Z" && git tag vX.Y.Z \
+  && git push origin main vX.Y.Z)
 ```
 
 Then check that it works in a fresh Google Colab notebook:
