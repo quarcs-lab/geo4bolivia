@@ -88,7 +88,7 @@ The other two convergence functions need more years than the Atlas has:
 - `geo.sigma_convergence` estimates the *trend* of the dispersion over time, so it needs at least three years.
 - `geo.convergence_clubs` follows each unit's path over time to sort units into groups that converge among themselves, so it needs at least six.
 
-Two datasets have long yearly series: `pop` (gridded population, 2001–2020) and `ntl` (night-time lights per capita, 2012–2020), both for 333 municipalities. Called on a dataset that is too short, either function says so and names these two.
+Two datasets have long yearly series: `pop` (gridded population, 2001–2020) and `ntl` (night-time lights per capita, 2012–2020), both for the 339 municipalities of the 2015 map (`map339`). Called on a dataset that is too short, either function says so and names these two.
 
 → [Convergence: β, σ and clubs](articles/convergence.qmd): all three methods, the spatial versions of β-convergence, and the long panels.
 

@@ -24,7 +24,7 @@ import pandas as pd
 
 from . import io, metadata, project, store
 from .aggregate import aggregate
-from .scales import ancestors, scale_of
+from .scales import ancestors, scales_of
 from .scales import get as get_scale
 from .scales import scales as registry
 
@@ -150,19 +150,17 @@ def check(df: pd.DataFrame, scale: str | None = None, time: str | None = "year",
     if df["geo_id"].isna().any():
         problems.append(f"{df['geo_id'].isna().sum()} rows without geo_id")
     if scale is None:
-        found, unrecognised = set(), []
-        for i in ids.drop_duplicates():
-            try:
-                found.add(scale_of(i))
-            except ValueError:
-                unrecognised.append(i)
+        unrecognised = [i for i in ids.drop_duplicates() if not scales_of(i)]
         if unrecognised:
             problems.append(f"geo_id matching no scale's id pattern: {unrecognised[:5]}")
-        if not found:
             return problems
+        try:
+            found = io.table_scales(df.dropna(subset=["geo_id"]), ref=ref)
+        except ValueError as exc:
+            return [*problems, str(exc)]
         if len(found) != 1:
             return problems + [f"ids from several scales: {sorted(found)}"]
-        scale = found.pop()
+        scale = found[0]
     unknown = sorted(set(ids) - set(io.units(scale, ref=ref)["geo_id"]))
     if unknown:
         problems.append(f"geo_id not found at scale {scale!r}: {unknown[:5]}")
@@ -235,7 +233,9 @@ def combine(datasets, scale: str, years=None, extra=(), rules: dict | None = Non
                                 if seen[c] > 1 and c not in ("geo_id", "year")})
         on = ["geo_id", "year"] if "year" in df.columns and (out is None or "year" in out.columns) else ["geo_id"]
         out = df if out is None else out.merge(df, on=on, how="outer")
-    return out.sort_values([c for c in ("geo_id", "year") if c in out.columns]).reset_index(drop=True)
+    out = out.sort_values([c for c in ("geo_id", "year") if c in out.columns]).reset_index(drop=True)
+    out.attrs[io.SCALE_KEY] = scale
+    return out
 
 
 # --- zonal: summarise a raster over units -----------------------------------------------

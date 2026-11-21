@@ -122,7 +122,8 @@ def _finish(result, df: pd.DataFrame, notes: list[str]):
 
 def beta_convergence(data, variable: str, controls=None, *, first=None, last=None, model: str = "ols", w=None,
                      fixed_effects=None, vcov: str = "hetero", draws: int = 10_000, seed: int = 12345,
-                     min_obs: int = 10, title: str | None = None, gdf=None, ref: str | None = None):
+                     min_obs: int = 10, title: str | None = None,
+                     map: str | None = None, gdf=None, ref: str | None = None):
     """Beta-convergence: did the units that started lower grow faster between two years?
 
     Regresses each unit's average yearly log growth between ``first`` and ``last`` on the
@@ -159,6 +160,10 @@ def beta_convergence(data, variable: str, controls=None, *, first=None, last=Non
         The fewest units the regression accepts
     title
         The figure title
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``).
         Boundaries are loaded only for the spatial models; with ``"ols"``, passing ``gdf``
@@ -203,6 +208,7 @@ def beta_convergence(data, variable: str, controls=None, *, first=None, last=Non
             raise ValueError(f"fixed_effects {unknown}: no such column in the data, and no such scale"
                              + (f" (the scales are {sorted(known)})" if known else ""))
     df =_inputs.panel(data, [variable, *controls, *[f for f in fixed if f in columns]], groups=groups, gdf=gdf,
+                      scale=map,
                        numeric=False, ref=ref)
     text = [v for v in [variable, *controls] if not pd.api.types.is_numeric_dtype(df[v])]
     if text:
@@ -230,11 +236,11 @@ def beta_convergence(data, variable: str, controls=None, *, first=None, last=Non
 
     geo = None
     if model != "ols":
-        df, geo, w = _inputs.spatial(df, variable, year=[first, last], gdf=gdf, w=w, ref=ref)
+        df, geo, w = _inputs.spatial(df, variable, year=[first, last], gdf=gdf, scale=map, w=w, ref=ref)
         if len(geo) < len(ids):
             notes.append(f"{len(ids) - len(geo)} of {len(ids)} units were left out: they are not in the boundaries")
     elif gdf is not None:
-        geo = _inputs.shapes(df, gdf, ref=ref)
+        geo = _inputs.shapes(df, gdf, scale=map, ref=ref)
     res = engine.analyze_beta_convergence(
         df, variable, controls or None, entity=ENTITY, time=TIME, start=first, end=last, model=model, gdf=geo,
         w=w if model != "ols" else None, fixed_effects=fixed or None, vcov=vcov, n_draws=draws, seed=seed,
@@ -294,8 +300,9 @@ def sigma_convergence(data, variable: str, *, first=None, last=None, vcov: str =
 def convergence_clubs(data, variable: str, *, first=None, last=None, log: bool = False, hp_filter: bool = True,
                       hp_lambda: float = 400.0, trim: float = 0.3, tcrit: float = -1.65, cr: float = 0.0,
                       increment: float = 0.05, max_cr: float = 3.0, fraction: float = 0.0, adjust: bool = False,
-                      merge: str = "ps", map: bool = True, tiles: str | None = "carto-positron",
-                      title: str | None = None, gdf=None, ref: str | None = None):
+                      merge: str = "ps", draw_map: bool = True, tiles: str | None = "carto-positron",
+                      title: str | None = None,
+                      map: str | None = None, gdf=None, ref: str | None = None):
     """Convergence clubs (Phillips and Sul): do all units converge, or do groups of them?
 
     Tests whether the units' paths converge (the log t test) and, when they do not, sorts
@@ -331,12 +338,16 @@ def convergence_clubs(data, variable: str, *, first=None, last=None, log: bool =
     merge
         Join neighbouring clubs that converge together: ``"ps"`` (until none do),
         ``"single"`` (one pass) or ``"none"``
-    map
+    draw_map
         Draw the map of the clubs (``False``: no boundaries are loaded)
     tiles
         The basemap style (``None``: no basemap)
     title
         The figure title
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -357,7 +368,7 @@ def convergence_clubs(data, variable: str, *, first=None, last=None, log: bool =
     what = "convergence_clubs"
     if not 0.0 < trim < 1.0:
         raise ValueError(f"trim must be between 0 and 1; got {trim}")
-    df = _inputs.panel(data, variable, gdf=gdf, ref=ref)
+    df = _inputs.panel(data, variable, gdf=gdf, scale=map, ref=ref)
     first, last, years = _span(df, variable, first, last, what)
     left = len(years) - engine._sround(trim * len(years))          # the engine's rule: years left after the trim
     if left < 4:
@@ -374,9 +385,9 @@ def convergence_clubs(data, variable: str, *, first=None, last=None, log: bool =
         set_labels(df, {variable: f"log {resolve_label(df, variable)}"})
 
     geo = None
-    if map:
+    if draw_map:
         try:
-            geo = _inputs.shapes(df, gdf, ref=ref)
+            geo = _inputs.shapes(df, gdf, scale=map, ref=ref)
         except Exception as error:
             if gdf is not None:
                 raise

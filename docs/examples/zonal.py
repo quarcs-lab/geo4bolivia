@@ -14,6 +14,6 @@ with rasterio.open("dist.tif", "w", driver="GTiff", width=400, height=400,
                    transform=from_bounds(x0, y0, x1, y1, 400, 400)) as f:
     f.write(km.astype("float32"), 1)
 
-dist = geo.zonal("dist.tif", scale="municipality", stats=["mean", "max"],
+dist = geo.zonal("dist.tif", scale="map343", stats=["mean", "max"],
                  name="dist_lpz", year=2024)
 geo.map(dist, "dist_lpz_mean", title="Mean distance to La Paz (km)")

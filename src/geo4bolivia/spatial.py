@@ -7,7 +7,7 @@ import geopandas as gpd
 from . import _inputs
 
 
-def _units(data, gdf, ref):
+def _units(data, gdf, ref, map=None):
     """Boundaries for a scale id, a dataset id, a panel or a GeoDataFrame."""
     if isinstance(data, gpd.GeoDataFrame) and gdf is None:
         return _inputs.shapes(None, data)
@@ -15,11 +15,12 @@ def _units(data, gdf, ref):
         from .scales import scales as registry
         if data in registry(ref):
             return _inputs.shapes(None, gdf, scale=data, ref=ref)
-    return _inputs.shapes(_inputs.panel(data, gdf=gdf, ref=ref), gdf, ref=ref)
+    return _inputs.shapes(_inputs.panel(data, gdf=gdf, scale=map, ref=ref), gdf, ref=ref)
 
 
 def weights(data, method: str = "queen", *, k: int = 6, threshold: float | None = None, power: float = 1.0,
-            row_standardize: bool = True, attach_islands: bool = True, gdf=None, ref: str | None = None):
+            row_standardize: bool = True, attach_islands: bool = True,
+            map: str | None = None, gdf=None, ref: str | None = None):
     """Spatial weights for the units of a scale, a dataset or a panel.
 
     Parameters
@@ -42,6 +43,10 @@ def weights(data, method: str = "queen", *, k: int = 6, threshold: float | None 
         Make each unit's weights sum to one
     attach_islands
         Link a unit without contiguous neighbours to its nearest unit
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's
 
@@ -52,12 +57,13 @@ def weights(data, method: str = "queen", *, k: int = 6, threshold: float | None 
         functions. They build queen weights themselves when ``w`` is not given.
     """
     from ._engine.weights import make_weights
-    return make_weights(_units(data, gdf, ref), method=method, k=k, threshold=threshold, power=power,
+    return make_weights(_units(data, gdf, ref, map), method=method, k=k, threshold=threshold, power=power,
                         row_standardize=row_standardize, attach_islands=attach_islands, entity=_inputs.ENTITY)
 
 
 def connectivity(data, w=None, *, method: str = "queen", tiles: str | None = "carto-positron",
-                 title: str | None = None, gdf=None, ref: str | None = None):
+                 title: str | None = None,
+                 map: str | None = None, gdf=None, ref: str | None = None):
     """A map of the neighbour links of a set of weights, with the distribution of neighbours per unit.
 
     Parameters
@@ -72,6 +78,10 @@ def connectivity(data, w=None, *, method: str = "queen", tiles: str | None = "ca
         The basemap style (``None``: no basemap)
     title
         The figure title
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's
 
@@ -84,7 +94,7 @@ def connectivity(data, w=None, *, method: str = "queen", tiles: str | None = "ca
     """
     from ._engine._mapping import _wgs84_simplified
     from ._engine.weights import explore_connectivity_map
-    geo = _units(data, gdf, ref)
+    geo = _units(data, gdf, ref, map)
     w = _inputs.spatial_weights(geo, w, method=method)       # built on the boundaries in full detail
     drawn = _wgs84_simplified(geo, _inputs.ENTITY, "auto")   # drawn lighter: the figure stays small
     if _inputs.NAME in geo.columns:
@@ -93,7 +103,8 @@ def connectivity(data, w=None, *, method: str = "queen", tiles: str | None = "ca
 
 
 def moran(data, variable: str, year=None, *, w=None, permutations: int = 999, seed: int | None = 12345,
-          title: str | None = None, gdf=None, ref: str | None = None):
+          title: str | None = None,
+          map: str | None = None, gdf=None, ref: str | None = None):
     """Global Moran's I of a variable: is it clustered in space?
 
     Parameters
@@ -113,6 +124,10 @@ def moran(data, variable: str, year=None, *, w=None, permutations: int = 999, se
         Makes the permutations reproducible (``None``: leave the random state alone)
     title
         The figure title
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -129,10 +144,10 @@ def moran(data, variable: str, year=None, *, w=None, permutations: int = 999, se
     from ._engine import dependence
     everything = isinstance(year, str) and year.lower() == "all"
     if everything:
-        df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year="all", ref=ref)
+        df, geo, w = _inputs.spatial(data, variable, gdf=gdf, scale=map, w=w, year="all", ref=ref)
         return _inputs.finish(dependence.explore_moran_over_time(df, variable, gdf=geo, w=w, permutations=permutations,
                                                                  seed=seed, title=title))
-    df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year=year, ref=ref)
+    df, geo, w = _inputs.spatial(data, variable, gdf=gdf, scale=map, w=w, year=year, ref=ref)
     return _inputs.finish(dependence.explore_moran_plot(df, variable, gdf=geo, w=w, period=_inputs.one_year(df),
                                                         permutations=permutations, seed=seed, title=title), df)
 
@@ -142,7 +157,7 @@ _PANELS = ("both", "map", "scatter")
 
 def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, seed: int | None = 12345,
          alpha: float = 0.05, panels: str = "both", tiles: str | None = "carto-positron", title: str | None = None,
-         gdf=None, ref: str | None = None):
+         map: str | None = None, gdf=None, ref: str | None = None):
     """Local Moran (LISA) clusters of a variable: where are the hot spots, cold spots and outliers?
 
     The figure shows the Moran scatterplot (each unit's standardized value against its
@@ -173,6 +188,10 @@ def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, see
         The basemap style (``None``: no basemap)
     title
         The figure title
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -191,8 +210,8 @@ def lisa(data, variable: str, year=None, *, w=None, permutations: int = 999, see
     from ._engine import dependence
     from ._engine._labels import resolve_label
     if panels not in _PANELS:
-        raise ValueError(f"lisa: panels must be one of {', '.join(map(repr, _PANELS))}, got {panels!r}")
-    df, geo, w = _inputs.spatial(data, variable, gdf=gdf, w=w, year=year, ref=ref)
+        raise ValueError(f"lisa: panels must be one of {', '.join(repr(p) for p in _PANELS)}, got {panels!r}")
+    df, geo, w = _inputs.spatial(data, variable, gdf=gdf, scale=map, w=w, year=year, ref=ref)
     res = dependence.explore_lisa_cluster_map(df, variable, gdf=geo, w=w, period=_inputs.one_year(df),
                                               permutations=permutations, seed=seed, alpha=alpha, tiles=tiles,
                                               title=title if panels == "map" else None)

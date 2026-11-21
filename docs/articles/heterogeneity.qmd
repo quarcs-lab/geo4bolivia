@@ -50,7 +50,7 @@ The function follows the workflow of the mgwr library (Oshan et al. 2019):
 The example uses the Sustainable Development Index (`index_sdg`, IDS, 0–100), the urbanization rate (`urbanization`, % of population, available for 2024 only) and multidimensional poverty (`sdg1_2_mpi`, 0–1, higher is poorer). `geo.combine()` joins the two datasets they come from.
 
 ```{python}
-df = geo.combine(["sdg01", "sdg"], scale="municipality", years=2024)
+df = geo.combine(["sdg01", "sdg"], scale="map343", years=2024)
 columns = ["variable", "label", "count", "mean", "std", "min", "max"]
 geo.describe(df, ["index_sdg", "urbanization", "sdg1_2_mpi"])[columns]
 ```
@@ -259,7 +259,7 @@ One caution about this model in particular: the multidimensional poverty index i
 
 **Few and meaningful regressors.** Each term adds a whole surface to estimate: about 10 to 22 effective parameters per local term in the examples above. With many regressors the local regressions run out of information, the regressors become collinear locally and their coefficients trade off against each other. Choose two or three regressors that you can interpret, check `local_cn`, and prefer regressors that are not strongly correlated.
 
-**Missing data.** Units with a missing value in the outcome or in any regressor are left out, and the bandwidths count neighbours among the units that remain. `res.notes` says how many were left out, and `len(res.df)` is the number of units in the model. Datasets built on an earlier municipal map (`pop`, `ntl`) have 333 units, so a model that uses them has at most 333.
+**Missing data.** Units with a missing value in the outcome or in any regressor are left out, and the bandwidths count neighbours among the units that remain. `res.notes` says how many were left out, and `len(res.df)` is the number of units in the model. Datasets on the municipal map of 2015 (`pop`, `ntl`, on `map339`) have 339 units, so a model that uses them has at most 339; merged with the SDG data, which are on `map343`, the table no longer records a map, so name the one whose boundaries and neighbours to use with `map=`.
 
 **Other settings.** `kernel=` changes how the weights fall with distance (`"bisquare"`, `"gaussian"` or `"exponential"`), and `criterion=` what the bandwidth search minimises (`"AICc"`, `"AIC"`, `"BIC"` or `"CV"`). `year=` picks the year. Bandwidths are always adaptive and the variables are always standardized.
 

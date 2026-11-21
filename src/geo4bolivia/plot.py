@@ -12,7 +12,6 @@ import pandas as pd
 
 from . import io, project
 from ._engine._basemap import credit
-from .scales import scale_of
 
 SCHEMES = {"fisherjenks": "fisher_jenks", "quantiles": "quantiles", "equalinterval": "equal_interval"}
 # What **kwargs may hold when the figure is not drawn by plotly.express (classes, several years, change)
@@ -46,7 +45,7 @@ def _with_shapes(df: pd.DataFrame, scale: str | None, simplify: float | str | No
                  ref: str | None) -> gpd.GeoDataFrame:
     """The rows of a table with their unit's name and boundary, in EPSG:4326 and simplified."""
     if not isinstance(df, gpd.GeoDataFrame) or "geometry" not in df.columns:
-        scale = scale or scale_of(df["geo_id"].iloc[0], ref)
+        scale = io.table_scale(df, scale, ref)
         shapes = io.boundaries(scale, ref=ref)[["geo_id", "name", "geometry"]]
         df = shapes.merge(pd.DataFrame(df).drop(columns=["name", "geometry"], errors="ignore"), on="geo_id")
     elif "name" not in df.columns:
@@ -249,7 +248,7 @@ def _draw(panels: list[tuple[str | None, gpd.GeoDataFrame]], column: str, *, leg
     return fig.update_layout(**size)
 
 
-def map(data, variable: str, year=None, scale: str | None = None, title: str | None = None,
+def map(data, variable: str, year=None, map: str | None = None, title: str | None = None,
         simplify: float | str | None = "auto", ref: str | None = None, *, scheme: str | None = None, k: int = 5,
         bins=None, change: bool = False, **kwargs):
     """An interactive choropleth map (Plotly) of one variable: in one year, in several years side by
@@ -267,8 +266,10 @@ def map(data, variable: str, year=None, scale: str | None = None, title: str | N
         (``[2012, 2024]``): one map per year, side by side, in the same classes or on the
         same colour range, computed over all the years shown, so the maps can be
         compared. Ignored for tables without a ``year`` column
-    scale
-        The units' scale (default: inferred from ``geo_id``)
+    map
+        The map (scale) the units are drawn on, e.g. one of the project's municipal maps
+        (default: the data's own map; needed only for a table whose units are on several
+        maps and that does not record which, see ``geo.scales()``)
     title
         The figure title (default: the variable's label and the year)
     simplify
@@ -316,6 +317,8 @@ def map(data, variable: str, year=None, scale: str | None = None, title: str | N
         df = data
     if variable not in df.columns:
         raise ValueError(f"No column {variable!r} to map")
+    drawn = isinstance(df, gpd.GeoDataFrame) and "geometry" in df.columns
+    scale = map if drawn else io.table_scale(df, map, ref)      # the boundaries to draw the units on
     classed = scheme is not None or bins is not None
     if isinstance(year, list | tuple | np.ndarray) and len(year) == 1 and not change:
         year = year[0]

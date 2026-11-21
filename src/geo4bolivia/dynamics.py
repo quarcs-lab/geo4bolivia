@@ -186,7 +186,8 @@ def transitions(data, variable: str, *, k: int = 5, scheme: str = "quantiles", b
 
 
 def spatial_transitions(data, variable: str, *, w=None, k: int = 5, m: int | None = None, per_year: bool = False,
-                        relative: bool = True, title: str | None = None, gdf=None, ref: str | None = None):
+                        relative: bool = True, title: str | None = None,
+                        map: str | None = None, gdf=None, ref: str | None = None):
     """Spatial Markov transitions: does a unit's mobility depend on where its neighbours stand?
 
     Rey's spatial Markov chain splits the transition matrix of ``transitions`` by the
@@ -214,6 +215,10 @@ def spatial_transitions(data, variable: str, *, w=None, k: int = 5, m: int | Non
         are levels relative to the average unit; needs positive means
     title
         The figure title
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -230,8 +235,8 @@ def spatial_transitions(data, variable: str, *, w=None, k: int = 5, m: int | Non
     """
     from ._engine.distribution_dynamics import analyze_spatial_markov
     func, notes = "spatial_transitions", []
-    rows, _ = _with_data(_inputs.panel(data, variable, gdf=gdf, ref=ref), variable, func)
-    df, geo, w = _inputs.spatial(rows, variable, year="all", gdf=gdf, w=w, ref=ref)
+    rows, _ = _with_data(_inputs.panel(data, variable, gdf=gdf, scale=map, ref=ref), variable, func)
+    df, geo, w = _inputs.spatial(rows, variable, year="all", gdf=gdf, scale=map, w=w, ref=ref)
     left_out = rows[ENTITY].nunique() - len(geo)
     if left_out:
         notes.append(f"{func}: kept the {len(geo)} units with data in every year and boundaries ({left_out} left out)")
@@ -289,7 +294,8 @@ class LisaTransitionsResult(Interpretable):
 
 def lisa_transitions(data, variable: str, first=None, last=None, *, w=None, permutations: int = 999,
                      seed: int | None = 12345, alpha: float = 0.05, tiles: str | None = "carto-positron",
-                     title: str | None = None, gdf=None, ref: str | None = None):
+                     title: str | None = None,
+                     map: str | None = None, gdf=None, ref: str | None = None):
     """Transitions between local Moran (LISA) types: did the hot spots and cold spots persist?
 
     Runs ``lisa`` in two years on the same units and the same weights, and counts how
@@ -317,6 +323,10 @@ def lisa_transitions(data, variable: str, first=None, last=None, *, w=None, perm
         The basemap style of the map (``None``: no basemap)
     title
         The title of the matrix figure
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -342,10 +352,10 @@ def lisa_transitions(data, variable: str, first=None, last=None, *, w=None, perm
     from ._engine._theme import LISA_COLORS, apply_default_layout
 
     func, notes = "lisa_transitions", []
-    rows, have = _with_data(_inputs.panel(data, variable, gdf=gdf, ref=ref), variable, func)
+    rows, have = _with_data(_inputs.panel(data, variable, gdf=gdf, scale=map, ref=ref), variable, func)
     first, last = _two_years(have, first, last)
     rows = rows[rows[TIME].isin([first, last])]
-    df, geo, w = _inputs.spatial(rows, variable, year="all", gdf=gdf, w=w, ref=ref)
+    df, geo, w = _inputs.spatial(rows, variable, year="all", gdf=gdf, scale=map, w=w, ref=ref)
     left_out = rows[ENTITY].nunique() - len(geo)
     if left_out:
         notes.append(f"{func}: kept the {len(geo)} units with data in {first} and {last} and boundaries "

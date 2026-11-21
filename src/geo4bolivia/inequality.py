@@ -15,7 +15,7 @@ from . import _inputs, io
 from ._engine._types import InequalityOverTimeResult, TheilDecompositionResult
 from ._engine.pedagogy._interpret._shared import _ASSOC_NOTE
 from ._inputs import ENTITY, NAME, TIME
-from .scales import ancestors, scale_of
+from .scales import ancestors
 
 _ENGINE_TIME = "time"       # the inequality engine's name for the year column of its tables
 _MAX_CURVES = 4             # with more years, the Lorenz figure draws the first and the last
@@ -233,7 +233,8 @@ def _levels_gt(tab: pd.DataFrame, label: str, n_units: int):
 
 
 def inequality(data, variable: str, *, measures=("gini", "theil"), first=None, last=None, spatial: bool = False,
-               w=None, permutations: int = 99, lorenz: bool = True, title: str | None = None, gdf=None,
+               w=None, permutations: int = 99, lorenz: bool = True, title: str | None = None,
+               map: str | None = None, gdf=None,
                ref: str | None = None) -> InequalityResult:
     """Inequality between units in each year: is it narrowing or widening?
 
@@ -261,6 +262,10 @@ def inequality(data, variable: str, *, measures=("gini", "theil"), first=None, l
         Also draw the Lorenz curve
     title
         The title of the main figure
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -282,7 +287,7 @@ def inequality(data, variable: str, *, measures=("gini", "theil"), first=None, l
     from ._engine.regional_inequality import analyze_inequality_over_time
 
     measures = tuple(str(m).lower() for m in _inputs.as_list(measures))
-    df = _inputs.panel(data, variable, gdf=gdf, ref=ref)
+    df = _inputs.panel(data, variable, gdf=gdf, scale=map, ref=ref)
     _require_years(df, "inequality")
     df = _window(df, variable, first, last)
     if "theil" in measures:
@@ -291,7 +296,7 @@ def inequality(data, variable: str, *, measures=("gini", "theil"), first=None, l
     geo = None
     if spatial or w is not None:
         n_all = df.loc[df[variable].notna(), ENTITY].nunique()
-        df, geo, w = _inputs.spatial(df, variable, year="all", gdf=gdf, w=w, ref=ref)
+        df, geo, w = _inputs.spatial(df, variable, year="all", gdf=gdf, scale=map, w=w, ref=ref)
         if (left_out := n_all - df[ENTITY].nunique()) > 0:
             notes.append(f"inequality: {left_out} unit(s) without data in every year or without boundaries were "
                          f"left out, so every measure refers to the same {df[ENTITY].nunique()} units")
@@ -323,10 +328,7 @@ def inequality(data, variable: str, *, measures=("gini", "theil"), first=None, l
 def _nesting(df: pd.DataFrame, ref: str | None):
     """The units' scale, the coarser scales they nest in and their unit table; ``None`` for ids outside the project."""
     try:
-        found = {scale_of(i, ref) for i in df[ENTITY].dropna().unique()}
-        if len(found) != 1:
-            return None
-        scale = found.pop()
+        scale = io.table_scale(df, ref=ref)
         return scale, ancestors(scale, ref), io.units(scale, ref=ref).set_index(ENTITY)
     except Exception:  # ids that match no scale, or no registry to read
         return None

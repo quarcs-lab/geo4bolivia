@@ -366,7 +366,7 @@ def test_runs_on_the_project_data_without_boundaries_or_weights():
     assert res.summary["n"].iloc[0] > 30 and len(res.years) == 1 and labels[y] in res.fig.layout.title.text
     assert labels[y] in res.gt.as_raw_html() and labels[x] in res.gt.as_raw_html() and labels[x] in res.interpret()
     # a coarser scale as fixed effects and as clusters: its units' names are added as a column
-    scale = geo.scale_of(geo.load(dataset)["geo_id"].iloc[0])
+    scale = geo.load(dataset).attrs["geo:scale"]
     coarser = [s for s in geo.ancestors(scale) if 2 <= len(geo.units(s)) <= res.summary["n"].iloc[0] // 10]
     if coarser:
         grouped = regression(dataset, y, x, year=res.year, fixed_effects=coarser[-1], cluster=coarser[-1])

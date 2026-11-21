@@ -5,7 +5,7 @@ from __future__ import annotations
 from . import _inputs, project
 
 
-def _prepare(function: str, data, y: str, x, year, gdf, ref):
+def _prepare(function: str, data, y: str, x, year, gdf, ref, map=None):
     """The panel and boundaries of a local regression (after checking that mgwr is installed)."""
     try:
         import mgwr  # noqa: F401
@@ -18,12 +18,13 @@ def _prepare(function: str, data, y: str, x, year, gdf, ref):
         raise ValueError(f"y ({y!r}) cannot also be in x")
     if len(set(x)) != len(x):
         raise ValueError(f"x repeats a column: {x}")
-    df, geo, _ = _inputs.spatial(data, [y, *x], year=year, gdf=gdf, weights=False, ref=ref)
+    df, geo, _ = _inputs.spatial(data, [y, *x], year=year, gdf=gdf, scale=map, weights=False, ref=ref)
     return df, geo, x
 
 
 def mgwr(data, y: str, x, year=None, *, kernel: str = "bisquare", criterion: str = "AICc", max_iter: int = 200,
-         tiles: str | None = "carto-positron", title: str | None = None, gdf=None, ref: str | None = None):
+         tiles: str | None = "carto-positron", title: str | None = None,
+         map: str | None = None, gdf=None, ref: str | None = None):
     """Multiscale geographically weighted regression: where, and at which scale, does ``x`` relate to ``y``?
 
     A regression of ``y`` on ``x`` is fitted at every unit, weighting the other units by
@@ -64,6 +65,10 @@ def mgwr(data, y: str, x, year=None, *, kernel: str = "bisquare", criterion: str
         The basemap style (``None``: no basemap)
     title
         The title of the residual map; each coefficient map adds its variable
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -81,7 +86,7 @@ def mgwr(data, y: str, x, year=None, *, kernel: str = "bisquare", criterion: str
         ``.notes`` and ``.interpret()``.
     """
     from ._engine.gwr import analyze_mgwr
-    df, geo, x = _prepare("mgwr", data, y, x, year, gdf, ref)
+    df, geo, x = _prepare("mgwr", data, y, x, year, gdf, ref, map)
     return _inputs.finish(analyze_mgwr(df, y, x, gdf=geo, period=_inputs.one_year(df), kernel=kernel,
                                        criterion=criterion, max_iter=max_iter, tiles=tiles, title=title), df)
 

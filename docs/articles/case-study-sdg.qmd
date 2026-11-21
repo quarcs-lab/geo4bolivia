@@ -89,7 +89,7 @@ The 15 goal indices live in 15 datasets, `sdg01` to `sdg17`. `geo.combine()` put
 ```{python}
 numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 16, 17]    # no goal 12 or 14
 goals = geo.combine({f"sdg{n:02d}": [f"index_sdg{n}"] for n in numbers},
-                    scale="municipality")
+                    scale="map343")
 means = geo.describe(goals).pivot(index="label", columns="year", values="mean")
 means["change"] = means[2024] - means[2012]
 means = means.sort_values("change").round(1).reset_index()

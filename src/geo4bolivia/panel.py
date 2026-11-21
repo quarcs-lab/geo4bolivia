@@ -74,4 +74,7 @@ def change(df: pd.DataFrame, variables=None, first: int | None = None, last: int
         out[f"{v}_rank_{first}"] = r0.astype("Int64")
         out[f"{v}_rank_{last}"] = r1.astype("Int64")
         out[f"{v}_rank_change"] = (r0 - r1).astype("Int64")
-    return out.reset_index()
+    out = out.reset_index()
+    if df.attrs.get("geo:scale"):                 # the map the units are on, as load records it
+        out.attrs["geo:scale"] = df.attrs["geo:scale"]
+    return out

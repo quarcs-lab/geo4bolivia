@@ -354,7 +354,7 @@ def test_runs_on_the_project_data_with_its_labels_and_scales():
     assert label in ends.fig.layout.title.text and ends.fig.layout.xaxis.title.text == label
     shape = distribution(dataset, variable, kind="box")
     assert shape.fig.layout.yaxis.title.text == label and shape.df["n"].max() == ends.n_units
-    coarser = geo.ancestors(geo.scale_of(ends.df["geo_id"].iloc[0]))
+    coarser = geo.ancestors(metadata.resource(dataset)["geo:scale"])
     if coarser:                                                       # a coarser scale is added by its id
         groups = distribution(dataset, variable, by=coarser[0], kind="box")
         assert groups.df.columns[0] == coarser[0] and groups.df["n"].sum() == ends.n_units

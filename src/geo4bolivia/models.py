@@ -851,7 +851,7 @@ def _read_panel(result: PanelModelResult) -> str:
 # spatial models
 # ---------------------------------------------------------------------------------------------
 
-def _cross_section(data, y: str, x, year, fixed_effects, gdf, w, ref: str | None, *, what: str):
+def _cross_section(data, y: str, x, year, fixed_effects, gdf, w, ref: str | None, *, what: str, map=None):
     """The inputs of a spatial model of one year: panel, boundaries, weights, regressors, fixed-effect column."""
     xs = _inputs.as_list(x)
     _check_xy(y, xs)
@@ -864,16 +864,17 @@ def _cross_section(data, y: str, x, year, fixed_effects, gdf, w, ref: str | None
         raise ValueError(f"{what} analyses one row per unit, so {effects[0]!r} cannot be a fixed effect")
     variables = [y, *xs]
     source, groups = _source(data, variables, effects, ref, what="fixed_effects")
-    df = _inputs.panel(source, variables, groups=groups, gdf=gdf, ref=ref)
+    df = _inputs.panel(source, variables, groups=groups, gdf=gdf, scale=map, ref=ref)
     if TIME in df.columns:                                  # the last year with data for every variable
         year = _inputs.pick_year(df.dropna(subset=variables), y, year)
-    df, geo, w = _inputs.spatial(df, variables, year=year, gdf=gdf, w=w, groups=groups, ref=ref)
+    df, geo, w = _inputs.spatial(df, variables, year=year, gdf=gdf, scale=map, w=w, groups=groups, ref=ref)
     return df, geo, w, xs, (effects[0] if effects else None)
 
 
 def spatial_model(data, y: str, x, year=None, *, model: str = "durbin", method: str = "ml", w=None,
                   fixed_effects: str | None = None, impacts: bool = True, n_draws: int = 10_000,
-                  seed: int | None = 12345, title: str | None = None, gdf=None, ref: str | None = None):
+                  seed: int | None = 12345, title: str | None = None,
+                  map: str | None = None, gdf=None, ref: str | None = None):
     """A spatial regression for one year, with direct, indirect (spillover) and total impacts.
 
     Parameters
@@ -906,6 +907,10 @@ def spatial_model(data, y: str, x, year=None, *, model: str = "durbin", method: 
         Makes the draws reproducible
     title
         The title of the table
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -922,7 +927,7 @@ def spatial_model(data, y: str, x, year=None, *, model: str = "durbin", method: 
         fitted spreg model) and ``.interpret()``.
     """
     from ._engine.spatial_models import analyze_spatial_model
-    df, geo, w, xs, effect = _cross_section(data, y, x, year, fixed_effects, gdf, w, ref, what="spatial_model")
+    df, geo, w, xs, effect = _cross_section(data, y, x, year, fixed_effects, gdf, w, ref, what="spatial_model", map=map)
     return _with_columns(_inputs.finish(analyze_spatial_model(
         df, y, xs, gdf=geo, w=w, model=model, method=method, period=_inputs.one_year(df), fixed_effects=effect,
         impacts=impacts, n_draws=n_draws, seed=seed, title=title), df), df)
@@ -957,7 +962,7 @@ def _with_columns(result, df: pd.DataFrame):
 
 
 def spatial_diagnostics(data, y: str, x, year=None, *, w=None, fixed_effects: str | None = None, alpha: float = 0.05,
-                        gdf=None, ref: str | None = None):
+                        map: str | None = None, gdf=None, ref: str | None = None):
     """Tests for spatial dependence left in a least-squares regression, and the spatial model they point to.
 
     Parameters
@@ -976,6 +981,10 @@ def spatial_diagnostics(data, y: str, x, year=None, *, w=None, fixed_effects: st
         A column or a coarser scale, added as dummies
     alpha
         Significance level of the decision rule
+    map
+        The map (scale) the units are drawn on and their neighbours found, e.g. one of
+        the project's municipal maps (default: the data's own map; needed only for a table
+        whose units are on several maps and that does not record which, see ``geo.scales()``)
     gdf
         Boundaries to use instead of the project's (a GeoDataFrame with ``geo_id``)
 
@@ -989,7 +998,8 @@ def spatial_diagnostics(data, y: str, x, year=None, *, w=None, fixed_effects: st
         ``.moran_i_resid``, ``.ols_model`` (the fitted spreg model) and ``.interpret()``.
     """
     from ._engine.spatial_models import analyze_spatial_diagnostics
-    df, geo, w, xs, effect = _cross_section(data, y, x, year, fixed_effects, gdf, w, ref, what="spatial_diagnostics")
+    df, geo, w, xs, effect = _cross_section(data, y, x, year, fixed_effects, gdf, w, ref, what="spatial_diagnostics",
+                                                      map=map)
     return _inputs.finish(analyze_spatial_diagnostics(df, y, xs, gdf=geo, w=w, period=_inputs.one_year(df),
                                                       fixed_effects=effect, alpha=alpha), df)
 

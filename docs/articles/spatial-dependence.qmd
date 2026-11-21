@@ -126,10 +126,10 @@ Every statistic below compares a unit with its neighbours, so "neighbour" needs 
 By default the weights are **row-standardized**: each unit's weights sum to one, so "the neighbours' value" is a plain average of the neighbours.
 
 ```{python}
-w_queen = geo.weights("municipality")
-w_rook = geo.weights("municipality", method="rook")
-w_knn = geo.weights("municipality", method="knn", k=6)
-w_band = geo.weights("municipality", method="distance_band")
+w_queen = geo.weights("map343")
+w_rook = geo.weights("map343", method="rook")
+w_knn = geo.weights("map343", method="knn", k=6)
+w_band = geo.weights("map343", method="distance_band")
 
 rows = []
 for name, w in [("queen", w_queen), ("rook", w_rook), ("6 nearest", w_knn),
@@ -147,8 +147,8 @@ Under queen contiguity a municipality has 5.5 neighbours on average, between 1 a
 Contiguity leaves a unit that touches no other without neighbours: an **island**. Its "neighbours' average" is undefined, so by default (`attach_islands=True`) the package links it to its nearest unit. There is one on this map:
 
 ```{python}
-alone = geo.weights("municipality", attach_islands=False).islands
-names = geo.units("municipality").set_index("geo_id")["name"]
+alone = geo.weights("map343", attach_islands=False).islands
+names = geo.units("map343").set_index("geo_id")["name"]
 nearest = w_queen.neighbors[alone[0]]
 print(alone, names[alone].tolist(), "->", names[nearest].tolist())
 ```
@@ -160,7 +160,7 @@ Coipasa, in Oruro, shares no border with another municipality on this map, which
 `geo.connectivity()` draws the weights as a graph, one line per pair of neighbours, and counts the neighbours of each unit. Look at it before trusting any result that uses the weights: missing links, an unexpected island, or a region cut off from the rest show at once.
 
 ```{python}
-net = geo.connectivity("municipality")
+net = geo.connectivity("map343")
 net.fig
 ```
 
@@ -298,26 +298,26 @@ pd.crosstab(both["cluster_queen"], both["cluster_knn"])
 
 83% of the municipalities (286 of 343) get the same type. No municipality changes from one type to a different one: every disagreement is between a type and "Not significant". 12 of the 35 High-High municipalities of the queen weights are not significant with the six nearest neighbours, and 25 municipalities that were not significant become Low-Low. The centres of the clusters are stable and their edges are not, which is the same lesson as with `alpha`.
 
-## 6. A dataset with fewer units
+## 6. Another map, and fewer units
 
-Not every dataset covers the 343 municipalities. Night-time lights per capita (`ntl`, in logarithms as `ln_NTLpc`, 2012–2020) are published for 333: the values were computed on the municipal map of 2015, so the six municipalities that lost territory since and the four units created since have no rows (`geo.info("ntl")` explains it). Some municipalities also lack a value in some years.
+Not every dataset is on the 343-unit map. Night-time lights per capita (`ntl`, in logarithms as `ln_NTLpc`, 2012–2020) were computed on the municipal map of 2015 and are published on it: `map339`, 339 municipalities, without the four units created since (`geo.info("ntl")` explains it). The two maps share their geo IDs, and the dataset records its map, so the functions draw its units and find their neighbours on `map339` by themselves. Some municipalities also lack a value in some years.
 
-Nothing changes in the calls. The functions use the units that have data, and build the weights among those units only:
+Nothing changes in the calls. The functions use the units that have data, and build the weights among those units only, on the dataset's map:
 
 ```{python}
 ntl = geo.moran("ntl", "ln_NTLpc", year=2020)
 print(round(ntl.moran_i, 3), ntl.p_sim, "|", ntl.w_spec)
 ```
 
-The description of the weights ends in `n=328`: the 328 municipalities with a value in 2020. With `year="all"`, Moran's I is computed on the municipalities that have a value in every year, so that the years are comparable:
+The description of the weights ends in `n=334 (on map339)`: the 334 municipalities with a value in 2020, on the map of 2015. With `year="all"`, Moran's I is computed on the municipalities that have a value in every year, so that the years are comparable:
 
 ```{python}
 geo.moran("ntl", "ln_NTLpc", year="all")
 ```
 
-That leaves 316 municipalities (`n_obs`). Moran's I of night-time lights per capita stays between 0.42 and 0.46 in the nine years: lights are clustered, and about as much in 2020 as in 2012.
+That leaves 322 municipalities (`n_obs`). Moran's I of night-time lights per capita stays between 0.42 and 0.46 in the nine years: lights are clustered, and about as much in 2020 as in 2012.
 
-Two things to keep in mind with partial coverage. A unit without data is not a neighbour of anyone: the municipalities around it have one neighbour fewer, and one that loses all of them is attached to its nearest unit, like the island above. And the result describes the units in the analysis, not the country: here 328 or 316 municipalities out of 343. Always check `n` in `w_spec` or `n_obs` before comparing results between datasets.
+Two things to keep in mind with partial coverage. A unit without data is not a neighbour of anyone: the municipalities around it have one neighbour fewer, and one that loses all of them is attached to its nearest unit, like the island above. And the result describes the units in the analysis, not the country: here 334 or 322 municipalities of the 339 of 2015. Always check `n` and the map in `w_spec`, or `n_obs`, before comparing results between datasets. A table you put together yourself from datasets on both maps (by merging them on `geo_id`) does not record a map, and the functions then ask for it: `map="map339"` or `map="map343"`.
 
 ## In short
 
@@ -326,7 +326,7 @@ Two things to keep in mind with partial coverage. A unit without data is not a n
 - Global Moran's I tests the whole map against random placement. Multidimensional poverty is clustered in both censuses (0.44 and 0.42 under queen contiguity), although it fell in every municipality.
 - LISA locates the clusters: 35 High-High and 51 Low-Low municipalities in 2024 at the 5% level. Their centres are stable when `alpha` or the weights change; their edges are not.
 - The sign and significance of the global result hold under every definition of neighbour tried here; its size does not, so always report the weights.
-- With partial coverage the functions use the units with data. Check how many that is.
+- With partial coverage the functions use the units with data, on the dataset's own map (`map343` or `map339`). Check how many units, and which map, `w_spec` reports.
 - All of this describes a pattern. None of it says what produced it.
 
 ## Where next

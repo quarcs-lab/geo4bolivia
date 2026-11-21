@@ -35,9 +35,12 @@ def test_project_config_matches_the_package():
     assert store.raw_url("geo/units.csv").startswith("https://raw.githubusercontent.com/" + cfg["repository"])
 
 
-def test_every_unit_matches_exactly_one_scale_pattern():
+def test_every_unit_matches_its_scale_pattern():
+    from geo4bolivia.scales import scales_of
     for gid, scale in zip(geo.units()["geo_id"], geo.units()["scale"]):
-        assert geo.scale_of(gid) == scale
+        assert scale in scales_of(gid)
+        if len(scales_of(gid)) == 1:                     # IDs shared only by maps of the same units
+            assert geo.scale_of(gid) == scale
 
 
 def test_ids_start_with_the_country_code():
@@ -99,8 +102,8 @@ def test_aggregation_refuses_without_a_rule():
     finest = ACTIVE[-1] if geo.ancestors(ACTIVE[-1]) else next(s for s in ACTIVE if geo.ancestors(s))
     df = geo.units(finest)[["geo_id"]].assign(x=1.0)
     with pytest.raises(ValueError, match="No aggregation rule"):
-        geo.aggregate(df, to=geo.ancestors(finest)[0])
-    out = geo.aggregate(df, to="country", rules={"x": "sum"})
+        geo.aggregate(df, to=geo.ancestors(finest)[0], map=finest)
+    out = geo.aggregate(df, to="country", rules={"x": "sum"}, map=finest)
     assert out["x"].item() == len(df)
 
 

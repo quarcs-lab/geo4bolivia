@@ -70,12 +70,12 @@ The package reads the observatory's published files from [quarcs-lab/gdo4bolivia
 
 | Dataset | What | Units and years |
 | --- | --- | --- |
-| `sdg`, `sdg01` to `sdg17` | [Atlas de los ODS en Bolivia 2026](https://atlasods.sdsnbolivia.org/) (Andersen & Argandoña, SDSN Bolivia): the Sustainable Development Index, 15 goal indices and 81 indicators | 343 municipalities, about 2012 and about 2024 |
-| `pop` | Population (WorldPop) and density | 333 municipalities, 2001 to 2020 |
-| `ntl` | Night-time lights per capita (VIIRS) | 333 municipalities, 2012 to 2020 |
-| `emb`, `embpw` | Satellite embeddings, 64 dimensions | 333 municipalities, 2017 |
+| `sdg`, `sdg01` to `sdg17` | [Atlas de los ODS en Bolivia 2026](https://atlasods.sdsnbolivia.org/) (Andersen & Argandoña, SDSN Bolivia): the Sustainable Development Index, 15 goal indices and 81 indicators | 343 municipalities (map343, 2025 map), about 2012 and about 2024 |
+| `pop` | Population (WorldPop) and density | 339 municipalities (map339, 2015 map), 2001 to 2020 |
+| `ntl` | Night-time lights per capita (VIIRS) | 339 municipalities (map339), 2012 to 2020 |
+| `emb`, `embpw` | Satellite embeddings, 64 dimensions | 339 municipalities (map339), 2017 |
 
-`geo.info(dataset)` gives each dataset's sources and licenses and `geo.cite(dataset)` the citation and the credits they require. The boundaries are SDSN Bolivia's municipal map of 2025, used with its permission.
+`geo.info(dataset)` gives each dataset's sources and licenses and `geo.cite(dataset)` the citation and the credits they require. The SDG data are on SDSN Bolivia's municipal map of 2025 (`map343`, used with its permission), `pop`, `ntl` and the embeddings on the map of 2015 (`map339`); the two maps share their geo IDs, and the spatial functions take `map=` when a table does not say which one it is on.
 
 Without the package, the same files are plain CSV and Parquet:
 
@@ -83,7 +83,7 @@ Without the package, the same files are plain CSV and Parquet:
 import pandas as pd
 
 BASE = "https://raw.githubusercontent.com/quarcs-lab/gdo4bolivia/main/"
-pd.read_csv(BASE + "data/municipality/sdg.csv")
+pd.read_csv(BASE + "data/map343/sdg.csv")
 ```
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/notebooks/empty.ipynb)

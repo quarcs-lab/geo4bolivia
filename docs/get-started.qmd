@@ -82,8 +82,9 @@ Every dataset is also a CSV and a Parquet file you can read with pandas alone:
 import pandas as pd
 
 BASE = "https://raw.githubusercontent.com/quarcs-lab/gdo4bolivia/main/"
-ids = pd.read_csv(BASE + "data/municipality/sdg.csv")
+ids = pd.read_csv(BASE + "data/map343/sdg.csv")
 units = pd.read_csv(BASE + "geo/units.csv")       # names, parents and source codes
+units = units[units["scale"] == "map343"]          # one map: one row per unit
 ```
 :::
 
@@ -153,8 +154,24 @@ conv
 The defaults are a starting point. Build other weights with `geo.weights()` and pass them as `w=`:
 
 ```{python}
-w6 = geo.weights("municipality", method="knn", k=6)      # the six nearest municipalities
+w6 = geo.weights("map343", method="knn", k=6)      # the six nearest municipalities
 round(geo.moran(ids, "index_sdg", w=w6).moran_i, 3)
+```
+
+### Two municipal maps
+
+The observatory has two municipal maps, named after their number of units: `map343`, SDSN Bolivia's map of 2025, which the SDG Atlas uses, and `map339`, the map of 2015 on which population, night-time lights and the satellite embeddings were computed. `geo.scales()` lists them with the coarser scales:
+
+```{python}
+geo.scales()[["label", "parent", "status"]]
+```
+
+A municipality has the same geo ID on both maps, so the ID alone does not say which polygons to draw or which neighbours to use. A dataset knows its map, and so does the table `geo.load()` returns: `geo.lisa("sdg01", "sdg1_2_mpi", 2024)` runs on `map343` by itself, and `geo.moran("ntl", "ln_NTLpc", 2020)` on `map339`. A table you build by merging datasets loses that record; if its units are on both maps, name the one to use with `map=`:
+
+```{python}
+lights = geo.load("ntl", variables="ln_t400NTLpc", years=2012)
+both = ids.merge(lights, on=["geo_id", "year"])         # a merge forgets the map
+geo.moran(both, "ln_t400NTLpc", map="map339").w_spec
 ```
 
 The functions are not tied to the observatory's data. Any table with a `geo_id` column works, and `gdf=` supplies boundaries for units the package does not know. To bring a table of your own onto the observatory's units, see [Building your own indicators](articles/own-indicators.qmd).

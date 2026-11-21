@@ -14,18 +14,16 @@ import geopandas as gpd
 import pandas as pd
 
 from . import io, metadata, project
-from .scales import ancestors, scale_of
+from .scales import ancestors
 
 # Equal-area projection from project.yaml, so areas and overlay weights are exact
 EQUAL_AREA_CRS = project.equal_area_crs()
 RULES = ("sum", "mean", "min", "max", "weighted_mean:<field>", "none")
 
 
-def _scale_of(df: pd.DataFrame, ref: str | None = None) -> str:
-    found = {scale_of(i, ref) for i in df["geo_id"].drop_duplicates()}
-    if len(found) != 1:
-        raise ValueError(f"Rows mix units from several scales: {sorted(found)}")
-    return found.pop()
+def _scale_of(df: pd.DataFrame, ref: str | None = None, scale: str | None = None) -> str:
+    """The scale (map) of a table's units: ``scale``, the one the table records, or the one its IDs fit."""
+    return io.table_scale(df, scale, ref)
 
 
 def _resolve_rules(variables, dataset, rules, ref=None):
@@ -73,7 +71,8 @@ def _fetch_weights(data: pd.DataFrame, rule: dict, dataset: str | None, source: 
 
 
 def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | None = None,
-              variables=None, weights: pd.DataFrame | None = None, ref: str | None = None) -> pd.DataFrame:
+              variables=None, weights: pd.DataFrame | None = None, map: str | None = None,
+              ref: str | None = None) -> pd.DataFrame:
     """Aggregate a panel up to a coarser, nested scale (or to several at once).
 
     Parameters
@@ -95,6 +94,9 @@ def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | No
         ``weighted_mean`` rules whose weight is not already in ``df``. When the dataset's
         metadata names where a weight lives (``geo:weights``, e.g. census population),
         it is loaded automatically.
+    map
+        The scale (map) of ``df``'s units, needed only when their geo IDs belong to several
+        maps and the table does not record which (``load`` records it)
 
     Returns
     -------
@@ -107,11 +109,12 @@ def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | No
     if not isinstance(to, str):
         parts = []
         for target in to:
-            part = aggregate(df, target, dataset=dataset, rules=rules, variables=variables, weights=weights, ref=ref)
+            part = aggregate(df, target, dataset=dataset, rules=rules, variables=variables, weights=weights, map=map,
+                             ref=ref)
             part.insert(1, "scale", target)
             parts.append(part)
         return pd.concat(parts, ignore_index=True)
-    source = _scale_of(df, ref)
+    source = _scale_of(df, ref, map)
     if to == source:
         return df.copy()
     if to not in ancestors(source, ref):
@@ -172,7 +175,9 @@ def aggregate(df: pd.DataFrame, to, dataset: str | None = None, rules: dict | No
             out[var] = num / den
     out = out.reset_index().rename(columns={"geo_id_to": "geo_id"})
     out["coverage"] = out["n_units"] / out["geo_id"].map(totals)
-    return out[["geo_id", *keys[1:], *rule, "n_units", "coverage"]]
+    out = out[["geo_id", *keys[1:], *rule, "n_units", "coverage"]]
+    out.attrs[io.SCALE_KEY] = to
+    return out
 
 
 def _as_target(target, id_col: str) -> gpd.GeoDataFrame:

@@ -225,7 +225,7 @@ def test_runs_on_the_project_data_with_the_default_groups():
     assert geo.labels(dataset)[variable] in res.fig_lorenz.layout.title.text
     assert res.lorenz["geo_id"].str.startswith(geo.project.country_code()).all() and res.lorenz["name"].notna().all()
 
-    scale = geo.scale_of(values["geo_id"].iloc[0])
+    scale = metadata.resource(dataset)["geo:scale"]
     unit_table = geo.units(scale).set_index("geo_id").loc[values["geo_id"].unique()]
     groups = {s: unit_table[f"{s}_id"].nunique() for s in geo.ancestors(scale) if f"{s}_id" in unit_table.columns}
     groups = {s: n for s, n in groups.items() if n >= 2}

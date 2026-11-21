@@ -157,7 +157,7 @@ Both measures are lower in the second period: the Gini index went from 0.065 to 
 
 ### A panel with many years
 
-Night-time lights per capita (`ntl`) have nine years, 2012 to 2020, for 333 municipalities. They are often used as a stand-in for economic activity where local accounts do not exist.
+Night-time lights per capita (`ntl`) have nine years, 2012 to 2020, for the 339 municipalities of the 2015 map (`map339`). They are often used as a stand-in for economic activity where local accounts do not exist.
 
 ::: {.callout-important}
 ## Levels or logarithms?
@@ -177,15 +177,15 @@ print(sigma.notes)
 sigma.df
 ```
 
-The standard deviation of log lights per capita fell from 1.41 in 2012 to 1.17 in 2020, a trend of −2.8% per year, and the Gini index and the coefficient of variation fall too. Municipalities became more alike in lights per capita over these nine years.
+The standard deviation of log lights per capita fell from 1.40 in 2012 to 1.16 in 2020, a trend of −2.8% per year, and the Gini index and the coefficient of variation fall too. Municipalities became more alike in lights per capita over these nine years.
 
 Three things to keep in mind:
 
-- **The units.** The method uses only the units observed in every year, so that the comparison is between the same units: 316 here. The note says how many were left out. Lights are missing where no pixel stayed lit after masking, so the units left out tend to be those with very little light, not a random sample.
+- **The units.** The method uses only the units observed in every year, so that the comparison is between the same units: 322 here. The note says how many were left out. Lights are missing where no pixel stayed lit after masking, so the units left out tend to be those with very little light, not a random sample.
 - **The path.** The fall is not steady: most of it happens between 2016 and 2017, and dispersion is slightly higher in 2019 and 2020 than in 2018. A linear trend summarises a path that the table and the figure show in full.
 - **The variable.** Lights per capita are a ratio of two estimates (satellite radiance and gridded population). Changes in either one move it.
 
-The slope alone can hide the shape of the path. Population (`pop`, 2001 to 2020, gridded estimates for 333 municipalities) is a clear case:
+The slope alone can hide the shape of the path. Population (`pop`, 2001 to 2020, gridded estimates for the same 339 municipalities) is a clear case:
 
 ```{python}
 sigma_pop = geo.sigma_convergence("pop", "pop")
@@ -193,7 +193,7 @@ print("trend of the log standard deviation:", round(sigma_pop.std_slope, 5))
 sigma_pop.fig
 ```
 
-Over the twenty years the trend is negative, −0.2% per year: municipalities became slightly more alike in population size. But the standard deviation of log population falls only until 2015 (from 1.197 to 1.148) and rises a little afterwards (1.154 in 2020). A single slope reports convergence; the figure shows that it stopped.
+Over the twenty years the trend is negative, −0.2% per year: municipalities became slightly more alike in population size. But the standard deviation of log population falls only until 2015 (from 1.192 to 1.142) and rises a little afterwards (1.147 in 2020). A single slope reports convergence; the figure shows that it stopped.
 
 ## Convergence clubs: one path or several?
 
@@ -212,7 +212,7 @@ clubs
 clubs.gt
 ```
 
-Convergence of all 316 municipalities to one path is rejected (t = −32.2). The method finds four clubs: two large ones, of 151 and 130 municipalities, one of 30 and one of 3, and two municipalities that fit no club. For each club the table gives its own log t test: a t-statistic above −1.65 means convergence inside the club is not rejected.
+Convergence of all 322 municipalities to one path is rejected (t = −32.1). The method finds four clubs: two large ones, of 152 and 134 municipalities, one of 31 and one of 3, and two municipalities that fit no club. For each club the table gives its own log t test: a t-statistic above −1.65 means convergence inside the club is not rejected.
 
 The mean of each club in the first and the last year shows where the clubs stand and how far apart they are:
 
@@ -233,21 +233,21 @@ Read club results with these limits in mind:
 
 - **Nine years are few.** By default the test leaves out the first 30% of the years, so each log t regression rests on six points. The method was designed for longer panels.
 - **Paths are smoothed first.** By default each unit's path is replaced by its Hodrick–Prescott trend (`hp_filter=True`), which removes year-to-year noise. Clubs are about long-run paths, and with short panels the trend is itself uncertain.
-- **Membership depends on choices**: the filter, the trimming (`trim=`), the rule for merging clubs (`merge=`) and the units included. A check with the dataset's own trend variable, which is filled in for all 333 municipalities, gives a different count:
+- **Membership depends on choices**: the filter, the trimming (`trim=`), the rule for merging clubs (`merge=`) and the units included. A check with the dataset's own trend variable, which is filled in for all 339 municipalities, gives different clubs:
 
 ```{python}
-alt = geo.convergence_clubs("ntl", "ln_t400NTLpc", hp_filter=False, map=False)
+alt = geo.convergence_clubs("ntl", "ln_t400NTLpc", hp_filter=False, draw_map=False)
 print(alt.n_units, "units:", alt.n_clubs, "clubs,", alt.n_divergent, "divergent")
 ```
 
-Three clubs instead of four. The rejection of one common path holds in both runs; the number of clubs and who belongs to which should be treated as a description that depends on the settings. A club is a group of units whose paths move together. The method does not say why.
+Four clubs again, but not the same ones: the largest now holds 266 municipalities, the first club of the run above and most of its second, and there are no divergent units. The rejection of one common path holds in both runs; the number of clubs and who belongs to which should be treated as a description that depends on the settings. A club is a group of units whose paths move together. The method does not say why.
 
 ## In short
 
 - **β-convergence** (`geo.beta_convergence`, two years): the Sustainable Development Index grew faster where it started lower, with a slope of −0.029 and a half-life of about 20 years; the result holds within departments and in the spatial models, where the half-life ranges from about 16 to 29 years.
 - With two periods, regression to the mean and measurement error can produce a negative β on their own. Check dispersion as well.
-- **σ-convergence** (`geo.sigma_convergence`, three or more years): the dispersion of log night-time lights per capita fell by 2.8% per year between 2012 and 2020 among 316 municipalities. Look at the path as well as the slope.
-- **Convergence clubs** (`geo.convergence_clubs`, six or more years): one common path for lights per capita is rejected; the method finds four clubs, or three with other settings.
+- **σ-convergence** (`geo.sigma_convergence`, three or more years): the dispersion of log night-time lights per capita fell by 2.8% per year between 2012 and 2020 among 322 municipalities. Look at the path as well as the slope.
+- **Convergence clubs** (`geo.convergence_clubs`, six or more years): one common path for lights per capita is rejected; the method finds four clubs, whose membership changes with the settings.
 - `beta_convergence` and `sigma_convergence` take levels; `convergence_clubs` takes the variable as given.
 - All of these are descriptions of how the units moved. None of them says what made them move.
 

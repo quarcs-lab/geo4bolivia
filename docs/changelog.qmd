@@ -4,6 +4,18 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
+## 0.8.0 (unreleased)
+
+**Breaking: municipal maps are named by their units, and every spatial function knows its map.** The observatory now publishes two municipal maps that share their geo IDs: `map343`, SDSN Bolivia's map of 2025 (the SDG Atlas), and `map339`, the map of 2015 on whose polygons `pop`, `ntl`, `emb` and `embpw` were computed. A municipal ID alone no longer tells the map, so the map is recorded with the data and can be named in every call.
+
+- **The scale `municipality` is now `map343`**, in every function (`geo.units("map343")`, `geo.boundaries("map343")`, `scale="map343"`) and in the published paths (`data/map343/sdg.csv`, `geo/boundaries/map343.geojson`). `"municipality"` raises an error that lists the known scales.
+- **New scale `map339`.** `pop`, `ntl`, `emb` and `embpw` are published on it, with all 339 municipalities of 2015 (instead of 333 on the 2025 map); `geo.crosswalk("map339", "map343")` gives the area shares between the two maps.
+- **`map=`** on every function that draws or uses boundaries: `weights`, `connectivity`, `moran`, `lisa`, `map`, `beta_convergence`, `convergence_clubs`, `spatial_transitions`, `lisa_transitions`, `inequality`, `spatial_model`, `spatial_diagnostics`, `mgwr`, and on `aggregate`. It defaults to the data's own map: `geo.load()` records it in `df.attrs["geo:scale"]`, pandas keeps it through filtering, and a dataset id brings its own. A table whose units are on several maps and that does not record which (a merge of datasets, for instance) raises an error asking for `map=`.
+- `geo.map()`'s `scale=` argument is now `map=`, and `convergence_clubs(map=False)` is now `draw_map=False`.
+- Results name the map in their description of the weights: `w_spec` ends in "(on map343)".
+- `geo.scale_of()` raises for an ID that is on several maps; `geo.change()`, `geo.combine()` and `geo.aggregate()` keep or set the map of the table they return.
+- **Building and validating:** `publish_geo` and `from_polygons` accept maps that share IDs (`from_polygons(..., scale=)`); `validate` allows IDs shared by scales with the same pattern, checks a map that nests by ID only (`nesting: ids` in `scales.yaml`) with a looser geometric test, and checks every other crosswalk in `geo/crosswalks/`.
+
 ## 0.7.2 (2026-11-20)
 
 **Maps: the basemap's credit moves off the map.** The white "© OpenStreetMap contributors © CARTO" box no longer covers a corner of every map drawn on a basemap (`map`, `lisa`, `connectivity`, `lisa_transitions`, `mgwr`, `convergence_clubs`, ...): the same CARTO style is drawn without its box, and the credit the tiles' licences require is a small grey line below the map. The style is downloaded from CARTO once per session; without a connection the maps keep Plotly's box. On this site the credit is a small (i) button on the map.

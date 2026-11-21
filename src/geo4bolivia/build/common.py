@@ -280,14 +280,24 @@ def publish_geo(units: pd.DataFrame, layers: dict) -> pd.DataFrame:
             units[col] = pd.NA
         own = units["scale"] == scale
         units.loc[own, col] = units.loc[own, "geo_id"]
-    scale_of_id = units.set_index("geo_id")["scale"]
+    # parents are units of the scales others nest in, whose geo IDs are unique (maps of the same
+    # units share their IDs, but no scale nests in a map)
+    reg = registry(active_only=True)
+    parents = units[units["scale"].isin({reg[s].parent for s in active} - {None})]
+    if parents["geo_id"].duplicated().any():
+        twice = sorted(parents.loc[parents["geo_id"].duplicated(), "geo_id"])
+        raise ValueError(f"parent units share geo IDs: {twice[:3]}")
+    scale_of_id = parents.set_index("geo_id")["scale"]
     for scale, col in id_cols.items():   # parent_id gives the parent scale's column
         has = units["parent_id"].notna() & (units["parent_id"].map(scale_of_id) == scale)
         units.loc[has, col] = units.loc[has, col].fillna(units.loc[has, "parent_id"])
     for _ in active:                      # then inherit everything else from the parent
-        parent = units.set_index("geo_id").loc[:, list(id_cols.values())]
+        parent = units[units["scale"].isin(set(parents["scale"]))].set_index("geo_id").loc[:, list(id_cols.values())]
         inherited = parent.reindex(units["parent_id"]).set_axis(units.index)
         units[list(id_cols.values())] = units[list(id_cols.values())].fillna(inherited)
+    for scale in active:
+        if units.loc[units["scale"] == scale, "geo_id"].duplicated().any():
+            raise ValueError(f"{scale} units repeat a geo ID")
     for scale in active:
         u = units[units["scale"] == scale]
         for anc in ancestors(scale):
@@ -298,20 +308,21 @@ def publish_geo(units: pd.DataFrame, layers: dict) -> pd.DataFrame:
     root = store.repo_root()
     out = root / "geo/boundaries"
     out.mkdir(parents=True, exist_ok=True)
-    names = units.set_index("geo_id")["name"]
     area = {}
     for scale in active:
+        names = units.loc[units["scale"] == scale].set_index("geo_id")["name"]
         layer = gpd.GeoDataFrame(layers[scale][["geo_id", "geometry"]], geometry="geometry")
         layer = layer.set_crs("EPSG:4326") if layer.crs is None else layer.to_crs("EPSG:4326")
         layer["geometry"] = layer.geometry.map(polygonal)
         layer.insert(1, "name", layer["geo_id"].map(names))
         layer = layer.sort_values("geo_id").reset_index(drop=True)
-        area.update(dict(zip(layer["geo_id"], layer.to_crs(EQUAL_AREA_CRS).area / 1e6)))
+        area.update({(scale, g): a for g, a in zip(layer["geo_id"], layer.to_crs(EQUAL_AREA_CRS).area / 1e6)})
         layer.to_parquet(out / f"{scale}.parquet", index=False)
         (out / f"{scale}.geojson").unlink(missing_ok=True)
         layer.to_file(out / f"{scale}.geojson", driver="GeoJSON", COORDINATE_PRECISION=6)
         print(f"  wrote geo/boundaries/{scale}.geojson and .parquet  ({len(layer)} units)")
-    units["area_km2"] = units["geo_id"].map(area).round(2)
+    units["area_km2"] = pd.Series([area.get(k) for k in zip(units["scale"], units["geo_id"])],
+                                  index=units.index, dtype=float).round(2)
 
     first = ["geo_id", "scale", "name", "parent_id", *id_cols.values()]
     columns = first + [c for c in units.columns if c not in first and c != "area_km2"] + ["area_km2"]

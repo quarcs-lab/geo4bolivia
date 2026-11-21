@@ -41,7 +41,7 @@ The running example asks how the Sustainable Development Index (`index_sdg`, IDS
 
 ```{python}
 df = geo.combine({"sdg": ["index_sdg", "population", "urbanization"],
-                  "sdg01": ["sdg1_2_mpi"]}, scale="municipality")
+                  "sdg01": ["sdg1_2_mpi"]}, scale="map343")
 df["log_population"] = np.log(df["population"])
 
 variables = ["index_sdg", "urbanization", "log_population", "sdg1_2_mpi"]
@@ -180,10 +180,10 @@ Random effects treat the unit intercepts as random draws that are **unrelated to
 
 ### A long panel: night-time lights and population density
 
-The SDG data have two periods. For a longer panel, `geo.combine()` joins night-time lights per capita (`ln_NTLpc`, in logs, 2012–2020) and population density (`pop_density`, people per km²). Both are computed on an earlier municipal map and cover 333 municipalities.
+The SDG data have two periods. For a longer panel, `geo.combine()` joins night-time lights per capita (`ln_NTLpc`, in logs, 2012–2020) and population density (`pop_density`, people per km²). Both were computed on the municipal map of 2015 and are published on it, `map339`, so the panel is put together on that map: 339 municipalities.
 
 ```{python}
-panel = geo.combine(["ntl", "pop"], scale="municipality")
+panel = geo.combine(["ntl", "pop"], scale="map339")
 d = geo.describe(panel, ["ln_NTLpc", "pop_density"])
 d[d["year"].isin([2012, 2020])][["variable", "year", "count", "mean", "median"]]
 ```
@@ -199,11 +199,11 @@ pm
 pm.gt
 ```
 
-The model uses the rows with both variables: 2,930 observations of 331 municipalities over nine years.
+The model uses the rows with both variables: 2,984 observations of 337 municipalities over nine years.
 
 - **Between** (0.0012): municipalities that are denser on average over the nine years have more light per person. A difference of 100 people per km² goes with 0.12 more log points of lights per capita, about 13% more light per person.
-- **Within** (0.0022): in the years when a municipality is denser than its own average, it also has more light per person than its own average.
-- The **Hausman test** (χ² = 2.34 with 1 degree of freedom, p = 0.13) does not reject random effects, whose estimate (0.0014) lies between the other two.
+- **Within** (0.0023): in the years when a municipality is denser than its own average, it also has more light per person than its own average.
+- The **Hausman test** (χ² = 2.68 with 1 degree of freedom, p = 0.10) does not reject random effects, whose estimate (0.0014) lies between the other two.
 - Density accounts for very little of the variation in either direction: the between R² is 0.05 and the within R² is below 0.01.
 
 Standard errors are clustered by municipality by default (`cluster=True`), which allows the errors of the same municipality to be related across years. `.summary` and `.hausman` hold the numbers:
@@ -215,19 +215,19 @@ pm.summary[["estimator", "n", "units", "years", "r2_within", "r2_between"]]
 
 ### Year effects change the within estimate
 
-Between 2012 and 2020 both variables rose on average: the table above shows the mean of log lights per capita going from 13.1 to 13.9, and mean density from 52 to 63 people per km². A within estimator compares each municipality with itself over the years, so a rise that all municipalities share counts as association, even if the two rises have nothing to do with each other. `time_effects=True` adds an intercept for each year, which removes whatever is common to all units in a year.
+Between 2012 and 2020 both variables rose on average: the table above shows the mean of log lights per capita going from 13.1 to 13.9, and mean density from 51 to 61 people per km². A within estimator compares each municipality with itself over the years, so a rise that all municipalities share counts as association, even if the two rises have nothing to do with each other. `time_effects=True` adds an intercept for each year, which removes whatever is common to all units in a year.
 
 ```{python}
 pm_t = geo.panel_model(panel, "ln_NTLpc", "pop_density", time_effects=True)
 pm_t.gt
 ```
 
-The within estimate changes sign, from 0.0022 to −0.0019. The question it now answers is narrower: in the years when a municipality's density is higher than its own average *by more than the country's movement that year*, are its lights per capita higher too? The answer is no: they are lower. The between estimate is the same as before, because averaging over the years leaves no year to adjust for.
+The within estimate changes sign, from 0.0023 to −0.0020. The question it now answers is narrower: in the years when a municipality's density is higher than its own average *by more than the country's movement that year*, are its lights per capita higher too? The answer is no: they are lower. The between estimate is the same as before, because averaging over the years leaves no year to adjust for.
 
 Two cautions about this result:
 
 - **The negative within estimate is partly built in.** Lights per capita are lights divided by population, and density is population divided by an area that does not change. Within a municipality, density rises only when population rises, and if lights do not keep pace, lights per capita fall. A variable that sits in the numerator of one side and the denominator of the other produces a negative association by construction.
-- **The Hausman test now rejects random effects** (χ² = 38.7, p < 0.001), where it did not before. The test is about a specification, not about the data in general. Decide whether the model needs year effects first, on the grounds of what could be common to all units, and read the test after.
+- **The Hausman test now rejects random effects** (χ² = 40.2, p < 0.001), where it did not before. The test is about a specification, not about the data in general. Decide whether the model needs year effects first, on the grounds of what could be common to all units, and read the test after.
 
 ### Two periods: the SDG data
 
@@ -359,7 +359,7 @@ What can be said from the three models together:
 The results also depend on who counts as a neighbour. A quick check with other weights, the six nearest municipalities instead of those sharing a border:
 
 ```{python}
-w6 = geo.weights("municipality", method="knn", k=6)
+w6 = geo.weights("map343", method="knn", k=6)
 diag6 = geo.spatial_diagnostics(df, "index_sdg", "urbanization", w=w6)
 error6 = geo.spatial_model(df, "index_sdg", "urbanization", model="error", w=w6)
 print(diag6.recommendation, "| coefficient:", round(coef(error6), 3),

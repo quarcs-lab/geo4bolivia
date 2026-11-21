@@ -10,8 +10,12 @@ import geopandas as gpd
 import pandas as pd
 
 from . import metadata, store
-from .scales import ancestors, scale_of
+from .scales import ancestors, check, scales_of
 from .scales import get as get_scale
+
+#: Where a table records the scale (the map) of its units, in ``DataFrame.attrs``: ``load`` sets it,
+#: and pandas keeps it through filtering and copying.
+SCALE_KEY = "geo:scale"
 
 
 def datasets(ref: str | None = None) -> pd.DataFrame:
@@ -149,6 +153,7 @@ def load(dataset: str, scale: str | None = None, years=None, variables=None,
     if geometry:
         shapes = boundaries(res["geo:scale"], ref=ref)[["geo_id", "name", "geometry"]]
         df = shapes.merge(df.drop(columns="name", errors="ignore"), on="geo_id", how="right")
+    df.attrs[SCALE_KEY] = res["geo:scale"]
     return df
 
 
@@ -170,18 +175,21 @@ def add_names(df: pd.DataFrame, groups=None, scale: str | None = None, ref: str 
         A copy with ``name`` and one column per group (the group unit's name) after
         ``geo_id`` (and ``year``).
     """
+    certain = scale is not None or bool(getattr(df, "attrs", {}).get(SCALE_KEY))
     if scale is None:
-        found = {scale_of(i, ref) for i in df["geo_id"].dropna().drop_duplicates()}
+        found = table_scales(df, ref=ref, strict=False)
         if len(found) != 1:
             if groups:
                 raise ValueError(f"Rows mix units from several scales ({sorted(found)}), so groups= cannot be added")
-            # a stacked table (e.g. aggregate(to=[...])): each unit takes its own name
-            every = units(ref=ref).set_index("geo_id")["name"]
+            # a stacked table (e.g. aggregate(to=[...])): each unit takes its own scale's name
             out = df.drop(columns="name", errors="ignore").copy()
-            out["name"] = out["geo_id"].map(every)
+            out["name"] = pd.NA
+            for one in found:
+                own = out["geo_id"].isin(_ids(one, ref)) & out["name"].isna()
+                out.loc[own, "name"] = out.loc[own, "geo_id"].map(units(one, ref=ref).set_index("geo_id")["name"])
             first = ["geo_id", "name"] + (["year"] if "year" in out.columns else [])
             return out[first + [c for c in out.columns if c not in first]]
-        scale = found.pop()
+        scale = found[0]
     groups = [groups] if isinstance(groups, str) else list(groups or [])
     unit_table = units(scale, ref=ref).set_index("geo_id")
     out = df.drop(columns=["name", *groups], errors="ignore").copy()
@@ -192,7 +200,68 @@ def add_names(df: pd.DataFrame, groups=None, scale: str | None = None, ref: str 
         group_names = units(group, ref=ref).set_index("geo_id")["name"]
         out[group] = out["geo_id"].map(unit_table[f"{group}_id"]).map(group_names)
     first = ["geo_id", "name"] + (["year"] if "year" in out.columns else []) + groups
-    return out[first + [c for c in out.columns if c not in first]]
+    out = out[first + [c for c in out.columns if c not in first]]
+    if certain:
+        out.attrs[SCALE_KEY] = scale
+    return out
+
+
+def _ambiguous(maps) -> ValueError:
+    return ValueError(f"These units are on more than one map ({', '.join(maps)}); pass map= (or scale=) "
+                      "to say which one they belong to")
+
+
+def table_scales(df: pd.DataFrame, scale: str | None = None, ref: str | None = None,
+                 strict: bool = True) -> list[str]:
+    """The scales (maps) of a table's units.
+
+    In order: ``scale`` when given; the scale the table records (``load`` records it in
+    ``df.attrs``); else the scales whose ID patterns the units match. Maps of the same
+    units share their IDs, so units that match several are placed on the map that has every
+    one of them, and an error asks for ``map=`` when more than one map has them all
+    (``strict=False`` takes the first of them instead: enough for names, which maps of
+    the same units share).
+    """
+    if scale is not None:
+        return [check(scale, ref)]
+    recorded = df.attrs.get(SCALE_KEY) if hasattr(df, "attrs") else None
+    if recorded:
+        return [recorded]
+    groups: dict[tuple[str, ...], list[str]] = {}
+    for gid in df["geo_id"].dropna().astype(str).unique():
+        groups.setdefault(tuple(scales_of(gid, ref)), []).append(gid)
+    found: list[str] = []
+    for candidates, members in groups.items():
+        if not candidates:
+            raise ValueError(f"{members[0]!r} matches no scale; known scales: {', '.join(get_scale_ids(ref))}")
+        if len(candidates) > 1:
+            fit = [c for c in candidates if set(members) <= _ids(c, ref)]
+            if len(fit) != 1 and (strict or not fit):
+                raise _ambiguous(fit or candidates)
+            candidates = tuple(fit)
+        if candidates[0] not in found:
+            found.append(candidates[0])
+    return found
+
+
+def table_scale(df: pd.DataFrame, scale: str | None = None, ref: str | None = None) -> str:
+    """The one scale (map) of a table's units (see ``table_scales``); an error if they mix scales."""
+    found = table_scales(df, scale, ref)
+    if len(found) != 1:
+        raise ValueError(f"Rows mix units from several scales ({', '.join(found) or 'none'})")
+    return found[0]
+
+
+def get_scale_ids(ref: str | None = None) -> list[str]:
+    from .scales import scales as registry
+    return list(registry(ref=ref))
+
+
+@cache
+def _ids(scale: str, ref: str | None) -> frozenset:
+    """The geo IDs of a scale's published units."""
+    u = _units(ref)
+    return frozenset(u.loc[u["scale"] == scale, "geo_id"].astype(str))
 
 
 def group_label(scale: str, ref: str | None = None) -> str:
@@ -221,7 +290,7 @@ def units(scale: str | None = None, ref: str | None = None) -> pd.DataFrame:
         source uses for it (e.g. ``ine_code``), which ``geo.link(..., key=...)`` matches.
     """
     df = _units(ref)
-    return (df if scale is None else df[df["scale"] == scale]).reset_index(drop=True).copy()
+    return (df if scale is None else df[df["scale"] == check(scale, ref)]).reset_index(drop=True).copy()
 
 
 def boundaries(scale: str, ref: str | None = None) -> gpd.GeoDataFrame:
@@ -232,7 +301,9 @@ def boundaries(scale: str, ref: str | None = None) -> gpd.GeoDataFrame:
     scale
         A scale id (see ``geo.scales()``)
     """
-    return gpd.read_parquet(store.open_binary(f"geo/boundaries/{scale}.parquet", ref))
+    out = gpd.read_parquet(store.open_binary(f"geo/boundaries/{check(scale, ref)}.parquet", ref))
+    out.attrs[SCALE_KEY] = scale
+    return out
 
 
 def crosswalk(source: str, target: str, ref: str | None = None) -> pd.DataFrame:
@@ -241,7 +312,7 @@ def crosswalk(source: str, target: str, ref: str | None = None) -> pd.DataFrame:
     Parameters
     ----------
     source
-        The finer scale, e.g. ``"municipality"``
+        The finer scale, e.g. a municipal map
     target
         A coarser scale it nests in, e.g. ``"department"``
 
@@ -252,4 +323,4 @@ def crosswalk(source: str, target: str, ref: str | None = None) -> pd.DataFrame:
         (1.0 for nested scales). Crosswalks are published for every pair of active
         scales where one nests in the other, from finer to coarser.
     """
-    return pd.read_csv(store.open_binary(f"geo/crosswalks/{source}__{target}.csv", ref))
+    return pd.read_csv(store.open_binary(f"geo/crosswalks/{check(source, ref)}__{check(target, ref)}.csv", ref))

@@ -30,7 +30,7 @@ import geo4bolivia as geo
 
 ## 1. Scales
 
-A **scale** is a set of units that covers the country: departments, provinces, municipalities, and later grid cells. The scales are listed in a registry, which `geo.scales()` returns as a table.
+A **scale** is a set of units that covers the country: departments, provinces, municipalities, and later grid cells. A municipal map is a scale of its own, named after its number of units: `map343` and `map339`. The scales are listed in a registry, which `geo.scales()` returns as a table.
 
 ```{python}
 geo.scales()
@@ -40,15 +40,21 @@ geo.scales()
 | --- | --- |
 | `kind` | `admin`: administrative units that nest by ID prefix. `grouping`: unions of whole units of another scale. `grid`: regular cells. `custom`: any other zones |
 | `parent` | The next coarser scale every unit lies in exactly. It defines the hierarchy `geo.aggregate()` climbs |
-| `id_pattern` | A regular expression every ID of the scale matches. The patterns do not overlap, so an ID tells its scale |
+| `id_pattern` | A regular expression every ID of the scale matches. The patterns do not overlap, except between maps of the same units, so an ID tells its scale or its kind of unit |
 | `status` | `active`: published. `planned`: the scale and its ID scheme are reserved, with no data yet |
 
-Four scales are active: 1 country, 9 departments, 113 provinces and 343 municipalities. Two helper functions answer the usual questions about the hierarchy: what a scale nests in, and what scale an ID belongs to.
+Five scales are active: 1 country, 9 departments, 113 provinces and two municipal maps, `map343` (343 municipalities) and `map339` (339). Two helper functions answer the usual questions about the hierarchy: what a scale nests in, and what scale an ID belongs to.
 
 ```{python}
-print(geo.ancestors("municipality"))
-print(geo.scale_of("BO-04-17"), "|", geo.scale_of("BO-04-17-04"))
+print(geo.ancestors("map343"))
+print(geo.scale_of("BO-04-17"))
+try:
+    geo.scale_of("BO-04-17-04")         # a municipality is on both maps
+except ValueError as error:
+    print(error)
 ```
+
+A municipal ID alone does not say which map it is on, because the two maps share their IDs (section 3). That is why each dataset records its map, and why the spatial functions take `map=`.
 
 ## 2. Geo IDs
 
@@ -59,12 +65,12 @@ A geo ID is the country code followed by one two-digit number per administrative
 | `country` | `BO` | `BO` (Bolivia) |
 | `department` | `BO-NN` | `BO-04` (La Paz) |
 | `province` | `BO-NN-NN` | `BO-04-17` (Murillo) |
-| `municipality` | `BO-NN-NN-NN` | `BO-04-17-04` (Nuestra Señora de La Paz) |
+| `map343`, `map339` | `BO-NN-NN-NN` | `BO-04-17-04` (Nuestra Señora de La Paz) |
 
 `geo.units()` lists the units of a scale. Each row carries the ID of every coarser unit it lies in (`province_id`, `department_id`, `country_id`), so a join across scales never needs string surgery:
 
 ```{python}
-units = geo.units("municipality")
+units = geo.units("map343")
 units[units["geo_id"] == "BO-04-17-04"].T
 ```
 
@@ -75,7 +81,7 @@ The same row shows the **source keys**: the codes other sources use for this uni
 | `ine_code` | Bolivia's National Statistics Institute (INE), as text with leading zeros (`020101`) |
 | `mun_id` | the same INE code as a number (`20101`), as many tables store it |
 | `gid` | GADM 4.1 (`BOL.4.17.4_2`) |
-| `asdf_id` | the polygon of the DS4Bolivia repository on which `pop`, `ntl` and the embeddings were computed; empty for the 10 units whose territory changed (section 4) |
+| `asdf_id` | the polygon of the DS4Bolivia repository on which `pop`, `ntl` and the embeddings were computed; in `map343`, empty for the 10 units whose territory changed (section 3) |
 | `name_ds4bolivia`, `name_gadm` | older spellings of the name |
 
 ::: {.callout-warning}
@@ -102,7 +108,7 @@ Eight municipality names belong to two or three municipalities in different depa
 
 The geography is three kinds of table, all keyed by `geo_id`.
 
-**Units.** Without an argument, `geo.units()` returns every unit of every scale: 466 rows.
+**Units.** Without an argument, `geo.units()` returns every unit of every scale: 805 rows, in which the IDs of the municipalities appear twice, once per map.
 
 ```{python}
 geo.units().groupby("scale").size()
@@ -119,19 +125,28 @@ print(list(departments.columns))
 **Crosswalks.** `geo.crosswalk()` links the units of a finer scale to those of a coarser one. `weight_area` is the share of the finer unit's area that lies in the coarser unit; it is 1 for scales that nest.
 
 ```{python}
-geo.crosswalk("municipality", "department").head(3)
+geo.crosswalk("map343", "department").head(3)
 ```
 
-### The 343-unit map
+### Two municipal maps
 
-The boundaries are SDSN Bolivia's municipal map of 2025: 343 municipalities and indigenous autonomies, the units of the SDG Atlas 2026. They are lightly simplified (about 100 m), and provinces, departments and the country are exact unions of the municipalities, so the scales nest without gaps or overlaps. The map states no open license and is used and shared with SDSN Bolivia's permission; credit it as *SDSN Bolivia (2025). Límites Municipales Bolivia 2025 [Archivo shapefile]. https://sdsnbolivia.org/datos-espaciales/*.
+`map343` is SDSN Bolivia's municipal map of 2025: 343 municipalities and indigenous autonomies, the units of the SDG Atlas 2026. They are lightly simplified (about 100 m), and provinces, departments and the country are exact unions of the municipalities, so the scales nest without gaps or overlaps. The map states no open license and is used and shared with SDSN Bolivia's permission; credit it as *SDSN Bolivia (2025). Límites Municipales Bolivia 2025 [Archivo shapefile]. https://sdsnbolivia.org/datos-espaciales/*.
 
-Municipalities are created over time, and the IDs are built to survive that. The previous map, of 2015, had 339 municipalities. All 339 kept their geo IDs in the 2025 map, and the four units created since were numbered after the last municipality of their province (one of them, TIOC-Territorio Indígena Multiétnico, is alone in a new province, `BO-03-09`). An ID therefore never changes meaning. What did change is the territory of the six municipalities that gave land to the new units. These ten units are the ones without an `asdf_id`:
+Municipalities are created over time, and the IDs are built to survive that. The previous map, of 2015, had 339 municipalities; it is published too, as `map339` (GeoBolivia's map, through geoBoundaries, public domain), because `pop`, `ntl` and the satellite embeddings were computed on its polygons. All 339 municipalities kept their geo IDs in the 2025 map, and the four units created since were numbered after the last municipality of their province (one of them, TIOC-Territorio Indígena Multiétnico, is alone in a new province, `BO-03-09`). An ID therefore names the same municipality on both maps. What changed is the territory of the six municipalities that gave land to the new units. In `map343`, these ten units are the ones without an `asdf_id`:
 
 ```{python}
 changed = units[units["asdf_id"].isna()]
 changed[["geo_id", "name", "ine_code", "area_km2"]]
 ```
+
+The crosswalk between the maps gives the share of each `map339` unit's area that lies in each `map343` unit. Colquechaca, for example, gave most of its 2015 territory to San Pedro de Macha:
+
+```{python}
+moves = geo.crosswalk("map339", "map343")
+moves[moves["geo_id_from"] == "BO-07-04-01"]
+```
+
+The two maps also differ slightly along many borders, because they were drawn from different sources: a share of 0.97 for an unchanged municipality is a difference of outlines, not of territory. Provinces, departments and the country are unions of `map343`; the `map339` municipalities lie in them by ID.
 
 ### Holes in the map
 
@@ -142,7 +157,7 @@ geo.map(units, "area_km2", scheme="quantiles",
         title="Area of the municipalities (km²)")
 ```
 
-The areas of the 343 municipalities add up to the area of the country unit, which confirms that the scales nest exactly:
+The areas of the 343 municipalities of `map343` add up to the area of the country unit, which confirms that the scales nest exactly:
 
 ```{python}
 print(round(units["area_km2"].sum()), round(geo.units("country")["area_km2"].sum()))
@@ -200,7 +215,21 @@ Two features of the catalog above need explaining.
 
 **Two periods stored as 2012 and 2024.** The SDG Atlas measures each indicator twice, near the census of 2012 and near the census of 2024, from sources of different years. Its datasets (`sdg` and one per goal, `sdg01` to `sdg17`, with none for goals 12 and 14) store the two periods at the *nominal* years 2012 and 2024, so that every variable can be compared between them. The actual years are in the metadata (next section).
 
-**333 units instead of 343.** `pop`, `ntl`, `emb` and `embpw` were computed on the polygons of the 2015 map. Their values are valid for the 333 municipalities whose territory has not changed, and they have no rows for the ten units listed in section 3. The analysis functions work on the units with data: a spatial function, for example, builds the neighbour relations among them and reports their number in the result's `w_spec`.
+**Two maps.** The `scale` column says which map a dataset is on: the SDG Atlas on `map343`; `pop`, `ntl`, `emb` and `embpw`, computed on the polygons of the 2015 map, on `map339`, with all its 339 municipalities and none of the four created since. `geo.load()` records the map in the table it returns, and the analysis functions read it from there, so a loaded panel needs nothing more. A table you build by merging datasets loses that record (pandas does not keep it through a merge); if its units are on both maps, a spatial function then asks which one with `map=`:
+
+```{python}
+df = geo.load("ntl", years=2020)
+print(df.attrs["geo:scale"])
+mixed = geo.load("sdg", variables="index_sdg", years=2024).merge(
+    geo.load("pop", variables="pop", years=2020).drop(columns="year"), on="geo_id")
+try:
+    geo.moran(mixed, "pop")
+except ValueError as error:
+    print(error)
+geo.moran(mixed, "pop", map="map339").w_spec
+```
+
+The analysis functions work on the units with data: a spatial function builds the neighbour relations among them and reports their number and map in the result's `w_spec`.
 
 ## 5. The metadata
 
@@ -288,7 +317,7 @@ Because the data are plain files with stable paths, any tool can read them. Ther
 
 | Path | Contents |
 | --- | --- |
-| `data/<scale>/<dataset>.csv` and `.parquet` | the panel of a dataset |
+| `data/<scale>/<dataset>.csv` and `.parquet` | the panel of a dataset, in the folder of its map (`data/map343/sdg.csv`, `data/map339/ntl.csv`) |
 | `geo/units.csv`, `geo/boundaries/<scale>.geojson`, `geo/crosswalks/<from>__<to>.csv` | the geography |
 | `metadata/<dataset>.datapackage.json` | the metadata |
 
@@ -314,11 +343,12 @@ import geopandas as gpd
 
 BASE = "https://raw.githubusercontent.com/quarcs-lab/gdo4bolivia/main/"
 
-ntl = pd.read_csv(BASE + "data/municipality/ntl.csv")     # geo_id, year, variables
+ntl = pd.read_csv(BASE + "data/map339/ntl.csv")     # geo_id, year, variables
 units = pd.read_csv(BASE + "geo/units.csv", dtype={"ine_code": str})
+units = units[units["scale"] == "map339"]          # ntl's map: one row per unit
 ntl = ntl.merge(units[["geo_id", "name", "department_id"]], on="geo_id")
 
-shapes = gpd.read_file(BASE + "geo/boundaries/municipality.geojson")
+shapes = gpd.read_file(BASE + "geo/boundaries/map339.geojson")
 gdf = shapes.merge(ntl[ntl["year"] == 2020], on="geo_id")
 ```
 
@@ -329,8 +359,8 @@ Replace `main` in the URL with a release tag for a frozen version. What the pack
 ## In short
 
 - A **geo ID** identifies each unit and nests by prefix (`BO-04-17-04` lies in `BO-04-17`, in `BO-04`, in `BO`). It follows GADM's numbering, not INE's; the INE codes are columns of `geo.units()`.
-- Four scales are active (country, department, province, municipality); `geo.scales()`, `geo.ancestors()` and `geo.scale_of()` describe the hierarchy.
-- The boundaries are SDSN Bolivia's map of 2025 with 343 units. Salt flats and lakes are holes in it. Datasets computed on the 2015 map cover 333 units.
+- Five scales are active (country, department, province and two municipal maps, `map343` and `map339`); `geo.scales()`, `geo.ancestors()` and `geo.scale_of()` describe the hierarchy.
+- `map343` is SDSN Bolivia's map of 2025 (the SDG data); `map339` is the map of 2015 (`pop`, `ntl`, the embeddings). The maps share their geo IDs, each dataset records its map, and `map=` names it where a table does not. Salt flats and lakes are holes in both.
 - Every dataset is a **panel** with one row per `geo_id` and `year`. The SDG datasets store two periods at the nominal years 2012 and 2024.
 - The **metadata** give each variable its label, unit, aggregation rule and reference years, and each dataset its sources, licenses and citation: `geo.dictionary()`, `geo.reference_years()`, `geo.labels()`, `geo.info()`, `geo.cite()`.
 - The data are read from GitHub by default, from a tag with `ref=`, from a local clone, or with plain URLs and no package.

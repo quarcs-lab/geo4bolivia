@@ -24,7 +24,7 @@ from __future__ import annotations
 import pandas as pd
 
 from . import io, metadata
-from .scales import ancestors, scale_of
+from .scales import ancestors
 from .scales import get as get_scale
 
 
@@ -53,11 +53,7 @@ def _panel_inputs(data, scale, years, variables, labels, groups, ref):
         # your own panel: columns named like published variables keep their metadata labels
         described = {k: v for k, v in _describe(metadata.field_index(ref).values()).items()}
         df = data.drop(columns="geometry", errors="ignore").copy()
-        if scale is None:
-            found = {scale_of(i, ref) for i in df["geo_id"].dropna().drop_duplicates()}
-            if len(found) != 1:
-                raise ValueError(f"Rows mix units from several scales: {sorted(found)}")
-            scale = found.pop()
+        scale = io.table_scale(df, scale, ref)
     for name, text in (labels or {}).items():
         described[name] = (text, text)
 

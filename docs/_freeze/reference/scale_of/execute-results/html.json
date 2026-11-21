@@ -1,8 +1,8 @@
 {
-  "hash": "b95fb8d1a047a3d8728ca9e3d9dbc89c",
+  "hash": "528beba4fea219e153b4f1babb6e8ce6",
   "result": {
     "engine": "jupyter",
-    "markdown": "---\ntitle: scale_of\n---\n\n\n\n```python\nscale_of(geo_id, ref=None)\n```\n\nThe scale a geo ID belongs to, from the ID patterns (e.g. a municipality ID -> ``\"municipality\"``).\n\n## Example {.doc-section .doc-section-example}\n\n```python\n!pip install -q geo4bolivia\nimport geo4bolivia as geo\nimport plotly.express as px\n\nprint(geo.scale_of(\"BO-04-17-04\"), geo.scale_of(\"BO-04\"))\n```\n\n\n::: {#5577bdf6 .cell execution_count=1}\n\n::: {.cell-output .cell-output-stdout}\n```\nmunicipality department\n```\n:::\n:::\n\n\n",
+    "markdown": "---\ntitle: scale_of\n---\n\n\n\n```python\nscale_of(geo_id, ref=None)\n```\n\nThe scale a geo ID belongs to, from the ID patterns (e.g. a department ID -> ``\"department\"``).\n\nTwo maps of the same units (municipal maps of different years) share their IDs, so an\nID of theirs matches several scales: then the scale must be named (``map=`` in the\nanalysis functions, ``scale=`` in ``load``, ``units`` and ``boundaries``).\n\n## Example {.doc-section .doc-section-example}\n\n```python\n!pip install -q geo4bolivia\nimport geo4bolivia as geo\nimport plotly.express as px\n\nprint(geo.scale_of(\"BO-04-17\"), geo.scale_of(\"BO-04\"))   # province, department\ntry:\n    geo.scale_of(\"BO-04-17-04\")        # a municipality: on map343 and map339\nexcept ValueError as error:\n    print(error)\n```\n\n\n::: {#42d0a594 .cell execution_count=1}\n\n::: {.cell-output .cell-output-stdout}\n```\nprovince department\n'BO-04-17-04' is a unit of several maps (map343, map339); name the one meant (map= in the analysis functions, scale= in load, units and boundaries)\n```\n:::\n:::\n\n\n",
     "supporting": [
       "scale_of_files"
     ],

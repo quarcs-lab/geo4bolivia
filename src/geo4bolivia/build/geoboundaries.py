@@ -26,6 +26,7 @@ from __future__ import annotations
 import geopandas as gpd
 import pandas as pd
 
+from ..scales import ancestors
 from ..scales import scales as registry
 
 
@@ -37,8 +38,8 @@ def from_geoboundaries(path, lookup: pd.DataFrame, units: pd.DataFrame, key: str
 
 
 def from_polygons(path, lookup: pd.DataFrame, units: pd.DataFrame, key: str,
-                  tolerance_m: float | None = 100) -> dict:
-    """Boundary layers of every active scale from a polygon file of the finest scale.
+                  tolerance_m: float | None = 100, scale: str | None = None) -> dict:
+    """Boundary layers of a scale and of every active scale it nests in, from its polygon file.
 
     Parameters
     ----------
@@ -49,6 +50,8 @@ def from_polygons(path, lookup: pd.DataFrame, units: pd.DataFrame, key: str,
         ``publish_geo``; ``parent_id`` chains each unit to the coarser scales
     tolerance_m : coverage simplification in metres of the project's equal-area CRS
         (``None`` keeps the source's vertices)
+    scale : the scale of the polygons (default: the one scale whose units the lookup names;
+        name it when two maps share their geo IDs)
 
     Returns ``{scale: GeoDataFrame}`` (``geo_id``, polygons in WGS 84) for ``publish_geo``.
     """
@@ -64,10 +67,14 @@ def from_polygons(path, lookup: pd.DataFrame, units: pd.DataFrame, key: str,
     unmatched = shapes.loc[shapes["geo_id"].isna(), key]
     if not unmatched.empty:
         raise ValueError(f"{len(unmatched)} polygons are not in the lookup, e.g. {list(unmatched[:3])}")
-    finest = units.loc[units["geo_id"].isin(ids), "scale"].unique()
-    if len(finest) != 1:
-        raise ValueError(f"the lookup's geo_ids must all be units of one scale, got {list(finest)}")
-    finest = finest[0]
+    if scale is None:
+        found = units.loc[units["geo_id"].isin(ids), "scale"].unique()
+        if len(found) != 1:
+            raise ValueError(f"the lookup's geo_ids must all be units of one scale, got {list(found)}; name it (scale=)")
+        scale = found[0]
+    finest = scale
+    coarser = [s for s in ancestors(finest) if s in registry(active_only=True)]
+    units = units[units["scale"].isin([finest, *coarser])]
     missing = set(units.loc[units["scale"] == finest, "geo_id"]) - set(shapes["geo_id"])
     if missing:
         raise ValueError(f"{len(missing)} {finest} units have no polygon, e.g. {sorted(missing)[:3]}")
@@ -93,12 +100,10 @@ def from_polygons(path, lookup: pd.DataFrame, units: pd.DataFrame, key: str,
             cur = parent.get(cur)
         chain[gid] = row
     layers = {finest: shapes.to_crs("EPSG:4326")}
-    for scale in registry(active_only=True):
-        if scale == finest:
-            continue
-        group = shapes["geo_id"].map(lambda g, s=scale: chain[g].get(s))
+    for target in coarser:
+        group = shapes["geo_id"].map(lambda g, s=target: chain[g].get(s))
         if group.isna().any():
-            raise ValueError(f"some {finest} units do not lie in any {scale} unit")
+            raise ValueError(f"some {finest} units do not lie in any {target} unit")
         merged = [(gid, shapely.union_all(part.geometry.to_numpy())) for gid, part in shapes.groupby(group)]
-        layers[scale] = gpd.GeoDataFrame(merged, columns=["geo_id", "geometry"], crs=shapes.crs).to_crs("EPSG:4326")
+        layers[target] = gpd.GeoDataFrame(merged, columns=["geo_id", "geometry"], crs=shapes.crs).to_crs("EPSG:4326")
     return layers

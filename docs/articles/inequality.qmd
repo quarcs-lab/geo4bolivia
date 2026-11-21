@@ -152,7 +152,7 @@ The standard deviation fell by about a tenth, from 5.82 to 5.26 points, and the 
 
 ## 4. A long panel: testing the trend
 
-With three or more years, `geo.inequality()` also estimates the **trend** of each measure: it regresses the logarithm of the measure on the year, so the slope is the average proportional change per year. The dataset `pop` has a gridded population estimate (WorldPop) for 333 municipalities in every year from 2001 to 2020.
+With three or more years, `geo.inequality()` also estimates the **trend** of each measure: it regresses the logarithm of the measure on the year, so the slope is the average proportional change per year. The dataset `pop` has a gridded population estimate (WorldPop) for the 339 municipalities of the 2015 map (`map339`) in every year from 2001 to 2020.
 
 ```{python}
 long = geo.inequality("pop", "pop", measures=("gini", "theil", "cv"))
@@ -163,14 +163,14 @@ long
 long.summary[["measure", "first", "last", "change", "slope", "se", "pvalue"]]
 ```
 
-The Gini index of municipal population rose from 0.696 in 2001 to 0.715 in 2020. Its slope is 0.0014: the index grew by 0.14% a year on average, and the trend is statistically significant (the p-value is far below 0.01). The Theil index rose at a similar rate (0.13% a year). The coefficient of variation did not move: its slope is not distinguishable from zero (p = 0.36).
+The Gini index of municipal population rose from 0.691 in 2001 to 0.710 in 2020. Its slope is 0.0014: the index grew by 0.14% a year on average, and the trend is statistically significant (the p-value is far below 0.01). The Theil index rose at the same rate (0.14% a year). The coefficient of variation hardly moved: its slope, 0.02% a year, is a sixth of the others, although with twenty smooth values it is still distinguishable from zero (p = 0.006).
 
-So the measures disagree, and the table in section 1 says why they can. The Gini index reacts to the middle of the distribution and the coefficient of variation to its very top. Read together, they say that population became somewhat more concentrated among the municipalities in general, while the distance between the very largest ones and the average did not change.
+So the measures differ in size, and the table in section 1 says why they can. The Gini index reacts to the middle of the distribution and the coefficient of variation to its very top. Read together, they say that population became somewhat more concentrated among the municipalities in general, while the distance between the very largest ones and the average barely changed.
 
 Three cautions about this result:
 
 - The series is a modelled estimate that changes smoothly from year to year, which is why the standard error of the Gini trend is so small. The test says that a straight line fits these twenty values closely; it does not have twenty independent measurements behind it.
-- The 333 municipalities are those whose territory did not change between the municipal maps of 2015 and 2025 (`geo.info("pop")` explains it). The result describes them.
+- The 339 municipalities are those of the 2015 map, on which the population was computed; the four units created since have no values, and six municipalities count their 2015 territory (`geo.info("pop")` explains it). The result describes them.
 - `first=` and `last=` restrict the years, for instance `geo.inequality("pop", "pop", first=2012)`. A trend over a different window can differ.
 
 With more than four years the Lorenz figure draws only the first and the last year; `.lorenz` keeps all of them.
@@ -181,7 +181,7 @@ The Gini index is an average over all pairs of units. `spatial=True` separates t
 
 ```{python}
 sp = geo.inequality(sdg, "index_sdg", spatial=True, permutations=999)
-linked = geo.weights("municipality").pct_nonzero
+linked = geo.weights("map343").pct_nonzero
 print(sp.df.round(5))
 print((sp.df["gini_spatial"] / sp.df["gini"]).round(4).tolist(), round(linked, 2))
 ```
@@ -230,7 +230,7 @@ Between the 113 provinces lies 66% of the inequality in 2024. That does not make
 How large is the mechanical part? Shuffle the municipalities among the groups, keeping the sizes of the groups, and see what share random groups give. This is what the permutation test does internally.
 
 ```{python}
-units = geo.units("municipality")[["geo_id", "department_id", "province_id"]]
+units = geo.units("map343")[["geo_id", "department_id", "province_id"]]
 rng = np.random.default_rng(1)
 rows = []
 for by, real in [("department_id", dep), ("province_id", prov)]:
@@ -260,7 +260,7 @@ For population the departments hold 6 to 7% of the inequality between municipali
 
 ## In short
 
-- `geo.inequality()` gives the Gini index, Theil's index and the coefficient of variation in each year. They are relative measures and react to different parts of the distribution, so they can disagree, as they do for population between 2001 and 2020.
+- `geo.inequality()` gives the Gini index, Theil's index and the coefficient of variation in each year. They are relative measures and react to different parts of the distribution, so they can disagree, as they nearly do for population between 2001 and 2020 (the Gini index rose six times faster than the coefficient of variation).
 - The Lorenz curve shows the whole distribution: the further it sags below the diagonal, the more unequal the values. `.lorenz_share()` reads points off it.
 - The Sustainable Development Index is more evenly spread across municipalities in 2024 than in 2012 by all three measures (Gini 0.065 to 0.049). About two thirds of the fall of its coefficient of variation comes from the higher mean, one third from smaller gaps in points.
 - An inequality index of a bounded score is small by construction, has no "total" that is shared out, and can change direction when the score is turned around. Compare it with itself, and report the mean and the standard deviation with it.

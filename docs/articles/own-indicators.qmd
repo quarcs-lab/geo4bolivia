@@ -73,7 +73,7 @@ by_name = pd.DataFrame({"municipio": ["Sucre", "El Alto", "San Pedro", "Cochabmb
                         "clinics": [41, 63, 5, 30]})
 with warnings.catch_warnings(record=True) as problems:
     warnings.simplefilter("always")
-    linked = geo.link(by_name, scale="municipality", on="municipio", errors="warn")
+    linked = geo.link(by_name, scale="map343", on="municipio", errors="warn")
 for problem in problems:
     print(problem.message, "\n")
 linked
@@ -89,7 +89,7 @@ Codes do not have this problem. Official statistics carry the municipality code 
 by_code = pd.DataFrame({"codigo": [10101, 20105, 20101, 50501, 71005],
                         "year": 2024,
                         "clinics": [41, 63, 58, 5, 9]})
-clinics = geo.link(by_code, scale="municipality", on="codigo", key="mun_id")
+clinics = geo.link(by_code, scale="map343", on="codigo", key="mun_id")
 geo.add_names(clinics, groups=["department"])
 ```
 
@@ -100,11 +100,11 @@ The last two rows are two different municipalities called San Pedro, each linked
 `geo.check()` lists what would stop a table from being a valid panel: unknown IDs, more than one row per unit and year, years that are not integers. An empty list means the table is ready.
 
 ```{python}
-print(geo.check(clinics, scale="municipality"))
+print(geo.check(clinics, scale="map343"))
 
 broken = pd.DataFrame({"geo_id": ["BO-04-17-04", "BO-04-17-04", "BO-99-01-01"],
                        "year": [2024, 2024, 2024], "clinics": [58, 60, 7]})
-geo.check(broken, scale="municipality")
+geo.check(broken, scale="map343")
 ```
 
 ## 2. A raster of your own
@@ -140,7 +140,7 @@ with rasterio.open(tif, "w", driver="GTiff", width=n, height=n, count=1,
 One call turns the raster into a panel. `name=` is the prefix of the new columns and `year=` the year to record.
 
 ```{python}
-access = geo.zonal(tif, scale="municipality", stats=["mean", "max"],
+access = geo.zonal(tif, scale="map343", stats=["mean", "max"],
                    name="dist_km", year=2024)
 print(geo.check(access))
 access.head(3)
@@ -165,7 +165,7 @@ Three things to know about `zonal`:
 
 ```{python}
 panel = geo.combine({"sdg": ["population"], "sdg01": ["sdg1_2_mpi"]},
-                    scale="municipality", years=2024, extra=[access])
+                    scale="map343", years=2024, extra=[access])
 panel.head(3)
 ```
 
@@ -200,7 +200,7 @@ The two means answer different questions. In La Paz the average municipality is 
 Some variables cannot be aggregated as they are. Night-time lights are published as the logarithm of lights per person (`ln_NTLpc`), whose rule in the metadata is `none`: the mean of the municipal logarithms is not the logarithm of the department's lights per person. The way through is to go back to totals, add them up, and build the ratio again.
 
 ```{python}
-lights = geo.combine(["ntl", "pop"], scale="municipality", years=2020)
+lights = geo.combine(["ntl", "pop"], scale="map339", years=2020)
 lights = lights.dropna(subset=["ln_NTLpc"])
 lights["ntl"] = np.exp(lights["ln_NTLpc"]) * lights["pop"]       # total lights
 
@@ -210,7 +210,7 @@ dep["ln_NTLpc"] = np.log(dep["ntl"] / dep["pop"])
 geo.add_names(dep)[["geo_id", "name", "ln_NTLpc", "n_units", "coverage"]].round(2)
 ```
 
-`coverage` is below 1 in four departments: night-time lights exist for 333 of the 343 municipalities, and some of those have no value in 2020 (the `dropna` line removes them, so that their population is not counted without their lights). A department total built from part of its municipalities should be reported with that share.
+Both datasets are on the municipal map of 2015, `map339`, so they are combined on it. `coverage` is below 1 in three departments: lights exist for the 339 municipalities of that map, but some have no value in 2020 (the `dropna` line removes them, so that their population is not counted without their lights). A department total built from part of its municipalities should be reported with that share.
 
 ## 5. Units that do not nest
 
@@ -256,7 +256,7 @@ geo.map(grid.merge(on_grid), "population", scheme="quantiles",
 
 ```{python}
 package = geo.save(
-    access, "access", scale="municipality", directory=work / "my_data",
+    access, "access", scale="map343", directory=work / "my_data",
     title="Distance to the main cities",
     description="Straight-line distance from each municipality to the nearest of "
                 "La Paz, Cochabamba and Santa Cruz de la Sierra.",

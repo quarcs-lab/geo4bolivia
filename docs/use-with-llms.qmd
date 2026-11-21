@@ -48,10 +48,11 @@ res.interpret()    # a reading of the numbers in words
 
 **Rules that avoid the usual mistakes**
 
-- The SDG Atlas datasets (`sdg`, `sdg01` to `sdg17`) have **two periods**, stored as years 2012 and 2024, for 343 municipalities. `pop` (2001 to 2020) and `ntl` (2012 to 2020) have 333 municipalities.
+- The SDG Atlas datasets (`sdg`, `sdg01` to `sdg17`) have **two periods**, stored as years 2012 and 2024, for the 343 municipalities of `map343`. `pop` (2001 to 2020), `ntl` (2012 to 2020) and the embeddings are on `map339`, the 2015 map of 339 municipalities.
+- **Two municipal maps share their geo IDs.** A loaded dataset knows its map; a table built by merging datasets does not, so pass `map="map343"` or `map="map339"` to the spatial functions (`geo.moran`, `geo.lisa`, `geo.map`, ...). The scale `"municipality"` no longer exists.
 - Methods that need many years (`sigma_convergence`, `convergence_clubs`, `transitions`) run on `pop` and `ntl`, not on the two SDG periods; the error message says so.
 - `beta_convergence` and `sigma_convergence` take a variable in **levels** and log it themselves. `ln_NTLpc` is already a logarithm: use `np.exp` first.
-- Link tables by **code**, never by name: municipality names repeat across departments. `geo.link(table, scale="municipality", on="<column>", key="ine_code")`.
+- Link tables by **code**, never by name: municipality names repeat across departments. `geo.link(table, scale="map343", on="<column>", key="ine_code")`.
 - Use the vocabulary of the package: `variable`, `year`, `first` and `last`, `by`, `y` and `x`.
 - Results describe **associations**. Do not turn them into causal statements.
 - Cite the data: `print(geo.cite("sdg01"))` gives the citation and the credits the sources require.

@@ -183,7 +183,7 @@ def test_clubs_recover_the_planted_clubs(two_clubs, units):
 
 
 def test_clubs_map_and_log_options(growth_panel, units):
-    res = convergence_clubs(growth_panel, "gdppc", log=True, map=False)
+    res = convergence_clubs(growth_panel, "gdppc", log=True, draw_map=False)
     assert res.fig_map is None and res.notes == () and res.n_periods == 6
     levels = growth_panel[growth_panel["year"] == 2000].set_index("geo_id")["gdppc"]
     raw = convergence_clubs(growth_panel, "gdppc", log=True, hp_filter=False, gdf=units)
@@ -211,7 +211,7 @@ def test_clubs_say_what_a_short_panel_lacks(growth_panel, units):
 def test_a_variable_that_is_not_positive_is_refused(growth_panel):
     logs = growth_panel.assign(gdppc=np.log(growth_panel["gdppc"]) - 9)       # centred logs: many below zero
     for run in (lambda: beta_convergence(logs, "gdppc"), lambda: sigma_convergence(logs, "gdppc"),
-                lambda: convergence_clubs(logs, "gdppc", log=True, map=False)):
+                lambda: convergence_clubs(logs, "gdppc", log=True, draw_map=False)):
         with pytest.raises(ValueError, match="strictly positive variable in levels"):
             run()
     with pytest.raises(ValueError, match=r"value\(s\) of zero or less \(in 2000, 2005\)"):

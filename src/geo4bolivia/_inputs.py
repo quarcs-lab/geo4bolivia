@@ -20,7 +20,7 @@ import geopandas as gpd
 import pandas as pd
 
 from . import io, project
-from .scales import scale_of
+from .io import SCALE_KEY
 
 ENTITY, TIME, NAME = "geo_id", "year", "name"
 _LABELS_KEY = "geo_labels"     # where the engine keeps the labels declared on a table (``_engine._labels``)
@@ -71,27 +71,36 @@ def _distinct_groups(df: pd.DataFrame, ref: str | None) -> pd.DataFrame:
     if df.empty:
         return df
     try:
-        scale = scale_of(df[ENTITY].iloc[0], ref)
+        scale = io.table_scales(df, ref=ref, strict=False)[0]
         coarser = [c for c in ancestors(scale, ref) if c in df.columns]
         if not coarser:
             return df
-        table = io.units(ref=ref).set_index(ENTITY)
+        own = io.units(scale, ref=ref).set_index(ENTITY)
+        every = io.units(ref=ref)
+        above = every[every["scale"].isin(ancestors(scale, ref))].set_index(ENTITY)   # unique IDs
     except Exception:                        # data that are not in the project
         return df
     for group in coarser:
-        units_of_group = table[table["scale"] == group]
+        units_of_group = above[above["scale"] == group]
         names = units_of_group[NAME]
         repeated = names[names.duplicated(keep=False)]
-        ids = df[ENTITY].map(table.get(f"{group}_id", pd.Series(dtype=object)))
+        ids = df[ENTITY].map(own.get(f"{group}_id", pd.Series(dtype=object)))
         if repeated.empty or ids.isna().any() or not (df[group] == ids.map(names)).all():
             continue                         # nothing to do, or a column of the user's own
         distinct = names.copy()
-        distinct[repeated.index] = repeated + " (" + units_of_group.loc[repeated.index, "parent_id"].map(table[NAME]) + ")"
+        parent_names = units_of_group.loc[repeated.index, "parent_id"].map(above[NAME])
+        distinct[repeated.index] = repeated + " (" + parent_names + ")"
         df = df.assign(**{group: ids.map(distinct)})
     return df
 
 
-def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, ref: str | None = None) -> pd.DataFrame:
+def _has_scale(dataset: str, scale: str, ref: str | None) -> bool:
+    from . import metadata
+    return any(r["geo:scale"] == scale for r in metadata.package(dataset, ref)["resources"])
+
+
+def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, scale: str | None = None,
+          ref: str | None = None) -> pd.DataFrame:
     """A dataset id or a frame, as a plain panel ready for the engine.
 
     Parameters
@@ -104,29 +113,44 @@ def panel(data, variables=None, *, groups=None, gdf=None, numeric: bool = True, 
         Coarser scales whose unit names are needed as columns (e.g. ``"department"``)
     gdf
         Explicit boundaries, used for the units' names when the table has none
+    scale
+        The map (scale) of the units, the ``map=`` of the public functions: a dataset
+        published on it is loaded there; otherwise the units are drawn on its boundaries.
+        Default: the dataset's own map, or the one a table records (``load`` records it)
 
     Returns
     -------
     pandas.DataFrame
         A copy with ``name`` (and the groups), whose ``attrs`` declare the panel ids
-        (``geo_id``, ``year``, ``name``) and the labels of its columns for the engine.
+        (``geo_id``, ``year``, ``name``), the labels of its columns for the engine and,
+        when known, the units' map.
     """
     from ._engine._labels import set_labels
     from ._engine._panel import set_panel
 
     variables, groups = as_list(variables), as_list(groups)
+    if scale is not None:
+        from .scales import check
+        check(scale, ref)
     if isinstance(data, str):
-        df = io.load(data, variables=variables or None, names=True, groups=groups or None, ref=ref)
+        native = scale if scale is not None and _has_scale(data, scale, ref) else None
+        df = io.load(data, native, variables=variables or None, names=True, groups=groups or None, ref=ref)
+        recorded = scale or df.attrs.get(SCALE_KEY)
     else:
         if not isinstance(data, pd.DataFrame):
             raise TypeError("data must be a dataset id or a DataFrame with a geo_id column")
         if ENTITY not in data.columns:
             raise ValueError(f"The table needs a {ENTITY!r} column (as returned by load)")
+        recorded = scale or getattr(data, "attrs", {}).get(SCALE_KEY)
         df = pd.DataFrame(data).drop(columns="geometry", errors="ignore").copy()
         missing = [v for v in variables if v not in df.columns]
         if missing:
             raise ValueError(f"No column(s) {missing} in the table; it has {[c for c in df.columns if c != ENTITY]}")
+        if recorded:
+            df.attrs[SCALE_KEY] = recorded
         df = _with_names(df, gdf, groups, ref)
+    if recorded:
+        df.attrs[SCALE_KEY] = recorded
     df = _distinct_groups(df, ref)
     if numeric:
         text = [v for v in variables if not pd.api.types.is_numeric_dtype(df[v])]
@@ -188,12 +212,14 @@ def shapes(df: pd.DataFrame | None, gdf=None, *, scale: str | None = None, ids: 
         if scale is None:
             if df is None or not len(df):
                 raise ValueError("Give a scale, boundaries (gdf=) or a table with units")
-            scale = scale_of(df[ENTITY].iloc[0], ref)
+            scale = io.table_scale(df, ref=ref)
         # in the project's equal-area projection, so distances (nearest neighbours, distance
         # bands, kernels) are in metres without guessing a projection
         gdf = io.boundaries(scale, ref=ref).to_crs(project.equal_area_crs())
     elif not isinstance(gdf, gpd.GeoDataFrame) or ENTITY not in gdf.columns:
         raise ValueError(f"gdf must be a GeoDataFrame with a {ENTITY!r} column")
+    else:
+        scale = None                          # boundaries of the user's own
     out = gdf[[c for c in (ENTITY, NAME) if c in gdf.columns] + [gdf.geometry.name]]
     if ids is not None:
         out = out[out[ENTITY].isin(set(ids))]
@@ -203,7 +229,18 @@ def shapes(df: pd.DataFrame | None, gdf=None, *, scale: str | None = None, ids: 
     if out.crs is None:
         out = out.set_crs("EPSG:4326")
     out.attrs[_GEO_KEY] = {"entity": ENTITY, "entity_name": NAME if NAME in out.columns else None}
+    if scale is not None:
+        out.attrs[SCALE_KEY] = scale
     return out
+
+
+def on_map(w, gdf):
+    """Weights whose description (``spec``, every result's ``w_spec``) names the map they were built on."""
+    scale = getattr(gdf, "attrs", {}).get(SCALE_KEY)
+    meta = getattr(w, "geo_meta", None)
+    if scale and isinstance(meta, dict) and meta.get("spec") and f"(on {scale})" not in meta["spec"]:
+        meta["spec"] = f"{meta['spec']} (on {scale})"
+    return w
 
 
 def spatial_weights(gdf: gpd.GeoDataFrame, w=None, *, method: str = "queen", **options):
@@ -221,7 +258,7 @@ def spatial_weights(gdf: gpd.GeoDataFrame, w=None, *, method: str = "queen", **o
         # result carries as ``w_spec``: a default should not warn on every call.
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", AnalysisWarning)
-            return make_weights(gdf, method=method, entity=ENTITY, **options)
+            return on_map(make_weights(gdf, method=method, entity=ENTITY, **options), gdf)
     ids = list(gdf[ENTITY])
     known = set(w.id_order)
     if set(ids) == known:
@@ -247,13 +284,13 @@ def one_year(df: pd.DataFrame) -> int | None:
 
 
 def spatial(data, variables=None, *, year=None, gdf=None, w=None, groups=None, weights: bool = True,
-            ref: str | None = None) -> tuple[pd.DataFrame, gpd.GeoDataFrame, object]:
+            scale: str | None = None, ref: str | None = None) -> tuple[pd.DataFrame, gpd.GeoDataFrame, object]:
     """The three inputs of a spatial analysis: the panel, its boundaries and its weights.
 
     Parameters
     ----------
-    data, variables, groups, gdf
-        See ``panel``
+    data, variables, groups, gdf, scale
+        See ``panel`` (``scale`` is the public functions' ``map=``)
     year
         ``None`` or a year: keep that year only (the last with data for every
         variable when ``None``); ``"all"``: keep every year with data; a list of years:
@@ -270,7 +307,7 @@ def spatial(data, variables=None, *, year=None, gdf=None, w=None, groups=None, w
     a unit without data is not a neighbour, and every table and statistic refers to the
     same set of units.
     """
-    df = panel(data, variables, groups=groups, gdf=gdf, ref=ref)
+    df = panel(data, variables, groups=groups, gdf=gdf, scale=scale, ref=ref)
     cols = as_list(variables)
     if TIME in df.columns:
         if isinstance(year, str) and year.lower() == "all":

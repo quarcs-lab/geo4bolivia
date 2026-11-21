@@ -2,7 +2,7 @@
 import geo4bolivia as geo
 import plotly.express as px
 
-xw = geo.crosswalk("municipality", "department")
+xw = geo.crosswalk("map343", "department")
 n = xw.groupby("geo_id_to", as_index=False).size()
 n["department"] = n["geo_id_to"].map(geo.units("department")
                                      .set_index("geo_id")["name"])

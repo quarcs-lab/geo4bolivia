@@ -69,13 +69,21 @@ def get(scale: str, ref: str | None = None) -> Scale:
     return reg[scale]
 
 
+def check(scale: str, ref: str | None = None) -> str:
+    """``scale`` if the registry has it, else a ``ValueError`` that lists the known scales."""
+    reg = _registry(ref)
+    if scale not in reg:
+        raise ValueError(f"Unknown scale or map {scale!r}; known: {', '.join(reg)}")
+    return scale
+
+
 def ancestors(scale: str, ref: str | None = None) -> list[str]:
     """Coarser scales a unit of ``scale`` nests in, in breadth-first order.
 
     Administrative scales follow ``parent``; a scale whose units are unions of
     ``scale`` units (a grouping, such as statistical regions) is also an ancestor. The parent
     chain of each level comes before the groupings of that level, e.g.
-    ``municipality -> [province, department, country]``.
+    ``district -> [province, department, country]``.
     """
     reg = _registry(ref)
     found: list[str] = []
@@ -91,9 +99,22 @@ def ancestors(scale: str, ref: str | None = None) -> list[str]:
     return found
 
 
+def scales_of(geo_id: str, ref: str | None = None) -> list[str]:
+    """Every scale whose ID pattern ``geo_id`` matches (several when maps share their IDs)."""
+    return [s.id for s in _registry(ref).values() if s.matches(geo_id)]
+
+
 def scale_of(geo_id: str, ref: str | None = None) -> str:
-    """The scale a geo ID belongs to, from the ID patterns (e.g. a municipality ID -> ``"municipality"``)."""
-    hits = [s.id for s in _registry(ref).values() if s.matches(geo_id)]
-    if len(hits) != 1:
-        raise ValueError(f"{geo_id!r} matches {len(hits)} scales")
+    """The scale a geo ID belongs to, from the ID patterns (e.g. a department ID -> ``"department"``).
+
+    Two maps of the same units (municipal maps of different years) share their IDs, so an
+    ID of theirs matches several scales: then the scale must be named (``map=`` in the
+    analysis functions, ``scale=`` in ``load``, ``units`` and ``boundaries``).
+    """
+    hits = scales_of(geo_id, ref)
+    if len(hits) > 1:
+        raise ValueError(f"{geo_id!r} is a unit of several maps ({', '.join(hits)}); name the one meant "
+                         "(map= in the analysis functions, scale= in load, units and boundaries)")
+    if not hits:
+        raise ValueError(f"{geo_id!r} matches no scale; known scales: {', '.join(_registry(ref))}")
     return hits[0]

@@ -49,7 +49,13 @@ def validate_geo() -> Report:
     root = store.repo_root()
     units = _units()
     reg = registry()
-    rep.check(units["geo_id"].is_unique, "duplicate geo_id in geo/units")
+    rep.check(not units.duplicated(["scale", "geo_id"]).any(), "duplicate geo_id within a scale in geo/units")
+    # a geo ID may repeat only across maps of the same units: scales with the same ID pattern
+    shared = units[units["geo_id"].duplicated(keep=False)]
+    patterns = shared["scale"].map(lambda s: reg[s].id_pattern if s in reg else s)
+    mixed = shared.assign(p=patterns).groupby("geo_id")["p"].nunique()
+    rep.check(not (mixed > 1).any(),
+              f"geo IDs shared by scales with different ID patterns: {list(mixed[mixed > 1].index[:5])}")
     rep.check(set(units["scale"]) <= set(reg), f"units with unknown scales: {set(units['scale']) - set(reg)}")
     for sid, sc in registry(active_only=True).items():
         u = units[units["scale"] == sid]
@@ -73,16 +79,28 @@ def validate_geo() -> Report:
                   f"{sid}: boundaries not in WGS 84 / CRS84")
         rep.check((root / f"geo/boundaries/{sid}.geojson").exists(), f"{sid}: missing GeoJSON boundaries")
     # crosswalks: complete, weights sum to 1, and children really lie inside parents
+    def check_crosswalk(path, sid, target):
+        xw = pd.read_csv(path)
+        rep.check(set(xw["geo_id_from"]) == set(units.loc[units["scale"] == sid, "geo_id"]),
+                  f"{sid}__{target}: does not cover every {sid} unit")
+        rep.check(set(xw["geo_id_to"]) <= set(units.loc[units["scale"] == target, "geo_id"]),
+                  f"{sid}__{target}: links to ids that are not {target} units")
+        sums = xw.groupby("geo_id_from")["weight_area"].sum()
+        rep.check(np.allclose(sums, 1.0, atol=1e-4), f"{sid}__{target}: weights do not sum to 1")
+
+    expected = set()
     for sid in registry(active_only=True):
         for target in ancestors(sid):
             path = root / f"geo/crosswalks/{sid}__{target}.csv"
-            if not rep.check(path.exists(), f"missing crosswalk {sid}__{target}"):
-                continue
-            xw = pd.read_csv(path)
-            rep.check(set(xw["geo_id_from"]) == set(units.loc[units["scale"] == sid, "geo_id"]),
-                      f"{sid}__{target}: does not cover every {sid} unit")
-            sums = xw.groupby("geo_id_from")["weight_area"].sum()
-            rep.check(np.allclose(sums, 1.0), f"{sid}__{target}: weights do not sum to 1")
+            expected.add(path.name)
+            if rep.check(path.exists(), f"missing crosswalk {sid}__{target}"):
+                check_crosswalk(path, sid, target)
+    for path in sorted((root / "geo/crosswalks").glob("*__*.csv")):   # others, e.g. between two maps
+        if path.name in expected:
+            continue
+        sid, target = path.stem.split("__", 1)
+        if rep.check(sid in reg and target in reg, f"crosswalk {path.name} names an unknown scale"):
+            check_crosswalk(path, sid, target)
     from .aggregate import overlay_weights  # local import: geometry work only when validating
     for sid, sc in registry(active_only=True).items():
         if not sc.parent:
@@ -91,8 +109,11 @@ def validate_geo() -> Report:
         ow = overlay_weights(gpd.read_parquet(root / f"geo/boundaries/{sid}.parquet"),
                              gpd.read_parquet(root / f"geo/boundaries/{sc.parent}.parquet"))
         inside = xw.merge(ow, on=["geo_id_from", "geo_id_to"], how="left")["share_of_from"].fillna(0)
-        low = xw.loc[inside.values < NEST_TOLERANCE, "geo_id_from"].tolist()
-        rep.check(not low, f"{sid} units less than {NEST_TOLERANCE:.1%} inside their {sc.parent}: {low[:5]}")
+        # a map drawn from another source than its parents (``nesting: ids``) nests by ID: its
+        # units lie mostly, not exactly, inside their parent
+        least = 0.5 if sc.extra.get("nesting") == "ids" else NEST_TOLERANCE
+        low = xw.loc[inside.values < least, "geo_id_from"].tolist()
+        rep.check(not low, f"{sid} units less than {least:.1%} inside their {sc.parent}: {low[:5]}")
     return rep
 
 
