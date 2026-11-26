@@ -1,9 +1,12 @@
-"""Dataset metadata: one Frictionless Data Package per dataset in ``metadata/``.
+"""Dataset metadata: one Frictionless Data Package per dataset, ``data/<dataset>/datapackage.json``.
 
-Each package lists one resource per spatial scale the dataset is published at.
+Every dataset has a folder of its own: ``data/<dataset>/`` holds its datapackage, its
+generated README and one subfolder per map or scale with the files
+(``data/<dataset>/<scale>/<dataset>.csv`` and ``.parquet``). ``data/index.json`` lists the
+dataset ids. Each package lists one resource per spatial scale the dataset is published at.
 GDO-specific information lives in ``geo:``-prefixed properties:
 
-- package: ``geo:categories``, ``geo:citation``, ``geo:notes``, ``geo:notebooks``,
+- package: ``geo:categories``, ``geo:notes``, ``geo:notebooks``,
   ``geo:weights`` (``{"population": "sdg"}``: the dataset that holds each weight a
   ``weighted_mean:<field>`` rule names when the field is not in this dataset;
   ``geo.aggregate()`` and ``geo.combine()`` load it from there),
@@ -15,7 +18,8 @@ GDO-specific information lives in ``geo:``-prefixed properties:
   the source itself) and ``geo:attribution`` (the credit text the source asks for)
 - resource: ``geo:scale``, ``geo:period`` ([first, last] year), ``geo:years``
   (every year with rows, e.g. ``[2012, 2024]`` for a two-period panel), ``geo:units``
-  (number of units with rows), ``geo:path`` (CSV path in the repo), ``geo:parquet``,
+  (number of units with rows), ``geo:path`` (CSV path in the repo,
+  ``data/<dataset>/<scale>/<dataset>.csv``), ``geo:parquet``,
   ``geo:source_geometry``. The build writes ``geo:period``, ``geo:years`` and ``geo:units``
   from the data.
 - field: ``geo:unit``, ``geo:source``, ``geo:role`` (``id`` | ``time`` |
@@ -34,9 +38,14 @@ from __future__ import annotations
 import json
 from functools import cache
 
-from . import store
+from . import project, store
 
-INDEX = "metadata/index.json"   # list of dataset ids, so remote clients can discover them
+INDEX = "data/index.json"   # list of dataset ids, so remote clients can discover them
+
+
+def package_path(dataset: str) -> str:
+    """Where a dataset's datapackage lives in the data repository."""
+    return f"data/{dataset}/datapackage.json"
 
 
 @cache
@@ -48,7 +57,7 @@ def dataset_ids(ref: str | None = None) -> tuple[str, ...]:
 def package(dataset: str, ref: str | None = None) -> dict:
     if dataset not in dataset_ids(ref):
         raise KeyError(f"Unknown dataset {dataset!r}; available: {', '.join(dataset_ids(ref))}")
-    return json.load(store.open_binary(f"metadata/{dataset}.datapackage.json", ref))
+    return json.load(store.open_binary(package_path(dataset), ref))
 
 
 def clear_cache() -> None:
@@ -85,6 +94,30 @@ def aggregation_rules(dataset: str, scale: str | None = None, ref: str | None = 
 def weight_sources(dataset: str, ref: str | None = None) -> dict[str, str]:
     """``{weight field: dataset}`` from ``geo:weights``: where to find weights this dataset lacks."""
     return dict(package(dataset, ref).get("geo:weights", {}))
+
+
+def observatory_citation() -> str:
+    """The observatory's own citation (``citation: apa`` in project.yaml)."""
+    cfg = project.config()
+    cited = (cfg.get("citation") or {}).get("apa")
+    return cited or f"{cfg['name']}. {cfg.get('website') or 'https://github.com/' + cfg['repository']}"
+
+
+def citations(pkg: dict) -> list[str]:
+    """How to cite a dataset, in order: its original sources, then who processes and maintains the
+    data, then the other sources (boundaries, intermediaries). APA, one string each.
+
+    The maintainer is the observatory (``citation`` in project.yaml), unless the package carries a
+    ``geo:citation`` of its own, as a dataset saved with ``geo.save(..., citation=)`` does.
+    """
+    sources = pkg.get("sources", [])
+    original = [s.get("title", "") for s in sources if s.get("geo:role") == "original"]
+    others = [s.get("title", "") for s in sources if s.get("geo:role") != "original"]
+    out: list[str] = []
+    for text in [*original, pkg.get("geo:citation") or observatory_citation(), *others]:
+        if text and text not in out:
+            out.append(text)
+    return out
 
 
 def resource_years(res: dict) -> list[int]:

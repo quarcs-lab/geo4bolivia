@@ -82,7 +82,7 @@ Every dataset is also a CSV and a Parquet file you can read with pandas alone:
 import pandas as pd
 
 BASE = "https://raw.githubusercontent.com/quarcs-lab/gdo4bolivia/main/"
-ids = pd.read_csv(BASE + "data/map343/sdg.csv")
+ids = pd.read_csv(BASE + "data/sdg/map343/sdg.csv")
 units = pd.read_csv(BASE + "geo/units.csv")       # names, parents and source codes
 units = units[units["scale"] == "map343"]          # one map: one row per unit
 ```

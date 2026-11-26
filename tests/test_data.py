@@ -170,9 +170,13 @@ def test_save_writes_a_valid_dataset(tmp_path):
     df = pd.DataFrame({"geo_id": np.repeat(u["geo_id"], 2), "year": np.tile([2020, 2021], len(u)), "pop": 1.0})
     pkg = geo.save(df, "mydata", scale=scale, directory=tmp_path,
                    variables={"pop": {"description": "Population", "unit": "people", "aggregation": "sum"}})
-    assert (tmp_path / f"data/{scale}/mydata.parquet").exists()
-    saved = json.loads((tmp_path / "metadata/mydata.datapackage.json").read_text())
+    folder = tmp_path / "data/mydata"
+    assert (folder / f"{scale}/mydata.parquet").exists() and (folder / f"{scale}/mydata.csv").exists()
+    saved = json.loads((folder / "datapackage.json").read_text())
     assert saved == pkg and saved["resources"][0]["geo:period"] == [2020, 2021]
+    assert saved["resources"][0]["geo:path"] == f"data/mydata/{scale}/mydata.csv"
+    readme = (folder / "README.md").read_text()
+    assert "Population" in readme and f"{scale}/mydata.csv" in readme
     field = saved["resources"][0]["schema"]["fields"][2]
     assert field["geo:aggregation"] == "sum" and field["title"] == "pop"
 
@@ -210,9 +214,9 @@ def test_everything_validates():
 
 @pytest.fixture
 def repo_copy(tmp_path, monkeypatch):
-    """A copy of geo/, metadata/ and data/ that the package reads instead of the checkout."""
+    """A copy of geo/ and data/ that the package reads instead of the checkout."""
     root = store.repo_root()
-    for part in ("geo", "metadata", "data"):
+    for part in ("geo", "data"):
         shutil.copytree(root / part, tmp_path / part)
     shutil.copy(root / "project.yaml", tmp_path / "project.yaml")
     caches = (project.local_root, project.config, metadata.package, metadata.dataset_ids)
@@ -243,7 +247,7 @@ def test_validator_catches_broken_data(repo_copy):
 @needs_checkout
 def test_validator_catches_incomplete_metadata(repo_copy):
     dataset = DATASETS[0]
-    path = repo_copy / f"metadata/{dataset}.datapackage.json"
+    path = repo_copy / metadata.package_path(dataset)
     pkg = json.loads(path.read_text())
     field = pkg["resources"][0]["schema"]["fields"][-1]
     del field["title"]                                     # no label
@@ -319,7 +323,14 @@ def test_info_and_cite_describe_every_dataset(dataset):
     text, page = repr(i), i._repr_html_()
     assert i.title in text and "Coverage" in text and "<h3>" in page
     apa, bib = geo.cite(dataset), geo.cite(dataset, style="bibtex")
-    assert apa and bib.startswith("@misc{") and dataset in bib
+    assert apa and "@misc{" in bib and bib.startswith("% Cite")
+    cited = apa.split("\n\n")
+    sources = metadata.package(dataset)["sources"]
+    original = [s["title"] for s in sources if s.get("geo:role") == "original"]
+    observatory = metadata.observatory_citation()
+    # the original sources first, then the observatory that processes and maintains the data
+    assert cited[:len(original) + 1] == [*original, observatory]
+    assert set(cited) == {*original, observatory, *(s["title"] for s in sources)}
     with pytest.raises(ValueError):
         geo.cite(dataset, style="mla")
 
@@ -410,9 +421,28 @@ def test_aggregate_to_several_scales_reports_coverage():
 
 @needs_data
 @needs_checkout
+def test_validator_catches_files_outside_the_dataset_folder(repo_copy):
+    dataset = DATASETS[0]
+    path = repo_copy / metadata.package_path(dataset)
+    pkg = json.loads(path.read_text())
+    res = pkg["resources"][0]
+    moved = f"data/{res['geo:scale']}/{dataset}"           # the layout before 0.9.0
+    for key, ext in (("geo:path", "csv"), ("geo:parquet", "parquet")):
+        (repo_copy / f"{moved}.{ext}").parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(repo_copy / res[key], repo_copy / f"{moved}.{ext}")
+        res[key] = f"{moved}.{ext}"
+    res["path"] = store.raw_url(res["geo:path"], project.config().get("default_ref", "main"))
+    path.write_text(json.dumps(pkg))
+    (repo_copy / f"data/{dataset}/README.md").unlink()
+    errors = " | ".join(validate.validate_dataset(dataset).errors)
+    assert f"data/{dataset}/{res['geo:scale']}/{dataset}.csv" in errors and "README.md" in errors
+
+
+@needs_data
+@needs_checkout
 def test_validator_catches_stale_coverage_metadata(repo_copy):
     dataset = DATASETS[0]
-    path = repo_copy / f"metadata/{dataset}.datapackage.json"
+    path = repo_copy / metadata.package_path(dataset)
     pkg = json.loads(path.read_text())
     pkg["resources"][0]["geo:units"] = 1
     pkg["resources"][0]["geo:years"] = [1900]

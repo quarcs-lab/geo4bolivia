@@ -18,6 +18,19 @@ default_ref: main
 website: https://quarcs-lab.github.io/gdo4bolivia/
 documentation: https://quarcs-lab.github.io/geo4bolivia/
 
+# How to cite the observatory. Every dataset's citations (geo.cite(), the dataset's README,
+# its page on the website) list the original sources first, then this, then the other sources.
+citation:
+  apa: "Mendez, C. (2026). GeoDevelopment Observatory of Bolivia. https://quarcs-lab.github.io/gdo4bolivia/"
+  bibtex: |-
+    @misc{gdobolivia2026,
+      author       = {Mendez, Carlos},
+      title        = {{GeoDevelopment Observatory of Bolivia}},
+      year         = {2026},
+      howpublished = {\url{https://quarcs-lab.github.io/gdo4bolivia/}},
+      note         = {Data and code: https://github.com/quarcs-lab/gdo4bolivia}
+    }
+
 country:
   name: Bolivia
   iso2: BO     # prefix of every geo_id

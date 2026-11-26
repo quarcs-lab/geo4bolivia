@@ -107,16 +107,16 @@ Every analysis function takes a dataset id or a table with a `geo_id` column, fi
 
 ## The data
 
-The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia): nothing to download by hand, and a release tag (`ref="v0.8.1"`) freezes them for reproducible work.
+The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia): nothing to download by hand, and a release tag (`ref="v0.9.0"`) freezes them for reproducible work.
 
 | Dataset | What | Units and years |
 | --- | --- | --- |
 | `sdg`, `sdg01` to `sdg17` | [Atlas de los ODS en Bolivia 2026](https://atlasods.sdsnbolivia.org/) (Andersen & Argandoña, SDSN Bolivia): the Sustainable Development Index, 15 goal indices and 81 indicators | 343 municipalities (map343, 2025 map), about 2012 and about 2024 |
 | `pop` | Population (WorldPop) and population density | 339 municipalities (map339, 2015 map), 2001 to 2020 |
 | `ntl` | Night-time lights per capita (VIIRS) | 339 municipalities (map339), 2012 to 2020 |
-| `emb`, `embpw` | Satellite embeddings, 64 dimensions | 339 municipalities (map339), 2017 |
+| `emb` | Satellite embeddings, 64 dimensions, area- and population-weighted | 339 municipalities (map339), 2017 |
 
-The SDG data are on SDSN Bolivia's municipal map of 2025 (`map343`, used with its permission); `pop`, `ntl` and the embeddings on the map of 2015 they were computed on (`map339`). The two maps share their geo IDs, and the spatial functions take `map=` when a table does not say which one it is on. `geo.info(dataset)` gives each dataset's sources and licenses, and `geo.cite(dataset)` the citation and the credits they require.
+The SDG data are on SDSN Bolivia's municipal map of 2025 (`map343`; the Atlas and the map are licensed by SDSN Bolivia under CC BY 4.0); `pop`, `ntl` and the embeddings on the map of 2015 they were computed on (`map339`). The two maps share their geo IDs, and the spatial functions take `map=` when a table does not say which one it is on. `geo.info(dataset)` gives each dataset's sources and licenses, and `geo.cite(dataset)` the citation and the credits they require.
 
 ## Sister packages
 
@@ -127,6 +127,6 @@ geo4bolivia covers the fundamentals. Two sister packages go further, and `geo.fo
 
 ## Cite
 
-Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.8.1). <https://quarcs-lab.github.io/geo4bolivia/>
+Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.9.0). <https://quarcs-lab.github.io/geo4bolivia/>
 
 Please also cite the sources of the datasets you use: `print(geo.cite("sdg"))`.

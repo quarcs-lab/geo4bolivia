@@ -22,7 +22,7 @@ The observatory is two repositories that change together: a package change often
 | --- | --- | --- |
 | GitHub | `quarcs-lab/gdo4bolivia` | `quarcs-lab/geo4bolivia` |
 | Local folder (siblings) | `geo4bolivia/` (its name before the split; not renamed yet) | `geo4bolivia-package/` |
-| Holds | `raw/`, `builders/`, `geo/`, `data/`, `metadata/`, the observatory website (`site/`), notebooks | `src/geo4bolivia/`, its tests, its documentation site (`docs/`), the Colab notebooks of the guides |
+| Holds | `raw/`, `builders/`, `geo/`, `data/` (one folder per dataset), the observatory website (`site/`), notebooks | `src/geo4bolivia/`, its tests, its documentation site (`docs/`), the Colab notebooks of the guides |
 | Instructions | `CLAUDE.md`, `TEMPLATE.md`, `CONTRIBUTING_DATA.md` | `CLAUDE.md`, `TEMPLATE.md`, `RELEASING.md` |
 | Website, deployed on push to `main` | https://quarcs-lab.github.io/gdo4bolivia/ (`pages.yml`) | https://quarcs-lab.github.io/geo4bolivia/ (`docs.yml`) |
 | A tag `vX.Y.Z` | freezes the data for `ref="vX.Y.Z"` | publishes the package to PyPI (`release.yml`) |
@@ -51,7 +51,7 @@ You are in the **package repository**. The local folder names do not match the G
 2. Data, once PyPI has it: `geo4bolivia[all]>=X.Y.Z` and `version` in `pyproject.toml`, `CITATION.cff`, `ref="vX.Y.Z"` in `README.md`, `CLAUDE.md` and `docs/data-infrastructure.md`; `uv lock --refresh-package geo4bolivia` (retry for a minute while PyPI indexes it), `uv sync`, `validate`, `pytest`; commit "Depend on geo4bolivia X.Y.Z: ...", tag, push `main` and the tag.
 3. Check `gh run list` in both (CI, Docs, Release, Pages) and the live sites.
 
-**A change of the data layout** (a renamed scale, moved files, as in 0.8.0 when `municipality` became `map343` and `map339`) reverses the first two steps: the released package reads the data repository's `main`, and the package's docs build reads it too, so push the data repository's `main` first (still depending on the previous package), then release the package, then raise the data repository's dependency and tag it. Released versions that do not pin `ref=` break in between, so do it in one sitting, and say so in the changelog.
+**A change of the data layout** (a renamed scale, moved files, as in 0.8.0 when `municipality` became `map343` and `map339`, and in 0.9.0 when every dataset got its folder, `data/<dataset>/`) reverses the first two steps: the released package reads the data repository's `main`, and the package's docs build reads it too, so push the data repository's `main` first (still depending on the previous package), then release the package, then raise the data repository's dependency and tag it. Released versions that do not pin `ref=` break in between, so do it in one sitting, and say so in the changelog.
 
 A push carrying many re-executed `docs/_freeze` pages can fail with "the remote end hung up unexpectedly": retry with `git -c http.postBuffer=524288000 push origin main`.
 

@@ -68,4 +68,4 @@ __all__ = [
     # companion packages
     "for_expdpy", "for_geometrics",
 ]
-__version__ = "0.8.1"
+__version__ = "0.9.0"

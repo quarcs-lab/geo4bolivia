@@ -54,7 +54,6 @@ jobs:
           sparse-checkout: |
             project.yaml
             geo
-            metadata
             data
       - uses: astral-sh/setup-uv@v7
         with:

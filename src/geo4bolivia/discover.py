@@ -1,13 +1,13 @@
 """Understanding the data: find variables, read a dataset's documentation, cite it, label and describe panels.
 
-Everything here reads the Frictionless metadata (``metadata/*.datapackage.json``),
+Everything here reads the Frictionless metadata (``data/<dataset>/datapackage.json``),
 so it works for any dataset, including the ones you save with ``geo.save()``
 once they are registered::
 
     geo.search("poverty")              # which variables match, in which datasets and years
     geo.info("<dataset>")              # what a dataset is, its coverage, sources, license, citation
     geo.reference_years("<dataset>")   # the actual years behind each stored year
-    geo.cite("<dataset>")              # how to cite it, with the credits its sources require
+    geo.cite("<dataset>")              # how to cite it: original sources, the observatory, the rest
     geo.labels(df)                     # {column: readable label}, for plot labels=
     geo.describe(df)                   # summary statistics per variable and year
 """
@@ -124,34 +124,26 @@ def reference_years(dataset: str, variable: str | None = None, scale: str | None
 
 
 def _docs_url(dataset: str) -> str:
+    """The dataset's folder on GitHub, where its README (the generated documentation) is shown."""
     repo = project.config()["repository"]
-    return f"https://github.com/{repo}/blob/{project.config().get('default_ref', 'main')}/docs/datasets/{dataset}.md"
+    return f"https://github.com/{repo}/tree/{project.config().get('default_ref', 'main')}/data/{dataset}"
 
 
 def _year(pkg: dict) -> str:
     return str(pkg.get("geo:updated", ""))[:4] or "n.d."
 
 
-def _credits(pkg: dict) -> list[str]:
-    """The credit each source asks for (originals first)."""
-    sources = sorted(pkg.get("sources", []), key=lambda s: s.get("geo:role") != "original")
-    out = []
-    for s in sources:
-        text = s.get("geo:attribution") or s.get("title", "")
-        if text and text not in out:
-            out.append(text)
-    return out
-
-
 def cite(dataset: str, style: str = "apa", ref: str | None = None) -> str:
-    """How to cite a dataset: its recommended citation, then the credits its sources require.
+    """How to cite a dataset: its original sources first, then the observatory that processes and
+    maintains the data, then the other sources (boundaries, intermediaries).
 
     Parameters
     ----------
     dataset
         Dataset id
     style
-        ``"apa"`` (plain text) or ``"bibtex"``
+        ``"apa"`` (plain text, one citation per paragraph) or ``"bibtex"`` (the observatory's
+        BibTeX entry, with every citation in APA as comments above it)
 
     Returns
     -------
@@ -159,25 +151,23 @@ def cite(dataset: str, style: str = "apa", ref: str | None = None) -> str:
         A string; print it: ``print(geo.cite("<dataset>"))``.
     """
     pkg = metadata.package(dataset, ref)
-    cfg = project.config()
+    cited = metadata.citations(pkg)
     if style == "apa":
-        head = pkg.get("geo:citation") or f"{cfg['name']} ({_year(pkg)}). {pkg['title']} [Data set]. {_docs_url(dataset)}"
-    elif style == "bibtex":
-        key = re.sub(r"[^a-z0-9]", "", cfg.get("short_name", cfg["name"]).lower()) + f"_{dataset}_{_year(pkg)}"
-        head = (f"@misc{{{key},\n"
-                f"  author       = {{{{{cfg['name']}}}}},\n"
-                f"  title        = {{{{{pkg['title']}}}}},\n"
-                f"  year         = {{{_year(pkg)}}},\n"
-                f"  howpublished = {{\\url{{{_docs_url(dataset)}}}}},\n"
-                f"  note         = {{Dataset {dataset}, {cfg['name']}}}\n}}")
-    else:
-        raise ValueError("style must be 'apa' or 'bibtex'")
-    credits = _credits(pkg)
-    if not credits:
-        return head
-    prefix = "% " if style == "bibtex" else ""
-    lines = "\n".join(f"{prefix}- {c}" for c in credits)
-    return f"{head}\n\n{prefix}Please also credit the original sources:\n{lines}"
+        return "\n\n".join(cited)
+    if style == "bibtex":
+        cfg = project.config()
+        entry = (cfg.get("citation") or {}).get("bibtex")
+        if not entry or pkg.get("geo:citation"):
+            key = re.sub(r"[^a-z0-9]", "", cfg.get("short_name", cfg["name"]).lower()) + f"_{dataset}_{_year(pkg)}"
+            entry = (f"@misc{{{key},\n"
+                     f"  author       = {{{{{cfg['name']}}}}},\n"
+                     f"  title        = {{{{{pkg['title']}}}}},\n"
+                     f"  year         = {{{_year(pkg)}}},\n"
+                     f"  howpublished = {{\\url{{{_docs_url(dataset)}}}}},\n"
+                     f"  note         = {{Dataset {dataset}, {cfg['name']}}}\n}}")
+        comments = "\n".join(f"% {i}. {c}" for i, c in enumerate(cited, 1))
+        return f"% Cite, in this order:\n{comments}\n\n{entry.strip()}"
+    raise ValueError("style must be 'apa' or 'bibtex'")
 
 
 class DatasetInfo:
@@ -204,7 +194,7 @@ class DatasetInfo:
                          "role": s.get("geo:role", ""),
                          "license": (s.get("geo:license") or {}).get("title") or (s.get("geo:license") or {}).get("name", ""),
                          "credit": s.get("geo:attribution", "")} for s in pkg.get("sources", [])]
-        self.citation = pkg.get("geo:citation", "")
+        self.citations = metadata.citations(pkg)
         self.notes = list(pkg.get("geo:notes", []))
         self.notebooks = [n.get("title", "") for n in pkg.get("geo:notebooks", [])]
         self.docs = _docs_url(dataset)
@@ -228,8 +218,8 @@ class DatasetInfo:
             lines.append(wrap(f"- {s['title']}"))
             if s["license"]:
                 lines.append(wrap(f"License: {s['license']}", "    "))
-        if self.citation:
-            lines += ["", "Cite as (geo.cite)", wrap(self.citation)]
+        if self.citations:
+            lines += ["", "Cite, in this order (geo.cite)", *[wrap(f"{i}. {c}") for i, c in enumerate(self.citations, 1)]]
         if self.notes:
             lines += ["", "Notes", *[wrap(f"- {n}") for n in self.notes]]
         if self.notebooks:
@@ -247,8 +237,8 @@ class DatasetInfo:
                       li(f"{k} ({n} variables)" for k, n in self.reference_years.items())]
         parts += ["<h4>License of the published files</h4>", li(self.licenses), "<h4>Sources</h4>",
                   li(f"{s['title']}" + (f" — License: {s['license']}" if s["license"] else "") for s in self.sources)]
-        if self.citation:
-            parts += ["<h4>Cite as</h4>", f"<p>{e(self.citation)}</p>"]
+        if self.citations:
+            parts += ["<h4>Cite, in this order</h4>", "<ol>" + "".join(f"<li>{e(c)}</li>" for c in self.citations) + "</ol>"]
         if self.notes:
             parts += ["<h4>Notes</h4>", li(self.notes)]
         if self.notebooks:

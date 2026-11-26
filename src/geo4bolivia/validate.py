@@ -133,9 +133,14 @@ def validate_dataset(dataset: str) -> Report:
         name = src.get("title", "")[:40]
         rep.check(bool(name), f"a source has no 'title': {src}")
         rep.check(bool(src.get("geo:license", {"name": "-"}).get("name")), f"source {name!r}: geo:license has no 'name'")
+    rep.check((root / f"data/{dataset}/README.md").is_file(),
+              f"data/{dataset}/README.md is missing (run the build: write_docs)")
     for res in pkg["resources"]:
         sid = res["geo:scale"]
         tag = f"{dataset}[{sid}]"
+        for key, ext in (("geo:path", "csv"), ("geo:parquet", "parquet")):
+            want = f"data/{dataset}/{sid}/{dataset}.{ext}"
+            rep.check(res.get(key) == want, f"{tag}: {key} should be {want} (one folder per dataset)")
         url = store.raw_url(res["geo:path"], project.config().get("default_ref", "main"))
         rep.check(res.get("path") == url, f"{tag}: resource path should be the public URL {url}")
         csv_path, pq_path = root / res["geo:path"], root / res["geo:parquet"]
@@ -243,8 +248,23 @@ def _check_map(rep: Report, dataset: str, spec: dict) -> None:
                   f"geo:map: {variable} has values <= 0, so it cannot be classified on a log scale")
 
 
+def validate_layout() -> Report:
+    """One folder per dataset: ``data/<dataset>/`` for every id of ``data/index.json``, and nothing
+    left of the layout before 0.9.0 (``metadata/``, ``docs/datasets/``)."""
+    rep = Report("layout")
+    root = store.repo_root()
+    ids = set(metadata.dataset_ids())
+    folders = {p.parent.name for p in (root / "data").glob("*/datapackage.json")}
+    rep.check(folders <= ids, f"data/ has datapackages not listed in {metadata.INDEX}: {sorted(folders - ids)}")
+    rep.check(ids <= folders, f"{metadata.INDEX} lists datasets with no data/<dataset>/datapackage.json: "
+                              f"{sorted(ids - folders)}")
+    for old in ("metadata", "docs/datasets"):
+        rep.check(not (root / old).exists(), f"{old}/ is from the layout before 0.9.0: move it into data/<dataset>/")
+    return rep
+
+
 def run(dataset: str | None = None) -> list[Report]:
     targets = [dataset] if dataset else list(metadata.dataset_ids())
-    reports = [] if dataset else [validate_geo()]
+    reports = [] if dataset else [validate_geo(), validate_layout()]
     reports += [validate_dataset(d) for d in targets]
     return reports

@@ -4,6 +4,18 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
+## 0.9.0 (2026-11-26)
+
+**Breaking: one folder per dataset.** Every dataset of the observatory now has a folder of its own, `data/<dataset>/`, that says how it is organised: its metadata (`datapackage.json`), its documentation (`README.md`, which GitHub shows when the folder is opened) and one subfolder per map with the panel (`data/sdg01/map343/sdg01.csv` and `.parquet`). `data/index.json` lists the datasets. The observatory's website links each dataset to its folder. Released versions up to 0.8.1 read the metadata from `metadata/` on `main`, which is gone: upgrade, or pin the data with `ref="v0.8.1"`.
+
+- **The package reads the new layout**: `metadata.package_path()`, `metadata.INDEX` (`data/index.json`). Files are still found through each resource's `geo:path` and `geo:parquet`, now `data/<dataset>/<scale>/<dataset>.csv` and `.parquet`.
+- **`emb` and `embpw` are one dataset, `emb`**: the area-weighted dimensions keep their names (`A00`–`A63`) and the population-weighted ones are `A00_pw`–`A63_pw`. `geo.load("embpw")` no longer works: use `geo.load("emb")` and the `_pw` columns.
+- **`geo.cite()` lists the original sources first, then the observatory**, which processes and maintains the data (`citation` in `project.yaml`), then the other sources (boundaries, intermediaries), one APA citation per paragraph. `style="bibtex"` gives the observatory's BibTeX entry, with the same list as comments. `geo.info()` shows the same list, and the new `metadata.citations()` returns it. The per-dataset `geo:citation` is no longer used by the observatory's datasets; a dataset saved with `geo.save(..., citation=)` is cited with its own citation in the observatory's place.
+- **`geo.save()` writes the same layout**: `<directory>/data/<name>/` with `datapackage.json`, a `README.md` (variables, files, citations) and `<scale>/<name>.csv` and `.parquet`. Its `sources` are cited first (`geo:role: original` unless a dict says otherwise).
+- **Building**: `write_docs()` writes `data/<dataset>/README.md`, with the folder's layout and a Cite section in the order above; `write_catalog()` links the dataset folders.
+- **Validation**: `validate` checks that each dataset's files sit in its folder, that its README exists, that `data/index.json` and the folders agree, and that nothing is left of `metadata/` or `docs/datasets/`.
+- **Licenses**: SDSN Bolivia now licenses the Atlas de los ODS en Bolivia 2026 and its municipal map of 2025 under CC BY 4.0; the metadata, `geo.info()` and the docs say so.
+
 ## 0.8.1 (2026-11-21)
 
 **Building: a finishing step for the data repository.** `geo4bolivia build` now ends by calling `after_build(target)` when the data repository's `builders/__init__.py` defines it, after the catalog. The observatory uses it to give every Python block of the generated dataset docs a Colab notebook of its own, so their Open in Colab badges open the code ready to run, as the website's code boxes do. Nothing changes for builders that do not define it.

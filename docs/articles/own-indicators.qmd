@@ -279,7 +279,7 @@ The function returns the metadata it wrote. Each variable is a field with the pr
 package["resources"][0]["schema"]["fields"][2]
 ```
 
-The folder has the layout of the data repository (`data/<scale>/<name>.csv`, `metadata/<name>.datapackage.json`), so it can be shared as it is, and read back with `pd.read_csv()`. To propose a dataset for the observatory itself, it must also be reproducible from its original files; the data repository's [contribution guide](https://github.com/quarcs-lab/gdo4bolivia/blob/main/CONTRIBUTING_DATA.md) gives the steps, and the metadata file written here is a starting point for it.
+The folder has the layout of the data repository (`data/<name>/`: `datapackage.json`, a `README.md` and `<scale>/<name>.csv` and `.parquet`), so it can be shared as it is, and read back with `pd.read_csv()`. To propose a dataset for the observatory itself, it must also be reproducible from its original files; the data repository's [contribution guide](https://github.com/quarcs-lab/gdo4bolivia/blob/main/CONTRIBUTING_DATA.md) gives the steps, and the metadata file written here is a starting point for it.
 
 ## 7. Analyse it
 

@@ -2,8 +2,8 @@
 
 Steps (see CONTRIBUTING_DATA.md):
 1. Put the original files in raw/<dataset>/ and never edit them.
-2. Write metadata/<dataset>.datapackage.json (copy an existing one) and add the
-   id to metadata/index.json.
+2. Write data/<dataset>/datapackage.json (copy an existing one; its files go in
+   data/<dataset>/<scale>/<dataset>.csv and .parquet) and add the id to data/index.json.
 3. Fill in this builder: read the raw file, attach `geo_id` from a source key,
    and return every field listed in the metadata schema.
 4. Register it in DATASETS in builders/__init__.py, then run:
@@ -27,4 +27,4 @@ def build() -> None:
     #   from geo4bolivia import link; df = link(df, SCALE, on="Province")
     df["geo_id"] = df["GID_2"].map(ids_from_units(SCALE, "gid"))
     publish(DATASET, SCALE, df)   # checks columns against the schema, writes CSV + Parquet
-    write_docs(DATASET)           # docs/datasets/<dataset>.md
+    write_docs(DATASET)           # data/<dataset>/README.md

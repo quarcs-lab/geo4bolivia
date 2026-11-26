@@ -244,7 +244,7 @@ To compare departments, either ask for the mean of the municipalities explicitly
 | Skewed variables | poverty near zero, population | look at the distribution; use logs or ranks for relative differences, and say which |
 | Municipal means are not department values | any `by="department"` summary | `geo.aggregate()` with the metadata rules; they approximate the official figures |
 | Complete cases | `geo.correlation()` with a variable that has gaps | read `.n` and `.notes`; correlate fewer variables or one year |
-| Two municipal maps (339 and 343 units) | `pop`, `ntl`, `emb`, `embpw` against the SDG data | check which units are missing; they are not a random sample. Pass `map=` when a merged table goes to a spatial function |
+| Two municipal maps (339 and 343 units) | `pop`, `ntl`, `emb` against the SDG data | check which units are missing; they are not a random sample. Pass `map=` when a merged table goes to a spatial function |
 | Variables without an aggregation rule | logs, trends, ranks | aggregate the underlying totals, or state an explicit rule |
 
 ## In short

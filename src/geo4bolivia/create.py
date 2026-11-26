@@ -7,7 +7,7 @@ repository. A typical workflow::
     geo.check(mine, scale="province")                             # same rules as the published data
     both = geo.combine(["<dataset>", "<dataset>"], scale="province", extra=[mine])  # one panel
     lights = geo.zonal("viirs_2020.tif", scale="province", year=2020, name="ntl")   # raster -> units
-    geo.save(both, "my_panel", scale="province", variables={...})  # CSV + Parquet + datapackage
+    geo.save(both, "my_panel", scale="province", variables={...})  # data/my_panel/: files, datapackage, README
 """
 
 from __future__ import annotations
@@ -322,22 +322,26 @@ def save(df: pd.DataFrame, name: str, scale: str, directory=".", title: str | No
     scale
         Its scale
     directory
-        Where to write ``data/`` and ``metadata/`` (default: the current folder)
+        Where to write ``data/<name>/`` (default: the current folder)
     title, description
         What the dataset is
     variables
         ``{column: {"label", "description", "unit", "aggregation", "source"}}``
     sources
-        Titles or ``{"title", "path"}`` dicts of the sources
+        Titles or ``{"title", "path"}`` dicts of the sources, cited first (as APA strings, ideally);
+        a dict can set ``"geo:role": "intermediary"`` to be cited after the dataset
     citation
-        The recommended citation
+        The recommended citation of the dataset itself; it is cited after the original
+        sources (``sources``) and before any others
     license
         An SPDX license id (default ``CC-BY-4.0``)
 
     Notes
     -----
-    Writes ``<directory>/data/<scale>/<name>.csv`` and ``.parquet`` and
-    ``<directory>/metadata/<name>.datapackage.json`` (Frictionless). Describe each
+    Writes the dataset's folder, laid out like the published datasets:
+    ``<directory>/data/<name>/<scale>/<name>.csv`` and ``.parquet``,
+    ``<directory>/data/<name>/datapackage.json`` (Frictionless) and
+    ``<directory>/data/<name>/README.md`` (its variables, files and citations). Describe each
     variable in ``variables``: ``{"pop": {"label": "Population", "description":
     "Sum of WorldPop 100 m population over the unit", "unit": "people",
     "aggregation": "sum", "source": "WorldPop"}}``. The ``label`` is a readable
@@ -371,7 +375,8 @@ def save(df: pd.DataFrame, name: str, scale: str, directory=".", title: str | No
                        "description": info.get("description", ""), "geo:unit": info.get("unit", ""),
                        "geo:aggregation": info.get("aggregation", "none"), "geo:source": info.get("source", "")})
     root = Path(directory)
-    csv_rel, pq_rel = f"data/{scale}/{name}.csv", f"data/{scale}/{name}.parquet"
+    folder = f"data/{name}"
+    csv_rel, pq_rel = f"{folder}/{scale}/{name}.csv", f"{folder}/{scale}/{name}.parquet"
     (root / csv_rel).parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(root / csv_rel, index=False)
     df.to_parquet(root / pq_rel, index=False)
@@ -379,7 +384,7 @@ def save(df: pd.DataFrame, name: str, scale: str, directory=".", title: str | No
     package = {
         "name": name, "title": title or name, "description": description, "version": "1.0.0",
         "licenses": [{"name": license}],
-        "sources": [s if isinstance(s, dict) else {"title": s} for s in sources],
+        "sources": [{"geo:role": "original", **(s if isinstance(s, dict) else {"title": s})} for s in sources],
         "geo:categories": [], "geo:notes": [],
         "resources": [{
             "name": f"{name}-{scale}", "path": store.raw_url(csv_rel, project.config().get("default_ref", "main")),
@@ -391,7 +396,28 @@ def save(df: pd.DataFrame, name: str, scale: str, directory=".", title: str | No
     }
     if citation:
         package["geo:citation"] = citation
-    (root / "metadata").mkdir(parents=True, exist_ok=True)
-    (root / f"metadata/{name}.datapackage.json").write_text(json.dumps(package, indent=2, ensure_ascii=False) + "\n")
-    print(f"wrote {root / csv_rel}, {root / pq_rel} and {root / f'metadata/{name}.datapackage.json'}")
+    (root / folder / "datapackage.json").write_text(json.dumps(package, indent=2, ensure_ascii=False) + "\n")
+    (root / folder / "README.md").write_text(_readme(package, scale, len(df)))
+    print(f"wrote {root / folder}/: datapackage.json, README.md, {scale}/{name}.csv and .parquet")
     return package
+
+
+def _readme(package: dict, scale: str, rows: int) -> str:
+    """A short README for a saved dataset's folder: what it is, its files, variables and citations."""
+    name, res = package["name"], package["resources"][0]
+    years = metadata.years_text(range(res["geo:period"][0], res["geo:period"][1] + 1)) if res["geo:period"] else "—"
+    lines = [f"# {package['title']}", "", package["description"] or f"The dataset `{name}`.", "",
+             f"- **Dataset id:** `{name}`", f"- **Scale:** {scale}", f"- **Years:** {years} ({rows:,} rows)", "",
+             "| File | Format |", "| --- | --- |", f"| [`{scale}/{name}.csv`]({scale}/{name}.csv) | CSV |",
+             f"| [`{scale}/{name}.parquet`]({scale}/{name}.parquet) | Parquet |",
+             "| [`datapackage.json`](datapackage.json) | Metadata (Frictionless) |", "",
+             "| Variable | Label | Description | Unit | Aggregation |", "| --- | --- | --- | --- | --- |"]
+    for f in res["schema"]["fields"]:
+        lines.append(f"| `{f['name']}` | {f.get('title', '')} | {f.get('description', '')} | "
+                     f"{f.get('geo:unit', '')} | {f.get('geo:aggregation', '—')} |")
+    sources = package.get("sources", [])
+    cited = [s.get("title", "") for s in sources] + ([package["geo:citation"]] if package.get("geo:citation") else [])
+    if cited:
+        lines += ["", "## Cite", ""] + [f"{i}. {c}" for i, c in enumerate(metadata.citations(package), 1)]
+    lines += ["", "## License", "", f"- {package['licenses'][0]['name']}"]
+    return "\n".join(lines) + "\n"

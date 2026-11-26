@@ -1007,7 +1007,7 @@ wheels = [
 
 [[package]]
 name = "geo4bolivia"
-version = "0.8.1"
+version = "0.9.0"
 source = { editable = "." }
 dependencies = [
     { name = "esda", version = "2.9.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },

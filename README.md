@@ -66,16 +66,16 @@ The [articles](https://quarcs-lab.github.io/geo4bolivia/articles/) take one ques
 
 ## The data
 
-The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia); `ref="v0.8.1"` freezes them at a release.
+The package reads the observatory's published files from [quarcs-lab/gdo4bolivia](https://github.com/quarcs-lab/gdo4bolivia); `ref="v0.9.0"` freezes them at a release.
 
 | Dataset | What | Units and years |
 | --- | --- | --- |
 | `sdg`, `sdg01` to `sdg17` | [Atlas de los ODS en Bolivia 2026](https://atlasods.sdsnbolivia.org/) (Andersen & Argandoña, SDSN Bolivia): the Sustainable Development Index, 15 goal indices and 81 indicators | 343 municipalities (map343, 2025 map), about 2012 and about 2024 |
 | `pop` | Population (WorldPop) and density | 339 municipalities (map339, 2015 map), 2001 to 2020 |
 | `ntl` | Night-time lights per capita (VIIRS) | 339 municipalities (map339), 2012 to 2020 |
-| `emb`, `embpw` | Satellite embeddings, 64 dimensions | 339 municipalities (map339), 2017 |
+| `emb` | Satellite embeddings, 64 dimensions, area- and population-weighted | 339 municipalities (map339), 2017 |
 
-`geo.info(dataset)` gives each dataset's sources and licenses and `geo.cite(dataset)` the citation and the credits they require. The SDG data are on SDSN Bolivia's municipal map of 2025 (`map343`, used with its permission), `pop`, `ntl` and the embeddings on the map of 2015 (`map339`); the two maps share their geo IDs, and the spatial functions take `map=` when a table does not say which one it is on.
+`geo.info(dataset)` gives each dataset's sources and licenses and `geo.cite(dataset)` how to cite it: its original sources, then the observatory, then the other sources. The SDG data are on SDSN Bolivia's municipal map of 2025 (`map343`; the Atlas and the map are licensed by SDSN Bolivia under CC BY 4.0), `pop`, `ntl` and the embeddings on the map of 2015 (`map339`); the two maps share their geo IDs, and the spatial functions take `map=` when a table does not say which one it is on.
 
 Without the package, the same files are plain CSV and Parquet:
 
@@ -83,7 +83,7 @@ Without the package, the same files are plain CSV and Parquet:
 import pandas as pd
 
 BASE = "https://raw.githubusercontent.com/quarcs-lab/gdo4bolivia/main/"
-pd.read_csv(BASE + "data/map343/sdg.csv")
+pd.read_csv(BASE + "data/sdg/map343/sdg.csv")     # every dataset has a folder: data/<dataset>/
 ```
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/notebooks/empty.ipynb)
@@ -105,7 +105,7 @@ uv run python tools/build_docs.py    # documentation site, into docs/_site
 
 ## Cite
 
-Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.8.1). <https://quarcs-lab.github.io/geo4bolivia/>
+Mendez, C. (2026). *geo4bolivia: spatial data science for Bolivia's subnational development data* (version 0.9.0). <https://quarcs-lab.github.io/geo4bolivia/>
 
 Please also cite the sources of the datasets you use (`geo.cite(dataset)`).
 
