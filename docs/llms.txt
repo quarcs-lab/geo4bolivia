@@ -38,7 +38,7 @@ geo4bolivia is the Python package of the GeoDevelopment Observatory of Bolivia. 
 
 ## Load data, units and boundaries
 
-- [`geo.load(dataset: 'str', scale: 'str | None' = None, years=None, variables=None, wide: 'str | None' = None, geometry: 'bool' = False, names: 'bool' = False, groups=None, ref: 'str | None' = None)`](https://quarcs-lab.github.io/geo4bolivia/reference/load.html): Load a dataset as a panel: one row per unit (``geo_id``) and year.
+- [`geo.load(dataset: 'str', scale: 'str | None' = None, years=None, variables=None, wide: 'str | bool | None' = None, geometry: 'bool' = False, names: 'bool' = False, groups=None, ref: 'str | None' = None)`](https://quarcs-lab.github.io/geo4bolivia/reference/load.html): Load a dataset as a panel: one row per unit (``geo_id``) and year.
 - [`geo.add_names(df: 'pd.DataFrame', groups=None, scale: 'str | None' = None, ref: 'str | None' = None) -> 'pd.DataFrame'`](https://quarcs-lab.github.io/geo4bolivia/reference/add_names.html): Add the unit ``name`` and, for each scale in ``groups``, the name of the unit it lies in.
 - [`geo.units(scale: 'str | None' = None, ref: 'str | None' = None) -> 'pd.DataFrame'`](https://quarcs-lab.github.io/geo4bolivia/reference/units.html): All units (or the units of one scale) with names, parents and source keys.
 - [`geo.boundaries(scale: 'str', ref: 'str | None' = None) -> 'gpd.GeoDataFrame'`](https://quarcs-lab.github.io/geo4bolivia/reference/boundaries.html): Unit polygons for a scale (CRS84), with ``geo_id`` and ``name``.

@@ -147,6 +147,7 @@ def validate_dataset(dataset: str) -> Report:
         if not (rep.check(csv_path.exists(), f"{tag}: missing {res['geo:path']}")
                 and rep.check(pq_path.exists(), f"{tag}: missing {res['geo:parquet']}")):
             continue
+        _check_wide(rep, dataset, res, tag)
         df = pd.read_parquet(pq_path)
         csv = pd.read_csv(csv_path, dtype={"geo_id": str})
         schema = res["schema"]
@@ -225,6 +226,50 @@ def _weight_available(pkg: dict, weight: str, scale: str, names: list[str]) -> b
         return weight in [f["name"] for f in metadata.fields(holder, scale)]
     except KeyError:
         return False
+
+
+def _check_wide(rep: Report, dataset: str, res: dict, tag: str) -> None:
+    """The wide files (``geo:gpkg``, ``geo:geojson``): where the build puts them, present, and
+    holding the panel's values (``io.wide_table``); the GeoPackage's ``variables`` table
+    describes every variable column."""
+    import pyogrio
+
+    from . import io
+    from .build.common import wide_paths
+    root = store.repo_root()
+    want = wide_paths(dataset, res["geo:scale"])
+    for key, path in want.items():
+        if not rep.check(res.get(key) == path, f"{tag}: {key} should be {path} (run the build)"):
+            return
+        if not rep.check((root / path).is_file(), f"{tag}: missing {path} (run the build)"):
+            return
+    try:
+        table = io.wide_table(dataset, res["geo:scale"])
+    except ValueError as exc:   # a broken panel (e.g. duplicate unit-years), reported by the checks below
+        rep.check(False, f"{tag}: the wide table cannot be built from the panel: {exc}")
+        return
+    for key in want:
+        path = res[key]
+        try:
+            got = pyogrio.read_dataframe(root / path, layer=dataset if key == "geo:gpkg" else None,
+                                         read_geometry=False)
+        except Exception as exc:   # any reading error means a broken file
+            rep.check(False, f"{tag}: {path} cannot be read: {exc}")
+            continue
+        if not rep.check(list(got.columns) == list(table.columns), f"{tag}: {path} columns differ from the panel's"):
+            continue
+        got = got.sort_values("geo_id").reset_index(drop=True)
+        try:
+            pd.testing.assert_frame_equal(table, got, check_dtype=False, rtol=1e-6)
+            rep.check(True, "")
+        except AssertionError as exc:
+            rep.check(False, f"{tag}: {path} differs from the panel (run the build): {str(exc).splitlines()[0]}")
+    try:
+        described = pyogrio.read_dataframe(root / res["geo:gpkg"], layer="variables")
+        rep.check(list(described["column"]) == list(io.wide_dictionary(dataset, res["geo:scale"])["column"]),
+                  f"{tag}: the GeoPackage's variables table does not describe its columns (run the build)")
+    except Exception as exc:
+        rep.check(False, f"{tag}: {res['geo:gpkg']} has no variables table: {exc}")
 
 
 def _check_map(rep: Report, dataset: str, spec: dict) -> None:

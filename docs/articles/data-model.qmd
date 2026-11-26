@@ -313,13 +313,20 @@ print(config["repository"], "|", config["default_ref"])
 
 ### Without the package
 
-Because the data are plain files with stable paths, any tool can read them. There are three kinds of file:
+Because the data are plain files with stable paths, any tool can read them. There are four kinds of file:
 
 | Path | Contents |
 | --- | --- |
 | `data/<dataset>/<scale>/<dataset>.csv` and `.parquet` | the panel of a dataset, in its folder, under its map (`data/sdg/map343/sdg.csv`, `data/ntl/map339/ntl.csv`) |
+| `data/<dataset>/<scale>/<dataset>_wide.gpkg` and `.geojson` | the same data wide and ready to map: one row per unit, a column per variable and year, with boundaries (below) |
 | `geo/units.csv`, `geo/boundaries/<scale>.geojson`, `geo/crosswalks/<from>__<to>.csv` | the geography |
 | `data/<dataset>/datapackage.json`, `data/<dataset>/README.md` | the metadata, and the documentation generated from it (GitHub shows it when the folder is opened) |
+
+**Wide files.** Next to each panel, `<dataset>_wide.gpkg` and `<dataset>_wide.geojson` hold the same data with one row per unit: its `geo_id`, `name`, the province and department it lies in, the dataset's source keys and `area_km2`, then every variable once per year, `<variable>_<year>`. A variable gets a column for every year of the dataset, empty where it has no values. The GeoPackage carries the analysis boundaries and a second table, `variables`, that describes every column (label, description, unit, source and the actual reference year); the GeoJSON carries lighter boundaries for web maps. Any GIS opens them, and geopandas reads them by URL: `gpd.read_file(BASE + "data/sdg01/map343/sdg01_wide.gpkg", layer="sdg01")`. With the package, `geo.load(dataset, wide=True)` returns the same table:
+
+```{python}
+geo.load("sdg01", wide=True).iloc[:3, :12]
+```
 
 The two ways of loading the same panel, side by side:
 

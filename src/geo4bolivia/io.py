@@ -89,7 +89,7 @@ def _as_years(years) -> list[int]:
 
 
 def load(dataset: str, scale: str | None = None, years=None, variables=None,
-         wide: str | None = None, geometry: bool = False, names: bool = False, groups=None,
+         wide: str | bool | None = None, geometry: bool = False, names: bool = False, groups=None,
          ref: str | None = None):
     """Load a dataset as a panel: one row per unit (``geo_id``) and year.
 
@@ -105,8 +105,12 @@ def load(dataset: str, scale: str | None = None, years=None, variables=None,
         A variable or list of variables to keep (``geo_id`` and ``year``
         are always kept); ``geo.search()`` and ``geo.dictionary()`` list them
     wide
-        A variable name; returns one row per unit with one column per year
-        (``<variable><year>``)
+        ``True`` returns the dataset's wide table (``geo.wide_table``): one row per unit,
+        with its name, its province and department, its source keys and area, and every
+        variable once per year (``<variable>_<year>``), as in the published
+        ``<dataset>_wide.gpkg`` and ``.geojson`` files. A variable name returns one row per
+        unit with that variable's years only (``<variable><year>``, without the underscore,
+        as before version 0.9.1)
     geometry
         Attach unit boundaries (and names) and return a GeoDataFrame
     names
@@ -122,6 +126,8 @@ def load(dataset: str, scale: str | None = None, years=None, variables=None,
     Raises ``ValueError`` for unknown variables, and for years that have no rows
     (listing the years the dataset has).
     """
+    if wide is True:
+        return wide_table(dataset, scale=scale, years=years, variables=variables, geometry=geometry, ref=ref)
     res = metadata.resource(dataset, scale, ref)
     df = pd.read_parquet(store.open_binary(res["geo:parquet"], ref))
     if years is not None:
@@ -155,6 +161,112 @@ def load(dataset: str, scale: str | None = None, years=None, variables=None,
         df = shapes.merge(df.drop(columns="name", errors="ignore"), on="geo_id", how="right")
     df.attrs[SCALE_KEY] = res["geo:scale"]
     return df
+
+
+def wide_columns(dataset: str, scale: str | None = None, ref: str | None = None) -> list[dict]:
+    """The variable columns of a dataset's wide table, in order: each variable of the schema
+    once per year of the resource, ``{"column": "<variable>_<year>", "variable", "year", "field"}``."""
+    res = metadata.resource(dataset, scale, ref)
+    years = metadata.resource_years(res)
+    fields = [f for f in res["schema"]["fields"] if f.get("geo:role", "variable") == "variable"]
+    return [{"column": f"{f['name']}_{y}", "variable": f["name"], "year": int(y), "field": f}
+            for f in fields for y in years]
+
+
+def wide_id_columns(scale: str, ref: str | None = None) -> list[str]:
+    """The coarser scales whose IDs and names a wide table carries: every scale the units lie in,
+    finest first, but a scale with a single unit (the country)."""
+    return [a for a in ancestors(scale, ref) if len(_ids(a, ref)) > 1]
+
+
+def wide_table(dataset: str, scale: str | None = None, years=None, variables=None, geometry: bool = False,
+               ref: str | None = None):
+    """A dataset as one row per unit and one column per variable and year.
+
+    The table of the published ``data/<dataset>/<scale>/<dataset>_wide.gpkg`` and
+    ``.geojson`` files, and of ``geo.load(dataset, wide=True)``.
+
+    Parameters
+    ----------
+    dataset
+        Dataset id
+    scale
+        Its scale (default: its native one)
+    years, variables
+        Keep only these years (an int, a list, or a ``(first, last)`` range) and variables
+    geometry
+        Attach the unit boundaries (``geo.boundaries``) and return a GeoDataFrame
+
+    Returns
+    -------
+    pandas.DataFrame or geopandas.GeoDataFrame
+        One row per unit of the scale, in ``geo_id`` order: ``geo_id``, ``name``, the ID and
+        name of each coarser unit it lies in (e.g. ``province_id``, ``province``,
+        ``department_id``, ``department``), the dataset's source keys (e.g. ``mun_id``), its
+        ``area_km2``, then every variable once per year, ``<variable>_<year>``, in the order of
+        the metadata. A variable gets a column for every year of the dataset, empty where it has
+        no values (e.g. a variable measured in the final period only).
+    """
+    res = metadata.resource(dataset, scale, ref)
+    sid = res["geo:scale"]
+    long = pd.read_parquet(store.open_binary(res["geo:parquet"], ref))
+    if long.duplicated(["geo_id", "year"]).any():
+        raise ValueError(f"{dataset!r} has duplicate unit-years, so it has no wide table")
+    columns = wide_columns(dataset, sid, ref)
+    if years is not None:
+        keep = set(_as_years(years))
+        columns = [c for c in columns if c["year"] in keep]
+        if not columns:
+            raise ValueError(f"{dataset!r} has no rows for {years!r}")
+    if variables is not None:
+        wanted = [variables] if isinstance(variables, str) else list(variables)
+        unknown = sorted(set(wanted) - {c["variable"] for c in columns})
+        if unknown:
+            raise ValueError(f"{dataset!r} has no variable(s) {unknown}; see geo.dictionary({dataset!r})")
+        columns = [c for c in columns if c["variable"] in wanted]
+    unit_table = units(sid, ref=ref).sort_values("geo_id").set_index("geo_id")
+    out = pd.DataFrame(index=unit_table.index)
+    out["name"] = unit_table["name"]
+    for group in wide_id_columns(sid, ref):
+        out[f"{group}_id"] = unit_table[f"{group}_id"]
+        out[group] = out[f"{group}_id"].map(units(group, ref=ref).set_index("geo_id")["name"])
+    keys = [f["name"] for f in res["schema"]["fields"] if f.get("geo:role") == "source_key"]
+    if keys:
+        out = out.join(long.drop_duplicates("geo_id").set_index("geo_id")[keys])
+    out["area_km2"] = unit_table["area_km2"]
+    values = {}
+    for c in columns:
+        rows = long.loc[long["year"] == c["year"], ["geo_id", c["variable"]]].set_index("geo_id")[c["variable"]]
+        values[c["column"]] = rows.reindex(out.index)
+    out = pd.concat([out, pd.DataFrame(values, index=out.index)], axis=1).rename_axis("geo_id").reset_index()
+    for c in columns:   # keep each variable's type (an all-empty column of an integer stays nullable)
+        kind = c["field"].get("type")
+        if kind == "integer":
+            out[c["column"]] = out[c["column"]].astype("Int64")
+        elif kind == "number":
+            out[c["column"]] = out[c["column"]].astype("float64")
+    if geometry:
+        shapes = boundaries(sid, ref=ref)[["geo_id", "geometry"]]
+        out = gpd.GeoDataFrame(out.merge(shapes, on="geo_id", how="left"), geometry="geometry", crs=shapes.crs)
+    out.attrs[SCALE_KEY] = sid
+    return out
+
+
+def wide_dictionary(dataset: str, scale: str | None = None, ref: str | None = None) -> pd.DataFrame:
+    """What each variable column of a dataset's wide table holds: ``column``, ``variable``,
+    ``year``, ``label``, ``description``, ``unit``, ``source``, ``aggregation`` and ``reference``
+    (the actual year behind a stored year, from ``geo:reference_years``; the year itself
+    otherwise). The ``variables`` table of the published GeoPackage."""
+    rows = []
+    for c in wide_columns(dataset, scale, ref):
+        f = c["field"]
+        rows.append({"column": c["column"], "variable": c["variable"], "year": c["year"],
+                     "label": f.get("title", ""), "description": f.get("description", ""),
+                     "unit": f.get("geo:unit", ""), "source": f.get("geo:source", ""),
+                     "aggregation": f.get("geo:aggregation", "none"),
+                     "reference": str((f.get("geo:reference_years") or {}).get(str(c["year"]), c["year"]))})
+    return pd.DataFrame(rows, columns=["column", "variable", "year", "label", "description", "unit", "source",
+                                       "aggregation", "reference"])
 
 
 def add_names(df: pd.DataFrame, groups=None, scale: str | None = None, ref: str | None = None) -> pd.DataFrame:

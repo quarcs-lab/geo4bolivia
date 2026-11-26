@@ -4,6 +4,14 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
+## 0.9.1 (2026-11-26)
+
+**Wide files: every dataset ready to map.** The build now writes, next to each panel, the same data wide: `data/<dataset>/<scale>/<dataset>_wide.gpkg` and `_wide.geojson`, one row per unit with its name, the province and department it lies in, its source keys and area, and every variable once per year, `<variable>_<year>` (a column for every year of the dataset, empty where a variable has no values). The GeoPackage carries the analysis boundaries and a table `variables` describing every column (label, description, unit, source, actual reference year); the GeoJSON carries lighter boundaries for web maps (`wide_geojson_boundaries` in `project.yaml`). The observatory's website offers both for download.
+
+- `geo.load(dataset, wide=True)` returns that table (with `geometry=True`, `years=` and `variables=`). `wide="<variable>"` is unchanged and keeps its names (`<variable><year>`).
+- Building: `publish_wide()` writes the files and records them in the resource (`geo:gpkg`, `geo:geojson`); `write_docs()` runs it and lists the files in the README. Rebuilding unchanged data writes the same bytes.
+- Validation: `validate` checks that both files are there and hold the panel's values, and that the GeoPackage describes every column.
+
 ## 0.9.0 (2026-11-26)
 
 **Breaking: one folder per dataset.** Every dataset of the observatory now has a folder of its own, `data/<dataset>/`, that says how it is organised: its metadata (`datapackage.json`), its documentation (`README.md`, which GitHub shows when the folder is opened) and one subfolder per map with the panel (`data/sdg01/map343/sdg01.csv` and `.parquet`). `data/index.json` lists the datasets. The observatory's website links each dataset to its folder. Released versions up to 0.8.1 read the metadata from `metadata/` on `main`, which is gone: upgrade, or pin the data with `ref="v0.8.1"`.

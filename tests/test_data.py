@@ -460,3 +460,34 @@ def test_map_draws_a_variable():
     variable = metadata.variables(dataset)[0]
     fig = geo.map(dataset, variable)
     assert fig.data and geo.labels(dataset)[variable] in fig.layout.title.text
+
+
+# --- wide files ------------------------------------------------------------------------
+
+@needs_data
+@pytest.mark.parametrize("dataset", DATASETS)
+def test_wide_table_has_a_row_per_unit_and_a_column_per_variable_and_year(dataset):
+    from geo4bolivia import io
+    res = metadata.resource(dataset)
+    wide = io.wide_table(dataset)
+    years = metadata.resource_years(res)
+    columns = [f"{v}_{y}" for v in metadata.variables(dataset) for y in years]
+    assert len(wide) == len(geo.units(res["geo:scale"])) and wide["geo_id"].is_unique
+    assert list(wide.columns[:2]) == ["geo_id", "name"] and list(wide.columns[-len(columns):]) == columns
+    described = io.wide_dictionary(dataset)
+    assert list(described["column"]) == columns and described["label"].astype(bool).all()
+
+
+@needs_data
+@needs_checkout
+def test_validator_catches_a_stale_wide_file(repo_copy):
+    import pyogrio
+    dataset = DATASETS[0]
+    res = metadata.resource(dataset)
+    path = repo_copy / res["geo:geojson"]
+    stale = pyogrio.read_dataframe(path)
+    stale.iloc[0, stale.columns.get_loc(stale.columns[-2])] = -999.0      # a value the panel does not have
+    path.unlink()
+    pyogrio.write_dataframe(stale, path, driver="GeoJSON")
+    errors = " | ".join(validate.validate_dataset(dataset).errors)
+    assert res["geo:geojson"] in errors and "differs" in errors

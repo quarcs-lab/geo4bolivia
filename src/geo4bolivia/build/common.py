@@ -82,6 +82,79 @@ def _record_coverage(dataset: str, scale: str, df: pd.DataFrame) -> None:
     metadata.clear_cache()
 
 
+def wide_paths(dataset: str, scale: str) -> dict[str, str]:
+    """Where a dataset's wide files go: next to its panel, ``data/<dataset>/<scale>/<dataset>_wide.*``."""
+    stem = f"data/{dataset}/{scale}/{dataset}_wide"
+    return {"geo:gpkg": f"{stem}.gpkg", "geo:geojson": f"{stem}.geojson"}
+
+
+def _light_boundaries(scale: str):
+    """The boundaries of the GeoJSON: ``wide_geojson_boundaries`` in project.yaml (a path with
+    ``{scale}``, e.g. the website's simplified maps), else the analysis boundaries."""
+    import geopandas as gpd
+
+    from .. import io
+    pattern = project.config().get("wide_geojson_boundaries")
+    path = store.repo_root() / pattern.format(scale=scale) if pattern else None
+    if path is not None and path.is_file():
+        shapes = gpd.read_file(path)[["geo_id", "geometry"]]
+        return shapes.to_crs("EPSG:4326") if shapes.crs else shapes.set_crs("EPSG:4326")
+    return io.boundaries(scale)[["geo_id", "geometry"]]
+
+
+def publish_wide(dataset: str) -> None:
+    """Write the dataset's wide files: one row per unit, one column per variable and year
+    (``io.wide_table``), as a GeoPackage on the analysis boundaries (``geo/boundaries``) with a
+    second table, ``variables``, describing every column (``io.wide_dictionary``), and as a
+    GeoJSON on the light boundaries (``_light_boundaries``). Records their paths in the
+    resource (``geo:gpkg``, ``geo:geojson``).
+
+    The GeoPackage's internal timestamps are set to the dataset's ``geo:updated``, so rebuilding
+    unchanged data writes the same bytes.
+    """
+    import geopandas as gpd
+    import pyogrio
+
+    from .. import io
+    root = store.repo_root()
+    path = metadata.package_path(dataset)
+    pkg = read_json(path)
+    stamp = f"{str(pkg.get('geo:updated') or '2000-01-01')[:10]}T00:00:00.000Z"
+    for i, res in enumerate(pkg["resources"]):
+        sid = res["geo:scale"]
+        paths = wide_paths(dataset, sid)
+        table = io.wide_table(dataset, sid)
+        gpkg, geojson = root / paths["geo:gpkg"], root / paths["geo:geojson"]
+        gpkg.parent.mkdir(parents=True, exist_ok=True)
+        for old in (gpkg, geojson):
+            old.unlink(missing_ok=True)
+        shapes = io.boundaries(sid)[["geo_id", "geometry"]]
+        full = gpd.GeoDataFrame(table.merge(shapes, on="geo_id", how="left"), geometry="geometry", crs=shapes.crs)
+        pyogrio.set_gdal_config_options({"OGR_CURRENT_DATE": stamp})
+        try:
+            pyogrio.write_dataframe(full, gpkg, layer=dataset, driver="GPKG")
+            pyogrio.write_dataframe(io.wide_dictionary(dataset, sid), gpkg, layer="variables", driver="GPKG",
+                                    append=True)
+        finally:
+            pyogrio.set_gdal_config_options({"OGR_CURRENT_DATE": None})
+        light = _light_boundaries(sid)
+        web = gpd.GeoDataFrame(table.merge(light, on="geo_id", how="left"), geometry="geometry", crs="EPSG:4326")
+        pyogrio.write_dataframe(web, geojson, driver="GeoJSON", layer=dataset,
+                                layer_options={"COORDINATE_PRECISION": 5, "RFC7946": "YES", "WRITE_NAME": "NO"})
+        size = lambda p: f"{p.stat().st_size / 1e6:.1f} MB"
+        print(f"  wrote {paths['geo:gpkg']} ({size(gpkg)}) and {paths['geo:geojson']} ({size(geojson)})")
+        ordered = {}
+        for key, value in res.items():          # the two paths right after geo:parquet
+            if key in paths:
+                continue
+            ordered[key] = value
+            if key == "geo:parquet":
+                ordered.update(paths)
+        pkg["resources"][i] = ordered
+    write_json(path, pkg)
+    metadata.clear_cache()
+
+
 years_text = metadata.years_text
 
 
@@ -93,6 +166,7 @@ def write_docs(dataset: str) -> None:
     """Generate data/<dataset>/README.md (shown on GitHub when the dataset's folder is opened)
     from the metadata and the published data."""
     root = store.repo_root()
+    publish_wide(dataset)
     pkg = metadata.package(dataset)
     units = pd.read_parquet(root / "geo/units.parquet")
     folder = f"data/{dataset}/"
@@ -103,8 +177,13 @@ def write_docs(dataset: str) -> None:
     for i, res in enumerate(pkg["resources"]):
         last = i == len(pkg["resources"]) - 1
         branch, stem = ("└── ", "    ") if last else ("├── ", "│   ")
-        tree += [f"{branch}{res['geo:scale']}/".ljust(23) + f"the {res['geo:scale']} panel, one row per unit and year",
-                 f"{stem}├── {Path(res['geo:path']).name}", f"{stem}└── {Path(res['geo:parquet']).name}"]
+        tree += [f"{branch}{res['geo:scale']}/".ljust(23) + f"the {res['geo:scale']} data",
+                 f"{stem}├── {Path(res['geo:path']).name}".ljust(len(stem) + 4 + 23) + "the panel: one row per unit and year",
+                 f"{stem}├── {Path(res['geo:parquet']).name}".ljust(len(stem) + 4 + 23) + "the same, typed and compressed",
+                 f"{stem}├── {Path(res['geo:gpkg']).name}".ljust(len(stem) + 4 + 23)
+                 + "wide: one row per unit, a column per variable and year, boundaries",
+                 f"{stem}└── {Path(res['geo:geojson']).name}".ljust(len(stem) + 4 + 23)
+                 + "the same, on lighter boundaries, for web maps"]
     tree.append("```")
     lines = [f"# {pkg['title']}", "",
              f"> Generated by `{PACKAGE} build` from [`datapackage.json`](datapackage.json). Edit that file, not this one.",
@@ -127,6 +206,16 @@ def write_docs(dataset: str) -> None:
                   f"| [`{rel(res['geo:path'])}`]({rel(res['geo:path'])}) | CSV | [raw]({store.raw_url(res['geo:path'])}) |",
                   f"| [`{rel(res['geo:parquet'])}`]({rel(res['geo:parquet'])}) | Parquet | "
                   f"[raw]({store.raw_url(res['geo:parquet'])}) |",
+                  f"| [`{rel(res['geo:gpkg'])}`]({rel(res['geo:gpkg'])}) | GeoPackage, wide | "
+                  f"[raw]({store.raw_url(res['geo:gpkg'])}) |",
+                  f"| [`{rel(res['geo:geojson'])}`]({rel(res['geo:geojson'])}) | GeoJSON, wide | "
+                  f"[raw]({store.raw_url(res['geo:geojson'])}) |",
+                  "", f"The wide files have one row per {sid} unit, with its name, the units it lies in, "
+                  "its source keys and area, then every variable once per year, `<variable>_<year>` "
+                  f"(e.g. `{_example_column(res)}`); a variable has a column for every year, empty where it "
+                  "has no values. The GeoPackage carries the analysis boundaries and a second table, "
+                  "`variables`, that describes every column (label, description, unit, source, reference "
+                  "year); the GeoJSON carries lighter boundaries for web maps.",
                   "", "| Variable | Label | Description | Unit | Coverage | Aggregation | Source |",
                   "| --- | --- | --- | --- | --- | --- | --- |"]
         for f in res["schema"]["fields"]:
@@ -143,8 +232,12 @@ def write_docs(dataset: str) -> None:
               f'geo.dictionary("{dataset}")                     # variables, units, aggregation rules',
               f'df = geo.load("{dataset}")                      # panel: one row per unit and year',
               f'gdf = geo.load("{dataset}", geometry=True)      # with {native["geo:scale"]} boundaries',
-              "```", "", COLAB_BADGE, "", "Without the package:", "", "```python", "import pandas as pd", "",
-              f'df = pd.read_csv("{store.raw_url(native["geo:path"])}")', "```", "", COLAB_BADGE]
+              f'wide = geo.load("{dataset}", wide=True)         # one row per unit, a column per variable and year',
+              "```", "", COLAB_BADGE, "", "Without the package:", "", "```python", "import pandas as pd",
+              "import geopandas as gpd", "",
+              f'df = pd.read_csv("{store.raw_url(native["geo:path"])}")',
+              f'wide = gpd.read_file("{store.raw_url(native["geo:gpkg"])}", layer="{dataset}")',
+              "```", "", COLAB_BADGE]
     if pkg.get("geo:notes"):
         lines += ["", "## Notes", ""] + [f"- {n}" for n in pkg["geo:notes"]]
     if pkg.get("geo:notebooks"):
@@ -164,6 +257,12 @@ def write_docs(dataset: str) -> None:
     print(f"  wrote {folder}README.md")
 
 
+def _example_column(res: dict) -> str:
+    """A wide column name to show in the README: the first variable in the last year."""
+    var = next((f["name"] for f in res["schema"]["fields"] if f.get("geo:role", "variable") == "variable"), "variable")
+    return f"{var}_{metadata.resource_years(res)[-1]}"
+
+
 def link(lic: dict) -> str:
     """A license as Markdown: its title (or name), linked to its text when known."""
     text = lic.get("title") or lic["name"]
@@ -179,8 +278,10 @@ def write_catalog() -> None:
         for res in pkg["resources"]:
             first, last = res["geo:period"]
             csv, pq = (res[k].removeprefix("data/") for k in ("geo:path", "geo:parquet"))
+            wide = "".join(f" · [`{label}`]({res[k].removeprefix('data/')})"
+                           for k, label in (("geo:gpkg", "_wide.gpkg"), ("geo:geojson", "_wide.geojson")) if res.get(k))
             table.append(f"| [`{ds}/`]({ds}/) | {pkg['title']} | `{res['geo:scale']}` | "
-                         f"{first}–{last} | [`{csv}`]({csv}) · [`.parquet`]({pq}) |")
+                         f"{first}–{last} | [`{csv}`]({csv}) · [`.parquet`]({pq}){wide} |")
             for f in res["schema"]["fields"]:
                 rows.append({"dataset": ds, "scale": res["geo:scale"], "varname": f["name"],
                              "varlabel": f.get("title", ""), "description": f.get("description", ""),
@@ -192,8 +293,9 @@ def write_catalog() -> None:
     readme = ["# Data", "",
               f"> Generated by `{PACKAGE} build`. One folder per dataset: its `README.md` (variables, sources, "
               "how to load and cite it), its metadata `datapackage.json`, and one subfolder per map or scale with "
-              "the panel (one row per unit `geo_id` and `year`, variables as columns) as CSV and Parquet. "
-              "`index.json` lists the datasets.",
+              "the panel (one row per unit `geo_id` and `year`, variables as columns) as CSV and Parquet, and "
+              "wide (one row per unit, a column per variable and year, with boundaries) as GeoPackage and "
+              "GeoJSON. `index.json` lists the datasets.",
               "", "| Dataset | Title | Scale | Years | Files |", "| --- | --- | --- | --- | --- |", *table,
               "", "Unit names, parents and source keys: [`geo/units.csv`](../geo/units.csv). "
               f"All variables in one table: [`{catalog}`](../{catalog})."]

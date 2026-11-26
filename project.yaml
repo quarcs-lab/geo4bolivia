@@ -47,3 +47,7 @@ map:
 
 # Generated table listing every variable of every dataset.
 catalog: definitions_gdo-bolivia.csv
+
+# Boundaries of each dataset's wide GeoJSON (data/<dataset>/<scale>/<dataset>_wide.geojson), with
+# {scale}: lighter outlines for web maps. The wide GeoPackage keeps geo/boundaries/.
+wide_geojson_boundaries: "site/data/{scale}.geojson"
