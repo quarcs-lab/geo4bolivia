@@ -60,7 +60,7 @@ A push carrying many re-executed `docs/_freeze` pages can fail with "the remote 
 | Part | Modules |
 | --- | --- |
 | Data | `project`, `store`, `scales`, `metadata`, `io`, `discover`, `panel`, `create`, `aggregate`, `bridge` |
-| Maintainer tools | `build/` (generic helpers and the entry point; the project's builders are in the data repository), `validate`, `cli` |
+| Maintainer tools | `build/` (generic helpers and the entry point; the project's builders are in the data repository), `stata` (the self-documenting `.dta` of every dataset: data, labels, value labels, and the notes and panel settings Stata keeps as characteristics, which pandas does not write), `validate`, `cli` |
 | Analyses (public) | `explore` (correlation, extremes, distribution, scatter, trend), `plot` (map), `spatial` (weights, connectivity, moran, lisa), `convergence` (beta_convergence, sigma_convergence, convergence_clubs), `dynamics` (transitions, spatial_transitions, lisa_transitions, rank_mobility), `inequality` (inequality, theil_decomposition), `models` (regression, panel_model, spatial_model, spatial_diagnostics), `local` (mgwr) |
 | Shared | `_inputs` (panel, boundaries, weights, labels, result finishing) |
 | Engine | `_engine/`: estimators, figures, tables and interpretation texts ported from geometrics; it keeps geometrics' vocabulary (`var`, `period`, `entity`, `time`, `start`/`end`) and takes every input explicitly |

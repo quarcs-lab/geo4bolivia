@@ -4,6 +4,15 @@ description: "What changed in each release of geo4bolivia."
 sidebar: false
 ---
 
+## 0.9.2 (2026-11-26)
+
+**A Stata file for every dataset.** The build now writes, next to each panel, `data/<dataset>/<scale>/<dataset>.dta`: the same long panel for Stata 14 and later (format 118, Unicode), ready for economists who work in Stata.
+
+- One row per unit and year: `unit_id` (1..N in `geo_id` order, value-labelled "Name (Department)"), `geo_id`, `year`, `name`, the ID, name and value-labelled numeric code of each coarser unit (`province_code`, `department_code`, for factor variables), the source keys, `area_km2`, then the variables under their usual names.
+- It documents itself: every column has a label (the metadata's `title`) and notes (`notes <variable>`: its description, unit, source, aggregation and reference years); `notes _dta` gives the description, the citations in order, the license, links and caveats. It opens declared as a panel (`xtset unit_id year`).
+- New module `geo4bolivia.stata`: `contents()`, `write()`, `read()` and `characteristics()`. pandas writes the data and labels; the notes and the panel settings are Stata *characteristics*, which pandas leaves empty, so the module writes and reads that section itself.
+- Building: `publish_stata()` writes the files and records them in the resource (`geo:dta`); `write_docs()` runs it and lists the file in the README and the catalog. Rebuilding unchanged data writes the same bytes. `validate` checks each file against the panel and the metadata (data, labels, value labels, notes, panel settings).
+
 ## 0.9.1 (2026-11-26)
 
 **Wide files: every dataset ready to map.** The build now writes, next to each panel, the same data wide: `data/<dataset>/<scale>/<dataset>_wide.gpkg` and `_wide.geojson`, one row per unit with its name, the province and department it lies in, its source keys and area, and every variable once per year, `<variable>_<year>` (a column for every year of the dataset, empty where a variable has no values). The GeoPackage carries the analysis boundaries and a table `variables` describing every column (label, description, unit, source, actual reference year); the GeoJSON carries lighter boundaries for web maps (`wide_geojson_boundaries` in `project.yaml`). The observatory's website offers both for download.

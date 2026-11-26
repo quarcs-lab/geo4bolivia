@@ -491,3 +491,61 @@ def test_validator_catches_a_stale_wide_file(repo_copy):
     pyogrio.write_dataframe(stale, path, driver="GeoJSON")
     errors = " | ".join(validate.validate_dataset(dataset).errors)
     assert res["geo:geojson"] in errors and "differs" in errors
+
+
+# --- Stata files -----------------------------------------------------------------------
+
+@needs_data
+@pytest.mark.parametrize("dataset", DATASETS)
+def test_stata_contents_are_a_labelled_documented_panel(dataset):
+    from geo4bolivia import io, stata
+    res = metadata.resource(dataset)
+    c = stata.contents(dataset)
+    df = c["data"]
+    panel = pd.read_parquet(store.open_binary(res["geo:parquet"]))
+    variables = metadata.variables(dataset)
+    groups = io.wide_id_columns(res["geo:scale"])
+    assert len(df) == len(panel) and not df.duplicated(["geo_id", "year"]).any()
+    assert list(df.columns[:4]) == ["unit_id", "geo_id", "year", "name"]
+    assert list(df.columns[-len(variables):]) == variables
+    assert all(f"{g}_code" in df.columns and f"{g}_code" in c["value_labels"] for g in groups)
+    n = len(geo.units(res["geo:scale"]))
+    assert df["unit_id"].between(1, n).all() and set(c["value_labels"]["unit_id"]) == set(range(1, n + 1))
+    labels = c["variable_labels"]
+    assert set(labels) == set(df.columns) and all(0 < len(v) <= 80 for v in labels.values())
+    chars = {(v, k): t for v, k, t in c["characteristics"]}
+    assert chars[("_dta", "_TSpanel")] == "unit_id" and chars[("_dta", "_TStvar")] == "year"
+    assert int(chars[("_dta", "note0")]) >= 5
+    for v in variables:
+        assert int(chars[(v, "note0")]) >= 1 and chars[(v, "note1")]
+
+
+@needs_data
+def test_stata_file_round_trips(tmp_path):
+    from geo4bolivia import stata
+    dataset = DATASETS[0]
+    res = metadata.resource(dataset)
+    first, second = tmp_path / "a.dta", tmp_path / "b.dta"
+    want = stata.write(dataset, res["geo:scale"], first)
+    stata.write(dataset, res["geo:scale"], second)
+    assert first.read_bytes() == second.read_bytes()            # reproducible: same data, same bytes
+    got = stata.read(first)
+    pd.testing.assert_frame_equal(want["data"], got["data"], check_dtype=False)
+    for key in ("data_label", "variable_labels", "value_labels", "characteristics"):
+        assert got[key] == want[key]
+    # Unicode survives (format 118): every name reads back as written
+    assert set(got["data"]["name"]) == set(want["data"]["name"])
+
+
+@needs_data
+@needs_checkout
+def test_validator_catches_a_stale_stata_file(repo_copy):
+    from geo4bolivia import stata
+    dataset = DATASETS[0]
+    res = metadata.resource(dataset)
+    c = stata.contents(dataset)
+    c["characteristics"] = [x for x in c["characteristics"] if x[0] != "_dta"]    # notes and xtset lost
+    stata._Writer(repo_copy / res["geo:dta"], c["data"], write_index=False, version=118,
+                  characteristics=c["characteristics"]).write_file()
+    errors = " | ".join(validate.validate_dataset(dataset).errors)
+    assert res["geo:dta"] in errors and "characteristics" in errors and "variable labels" in errors

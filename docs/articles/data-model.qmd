@@ -319,6 +319,7 @@ Because the data are plain files with stable paths, any tool can read them. Ther
 | --- | --- |
 | `data/<dataset>/<scale>/<dataset>.csv` and `.parquet` | the panel of a dataset, in its folder, under its map (`data/sdg/map343/sdg.csv`, `data/ntl/map339/ntl.csv`) |
 | `data/<dataset>/<scale>/<dataset>_wide.gpkg` and `.geojson` | the same data wide and ready to map: one row per unit, a column per variable and year, with boundaries (below) |
+| `data/<dataset>/<scale>/<dataset>.dta` | the panel for Stata 14 and later: names, value-labelled codes, a label and notes for every variable, declared as a panel (`xtset unit_id year`) |
 | `geo/units.csv`, `geo/boundaries/<scale>.geojson`, `geo/crosswalks/<from>__<to>.csv` | the geography |
 | `data/<dataset>/datapackage.json`, `data/<dataset>/README.md` | the metadata, and the documentation generated from it (GitHub shows it when the folder is opened) |
 

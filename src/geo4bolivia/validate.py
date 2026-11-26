@@ -148,6 +148,7 @@ def validate_dataset(dataset: str) -> Report:
                 and rep.check(pq_path.exists(), f"{tag}: missing {res['geo:parquet']}")):
             continue
         _check_wide(rep, dataset, res, tag)
+        _check_stata(rep, dataset, res, tag)
         df = pd.read_parquet(pq_path)
         csv = pd.read_csv(csv_path, dtype={"geo_id": str})
         schema = res["schema"]
@@ -270,6 +271,39 @@ def _check_wide(rep: Report, dataset: str, res: dict, tag: str) -> None:
                   f"{tag}: the GeoPackage's variables table does not describe its columns (run the build)")
     except Exception as exc:
         rep.check(False, f"{tag}: {res['geo:gpkg']} has no variables table: {exc}")
+
+
+def _check_stata(rep: Report, dataset: str, res: dict, tag: str) -> None:
+    """The Stata file (``geo:dta``): where the build puts it, present, and holding what
+    ``stata.contents`` builds from the panel and the metadata: the data, the labels, the value
+    labels, the notes and the panel settings."""
+    from . import stata
+    root = store.repo_root()
+    path = stata.stata_path(dataset, res["geo:scale"])
+    if not rep.check(res.get("geo:dta") == path, f"{tag}: geo:dta should be {path} (run the build)"):
+        return
+    if not rep.check((root / path).is_file(), f"{tag}: missing {path} (run the build)"):
+        return
+    try:
+        want = stata.contents(dataset, res["geo:scale"])
+    except (ValueError, KeyError, TypeError) as exc:   # a broken panel or metadata, reported by the other checks
+        rep.check(False, f"{tag}: the Stata file cannot be built from the panel and metadata: {exc!r}")
+        return
+    try:
+        got = stata.read(root / path)
+    except Exception as exc:   # any reading error means a broken file
+        rep.check(False, f"{tag}: {path} cannot be read: {exc}")
+        return
+    if not rep.check(list(got["data"].columns) == list(want["data"].columns),
+                     f"{tag}: {path} columns differ from the panel's (run the build)"):
+        return
+    try:
+        pd.testing.assert_frame_equal(want["data"], got["data"], check_dtype=False, rtol=1e-6)
+        rep.check(True, "")
+    except AssertionError as exc:
+        rep.check(False, f"{tag}: {path} differs from the panel (run the build): {str(exc).splitlines()[0]}")
+    for key in ("data_label", "variable_labels", "value_labels", "characteristics"):
+        rep.check(got[key] == want[key], f"{tag}: {path} {key.replace('_', ' ')} differ from the metadata (run the build)")
 
 
 def _check_map(rep: Report, dataset: str, spec: dict) -> None:
